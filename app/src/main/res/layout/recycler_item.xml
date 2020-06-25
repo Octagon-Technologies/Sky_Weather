@@ -1,6 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <variable
+            name="all"
+            type="com.example.kotlinweatherapp.network.All" />
+
+<!--        <variable-->
+<!--            name="weather"-->
+<!--            type="com.example.kotlinweatherapp.network.Weather" />-->
+    </data>
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="6dp">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/weather_image"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:layout_marginEnd="64dp"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:setWeatherImage="@{weather}"-->
+<!--            tools:srcCompat="@drawable/sunny" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/date_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="24dp"-->
+<!--            android:fontFamily="@font/roboto_bold"-->
+<!--            app:getDay="@{all.dt}"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/weather_image"-->
+<!--            tools:text="Today" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/weather_state_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="24dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/weather_image"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/date_text"-->
+<!--            app:setWeatherStatus="@{weather}"-->
+<!--            tools:text="Partly cloudy" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/max_temp_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="5dp"-->
+<!--            android:fontFamily="@font/roboto_bold"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/weather_image"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/weather_image"-->
+<!--            app:setMaxTemp="@{all.main}"-->
+<!--            tools:text="24°" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/min_temp_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="5dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/weather_image"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/weather_image"-->
+<!--            app:setMinTemp="@{all.main}"-->
+<!--            tools:text="12°" />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:minHeight="110dp">
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/roboto_bold"
+            app:getDay="@{all.dt}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Today" />
+
+        <TextView
+            android:id="@+id/max_temp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.89"
+            app:layout_constraintStart_toEndOf="@+id/date_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setMaxTemp="@{all.main}"
+            tools:text="24°" />
+
+        <TextView
+            android:id="@+id/min_temp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.9"
+            app:layout_constraintStart_toEndOf="@+id/date_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setMinTemp="@{all.main}"
+            tools:text="12°" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

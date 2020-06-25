@@ -30,6 +30,8 @@ class FirstFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        binding.listRecyclerView.adapter = RecyclerAdapter()
+
         return binding.root
     }
 }

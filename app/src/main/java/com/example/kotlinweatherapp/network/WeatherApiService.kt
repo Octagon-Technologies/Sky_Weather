@@ -8,20 +8,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 
-val BASE_URL = "https://api.openweathermap.org/data/2.5/"
+const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
-val moshi = Moshi.Builder()
+val moshi: Moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
-val retrofit = Retrofit.Builder()
+val retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(BASE_URL)
     .build()
 
 interface WeatherApiService {
-    @GET("weather?q=Nairobi&units=metric&appid=b482773d742c4ab710d2b62820ae3184")
+    @GET("forecast?q=Nairobi&appid=b482773d742c4ab710d2b62820ae3184")
     fun getWeather(): Deferred<WeatherDataClass>
 }
 
