@@ -9,6 +9,8 @@ import com.example.kotlinweatherapp.network.WeatherDataClass
 import com.example.kotlinweatherapp.network.WeatherItem
 import kotlinx.coroutines.*
 
+enum class Status{ LOADING, DONE, ERROR }
+
 class FirstViewModel: ViewModel() {
     private val viewModelJob = Job()
     private val scope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -21,6 +23,13 @@ class FirstViewModel: ViewModel() {
     val temp: LiveData<String>
         get() = _temp
 
+    private val _status = MutableLiveData<Status>()
+
+    // The external immutable LiveData for the request status String
+    val status: LiveData<Status>
+        get() = _status
+
+
     init{
         getPropertyValue()
     }
@@ -29,9 +38,12 @@ class FirstViewModel: ViewModel() {
         scope.launch{
             val getDeferredProperties = WeatherItem.retrofitService.getWeather()
 
+            _status.value = Status.LOADING
+
             try {
                 val listOfProperties = getDeferredProperties.await()
                 _all.value = listOfProperties.list
+                _status.value = Status.DONE
                 Log.i("RecyclerViewModel", "${all.value?.size}")
 
                 _temp.value = listOfProperties.city.population.toString()
@@ -39,6 +51,7 @@ class FirstViewModel: ViewModel() {
             }
             catch (t: Throwable){
                 _temp.value = "10 chars"
+                _status.value = Status.ERROR
                 Log.e("ViewModel", "$t")
             }
         }

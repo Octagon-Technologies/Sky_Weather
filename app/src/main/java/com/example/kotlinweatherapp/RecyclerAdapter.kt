@@ -12,9 +12,9 @@ import com.example.kotlinweatherapp.network.Weather
 
 class RecyclerAdapter(): ListAdapter<All, RecyclerAdapter.ViewHolder>(DiffCallback){
     class ViewHolder(private val binding: RecyclerItemBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(all: All){
+        fun bind(all: All, weather: Weather){
             binding.all = all
-//            binding.weather = weather
+            binding.weather = weather
             binding.executePendingBindings()
         }
     }
@@ -26,10 +26,10 @@ class RecyclerAdapter(): ListAdapter<All, RecyclerAdapter.ViewHolder>(DiffCallba
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val all = getItem(position)
         Log.i("RecyclerAdapter", "position is $position")
-//        val weather = all.weather[position]
-//        Log.i("RecyclerAdapter", "weather.description = ${weather.description}")
+        val weather = all.weather[0]
+       Log.i("RecyclerAdapter", "weather.description = ${weather.description}")
 
-        holder.bind(all)
+        holder.bind(all, weather)
     }
 
 }

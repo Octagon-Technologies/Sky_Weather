@@ -1,5 +1,6 @@
 package com.example.kotlinweatherapp
 
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -17,22 +18,19 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<All>?){
 }
 
 @BindingAdapter("getDay")
-fun TextView.getDay(timeLong: Long){
-    val weekDayString = SimpleDateFormat("EEEE, dd MMM", Locale.getDefault()).format(timeLong)
+fun TextView.getDay(date: String){
+    val weekDayString: Date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(date)!!
+    val dateInMillis = weekDayString.time
 
-    val today = Date().time
+    val newString = SimpleDateFormat("EE, dd MMM, HH:mm", Locale.getDefault()).format(dateInMillis)
 
-    if (timeLong in today..today.plus(86_400_000) || timeLong in today.minus(86_400_000)..today ) {
-        text = context.getString(R.string.today)
-    }
-
-    text = weekDayString
+    text = newString
 }
 
-//@BindingAdapter("setWeatherStatus")
-//fun TextView.setWeatherStatus(weather: Weather){
-//    text = weather.description
-//}
+@BindingAdapter("setWeatherStatus")
+fun TextView.setWeatherStatus(weather: Weather){
+    text = weather.description
+}
 
 @BindingAdapter("setMaxTemp")
 fun TextView.setMaxTemp(main: Main){
@@ -43,15 +41,34 @@ fun TextView.setMaxTemp(main: Main){
 fun TextView.setMinTemp(main: Main){
     text = main.temp_min.toString()
 }
-//
-//@BindingAdapter("setWeatherImage")
-//fun ImageView.setWeatherImage(weather: Weather){
-//    setImageResource(when(weather.description){
-//        "clear sky" -> R.drawable.sunny
-//        "light rain" -> R.drawable.scattered_showers
-//        else -> R.drawable.partly_cloudy
-//    })
-//}
+
+@BindingAdapter("setWeatherImage")
+fun ImageView.setWeatherImage(weather: Weather){
+    setImageResource(when(weather.description){
+        "clear sky" -> R.drawable.sunny
+        "light rain" -> R.drawable.scattered_showers
+        else -> R.drawable.partly_cloudy
+    })
+}
+
+@BindingAdapter("marsApiImages")
+fun imageVisibility(image: ImageView, status: Status?){
+    status?.let {
+        when (status) {
+            Status.LOADING -> {
+                image.visibility = View.VISIBLE
+                image.setImageResource(R.drawable.loading_animation)
+            }
+            Status.ERROR -> {
+                image.visibility = View.VISIBLE
+                image.setImageResource(R.drawable.ic_connection_error)
+            }
+            Status.DONE -> {
+                image.visibility = View.GONE
+            }
+        }
+    }
+}
 
 // broken clouds
 // scattered clouds
