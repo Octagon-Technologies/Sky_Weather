@@ -11,6 +11,8 @@ import com.example.kotlinweatherapp.network.Weather
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Temps are in Kelvins == Celsius + 273.15
+
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<All>?){
     val adapter = recyclerView.adapter as RecyclerAdapter
@@ -32,14 +34,19 @@ fun TextView.setWeatherStatus(weather: Weather){
     text = weather.description
 }
 
-@BindingAdapter("setMaxTemp")
-fun TextView.setMaxTemp(main: Main){
-    text = main.temp_max.toString()
-}
+//@BindingAdapter("setMaxTemp")
+//fun TextView.setMaxTemp(main: Main){
+//    text = (main.temp_max - 273.15).toInt().toString()
+//}
+//
+//@BindingAdapter("setMinTemp")
+//fun TextView.setMinTemp(main: Main){
+//    text = (main.temp_min - 273.15).toInt().toString()
+//}
 
-@BindingAdapter("setMinTemp")
-fun TextView.setMinTemp(main: Main){
-    text = main.temp_min.toString()
+@BindingAdapter("setTemp")
+fun TextView.setTemp(main: Main){
+    text = (main.temp - 273.15).toInt().toString()
 }
 
 @BindingAdapter("setWeatherImage")
@@ -59,13 +66,27 @@ fun imageVisibility(image: ImageView, status: Status?){
                 image.visibility = View.VISIBLE
                 image.setImageResource(R.drawable.loading_animation)
             }
-            Status.ERROR -> {
+            Status.NO_INTERNET -> {
+                image.visibility = View.VISIBLE
+                image.setImageResource(R.drawable.ic_connection_error)
+            }
+            Status.LOCATION_ERROR -> {
                 image.visibility = View.VISIBLE
                 image.setImageResource(R.drawable.ic_connection_error)
             }
             Status.DONE -> {
                 image.visibility = View.GONE
             }
+        }
+    }
+}
+
+@BindingAdapter("locationText")
+fun locationText(textView: TextView, status: Status?){
+    status?.let {
+        when(status){
+            Status.LOCATION_ERROR -> textView.visibility = View.VISIBLE
+            else -> textView.visibility = View.GONE
         }
     }
 }

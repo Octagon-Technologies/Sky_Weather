@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="viewModel"
-            type="com.example.kotlinweatherapp.FirstViewModel" />
+            type="com.example.kotlinweatherapp.HomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,8 +34,24 @@
         app:layout_constraintTop_toTopOf="parent"
         android:minHeight="100dp"
         android:minWidth="100dp"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_connection_error"
         app:marsApiImages="@{viewModel.status}"
         android:contentDescription="@string/loading_image" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_area_not_found"
+            android:textSize="24sp"
+            app:locationText="@{viewModel.status}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/status_image"
+            app:layout_constraintVertical_bias="0.05"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

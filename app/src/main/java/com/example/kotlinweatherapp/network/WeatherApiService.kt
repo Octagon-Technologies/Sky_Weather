@@ -7,8 +7,10 @@ import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
+const val KEY_VALUE = "b482773d742c4ab710d2b62820ae3184"
 
 val moshi: Moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -20,9 +22,14 @@ val retrofit: Retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
+// ?q={cityName}&appid=b482773d742c4ab710d2b62820ae3184
+
 interface WeatherApiService {
-    @GET("forecast?q=Nairobi&appid=b482773d742c4ab710d2b62820ae3184")
-    fun getWeather(): Deferred<WeatherDataClass>
+    @GET("forecast")
+    fun getWeatherAsync(
+        @Query("q") name: String,
+        @Query("appid") key: String = KEY_VALUE
+    ): Deferred<WeatherDataClass>
 }
 
 object WeatherItem{

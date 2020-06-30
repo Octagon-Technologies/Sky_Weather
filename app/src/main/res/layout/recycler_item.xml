@@ -59,22 +59,23 @@
             android:id="@+id/max_temp_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto_bold"
-            app:layout_constraintStart_toEndOf="@+id/weather_image"
-            app:layout_constraintTop_toTopOf="@+id/weather_image"
-            app:setMaxTemp="@{all.main}"
-            tools:text="248.14°" />
-
-        <TextView
-            android:id="@+id/min_temp_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/weather_image"
             app:layout_constraintStart_toEndOf="@+id/weather_image"
-            app:setMinTemp="@{all.main}"
-            tools:text="212.78°" />
+            app:layout_constraintTop_toTopOf="@+id/weather_image"
+            app:setTemp="@{all.main}"
+            tools:text="248.14°" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/min_temp_text"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/weather_image"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/weather_image"-->
+<!--            app:setMinTemp="@{all.main}"-->
+<!--            tools:text="212.78°" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

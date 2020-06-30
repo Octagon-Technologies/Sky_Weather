@@ -11,3 +11,5 @@ data class Main(
     val temp_max: Double,
     val temp_min: Double
 )
+
+// Temps are in Kelvins == Celsius + 273.15
