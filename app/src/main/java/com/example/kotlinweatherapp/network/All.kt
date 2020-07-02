@@ -1,5 +1,9 @@
 package com.example.kotlinweatherapp.network
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class All(
     val clouds: Clouds,
     val dt: Long,
@@ -9,4 +13,4 @@ data class All(
     val sys: Sys,
     val weather: List<Weather>,
     val wind: Wind
-)
+): Parcelable

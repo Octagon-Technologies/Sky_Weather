@@ -1,22 +1,26 @@
 package com.example.kotlinweatherapp
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.kotlinweatherapp.databinding.FragmentHomeBinding
+import androidx.navigation.findNavController
 import com.example.kotlinweatherapp.database.DataBase
+import com.example.kotlinweatherapp.databinding.FragmentHomeBinding
+import com.example.kotlinweatherapp.network.All
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class HomeFragment : Fragment() {
 
-    lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -26,9 +30,9 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
         val application = requireNotNull(this.activity).application
-        val dataSource = DataBase.getInstance(application)!!.databaseDao
+        val cityDataSource = DataBase.getInstance(application)!!.databaseDao
 
-        val viewModel = ViewModelProvider(this, HomeViewModelFactory(dataSource)).get(HomeViewModel::class.java)
+        val viewModel = ViewModelProvider(this, HomeViewModelFactory(cityDataSource = cityDataSource)).get(HomeViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -41,13 +45,35 @@ class HomeFragment : Fragment() {
             binding.listRecyclerView.visibility = View.VISIBLE
         }
 
-        binding.listRecyclerView.adapter = RecyclerAdapter()
+        viewModel.globalAll.observe(viewLifecycleOwner, Observer {
+            if (null != it){
+                view?.findNavController()?.navigate(HomeFragmentDirections.actionHomeFragmentToEachWeatherFragment(it))
+                Log.d("HomeFragment", "global All has been observed")
+                viewModel.doneNavigateToEachWeather()
+            }
+        })
+
+        binding.listRecyclerView.adapter = RecyclerAdapter(RecyclerListener { all ->
+            viewModel.setGlobalAll(all)
+        })
 
         viewModel.doesErrorExist.observe(viewLifecycleOwner, Observer {
             if (it == true) {ifErrorExistsIsTrue()}
             else {ifErrorExistsIsFalse()}
         })
 
+        val timer = object : CountDownTimer(1000, 500){
+            override fun onFinish() {
+                viewModel.getProperties()
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+                viewModel.getProperties()
+            }
+
+        }
+
+        timer.start()
 
 
         return binding.root

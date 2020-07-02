@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinweatherapp.database.DatabaseDao
 
 class HomeViewModelFactory(
-    private val dataSource: DatabaseDao
+    private val cityDataSource: DatabaseDao
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            return HomeViewModel(dataSource) as T
+            return HomeViewModel(cityDataSource) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

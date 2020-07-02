@@ -22,7 +22,7 @@ val retrofit: Retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .build()
 
-// ?q={cityName}&appid=b482773d742c4ab710d2b62820ae3184
+//future forecast =  ?q={cityName}&appid=b482773d742c4ab710d2b62820ae3184
 
 interface WeatherApiService {
     @GET("forecast")

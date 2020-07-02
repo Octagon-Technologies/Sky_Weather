@@ -17,14 +17,14 @@ class FragmentSettings: PreferenceFragmentCompat() {
         addPreferencesFromResource(R.xml.root_preferences)
 
         val application = requireNotNull(this.activity).application
-        val dataSource = DataBase.getInstance(application)!!.databaseDao
+        val cityDataSource = DataBase.getInstance(application)!!.databaseDao
 
-        viewModel = ViewModelProvider(this, HomeViewModelFactory(dataSource)).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this, HomeViewModelFactory(cityDataSource)).get(HomeViewModel::class.java)
 
         findPreference<Preference>(SIGNATURE)!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ preference, newValue ->
             val stringValue = newValue.toString()
             viewModel.mainText.value = stringValue
-            viewModel.insert()
+            viewModel.insertCityName()
             Log.i("ViewModelSettings", "Value of string value is $stringValue")
             Log.i("ViewModelSettings", "Value of viewModel.mainText.value is ${viewModel.mainText.value}")
 

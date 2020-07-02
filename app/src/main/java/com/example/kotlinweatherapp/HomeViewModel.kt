@@ -8,6 +8,7 @@ import com.example.kotlinweatherapp.network.All
 import com.example.kotlinweatherapp.network.WeatherItem
 import com.example.kotlinweatherapp.database.DataClass
 import com.example.kotlinweatherapp.database.DatabaseDao
+import com.example.kotlinweatherapp.network.WeatherDataClass
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.net.UnknownHostException
@@ -16,19 +17,29 @@ var cityName = "ChelixCity"
 
 enum class Status{LOADING, NO_INTERNET, LOCATION_ERROR, DONE}
 
-class HomeViewModel(private val dataSource: DatabaseDao): ViewModel() {
+class HomeViewModel(
+    private val cityDataSource: DatabaseDao
+): ViewModel() {
+    private lateinit var listProperties: WeatherDataClass
+
     var mainText = MutableLiveData<String>()
     var liveCityName = MutableLiveData<String>()
 
     private var _doesErrorExist = MutableLiveData<Boolean>()
     val doesErrorExist: LiveData<Boolean>
         get() = _doesErrorExist
+
     private var _all = MutableLiveData<List<All>>()
     val all: LiveData<List<All>>
         get() = _all
+
     private var _status = MutableLiveData<Status>()
     val status: LiveData<Status>
         get() = _status
+
+    private var _globalAll = MutableLiveData<All>()
+    val globalAll: LiveData<All>
+        get() = _globalAll
 
 
     private val viewModelJob = Job()
@@ -43,16 +54,16 @@ class HomeViewModel(private val dataSource: DatabaseDao): ViewModel() {
         Log.i("ViewModelReal", "livecityname value is ${liveCityName.value} and init called")
     }
 
-    fun insert(){
+    fun insertCityName(){
         uiScope.launch {
             withContext(Dispatchers.IO){
                 val data = DataClass(name_text = mainText.value!!)
-                dataSource.insertString(data)
+                cityDataSource.insertString(data)
             }
         }
     }
 
-    fun getData(){
+    private fun getData(){
         uiScope.launch {
             mainText.value = suspendGetData()
             cityName = mainText.value!!
@@ -61,8 +72,16 @@ class HomeViewModel(private val dataSource: DatabaseDao): ViewModel() {
 
     private suspend fun suspendGetData(): String{
         return withContext(Dispatchers.IO){
-            dataSource.getFormerString()?.name_text ?: "Hello"
+            cityDataSource.getFormerString()?.name_text ?: "Hello"
         }
+    }
+
+    fun setGlobalAll(all: All){
+        _globalAll.value = all
+    }
+
+    fun doneNavigateToEachWeather(){
+        _globalAll.value = null
     }
 
     fun getProperties() {
@@ -73,7 +92,7 @@ class HomeViewModel(private val dataSource: DatabaseDao): ViewModel() {
             val getDeferredProperties = WeatherItem.retrofitService.getWeatherAsync(name = cityName)
 
             try {
-                val listProperties = getDeferredProperties.await()
+                listProperties = getDeferredProperties.await()
                 _doesErrorExist.value = false
                 _all.value = listProperties.list
                 _status.value = Status.DONE
@@ -86,6 +105,7 @@ class HomeViewModel(private val dataSource: DatabaseDao): ViewModel() {
                 liveCityName.value = "$noInternetError"
                 _doesErrorExist.value = true
                 _status.value = Status.NO_INTERNET
+
             }
             catch (locationError: HttpException){
                 _doesErrorExist.value = true
@@ -93,6 +113,9 @@ class HomeViewModel(private val dataSource: DatabaseDao): ViewModel() {
             }
         }
     }
+
+
+
 }
 /*
 java.net.UnknownHostException: Unable to resolve host "api.openweathermap.org": No address associated with hostname

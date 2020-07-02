@@ -1,17 +1,19 @@
 package com.example.kotlinweatherapp
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kotlinweatherapp.network.All
-import com.example.kotlinweatherapp.network.Main
-import com.example.kotlinweatherapp.network.Weather
+import com.example.kotlinweatherapp.network.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 // Temps are in Kelvins == Celsius + 273.15
+
+// TODO: Create the option in settings for the user to see the temprature in degrees F°
+// TODO: Show cardinal direction based on wind.degrees in the setWindSpeed app module
 
 @BindingAdapter("listData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<All>?){
@@ -25,6 +27,16 @@ fun TextView.getDay(date: String){
     val dateInMillis = weekDayString.time
 
     val newString = SimpleDateFormat("EE, dd MMM, HH:mm", Locale.getDefault()).format(dateInMillis)
+
+    text = newString
+}
+
+@BindingAdapter("getEachDayString")
+fun TextView.getEachDay(date: String){
+    val weekDayString: Date = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(date)!!
+    val dateInMillis = weekDayString.time
+
+    val newString = SimpleDateFormat("dd MMM, HH:mm", Locale.getDefault()).format(dateInMillis)
 
     text = newString
 }
@@ -44,9 +56,44 @@ fun TextView.setWeatherStatus(weather: Weather){
 //    text = (main.temp_min - 273.15).toInt().toString()
 //}
 
+@SuppressLint("SetTextI18n")
 @BindingAdapter("setTemp")
 fun TextView.setTemp(main: Main){
-    text = (main.temp - 273.15).toInt().toString()
+    text = "${(main.temp - 273.15).toInt()}"
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setHumidity")
+fun TextView.setHumidity(main: Main){
+    text = "${main.humidity}%"
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setCloudCover")
+fun TextView.setCloudCover(cloudCover: Clouds){
+    val cloudPerc = (cloudCover.all * 8 / 100)
+    text = if (cloudPerc == 1) "$cloudPerc Okta" else "$cloudPerc Oktas"
+
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setPressure")
+fun TextView.setPressure(main: Main){
+    text = "${main.pressure} mBars"
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setWindSpeed")
+fun TextView.setWindSpeed(windSpeed: Wind){
+    val speed = (windSpeed.speed * 1.852).toInt()
+    text = "$speed km/h"
+}
+
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setFeelsLikeTemp")
+fun TextView.setFeelsLikeTemp(main: Main){
+    text = "Feels like ${(main.temp - 273.15).toInt()}°"
 }
 
 @BindingAdapter("setWeatherImage")

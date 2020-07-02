@@ -11,38 +11,42 @@
         <variable
             name="weather"
             type="com.example.kotlinweatherapp.network.Weather" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/recycler_item_constraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:minWidth="700dp">
+        android:layout_marginBottom="6dp">
 
         <ImageView
             android:id="@+id/weather_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="220dp"
+            android:layout_marginStart="260dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/max_temp_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:setWeatherImage="@{weather}"
-            tools:srcCompat="@drawable/sunny" />
+            tools:srcCompat="@drawable/sunny"
+            android:contentDescription="@string/weather_image" />
 
         <TextView
             android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="sans-serif-thin"
+            android:textFontWeight="450"
             app:getDay="@{all.dt_txt}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/weather_image"
-            tools:text="Monday, 19 Jan" />
+            tools:text="Tue, 30 Jun, 15:00" />
 
         <TextView
             android:id="@+id/weather_state_text"
@@ -59,13 +63,15 @@
             android:id="@+id/max_temp_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:fontFamily="@font/roboto_bold"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="sans-serif-light"
+            android:textFontWeight="400"
             app:layout_constraintBottom_toBottomOf="@+id/weather_image"
-            app:layout_constraintStart_toEndOf="@+id/weather_image"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/weather_image"
+            app:layout_constraintVertical_bias="0.19"
             app:setTemp="@{all.main}"
-            tools:text="248.14°" />
+            tools:text="24°" />
 
 <!--        <TextView-->
 <!--            android:id="@+id/min_temp_text"-->

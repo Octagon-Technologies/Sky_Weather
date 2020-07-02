@@ -9,9 +9,23 @@
         android:id="@+id/homeFragment"
         android:name="com.example.kotlinweatherapp.HomeFragment"
         android:label="@string/home_label"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_eachWeatherFragment"
+            app:destination="@id/eachWeatherFragment" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentSettings"
         android:name="com.example.kotlinweatherapp.FragmentSettings"
         android:label="@string/action_settings" />
+    <fragment
+        android:id="@+id/eachWeatherFragment"
+        android:name="com.example.kotlinweatherapp.EachWeatherFragment"
+        android:label="Weather Details"
+        tools:layout="@layout/each_weather_fragment">
+
+        <argument
+            android:name="all"
+            app:argType="com.example.kotlinweatherapp.network.All" />
+    </fragment>
 </navigation>
