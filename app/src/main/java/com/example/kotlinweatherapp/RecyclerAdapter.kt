@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinweatherapp.databinding.RecyclerItemBinding
-import com.example.kotlinweatherapp.network.All
-import com.example.kotlinweatherapp.network.Weather
+import com.example.kotlinweatherapp.network.futureforecast.All
+import com.example.kotlinweatherapp.network.futureforecast.Weather
 
 class RecyclerAdapter(val clickListener: RecyclerListener): ListAdapter<All, RecyclerAdapter.ViewHolder>(DiffCallback){
     class ViewHolder(private val binding: RecyclerItemBinding): RecyclerView.ViewHolder(binding.root) {

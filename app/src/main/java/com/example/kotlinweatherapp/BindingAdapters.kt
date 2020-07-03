@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kotlinweatherapp.network.*
+import com.example.kotlinweatherapp.network.futureforecast.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,10 +41,24 @@ fun TextView.getEachDay(date: String){
     text = newString
 }
 
+@SuppressLint("SetTextI18n")
+@BindingAdapter("getCurrentDay")
+fun TextView.getCurrentDay(time: Long){
+    val newString = SimpleDateFormat(", HH:mm", Locale.getDefault()).format(time)
+
+    text = "Today, $newString"
+}
+
 @BindingAdapter("setWeatherStatus")
 fun TextView.setWeatherStatus(weather: Weather){
     text = weather.description
 }
+
+@BindingAdapter("setCurrentWeatherStatus")
+fun TextView.setCurrentWeatherStatus(weather: Weather){
+    text = weather.description
+}
+
 
 //@BindingAdapter("setMaxTemp")
 //fun TextView.setMaxTemp(main: Main){
@@ -57,8 +71,14 @@ fun TextView.setWeatherStatus(weather: Weather){
 //}
 
 @SuppressLint("SetTextI18n")
-@BindingAdapter("setTemp")
-fun TextView.setTemp(main: Main){
+@BindingAdapter("setFutureTemp")
+fun TextView.setFutureTemp(main: Main){
+    text = "${(main.temp - 273.15).toInt()}"
+}
+
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setCurrentTemp")
+fun TextView.setCurrentTemp(main: com.example.kotlinweatherapp.network.currentweather.Main){
     text = "${(main.temp - 273.15).toInt()}"
 }
 
@@ -69,11 +89,23 @@ fun TextView.setHumidity(main: Main){
 }
 
 @SuppressLint("SetTextI18n")
+@BindingAdapter("setCurrentHumidity")
+fun TextView.setCurrentHumidity(main: com.example.kotlinweatherapp.network.currentweather.Main){
+    text = "${main.humidity}%"
+}
+
+@SuppressLint("SetTextI18n")
 @BindingAdapter("setCloudCover")
 fun TextView.setCloudCover(cloudCover: Clouds){
     val cloudPerc = (cloudCover.all * 8 / 100)
     text = if (cloudPerc == 1) "$cloudPerc Okta" else "$cloudPerc Oktas"
+}
 
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setCurrentCloudCover")
+fun TextView.setCurrentCloudCover(cloudCover: com.example.kotlinweatherapp.network.currentweather.Clouds){
+    val cloudPerc = (cloudCover.all * 8 / 100)
+    text = if (cloudPerc == 1) "$cloudPerc Okta" else "$cloudPerc Oktas"
 }
 
 @SuppressLint("SetTextI18n")
@@ -83,12 +115,25 @@ fun TextView.setPressure(main: Main){
 }
 
 @SuppressLint("SetTextI18n")
+@BindingAdapter("setCurrentPressure")
+fun TextView.setCurrentPressure(main: com.example.kotlinweatherapp.network.currentweather.Main){
+    text = "${main.pressure} mBars"
+}
+
+
+@SuppressLint("SetTextI18n")
 @BindingAdapter("setWindSpeed")
 fun TextView.setWindSpeed(windSpeed: Wind){
     val speed = (windSpeed.speed * 1.852).toInt()
     text = "$speed km/h"
 }
 
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setCurrentWindSpeed")
+fun TextView.setCurrentWindSpeed(windSpeed: com.example.kotlinweatherapp.network.currentweather.Wind){
+    val speed = (windSpeed.speed * 1.852).toInt()
+    text = "$speed km/h"
+}
 
 @SuppressLint("SetTextI18n")
 @BindingAdapter("setFeelsLikeTemp")
@@ -96,8 +141,24 @@ fun TextView.setFeelsLikeTemp(main: Main){
     text = "Feels like ${(main.temp - 273.15).toInt()}°"
 }
 
+@SuppressLint("SetTextI18n")
+@BindingAdapter("setCurrentFeelsLikeTemp")
+fun TextView.setCurrentFeelsLikeTemp(main: com.example.kotlinweatherapp.network.currentweather.Main){
+    text = "Feels like ${(main.temp - 273.15).toInt()}°"
+}
+
+
 @BindingAdapter("setWeatherImage")
 fun ImageView.setWeatherImage(weather: Weather){
+    setImageResource(when(weather.description){
+        "clear sky" -> R.drawable.sunny
+        "light rain" -> R.drawable.scattered_showers
+        else -> R.drawable.partly_cloudy
+    })
+}
+
+@BindingAdapter("setCurrentWeatherImage")
+fun ImageView.setCurrentWeatherImage(weather: com.example.kotlinweatherapp.network.currentweather.Weather){
     setImageResource(when(weather.description){
         "clear sky" -> R.drawable.sunny
         "light rain" -> R.drawable.scattered_showers

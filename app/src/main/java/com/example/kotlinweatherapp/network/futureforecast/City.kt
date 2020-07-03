@@ -1,4 +1,4 @@
-package com.example.kotlinweatherapp.network
+package com.example.kotlinweatherapp.network.futureforecast
 
 data class City(
     val coord: Coord?,

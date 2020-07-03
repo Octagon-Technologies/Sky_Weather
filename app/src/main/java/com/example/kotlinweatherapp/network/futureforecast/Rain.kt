@@ -1,4 +1,4 @@
-package com.example.kotlinweatherapp.network
+package com.example.kotlinweatherapp.network.futureforecast
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

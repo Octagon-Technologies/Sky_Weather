@@ -2,7 +2,7 @@
     <string name="app_name">Kotlin Weather App</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="home_label">Home</string>
+    <string name="future_label">Future</string>
     <string name="settings_label">Settings</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
@@ -37,4 +37,5 @@
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
     <string name="clouds_cover">Clouds Cover</string>
+    <string name="current">Current</string>
 </resources>

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.kotlinweatherapp.HomeFragment"
-        android:label="@string/home_label"
+        android:label="@string/future_label"
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_eachWeatherFragment"
@@ -26,6 +26,11 @@
 
         <argument
             android:name="all"
-            app:argType="com.example.kotlinweatherapp.network.All" />
+            app:argType="com.example.kotlinweatherapp.network.futureforecast.All" />
     </fragment>
+    <fragment
+        android:id="@+id/currentWeatherFragment"
+        android:name="com.example.kotlinweatherapp.CurrentWeatherFragment"
+        android:label="Current Weather"
+        tools:layout="@layout/current_weather_fragment" />
 </navigation>

@@ -6,11 +6,11 @@
     <data>
         <variable
             name="all"
-            type="com.example.kotlinweatherapp.network.All" />
+            type="com.example.kotlinweatherapp.network.futureforecast.All" />
 
         <variable
             name="weather"
-            type="com.example.kotlinweatherapp.network.Weather" />
+            type="com.example.kotlinweatherapp.network.futureforecast.Weather" />
 
     </data>
 
@@ -21,7 +21,7 @@
         android:layout_marginBottom="6dp">
 
         <ImageView
-            android:id="@+id/weather_image"
+            android:id="@+id/recycler_weather_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="260dp"
@@ -37,7 +37,7 @@
             android:contentDescription="@string/weather_image" />
 
         <TextView
-            android:id="@+id/date_text"
+            android:id="@+id/recycler_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -45,17 +45,17 @@
             android:textFontWeight="450"
             app:getDay="@{all.dt_txt}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/weather_image"
+            app:layout_constraintTop_toTopOf="@+id/recycler_weather_image"
             tools:text="Tue, 30 Jun, 15:00" />
 
         <TextView
-            android:id="@+id/weather_state_text"
+            android:id="@+id/recycler_weather_state_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/weather_image"
+            app:layout_constraintBottom_toBottomOf="@+id/recycler_weather_image"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date_text"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_date_text"
             app:setWeatherStatus="@{weather}"
             tools:text="Partly cloudy" />
 
@@ -66,11 +66,11 @@
             android:layout_marginEnd="12dp"
             android:fontFamily="sans-serif-light"
             android:textFontWeight="400"
-            app:layout_constraintBottom_toBottomOf="@+id/weather_image"
+            app:layout_constraintBottom_toBottomOf="@+id/recycler_weather_image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/weather_image"
+            app:layout_constraintTop_toTopOf="@+id/recycler_weather_image"
             app:layout_constraintVertical_bias="0.19"
-            app:setTemp="@{all.main}"
+            app:setFutureTemp="@{all.main}"
             tools:text="24°" />
 
 <!--        <TextView-->

@@ -1,6 +1,8 @@
-package com.example.kotlinweatherapp.network
+package com.example.kotlinweatherapp.network.futureforecast
 
-data class WeatherDataClass(
+
+
+data class FutureWeatherDataClass(
     val city: City,
     val cnt: Int,
     val cod: String,

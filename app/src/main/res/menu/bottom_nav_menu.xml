@@ -3,14 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/currentWeatherFragment"
+        android:title="@string/current"
+        android:icon="@drawable/ic_place_24"
+        app:showAsAction="ifRoom|withText"/>
+    <item
         android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_home_24"
-        android:title="@string/home_label"
+        android:icon="@drawable/ic_history_24"
+        android:title="@string/future_label"
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/fragmentSettings"
         android:icon="@drawable/ic_settings_24"
         android:title="@string/settings_label"
         app:showAsAction="ifRoom|withText" />
+
 
 </menu>

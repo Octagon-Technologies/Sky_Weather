@@ -6,11 +6,11 @@
     <data>
         <variable
             name="all"
-            type="com.example.kotlinweatherapp.network.All" />
+            type="com.example.kotlinweatherapp.network.futureforecast.All" />
 
         <variable
             name="weather"
-            type="com.example.kotlinweatherapp.network.Weather" />
+            type="com.example.kotlinweatherapp.network.futureforecast.Weather" />
 
     </data>
 
@@ -21,7 +21,7 @@
 
 
         <ImageView
-            android:id="@+id/weather_image"
+            android:id="@+id/each_weather_image"
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_marginTop="80dp"
@@ -33,78 +33,76 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/date_text"
+            android:id="@+id/each_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             app:getEachDayString="@{all.dt_txt}"
-            app:layout_constraintBottom_toTopOf="@+id/temp_display_text"
-            app:layout_constraintStart_toStartOf="@+id/temp_display_text"
+            app:layout_constraintBottom_toTopOf="@+id/each_temp_display_text"
+            app:layout_constraintStart_toStartOf="@+id/each_temp_display_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.6"
             tools:text="30 Jun, 15:00" />
 
         <TextView
-            android:id="@+id/temp_display_text"
+            android:id="@+id/each_temp_display_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:textSize="90sp"
-            app:setTemp="@{all.main}"
-            app:layout_constraintBottom_toBottomOf="@+id/weather_image"
+            app:setFutureTemp="@{all.main}"
+            app:layout_constraintBottom_toBottomOf="@+id/each_weather_image"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/weather_image"
+            app:layout_constraintTop_toTopOf="@+id/each_weather_image"
             tools:text="24" />
 
-<!--        TODO: Make formater for string with temp-->
         <TextView
-            android:id="@+id/feels_like_text"
+            android:id="@+id/each_feels_like_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/each_temp_display_text"
+            app:layout_constraintTop_toBottomOf="@+id/each_temp_display_text"
+            app:setFeelsLikeTemp="@{all.main}"
+            tools:text="Feels like 24°" />
+
+        <TextView
+            android:id="@+id/each_weather_status_display_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
-            app:setFeelsLikeTemp="@{all.main}"
-            app:layout_constraintStart_toStartOf="@+id/temp_display_text"
-            app:layout_constraintTop_toBottomOf="@+id/temp_display_text"
-            tools:text="Feels like 24°" />
-
-        <TextView
-            android:id="@+id/weather_status_display_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/each_weather_image"
+            app:layout_constraintStart_toStartOf="@+id/each_weather_image"
+            app:layout_constraintTop_toBottomOf="@+id/each_weather_image"
             app:setWeatherStatus="@{weather}"
-            app:layout_constraintEnd_toEndOf="@+id/weather_image"
-            app:layout_constraintStart_toStartOf="@+id/weather_image"
-            app:layout_constraintTop_toBottomOf="@+id/weather_image"
             tools:text="Mostly Sunny" />
 
         <TextView
-            android:id="@+id/celsius_plain_text"
+            android:id="@+id/each_celsius_plain_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
             android:text="@string/celsius"
             android:textSize="50sp"
-            app:layout_constraintBottom_toBottomOf="@+id/temp_display_text"
-            app:layout_constraintStart_toEndOf="@+id/temp_display_text"
-            app:layout_constraintTop_toTopOf="@+id/temp_display_text"
+            app:layout_constraintBottom_toBottomOf="@+id/each_temp_display_text"
+            app:layout_constraintStart_toEndOf="@+id/each_temp_display_text"
+            app:layout_constraintTop_toTopOf="@+id/each_temp_display_text"
             app:layout_constraintVertical_bias="0.26" />
 
         <View
-            android:id="@+id/current_divider"
+            android:id="@+id/each_divider"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="50dp"
             android:background="?android:attr/listDivider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weather_status_display_text" />
+            app:layout_constraintTop_toBottomOf="@+id/each_weather_image" />
 
         <TextView
-            android:id="@+id/current_detail_plain_text"
+            android:id="@+id/each_detail_plain_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -114,93 +112,93 @@
             android:textFontWeight="400"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/current_divider" />
+            app:layout_constraintTop_toTopOf="@+id/each_divider" />
 
         <TextView
-            android:id="@+id/humidity_plain_text"
+            android:id="@+id/each_humidity_plain_text"
             style="@style/current_details_style"
             android:layout_marginTop="40dp"
             android:text="@string/humidity"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/current_detail_plain_text"
-            app:layout_constraintTop_toBottomOf="@+id/current_detail_plain_text" />
+            app:layout_constraintStart_toStartOf="@+id/each_detail_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/each_detail_plain_text" />
 
         <TextView
-            android:id="@+id/pressure_plain_text"
+            android:id="@+id/each_pressure_plain_text"
             style="@style/current_details_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/pressure"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/humidity_plain_text"
-            app:layout_constraintTop_toBottomOf="@+id/humidity_plain_text" />
+            app:layout_constraintStart_toStartOf="@+id/each_humidity_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/each_humidity_plain_text" />
 
         <TextView
-            android:id="@+id/wind_plain_text"
+            android:id="@+id/each_wind_plain_text"
             style="@style/current_details_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/wind"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/pressure_plain_text"
-            app:layout_constraintTop_toBottomOf="@+id/pressure_plain_text" />
+            app:layout_constraintStart_toStartOf="@+id/each_pressure_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/each_pressure_plain_text" />
 
         <TextView
-            android:id="@+id/cloud_plain_text"
+            android:id="@+id/each_cloud_plain_text"
             style="@style/current_details_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="@string/clouds_cover"
-            app:layout_constraintStart_toStartOf="@+id/wind_plain_text"
-            app:layout_constraintTop_toBottomOf="@+id/wind_plain_text" />
+            app:layout_constraintStart_toStartOf="@+id/each_wind_plain_text"
+            app:layout_constraintTop_toBottomOf="@+id/each_wind_plain_text" />
 
         <TextView
-            android:id="@+id/humidity_display_text"
+            android:id="@+id/each_humidity_display_text"
             style="@style/number_current_details_style"
-            app:layout_constraintBottom_toBottomOf="@+id/humidity_plain_text"
+            app:layout_constraintBottom_toBottomOf="@+id/each_humidity_plain_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.6"
-            app:layout_constraintStart_toEndOf="@+id/humidity_plain_text"
-            app:layout_constraintTop_toTopOf="@+id/humidity_plain_text"
+            app:layout_constraintStart_toEndOf="@+id/each_humidity_plain_text"
+            app:layout_constraintTop_toTopOf="@+id/each_humidity_plain_text"
             tools:text="44%"
             app:setHumidity="@{all.main}"/>
 
         <TextView
-            android:id="@+id/pressure_display_text"
+            android:id="@+id/each_pressure_display_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/pressure_plain_text"
-            app:layout_constraintEnd_toEndOf="@+id/humidity_display_text"
-            app:layout_constraintStart_toStartOf="@+id/humidity_display_text"
-            app:layout_constraintTop_toTopOf="@+id/pressure_plain_text"
+            app:layout_constraintBottom_toBottomOf="@+id/each_pressure_plain_text"
+            app:layout_constraintEnd_toEndOf="@+id/each_humidity_display_text"
+            app:layout_constraintStart_toStartOf="@+id/each_humidity_display_text"
+            app:layout_constraintTop_toTopOf="@+id/each_pressure_plain_text"
             tools:text="1020 mBar"
             app:setPressure="@{all.main}"
             app:layout_constraintHorizontal_bias="0.6"/>
 
         <TextView
-            android:id="@+id/wind_display_text"
+            android:id="@+id/each_wind_display_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/wind_plain_text"
-            app:layout_constraintEnd_toEndOf="@+id/humidity_display_text"
-            app:layout_constraintStart_toStartOf="@+id/humidity_display_text"
-            app:layout_constraintTop_toTopOf="@+id/wind_plain_text"
+            app:layout_constraintBottom_toBottomOf="@+id/each_wind_plain_text"
+            app:layout_constraintEnd_toEndOf="@+id/each_humidity_display_text"
+            app:layout_constraintStart_toStartOf="@+id/each_humidity_display_text"
+            app:layout_constraintTop_toTopOf="@+id/each_wind_plain_text"
             app:layout_constraintVertical_bias="0.0"
             tools:text="5 km/h"
             app:setWindSpeed="@{all.wind}"
             app:layout_constraintHorizontal_bias="0.6" />
 
         <TextView
-            android:id="@+id/clouds_display_text"
+            android:id="@+id/each_clouds_display_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/cloud_plain_text"
-            app:layout_constraintEnd_toEndOf="@+id/humidity_display_text"
-            app:layout_constraintStart_toStartOf="@+id/humidity_display_text"
-            app:layout_constraintTop_toTopOf="@+id/cloud_plain_text"
+            app:layout_constraintBottom_toBottomOf="@+id/each_cloud_plain_text"
+            app:layout_constraintEnd_toEndOf="@+id/each_humidity_display_text"
+            app:layout_constraintStart_toStartOf="@+id/each_humidity_display_text"
+            app:layout_constraintTop_toTopOf="@+id/each_cloud_plain_text"
             tools:text="7 Oktas"
             app:setCloudCover="@{all.clouds}"
             app:layout_constraintHorizontal_bias="0.6" />

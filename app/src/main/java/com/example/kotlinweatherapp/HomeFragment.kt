@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.kotlinweatherapp.database.DataBase
 import com.example.kotlinweatherapp.databinding.FragmentHomeBinding
-import com.example.kotlinweatherapp.network.All
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -64,11 +63,11 @@ class HomeFragment : Fragment() {
 
         val timer = object : CountDownTimer(1000, 500){
             override fun onFinish() {
-                viewModel.getProperties()
+                viewModel.getFutureProperties()
             }
 
             override fun onTick(millisUntilFinished: Long) {
-                viewModel.getProperties()
+                viewModel.getFutureProperties()
             }
 
         }
