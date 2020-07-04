@@ -7,7 +7,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.kotlinweatherapp.database.DataBase
 
-const val SIGNATURE = "signature"
+const val SET_LOCATION = "setLocation"
+const val USE_DEVICE_LOCATION = "USE_DEVICE_LOCATION"
 
 class FragmentSettings: PreferenceFragmentCompat() {
 
@@ -21,7 +22,7 @@ class FragmentSettings: PreferenceFragmentCompat() {
 
         viewModel = ViewModelProvider(this, HomeViewModelFactory(cityDataSource)).get(HomeViewModel::class.java)
 
-        findPreference<Preference>(SIGNATURE)!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ preference, newValue ->
+        findPreference<Preference>(SET_LOCATION)!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ preference, newValue ->
             val stringValue = newValue.toString()
             viewModel.mainText.value = stringValue
             viewModel.insertCityName()
@@ -30,7 +31,14 @@ class FragmentSettings: PreferenceFragmentCompat() {
 
             true
         }
+
+
+        findPreference<Preference>(USE_DEVICE_LOCATION)!!.onPreferenceChangeListener = Preference.OnPreferenceChangeListener{ preference: Preference?, newValue: Any? ->
+            viewModel.useDeviceLocation.value = newValue as Boolean
+            viewModel.insertCityName()
+            Log.i("SettingsFrag", "Value of viewModel.useDeviceLocation.value is ${viewModel.useDeviceLocation.value} and Value of newValue is $newValue")
+            true
+        }
+
     }
-
-
 }

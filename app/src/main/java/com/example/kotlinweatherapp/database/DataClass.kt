@@ -13,5 +13,8 @@ data class DataClass(
         val name_id: Int = MAIN_VALUE,
 
         @ColumnInfo
-        val name_text: String
+        val name_text: String,
+
+        @ColumnInfo
+        val useDeviceLocation: Boolean
 )

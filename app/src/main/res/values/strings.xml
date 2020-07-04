@@ -21,7 +21,8 @@
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="your_location_title">Your location</string>
+    <string name="your_location_title">Use device location</string>
+    <string name="set_location_title">Set location</string>
     <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->

@@ -45,6 +45,8 @@ class HomeViewModel(
 
     var time: Long = 0L
 
+    var useDeviceLocation = MutableLiveData<Boolean>()
+
     private var _currentWeatherInstance = MutableLiveData<CurrentWeatherDataClass>()
     val currentWeatherInstance: LiveData<CurrentWeatherDataClass>
         get() = _currentWeatherInstance
@@ -66,7 +68,7 @@ class HomeViewModel(
     fun insertCityName(){
         uiScope.launch {
             withContext(Dispatchers.IO){
-                val data = DataClass(name_text = mainText.value!!)
+                val data = DataClass(name_text = mainText.value!!, useDeviceLocation = useDeviceLocation.value!!)
                 cityDataSource.insertString(data)
             }
         }

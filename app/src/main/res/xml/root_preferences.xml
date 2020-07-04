@@ -1,19 +1,24 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <PreferenceCategory app:title="@string/location_header">
 
-        <EditTextPreference
-            app:key="signature"
+        <SwitchPreferenceCompat
+            app:key="USE_DEVICE_LOCATION"
             app:title="@string/your_location_title"
-            app:useSimpleSummaryProvider="true" />
+            app:disableDependentsState="true"
+            app:summary="Allow the app to get your location"
+            app:defaultValue="true"
+            />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="setLocation"
+            app:title="@string/set_location_title"
+            app:defaultValue="London"
+            app:useSimpleSummaryProvider="true"
+            app:dependency="USE_DEVICE_LOCATION"/>
+
+
 
     </PreferenceCategory>
 

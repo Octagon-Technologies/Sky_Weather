@@ -80,20 +80,22 @@ class CurrentWeatherFragment: Fragment() {
         val timer = object : CountDownTimer(1000, 500){
             override fun onFinish() {
                 viewModel.getCurrentProperties()
+                currentInstance()
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 viewModel.getCurrentProperties()
+                currentInstance()
             }
         }
 
         timer.start()
 
-        currentInstance()
 
-        viewModel.currentWeatherInstance.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            currentInstance()
-        })
+
+//        viewModel.currentWeatherInstance.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+//            currentInstance()
+//        })
 
         if(viewModel.currentWeatherInstance.value != null){
             Log.i("CurrentWeatherFrag", "currentWeatherInstance is not null")
