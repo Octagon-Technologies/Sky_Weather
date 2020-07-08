@@ -13,6 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.databinding.FragmentHomeBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -32,17 +35,10 @@ class HomeFragment : Fragment() {
         val dataBase = WeatherDataBase.getInstance(application)
 
         val viewModel = ViewModelProvider(this, HomeViewModelFactory(dataBase!!)).get(HomeViewModel::class.java)
+        val uiScope = CoroutineScope(Dispatchers.Main)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-
-        fun ifErrorExistsIsTrue(){
-            binding.listRecyclerView.visibility = View.GONE
-        }
-
-        fun ifErrorExistsIsFalse(){
-            binding.listRecyclerView.visibility = View.VISIBLE
-        }
 
         viewModel.globalAll.observe(viewLifecycleOwner, Observer {
             if (null != it){
@@ -57,16 +53,28 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.doesErrorExist.observe(viewLifecycleOwner, Observer {
-            if (it == true) {ifErrorExistsIsTrue()}
-            else {ifErrorExistsIsFalse()}
+            if (it == true) {
+                binding.listRecyclerView.visibility = View.GONE
+            }
+            else {
+                binding.listRecyclerView.visibility = View.VISIBLE
+            }
         })
+
+
 
         val timer = object : CountDownTimer(1000, 500){
             override fun onFinish() {
+                uiScope.launch {
+                    viewModel.repo.refreshData()
+                }
                 viewModel.getFutureProperties()
             }
 
             override fun onTick(millisUntilFinished: Long) {
+                uiScope.launch {
+                    viewModel.repo.refreshData()
+                }
                 viewModel.getFutureProperties()
             }
 

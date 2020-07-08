@@ -1,13 +1,12 @@
 package com.example.kotlinweatherapp.network
 
+import android.util.Log
 import androidx.room.TypeConverter
 import com.example.kotlinweatherapp.network.currentweather.CurrentWeatherDataClass
-import com.example.kotlinweatherapp.network.futureforecast.All
 import com.example.kotlinweatherapp.network.futureforecast.FutureWeatherDataClass
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import java.util.*
 
 /*
 //fun CurrentWeatherDataClass.asCurrentDataBaseClass(it: CurrentWeatherDataClass): CurrentDatabaseClass{
@@ -170,28 +169,38 @@ class GithubTypeConverters {
         @TypeConverter
         fun stringToAllList(data: String?): CurrentWeatherDataClass? {
             if (data == null) {
+                Log.i("TypeConverters", "currentData is null")
                 return null
             }
             val listType: Type = object : TypeToken<CurrentWeatherDataClass?>() {}.type
+
+            Log.i("TypeConverters", "Current country is ${gson.fromJson<CurrentWeatherDataClass?>(data, listType)?.sys?.country}")
+
             return gson.fromJson(data, listType)
         }
 
         @TypeConverter
         fun currentWeatherDataClassToString(currentWeatherDataClass: CurrentWeatherDataClass): String {
+//            Log.i("TypeConverters", gson.toJson(currentWeatherDataClass))
             return gson.toJson(currentWeatherDataClass)
         }
 
         @TypeConverter
         fun stringToFutureWeatherDataClass(data: String?): FutureWeatherDataClass? {
             if (data == null) {
+                Log.i("TypeConverters", "futureData is null")
                 return null
             }
             val listType: Type = object : TypeToken<FutureWeatherDataClass?>() {}.type
+
+            Log.i("TypeConverters", "Future Country is ${gson.fromJson<FutureWeatherDataClass>(data, listType).city.country}")
+
             return gson.fromJson(data, listType)
         }
 
         @TypeConverter
         fun futureWeatherDataClassToString(futureWeatherDataClass: FutureWeatherDataClass): String {
+//            Log.i("TypeConverter", gson.toJson(futureWeatherDataClass))
             return gson.toJson(futureWeatherDataClass)
         }
     }

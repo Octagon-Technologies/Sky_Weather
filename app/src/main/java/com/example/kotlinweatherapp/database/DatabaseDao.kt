@@ -1,6 +1,5 @@
 package com.example.kotlinweatherapp.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -20,8 +19,8 @@ interface CurrentWeatherDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCurrentDataClass(currentDatabaseClass: CurrentDatabaseClass)
 
-    @Query("SELECT * FROM currentWeatherDataClass")
-    fun getCurrentDataClass(): LiveData<CurrentDatabaseClass>
+    @Query("SELECT * FROM currentWeatherDataClass WHERE current_weather_id = :current_id")
+    fun getCurrentDataClass(current_id: Int):CurrentDatabaseClass
 
 }
 
@@ -30,6 +29,6 @@ interface FutureWeatherDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFutureAllClass(allClass: FutureDatabaseClass)
 
-    @Query("SELECT * FROM futureWeatherDataClass")
-    fun getFutureDataClass(): LiveData<FutureDatabaseClass>
+    @Query("SELECT * FROM futureWeatherDataClass WHERE current_weather_id = :future_id")
+    fun getFutureDataClass(future_id: Int): FutureDatabaseClass
 }

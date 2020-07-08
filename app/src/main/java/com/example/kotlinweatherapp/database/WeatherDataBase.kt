@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import com.example.kotlinweatherapp.network.GithubTypeConverters
 
-@Database(entities = [DataClass::class, CurrentDatabaseClass::class, FutureDatabaseClass::class], version = 7, exportSchema = false)
+@Database(entities = [DataClass::class, CurrentDatabaseClass::class, FutureDatabaseClass::class], version = 8, exportSchema = false)
 @TypeConverters(value = [(GithubTypeConverters::class)])
 abstract class WeatherDataBase: RoomDatabase(){
 

@@ -37,6 +37,7 @@ data class FutureDatabaseClass(
         @PrimaryKey(autoGenerate = false)
         val current_weather_id: Int = FUTURE_WEATHER_VALUE,
 
+        @ColumnInfo
         val future_weather: FutureWeatherDataClass
 
 ////        val city: City,
@@ -97,8 +98,9 @@ data class CurrentDatabaseClass(
         @PrimaryKey(autoGenerate = false)
         val current_weather_id: Int = CURRENT_WEATHER_VALUE,
 
+        @ColumnInfo
         val current_weather: CurrentWeatherDataClass
-//
+
 //        val base: String,
 //
 ////        val clouds: Clouds,

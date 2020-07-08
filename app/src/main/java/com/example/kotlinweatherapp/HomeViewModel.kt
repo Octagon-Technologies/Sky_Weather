@@ -13,18 +13,21 @@ import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.network.CurrentWeatherItem
 import com.example.kotlinweatherapp.network.currentweather.CurrentWeatherDataClass
 import com.example.kotlinweatherapp.network.futureforecast.FutureWeatherDataClass
+import com.example.kotlinweatherapp.repository.WeatherRepo
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import java.net.UnknownHostException
 
-var cityName = "ChelixCity"
+var cityName = "Hello"
 
 enum class Status{LOADING, NO_INTERNET, LOCATION_ERROR, DONE}
 
 class HomeViewModel(
     private val weatherDataBase: WeatherDataBase
 ): ViewModel() {
-    private lateinit var futureListProperties: FutureWeatherDataClass
+   private var _futureListProperties = MutableLiveData<FutureWeatherDataClass?>()
+    val futureListProperties: LiveData<FutureWeatherDataClass?>
+        get() = _futureListProperties
 
     var mainText = MutableLiveData<String>()
     var liveCityName = MutableLiveData<String>()
@@ -45,8 +48,6 @@ class HomeViewModel(
     val globalAll: LiveData<All>
         get() = _globalAll
 
-    var time: Long = 0L
-
     var useDeviceLocation = MutableLiveData<Boolean>()
 
     private var _currentWeatherInstance = MutableLiveData<CurrentWeatherDataClass>()
@@ -56,10 +57,12 @@ class HomeViewModel(
     private val viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
+    val repo = WeatherRepo(weatherDataBase)
+
     init {
         uiScope.launch {
             getData()
-            time = System.currentTimeMillis()
+            repo.refreshData()
             getCurrentProperties()
             getFutureProperties()
         }
@@ -100,26 +103,22 @@ class HomeViewModel(
     fun getFutureProperties() {
         uiScope.launch {
 
+            repo.refreshData()
+
             _status.value = Status.LOADING
             Log.i("ViewModelReal", "cityName is $cityName")
-            val getDeferredFutureProperties = FutureWeatherItem.futureRetrofitService.getFutureWeatherAsync(name = cityName)
 
             try {
-                futureListProperties = getDeferredFutureProperties.await()
-
-                val futureDataBase = FutureDatabaseClass(future_weather = futureListProperties)
-                withContext(Dispatchers.IO) {
-                    weatherDataBase.futureDao.insertFutureAllClass(futureDataBase)
-                }
+                _futureListProperties.value = repo.futureWeather?.future_weather
 
                 Log.i("ViewModel", "Add futureDataClass to Room successfully")
 
                 _doesErrorExist.value = false
-                _all.value = futureListProperties.list
+                _all.value = _futureListProperties.value?.list
                 _status.value = Status.DONE
 
-                liveCityName.value = futureListProperties.city.name
-                Log.i("ViewModelReal", "liveCityName value = ${liveCityName.value} and listProperties.city.name value = ${futureListProperties.city.name}")
+                liveCityName.value = futureListProperties.value?.city?.name
+                Log.i("ViewModelReal", "liveCityName value = ${liveCityName.value} and listProperties.city.name value = ${futureListProperties.value?.city?.name}")
             }
             catch (noInternetError: UnknownHostException){
                 Log.e("ViewModelReal", "$noInternetError")
@@ -138,16 +137,12 @@ class HomeViewModel(
     fun getCurrentProperties(){
         uiScope.launch {
             _status.value = Status.LOADING
-            Log.i("ViewModelCurrent", "cityName is $cityName")
-            val getDeferredFutureProperties =
-                CurrentWeatherItem.currentRetrofitService.getCurrentWeatherAsync(name = cityName)
 
-            try {
-                _currentWeatherInstance.value = getDeferredFutureProperties.await()
-                val currentDatabase = CurrentDatabaseClass(current_weather = _currentWeatherInstance.value!!)
-                withContext(Dispatchers.IO) {
-                    weatherDataBase.currentDao.insertCurrentDataClass(currentDatabase)
-                }
+            repo.refreshData()
+
+
+            try{
+                _currentWeatherInstance.value = repo.currentWeather?.current_weather
                 Log.i("ViewModel", "Add currentDataClass to Room successfully")
                 _status.value = Status.DONE
             }
