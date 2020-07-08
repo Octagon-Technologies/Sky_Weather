@@ -1,5 +1,8 @@
 package com.example.kotlinweatherapp.network.currentweather
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class CurrentWeatherDataClass(
     val base: String,
     val clouds: Clouds,
@@ -15,3 +18,4 @@ data class CurrentWeatherDataClass(
     val weather: List<Weather>,
     val wind: Wind
 )
+

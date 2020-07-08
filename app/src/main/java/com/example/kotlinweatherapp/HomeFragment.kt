@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.example.kotlinweatherapp.database.DataBase
+import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.databinding.FragmentHomeBinding
 
 /**
@@ -29,9 +29,9 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
         val application = requireNotNull(this.activity).application
-        val cityDataSource = DataBase.getInstance(application)!!.databaseDao
+        val dataBase = WeatherDataBase.getInstance(application)
 
-        val viewModel = ViewModelProvider(this, HomeViewModelFactory(cityDataSource = cityDataSource)).get(HomeViewModel::class.java)
+        val viewModel = ViewModelProvider(this, HomeViewModelFactory(dataBase!!)).get(HomeViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

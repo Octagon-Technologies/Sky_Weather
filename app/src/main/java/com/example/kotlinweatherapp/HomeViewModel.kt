@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlinweatherapp.database.CurrentDatabaseClass
 import com.example.kotlinweatherapp.network.futureforecast.All
 import com.example.kotlinweatherapp.network.FutureWeatherItem
 import com.example.kotlinweatherapp.database.DataClass
-import com.example.kotlinweatherapp.database.DatabaseDao
+import com.example.kotlinweatherapp.database.FutureDatabaseClass
+import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.network.CurrentWeatherItem
 import com.example.kotlinweatherapp.network.currentweather.CurrentWeatherDataClass
 import com.example.kotlinweatherapp.network.futureforecast.FutureWeatherDataClass
@@ -20,7 +22,7 @@ var cityName = "ChelixCity"
 enum class Status{LOADING, NO_INTERNET, LOCATION_ERROR, DONE}
 
 class HomeViewModel(
-    private val cityDataSource: DatabaseDao
+    private val weatherDataBase: WeatherDataBase
 ): ViewModel() {
     private lateinit var futureListProperties: FutureWeatherDataClass
 
@@ -68,8 +70,8 @@ class HomeViewModel(
     fun insertCityName(){
         uiScope.launch {
             withContext(Dispatchers.IO){
-                val data = DataClass(name_text = mainText.value!!, useDeviceLocation = useDeviceLocation.value!!)
-                cityDataSource.insertString(data)
+                val data = DataClass(name_text = mainText.value, useDeviceLocation = useDeviceLocation.value)
+                weatherDataBase.databaseDao.insertString(data)
             }
         }
     }
@@ -83,7 +85,7 @@ class HomeViewModel(
 
     private suspend fun suspendGetData(): String{
         return withContext(Dispatchers.IO){
-            cityDataSource.getFormerString()?.name_text ?: "Hello"
+            weatherDataBase.databaseDao.getFormerString()?.name_text ?: "Hello"
         }
     }
 
@@ -104,6 +106,14 @@ class HomeViewModel(
 
             try {
                 futureListProperties = getDeferredFutureProperties.await()
+
+                val futureDataBase = FutureDatabaseClass(future_weather = futureListProperties)
+                withContext(Dispatchers.IO) {
+                    weatherDataBase.futureDao.insertFutureAllClass(futureDataBase)
+                }
+
+                Log.i("ViewModel", "Add futureDataClass to Room successfully")
+
                 _doesErrorExist.value = false
                 _all.value = futureListProperties.list
                 _status.value = Status.DONE
@@ -134,6 +144,11 @@ class HomeViewModel(
 
             try {
                 _currentWeatherInstance.value = getDeferredFutureProperties.await()
+                val currentDatabase = CurrentDatabaseClass(current_weather = _currentWeatherInstance.value!!)
+                withContext(Dispatchers.IO) {
+                    weatherDataBase.currentDao.insertCurrentDataClass(currentDatabase)
+                }
+                Log.i("ViewModel", "Add currentDataClass to Room successfully")
                 _status.value = Status.DONE
             }
             catch (noInternetError: UnknownHostException){

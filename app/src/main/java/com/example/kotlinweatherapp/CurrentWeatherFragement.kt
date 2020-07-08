@@ -1,5 +1,6 @@
 package com.example.kotlinweatherapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -9,7 +10,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.kotlinweatherapp.database.DataBase
+import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.databinding.CurrentWeatherFragmentBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,9 +28,11 @@ class CurrentWeatherFragment: Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.current_weather_fragment, container, false)
 
         val application = requireNotNull(this.activity).application
-        val cityDatabaseDao = DataBase.getInstance(application)!!.databaseDao
-        viewModel = ViewModelProvider(this, HomeViewModelFactory(cityDatabaseDao)).get(HomeViewModel::class.java)
+        val dataBase = WeatherDataBase.getInstance(application)
 
+        viewModel = ViewModelProvider(this, HomeViewModelFactory(dataBase!!)).get(HomeViewModel::class.java)
+
+        @SuppressLint("SetTextI18n")
         fun currentInstance() {
             Log.i("CurrentFrag", "In current Instance before viewModel.getCurrentProperties")
             viewModel.getCurrentProperties()

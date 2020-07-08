@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.kotlinweatherapp.database.DataBase
+import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.databinding.EachWeatherFragmentBinding
 
 class EachWeatherFragment : Fragment() {
@@ -22,9 +22,9 @@ class EachWeatherFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.each_weather_fragment, container, false)
 
         val application = requireNotNull(this.activity).application
-        val cityDataSource = DataBase.getInstance(application)!!.databaseDao
+        val dataBase = WeatherDataBase.getInstance(application)
 
-        viewModel = ViewModelProvider(this, HomeViewModelFactory(cityDataSource = cityDataSource)).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this, HomeViewModelFactory(dataBase!!)).get(HomeViewModel::class.java)
 
 
         val all = EachWeatherFragmentArgs.fromBundle(requireArguments()).all

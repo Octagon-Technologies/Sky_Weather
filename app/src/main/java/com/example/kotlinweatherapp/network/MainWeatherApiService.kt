@@ -59,3 +59,4 @@ object CurrentWeatherItem{
         retrofit.create(CurrentWeatherApiService::class.java)
     }
 }
+
