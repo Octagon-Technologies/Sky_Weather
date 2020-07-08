@@ -72,18 +72,19 @@ class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
                 Log.i("WeatherRepo", "Value of currentListProperties temp is ${currentDatabaseClass.current_weather.main.temp}")
                 Log.i("WeatherRepo", "Inserted CurrentDataClass in database")
 
+                Log.i("WeatherRepo", "Value of currentWeather city in refreshData is ${currentWeather?.current_weather?.sys?.country}")
+                Log.i("WeatherRepo", "Value of futureWeather city in refreshData is ${futureWeather?.future_weather?.city}")
+
+            } catch (t: Throwable) {
+                Log.i("WeatherRepo", "$t")
+            }
+            finally{
                 currentWeather = localGetCurrentDataClass()
                 futureWeather = localGetFutureDataClass()
 
                 currentWeather = weatherDataBase.currentDao.getCurrentDataClass(
                     CURRENT_WEATHER_VALUE)
                 futureWeather = weatherDataBase.futureDao.getFutureDataClass(FUTURE_WEATHER_VALUE)
-
-                Log.i("WeatherRepo", "Value of currentWeather city in refreshData is ${currentWeather?.current_weather?.sys?.country}")
-                Log.i("WeatherRepo", "Value of futureWeather city in refreshData is ${futureWeather?.future_weather?.city}")
-
-            } catch (t: Throwable) {
-                Log.i("WeatherRepo", "$t")
             }
         }
     }

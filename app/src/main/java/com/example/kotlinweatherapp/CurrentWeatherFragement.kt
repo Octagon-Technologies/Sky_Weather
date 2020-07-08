@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.databinding.CurrentWeatherFragmentBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +32,8 @@ class CurrentWeatherFragment: Fragment() {
 
         val application = requireNotNull(this.activity).application
         val dataBase = WeatherDataBase.getInstance(application)
+
+        val uiScope = CoroutineScope(Dispatchers.Main)
 
         viewModel = ViewModelProvider(this, HomeViewModelFactory(dataBase!!)).get(HomeViewModel::class.java)
 
@@ -82,11 +87,17 @@ class CurrentWeatherFragment: Fragment() {
 
         val timer = object : CountDownTimer(1000, 500){
             override fun onFinish() {
+                uiScope.launch {
+                    viewModel.repo.refreshData()
+                }
                 viewModel.getCurrentProperties()
                 currentInstance()
             }
 
             override fun onTick(millisUntilFinished: Long) {
+                uiScope.launch {
+                    viewModel.repo.refreshData()
+                }
                 viewModel.getCurrentProperties()
                 currentInstance()
             }
