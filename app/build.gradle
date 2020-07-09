@@ -91,4 +91,10 @@ dependencies {
 
     //Prefrences
     implementation "androidx.preference:preference:1.1.1"
+
+    // Joda time library for dealing with time
+    implementation "joda-time:joda-time:$version_joda"
+
+    // WorkManager
+    implementation "android.arch.work:work-runtime-ktx:$version_work"
 }

@@ -28,7 +28,7 @@ class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
     }
 
     suspend fun suspendlocalGetCurrentDataClass(): CurrentDatabaseClass {
-        Log.i("WeatherRepo", "Value of current temp is ${currentWeather?.current_weather?.main?.temp}")
+        Log.i("WeatherRepo", "Value of current country is ${currentWeather?.current_weather?.sys?.country}")
         return withContext(Dispatchers.IO) {
             weatherDataBase.currentDao.getCurrentDataClass(CURRENT_WEATHER_VALUE)
         }
@@ -71,9 +71,6 @@ class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
                 weatherDataBase.currentDao.insertCurrentDataClass(currentDatabaseClass)
                 Log.i("WeatherRepo", "Value of currentListProperties temp is ${currentDatabaseClass.current_weather.main.temp}")
                 Log.i("WeatherRepo", "Inserted CurrentDataClass in database")
-
-                Log.i("WeatherRepo", "Value of currentWeather city in refreshData is ${currentWeather?.current_weather?.sys?.country}")
-                Log.i("WeatherRepo", "Value of futureWeather city in refreshData is ${futureWeather?.future_weather?.city}")
 
             } catch (t: Throwable) {
                 Log.i("WeatherRepo", "$t")
