@@ -59,16 +59,7 @@ class HomeViewModel(
 
     val repo = WeatherRepo(weatherDataBase)
 
-    init {
-        uiScope.launch {
-            getData()
-            repo.refreshData()
-            getCurrentProperties()
-            getFutureProperties()
-        }
-        Log.i("ViewModelReal", "mainText value is ${mainText.value} and init called")
-        Log.i("ViewModelReal", "livecityname value is ${liveCityName.value} and init called")
-    }
+
 
     fun insertCityName(){
         uiScope.launch {
@@ -136,15 +127,16 @@ class HomeViewModel(
 
     fun getCurrentProperties(){
         uiScope.launch {
-            _status.value = Status.LOADING
-
             repo.refreshData()
 
+            _status.value = Status.LOADING
 
             try{
                 _currentWeatherInstance.value = repo.currentWeather?.current_weather
+                liveCityName.value = _currentWeatherInstance.value?.sys?.country
                 Log.i("ViewModel", "Add currentDataClass to Room successfully")
                 _status.value = Status.DONE
+                Log.i("ViewModelReal", "currentLiveCityName value = ${liveCityName.value}")
             }
             catch (noInternetError: UnknownHostException){
                 _status.value = Status.NO_INTERNET
@@ -154,7 +146,6 @@ class HomeViewModel(
                 _status.value = Status.LOCATION_ERROR
             }
             catch(t: Throwable){
-                Log.e("ViewModelCurrent", "Value of cityName is $cityName")
                 Log.e("ViewModelCurrent", "$t")
             }
         }

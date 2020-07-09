@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
 
-    val uiScope = CoroutineScope(Dispatchers.Main)
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     var currentWeather = localGetCurrentDataClass()
     var futureWeather = localGetFutureDataClass()
@@ -28,7 +28,6 @@ class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
     }
 
     suspend fun suspendlocalGetCurrentDataClass(): CurrentDatabaseClass {
-        Log.i("WeatherRepo", "Value of current country is ${currentWeather?.current_weather?.sys?.country}")
         return withContext(Dispatchers.IO) {
             weatherDataBase.currentDao.getCurrentDataClass(CURRENT_WEATHER_VALUE)
         }
@@ -45,7 +44,6 @@ class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
     }
 
     suspend fun suspendlocalGetFutureDataClass(): FutureDatabaseClass {
-        Log.i("WeatherRepo", "Value of future country is ${futureWeather?.future_weather?.city?.country}")
         return withContext(Dispatchers.IO){ weatherDataBase.futureDao.getFutureDataClass(
             FUTURE_WEATHER_VALUE) }
     }
@@ -63,25 +61,25 @@ class WeatherRepo(private val weatherDataBase: WeatherDataBase) {
                 val futureListProperties = getDeferredFutureProperties.await()
                 val futureDatabaseClass = FutureDatabaseClass(future_weather = futureListProperties)
                 weatherDataBase.futureDao.insertFutureAllClass(futureDatabaseClass)
-                Log.i("WeatherRepo", "Value of futureListProperties country is ${futureDatabaseClass.future_weather.city.country}")
+                Log.i("WeatherRepo", "Value of futureListProperties city is ${futureDatabaseClass.future_weather.city.name}")
                 Log.i("WeatherRepo", "Inserted FutureAllClass in database")
 
                 val currentListProperties = getDeferredCurrentProperties.await()
                 val currentDatabaseClass = CurrentDatabaseClass(current_weather = currentListProperties)
                 weatherDataBase.currentDao.insertCurrentDataClass(currentDatabaseClass)
-                Log.i("WeatherRepo", "Value of currentListProperties temp is ${currentDatabaseClass.current_weather.main.temp}")
+                Log.i("WeatherRepo", "Value of currentListProperties city is ${currentDatabaseClass.current_weather.name}")
                 Log.i("WeatherRepo", "Inserted CurrentDataClass in database")
 
             } catch (t: Throwable) {
                 Log.i("WeatherRepo", "$t")
             }
             finally{
-                currentWeather = localGetCurrentDataClass()
-                futureWeather = localGetFutureDataClass()
-
                 currentWeather = weatherDataBase.currentDao.getCurrentDataClass(
                     CURRENT_WEATHER_VALUE)
                 futureWeather = weatherDataBase.futureDao.getFutureDataClass(FUTURE_WEATHER_VALUE)
+
+                Log.i("WeatherRepo", "Value of current city is ${currentWeather?.current_weather?.name}")
+                Log.i("WeatherRepo", "Value of future city is ${futureWeather?.future_weather?.city?.name }")
             }
         }
     }

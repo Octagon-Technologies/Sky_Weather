@@ -85,7 +85,7 @@ class CurrentWeatherFragment: Fragment() {
             }
         }
 
-        val timer = object : CountDownTimer(1200, 200){
+        val timer = object : CountDownTimer(4000, 1000){
             override fun onFinish() {
                 uiScope.launch {
                     viewModel.repo.refreshData()
