@@ -6,6 +6,7 @@ import com.example.kotlinweatherapp.work.RefreshDataWork
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class MainApplication: Application() {
@@ -13,6 +14,7 @@ class MainApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Timber.plant(Timber.DebugTree())
         delayInit()
     }
 
@@ -25,10 +27,10 @@ class MainApplication: Application() {
     private fun setRecurringWork() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true)
+            .setRequiresBatteryNotLow(false)
             .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(15, TimeUnit.MINUTES)
+        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(30, TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
 

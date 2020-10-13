@@ -3,19 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/currentWeatherFragment"
-        android:title="@string/current"
-        android:icon="@drawable/ic_place_24"
-        app:showAsAction="ifRoom|withText"/>
-    <item
-        android:id="@+id/homeFragment"
-        android:icon="@drawable/ic_history_24"
-        android:title="@string/future_label"
+        android:id="@+id/currentForecastFragment"
+        android:icon="@drawable/today"
+        android:title="Today"
+        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
+        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/fragmentSettings"
-        android:icon="@drawable/ic_settings_24"
-        android:title="@string/settings_label"
+        android:id="@+id/hourlyForecastFragment"
+        android:icon="@drawable/clock"
+        android:title="Hourly"
+        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
+        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/dailyForecast"
+        android:icon="@drawable/daily_calender"
+        android:title="Daily"
+        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
+        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/radarFragment"
+        android:icon="@drawable/radar"
+        android:title="Radar"
+        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
+        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
         app:showAsAction="ifRoom|withText" />
 
 

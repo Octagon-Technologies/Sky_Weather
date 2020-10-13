@@ -3,34 +3,50 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/currentWeatherFragment">
+    app:startDestination="@id/currentForecastFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.example.kotlinweatherapp.HomeFragment"
-        android:label="@string/future_label"
-        tools:layout="@layout/fragment_home">
+        android:id="@+id/currentForecastFragment"
+        android:name="com.example.kotlinweatherapp.ui.current_forecast.CurrentForecastFragment"
+        android:label="CurrentForecastFragment"
+        tools:layout="@layout/current_forecast_fragment">
         <action
-            android:id="@+id/action_homeFragment_to_eachWeatherFragment"
-            app:destination="@id/eachWeatherFragment" />
+            android:id="@+id/action_currentForecastFragment_to_findLocationFragment"
+            app:destination="@id/findLocationFragment" />
+        <action
+            android:id="@+id/action_currentForecastFragment_to_allergyOutlookFragment"
+            app:destination="@id/allergyOutlookFragment" />
+        <action
+            android:id="@+id/action_currentForecastFragment_to_seeMoreFragment"
+            app:destination="@id/seeMoreFragment" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentSettings"
-        android:name="com.example.kotlinweatherapp.FragmentSettings"
-        android:label="@string/action_settings" />
-    <fragment
-        android:id="@+id/eachWeatherFragment"
-        android:name="com.example.kotlinweatherapp.EachWeatherFragment"
-        android:label="Weather Details"
-        tools:layout="@layout/each_weather_fragment">
-
-        <argument
-            android:name="all"
-            app:argType="com.example.kotlinweatherapp.network.futureforecast.All" />
+        android:id="@+id/findLocationFragment"
+        android:name="com.example.kotlinweatherapp.ui.find_location.FindLocationFragment"
+        android:label="FindLocationFragment"
+        tools:layout="@layout/find_location_fragment">
+        <action
+            android:id="@+id/action_findLocationFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
     </fragment>
     <fragment
-        android:id="@+id/currentWeatherFragment"
-        android:name="com.example.kotlinweatherapp.CurrentWeatherFragment"
-        android:label="Current Weather"
-        tools:layout="@layout/current_weather_fragment" />
+        android:id="@+id/searchLocationFragment"
+        android:name="com.example.kotlinweatherapp.ui.search_location.SearchLocationFragment"
+        android:label="SearchLocationFragment"
+        tools:layout="@layout/search_location_fragment"/>
+    <fragment
+        android:id="@+id/allergyOutlookFragment"
+        android:name="com.example.kotlinweatherapp.ui.allergy_outlook.AllergyOutlookFragment"
+        android:label="AllergyOutlookFragment"
+        tools:layout="@layout/allergy_outlook_fragment"/>
+    <fragment
+        android:id="@+id/seeMoreFragment"
+        android:name="com.example.kotlinweatherapp.ui.see_more_current.SeeMoreFragment"
+        android:label="SeeMoreFragment"
+        tools:layout="@layout/see_more_fragment"/>
+    <fragment
+        android:id="@+id/hourlyForecastFragment"
+        android:name="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastFragment"
+        android:label="HourlyForecastFragment"
+        tools:layout="@layout/hourly_forecast_fragment"/>
 </navigation>

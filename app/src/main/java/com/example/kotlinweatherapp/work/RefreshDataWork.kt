@@ -1,12 +1,11 @@
 package com.example.kotlinweatherapp.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.example.kotlinweatherapp.database.WeatherDataBase
 import com.example.kotlinweatherapp.repository.WeatherRepo
 import retrofit2.HttpException
+import timber.log.Timber
 
 class RefreshDataWork(appContext: Context, params: WorkerParameters): CoroutineWorker(appContext, params) {
 
@@ -15,16 +14,14 @@ class RefreshDataWork(appContext: Context, params: WorkerParameters): CoroutineW
     }
 
     override suspend fun doWork(): Result {
-            val dataBase = WeatherDataBase.getInstance(applicationContext)
-            val videoRepo = WeatherRepo(dataBase!!)
-
+            val repo = WeatherRepo(applicationContext)
 
             return try {
-                Log.i("RefreshWork", "doWork: Work is done and successfully")
-                videoRepo.refreshData()
+                repo.refreshData()
+                Timber.d( "doWork: Work is done and successfully")
                 Result.success()
             } catch (httpException: HttpException) {
-                Log.i("RefreshWork", "doWork: Work is done and unsuccessful")
+                Timber.d( "doWork: Work failed")
                 Result.retry()
         }
     }

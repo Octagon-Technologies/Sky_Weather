@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.lifecycle.LiveData"/>
+        <import type="java.util.ArrayList"/>
+        <import type="com.example.kotlinweatherapp.network.location.Location"/>
+
+        <variable
+            name="locationItems"
+            type="LiveData&lt;ArrayList&lt;Location&gt;&gt;" />
+
+        <variable
+            name="navController"
+            type="androidx.navigation.NavController"/>
+
+        <variable
+            name="findLocationViewModel"
+            type="com.example.kotlinweatherapp.ui.find_location.FindLocationViewModel" />
+
+        <variable
+            name="fragmentLifecycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:theme="@style/AppTheme.BlackTextColor"
+        tools:context=".ui.search_location.SearchLocationFragment">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/top_constraint_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/line_grey"
+            android:paddingBottom="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <EditText
+                android:id="@+id/search_query"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/find_location_background"
+                android:drawableStart="@drawable/ic_search_black"
+                android:drawableLeft="@drawable/ic_search_black"
+                android:drawablePadding="@dimen/_10sdp"
+                android:inputType="text"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/dark_black"
+                android:textColorHint="@color/dark_black"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Hawa" />
+
+            <Button
+                android:id="@+id/cancel_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/cancel_plain_text"
+                android:textAllCaps="false"
+                cancelInSearchLocation="@{navController}"
+                app:layout_constraintBottom_toBottomOf="@+id/search_query"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/search_query"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/use_current_location_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@android:color/transparent"
+                getNavController="@{navController}"
+                getFindLocationViewModel="@{findLocationViewModel}"
+                getLifecycleOwner="@{fragmentLifecycleOwner}"
+                android:drawableStart="@drawable/ic_check_circle_black"
+                android:drawableLeft="@drawable/ic_check_circle_black"
+                android:drawablePadding="@dimen/_4sdp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="@string/use_current_location_plain_text"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/_12ssp"
+                app:layout_constraintStart_toStartOf="@+id/search_query"
+                app:layout_constraintTop_toBottomOf="@+id/search_query" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_location_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            addLocationSuggestionsToRecyclerView="@{locationItems}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_constraint_layout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
