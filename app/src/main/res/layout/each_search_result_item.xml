@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="locationItem"
+            type="com.example.kotlinweatherapp.network.location.LocationItem" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:theme="@style/AppTheme.BlackTextColor">
+
+        <TextView
+            android:id="@+id/search_city_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_12ssp"
+            getSearchResultCityName="@{locationItem.address}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Lagos, Lagos, NG" />
+
+        <ImageView
+            android:id="@+id/add_to_favourites_btn"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            addToFavouriteIcon="@{locationItem}"
+            app:layout_constraintBottom_toBottomOf="@+id/search_city_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/search_city_name"
+            app:srcCompat="@drawable/ic_add_circle_outline_black"
+            android:contentDescription="@string/add_city_to_favourites_plain_text" />
+
+        <View
+            android:id="@+id/bottom_divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/line_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_to_favourites_btn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

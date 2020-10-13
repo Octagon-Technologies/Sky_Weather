@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <!--        <variable-->
+        <!--            name="fullHourlyForecast"-->
+        <!--            type="java.util.ArrayList&lt;com.example.kotlinweatherapp.network.hourly_forecast.EachHourlyForecast&gt;" />-->
+
+        <variable
+            name="viewModel"
+            type="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/current_forecast_night_time"
+            android:theme="@style/AppTheme.WhiteTextColor"
+            tools:context=".ui.hourly_forecast.HourlyForecastFragment">
+
+
+            <TextView
+                android:id="@+id/top_day_text"
+                formatIsoDate="@{viewModel.hourlyForecast.get(0)}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_16ssp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Tuesday" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/hourly_recycler_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                app:getHourlyForecastRecyclerView="@{viewModel.hourlyForecast}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_day_text" />
+
+            <TextView
+                android:id="@+id/temp_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:fontFamily="@font/coda"
+                android:text="@string/hourly_forecast_temp_unit_C"
+                app:layout_constraintBottom_toBottomOf="@+id/top_day_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/top_day_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--        <include-->
+<!--            layout="@layout/selected_hourly_forecast_layout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

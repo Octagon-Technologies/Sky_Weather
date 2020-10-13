@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.kotlinweatherapp.ui.current_forecast.CurrentForecastViewModel" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/current_forecast_night_time"
+            android:paddingBottom="@dimen/_20sdp"
+            android:theme="@style/AppTheme.WhiteTextColor"
+            tools:context=".ui.current_forecast.CurrentForecastFragment">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/main_circle_image"
+                android:layout_width="@dimen/_220sdp"
+                android:layout_height="@dimen/_220sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:src="@color/current_forecast_night_time"
+                app:civ_border_color="@color/main_image_color_night_time"
+                app:civ_border_width="@dimen/_16sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/main_circle_image_divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="42dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_circle_image" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+
+                <TextView
+                    android:id="@+id/afternoon_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AFTERNOON"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/_11ssp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/afternoon_weather_image"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/afternoon_temp_text"
+                    app:srcCompat="@drawable/raining_clouds" />
+
+                <TextView
+                    android:id="@+id/afternoon_temp_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/afternoon_plain_text"
+                    android:text="27°" />
+
+                <TextView
+                    android:id="@+id/afternoon_realfeel_display_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/afternoon_temp_text"
+                    android:text="RealFeel 29°" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/first_trio_divder"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/line_grey"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout1"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout1"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="120dp"
+                android:layout_marginLeft="120dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+
+                <TextView
+                    android:id="@+id/tonight_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TONIGHT"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/_11ssp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/tonight_weather_image"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tonight_temp_text"
+                    app:srcCompat="@drawable/stormy_night" />
+
+                <TextView
+                    android:id="@+id/tonight_temp_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tonight_plain_text"
+                    android:text="27°" />
+
+                <TextView
+                    android:id="@+id/tonight_realfeel_display_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tonight_temp_text"
+                    android:text="RealFeel 29°" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/second_trio_divider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/line_grey"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout1"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout1" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
+                app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+
+                <TextView
+                    android:id="@+id/tomorrow_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/_11ssp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="THU 1" />
+
+                <ImageView
+                    android:id="@+id/tomorrow_weather_image"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tomorrow_temp_text"
+                    app:srcCompat="@drawable/cloudy" />
+
+                <TextView
+                    android:id="@+id/tomorrow_temp_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tomorrow_plain_text"
+                    android:text="27°" />
+
+                <TextView
+                    android:id="@+id/tomorrow_realfeel_display_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tomorrow_temp_text"
+                    android:text="RealFeel 29°" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/today_details_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Today's Details"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/today_sun_constraint_layout"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintStart_toEndOf="@+id/divider_left"
+                app:layout_constraintTop_toBottomOf="@+id/today_details_plain_text">
+
+                <ImageView
+                    android:id="@+id/today_sun_image"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    app:layout_constraintBottom_toBottomOf="@+id/today_sun_minutes"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/today_sun_hours"
+                    app:srcCompat="@drawable/sun" />
+
+                <TextView
+                    android:id="@+id/today_sun_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:getCurrentSolarHours="@{viewModel.lunarForecast}"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="12 hrs" />
+
+                <TextView
+                    android:id="@+id/today_sun_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:getCurrentSolarMinutes="@{viewModel.lunarForecast}"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_sun_hours"
+                    tools:text="7 mins" />
+
+                <View
+                    android:id="@+id/today_sun_top_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_sun_minutes" />
+
+                <TextView
+                    android:id="@+id/today_sun_rise_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Rise"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_sun_top_line" />
+
+                <TextView
+                    android:id="@+id/today_sun_rise_display_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@{viewModel.lunarForecast.sunRise}"
+                    app:layout_constraintBottom_toBottomOf="@+id/today_sun_rise_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/today_sun_rise_plain_text"
+                    tools:text="6:19" />
+
+                <View
+                    android:id="@+id/today_sun_middle_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_sun_rise_plain_text" />
+
+                <TextView
+                    android:id="@+id/today_sun_set_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Set"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_sun_middle_line" />
+
+                <TextView
+                    android:id="@+id/today_sun_set_display_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@{viewModel.lunarForecast.sunSet}"
+                    app:layout_constraintBottom_toBottomOf="@+id/today_sun_set_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/today_sun_set_plain_text"
+                    tools:text="18:26" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/today_moon_constraint_layout"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/divider_right"
+                app:layout_constraintTop_toBottomOf="@+id/today_details_plain_text">
+
+                <ImageView
+                    android:id="@+id/today_moon_image"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    app:layout_constraintBottom_toBottomOf="@+id/today_moon_minutes"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/today_moon_hours"
+                    app:srcCompat="@drawable/moon" />
+
+                <TextView
+                    android:id="@+id/today_moon_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:getCurrentMoonHours="@{viewModel.lunarForecast}"
+                    android:textSize="@dimen/_9ssp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="12 hrs" />
+
+                <TextView
+                    android:id="@+id/today_moon_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_9ssp"
+                    app:getCurrentMoonMinutes="@{viewModel.lunarForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_moon_hours"
+                    tools:text="7 mins" />
+
+                <View
+                    android:id="@+id/today_moon_top_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_moon_minutes" />
+
+                <TextView
+                    android:id="@+id/today_moon_rise_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Rise"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_moon_top_line" />
+
+                <TextView
+                    android:id="@+id/today_moon_rise_display_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@{viewModel.lunarForecast.moonRise}"
+                    app:layout_constraintBottom_toBottomOf="@+id/today_moon_rise_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/today_moon_rise_plain_text"
+                    tools:text="6:19" />
+
+                <View
+                    android:id="@+id/today_moon_middle_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_moon_rise_plain_text" />
+
+                <TextView
+                    android:id="@+id/today_moon_set_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Set"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_moon_middle_line" />
+
+                <TextView
+                    android:id="@+id/today_moon_set_display_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@{viewModel.lunarForecast.moonSet}"
+                    app:layout_constraintBottom_toBottomOf="@+id/today_moon_set_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/today_moon_set_plain_text"
+                    tools:text="18:26" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <View
+                android:id="@+id/divider_left"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/divider_right"
+                android:layout_width="1dp"
+                android:layout_height="1200dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/middle_divider"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/line_grey"
+                app:layout_constraintBottom_toBottomOf="@+id/today_sun_constraint_layout"
+                app:layout_constraintEnd_toStartOf="@+id/today_moon_constraint_layout"
+                app:layout_constraintStart_toEndOf="@+id/today_sun_constraint_layout"
+                app:layout_constraintTop_toTopOf="@+id/today_sun_constraint_layout" />
+
+            <TextView
+                android:id="@+id/current_conditions_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="CURRENT CONDITIONS"
+                android:textColor="@color/light_grey"
+                android:textSize="@dimen/_11ssp"
+                app:layout_constraintStart_toEndOf="@+id/divider_left"
+                app:layout_constraintTop_toBottomOf="@+id/middle_divider" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/current_description_recyclerview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:getCurrentConditionsForMainPage="@{viewModel.singleForecast}"
+                app:layout_constraintEnd_toStartOf="@+id/divider_right"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/divider_left"
+                app:layout_constraintTop_toBottomOf="@+id/current_conditions_plain_text" />
+
+            <Button
+                android:id="@+id/see_more_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_4sdp"
+                android:layout_marginTop="24dp"
+                android:text="See More →"
+                android:textAllCaps="false"
+                app:layout_constraintEnd_toStartOf="@+id/divider_right"
+                app:layout_constraintStart_toEndOf="@+id/divider_left"
+                app:layout_constraintTop_toBottomOf="@+id/current_description_recyclerview" />
+
+            <TextView
+                android:id="@+id/see_more_bottom_divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/line_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/see_more_btn" />
+
+            <TextView
+                android:id="@+id/allergy_outlook_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="Allergy Outlook"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/see_more_bottom_divider" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/allergy_recyclerview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:getCurrentAllergyForecast="@{viewModel.allergyForecast}"
+                app:layout_constraintEnd_toStartOf="@+id/divider_right"
+                app:layout_constraintStart_toEndOf="@+id/divider_left"
+                app:layout_constraintTop_toBottomOf="@+id/allergy_outlook_plain_text" />
+
+            <Button
+                android:id="@+id/see_weekly_outlook_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:padding="@dimen/_4sdp"
+                android:text="See Weekly Outlook→"
+                android:textAllCaps="false"
+                app:layout_constraintEnd_toStartOf="@+id/divider_right"
+                app:layout_constraintStart_toEndOf="@+id/divider_left"
+                app:layout_constraintTop_toBottomOf="@+id/allergy_recyclerview" />
+
+            <ImageView
+                android:id="@+id/main_weather_image"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_24sdp"
+                app:layout_constraintEnd_toEndOf="@+id/main_circle_image"
+                app:layout_constraintStart_toStartOf="@+id/main_circle_image"
+                app:layout_constraintTop_toTopOf="@+id/main_circle_image"
+                app:srcCompat="@drawable/moon" />
+
+            <TextView
+                android:id="@+id/main_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/coda"
+                android:text="@{String.valueOf(viewModel.singleForecast.temp.value.intValue()) + `°`}"
+                android:textSize="@dimen/_34ssp"
+                app:layout_constraintEnd_toEndOf="@+id/main_circle_image"
+                app:layout_constraintStart_toStartOf="@+id/main_circle_image"
+                app:layout_constraintTop_toBottomOf="@+id/main_weather_image"
+                tools:text="16°" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="C"
+                android:textColor="@color/light_grey"
+                app:layout_constraintBottom_toBottomOf="@+id/main_temp"
+                app:layout_constraintEnd_toEndOf="@+id/main_temp" />
+
+            <TextView
+                android:id="@+id/main_realfeel_display_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:textSize="16sp"
+                app:getCurrentRealFeel="@{viewModel.singleForecast.feelsLike}"
+                app:layout_constraintEnd_toEndOf="@+id/main_temp"
+                app:layout_constraintStart_toStartOf="@+id/main_temp"
+                app:layout_constraintTop_toBottomOf="@+id/main_temp"
+                tools:text="RealFeel© 15°" />
+
+            <TextView
+                android:id="@+id/looking_ahead_display_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/advent_pro_semibold"
+                android:padding="4dp"
+                android:text="Looking Ahead →"
+                app:layout_constraintEnd_toEndOf="@+id/main_temp"
+                app:layout_constraintStart_toStartOf="@+id/main_temp"
+                app:layout_constraintTop_toBottomOf="@+id/main_realfeel_display_text" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

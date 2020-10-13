@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="40dp"
+        android:theme="@style/AppTheme.BlackTextColor"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:id="@+id/top_bar_line"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_3sdp"
+            android:layout_marginTop="8dp"
+            android:background="@color/default_navbar_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/dark_black"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_bar_line"
+            tools:text="23:00, Tuesday" />
+
+        <View
+            android:id="@+id/middle_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/line_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_text" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/middle_line">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="50dp">
+
+                <ImageView
+                    android:id="@+id/weather_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    app:getWeatherImageBasedOnTime="@{viewModel.selectedSingleForecast.observationTime}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.36"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/dark_sun" />
+
+                <TextView
+                    android:id="@+id/temp_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@font/coda"
+                    android:text="@{String.valueOf(viewModel.selectedSingleForecast.temp.value.intValue()) + `°`}"
+                    android:textSize="@dimen/_34ssp"
+                    app:layout_constraintBottom_toBottomOf="@+id/weather_image"
+                    app:layout_constraintStart_toEndOf="@+id/weather_image"
+                    app:layout_constraintTop_toTopOf="@+id/weather_image"
+                    tools:text="16°" />
+
+                <ImageView
+                    android:id="@+id/rain_drop_image"
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="@+id/weather_image"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_image"
+                    app:srcCompat="@drawable/dark_drop" />
+
+                <TextView
+                    android:id="@+id/precipitation_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:text="@{@string/precipitation_plain_text + `: ` + String.valueOf(viewModel.selectedSingleForecast.humidity.value.intValue())}"
+                    app:layout_constraintBottom_toBottomOf="@+id/rain_drop_image"
+                    app:layout_constraintStart_toEndOf="@+id/rain_drop_image"
+                    app:layout_constraintTop_toTopOf="@+id/rain_drop_image"
+                    tools:text="Precipitation: 0%" />
+
+                <TextView
+                    android:id="@+id/weather_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/coda"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/_14ssp"
+                    getWeatherStatus="@{viewModel.selectedSingleForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/precipitation_text"
+                    tools:text="Clear" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/selected_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:getSelectedHourlyRecyclerView="@{viewModel.selectedSingleForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_status" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="@string/hourly_forecast_temp_unit_C"
+            app:layout_constraintBottom_toBottomOf="@+id/date_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/date_text" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

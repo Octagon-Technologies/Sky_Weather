@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">http://api.openweathermap.org/data/2.5/forecast?q=Nairobi&amp;appid=b482773d742c4ab710d2b62820ae3184</domain>
-    </domain-config>
-</network-security-config>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.kotlinweatherapp.ui.see_more_current.SeeMoreViewModel" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/current_forecast_night_time"
+        android:paddingBottom="@dimen/_20sdp"
+        android:theme="@style/AppTheme.WhiteTextColor"
+        tools:context=".ui.see_more_current.SeeMoreFragment">
+
+
+        <ImageView
+            android:id="@+id/see_more_weather_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/sun"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
+            android:contentDescription="@string/weather_image_content_description" />
+
+        <TextView
+            android:id="@+id/see_more_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:fontFamily="@font/coda"
+            android:text="@{String.valueOf(viewModel.currentForecast.temp.value.intValue()) + `°`}"
+            android:textSize="@dimen/_40ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/see_more_weather_image"
+            app:layout_constraintStart_toEndOf="@+id/see_more_weather_image"
+            app:layout_constraintTop_toTopOf="@+id/see_more_weather_image"
+            tools:text="16°" />
+
+        <TextView
+            android:id="@+id/see_more_temp_units"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/coda"
+            android:text="@string/temp_unit_C"
+            android:textColor="@color/light_grey"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/see_more_temp"
+            app:layout_constraintEnd_toEndOf="@+id/see_more_temp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/see_more_description_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            app:getCurrentConditionsForSeeMorePage="@{viewModel.currentForecast}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/see_more_highlight" />
+
+
+        <TextView
+            android:id="@+id/see_more_highlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="18sp"
+            app:getWeatherStatus="@{viewModel.currentForecast}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/see_more_weather_image"
+            tools:text="Clear" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbar_layout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_45sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
+                android:padding="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/abc_vector_test"
+                tools:ignore="PrivateResource"
+                android:contentDescription="@string/back_button" />
+
+            <TextView
+                android:id="@+id/current_conditions_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/current_conditions"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/top_line_divider"
+                android:layout_width="358dp"
+                android:layout_height="1dp"
+                android:background="@color/default_navbar_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

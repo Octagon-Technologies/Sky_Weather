@@ -1,42 +1,30 @@
 <resources>
-    <string name="app_name">Kotlin Weather App</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="future_label">Future</string>
-    <string name="settings_label">Settings</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="error_area_not_found">Error: Area Not Found</string>
+    <string name="app_name">Sky Weather</string>
+    <string name="current_conditions">Current Conditions</string>
+    <string name="temp_unit_C">C</string>
+    <string name="weather_image_content_description">Weather Image</string>
+    <string name="back_button">Back Button</string>
+    <string name="drop_of_water_content_description">Drop of water</string>
+    <string name="hourly_forecast_temp_unit_C">°C</string>
+    <string name="hourly_forecast_temp_unit_F">°F</string>
+    <string name="precipitation_plain_text">Precipitation</string>
+    <string name="favourites_plain_text">FAVOURITES</string>
+    <string name="recent_plain_text">RECENT</string>
+    <string name="edit_plain_text">Edit</string>
+    <string name="clear_all_plain_text">Clear All</string>
+    <string name="find_location_plain_text">Find Location</string>
+    <string name="enable_location_services_plain_text">Enable Location Services</string>
+    <string name="you_haven_t_added_any_locations_yet_plain_text">You haven\'t added any locations yet.</string>
+    <string name="it_looks_like_your_recent_history_is_empty_plain_text">It looks like your recent history is empty.</string>
+    <string name="current_plain_text">CURRENT</string>
+    <string name="locations_plain_text">Locations</string>
+    <string name="close_button_plain_text">Close Button</string>
+    <string name="add_city_to_favourites_plain_text">Add City to Favourites</string>
+    <string name="use_current_location_plain_text">USE CURRENT LOCATION</string>
+    <string name="cancel_plain_text">Cancel</string>
+    <string name="settings_plain_text">Settings</string>
+    <string name="loading_plain_text">Loading</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="today">Today</string>
-    <string name="loading_image">Loading Image</string>
-    <string name="search">Search</string>
-
-    <string name="title_activity_settings">Settings</string>
-
-    <!-- Preference Titles -->
-    <string name="location_header">Location</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="your_location_title">Use device location</string>
-    <string name="set_location_title">Set location</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="weather_image">Weather Image</string>
-    <string name="celsius">°C</string>
-    <string name="current_details">Current Details</string>
-    <string name="humidity">Humidity</string>
-    <string name="pressure">Pressure</string>
-    <string name="wind">Wind</string>
-    <string name="clouds_cover">Clouds Cover</string>
-    <string name="current">Current</string>
 </resources>
