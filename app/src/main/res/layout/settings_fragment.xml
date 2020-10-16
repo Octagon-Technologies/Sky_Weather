@@ -1,81 +1,463 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
-
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:theme="@style/AppTheme.BlackTextColor">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#F4F4F4"
-            android:paddingBottom="300dp"
-            android:theme="@style/AppTheme.BlackTextColor"
-            tools:context=".ui.settings.SettingsFragment">
+            android:id="@+id/toolbar_layout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_45sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/toolbar_layout"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_45sdp"
-                app:layout_constraintEnd_toEndOf="parent"
+            <ImageView
+                android:id="@+id/back_btn"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:contentDescription="@string/back_button"
+                android:padding="@dimen/_10sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/back_btn"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginLeft="6dp"
-                    android:padding="6dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_keyboard_backspace_black"
-                    android:contentDescription="@string/back_button" />
-
-                <TextView
-                    android:id="@+id/current_conditions_plain_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
-                    android:textSize="@dimen/_13ssp"
-                    android:text="@string/settings_plain_text"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/top_line_divider"
-                    android:layout_width="358dp"
-                    android:layout_height="1dp"
-                    android:background="@color/default_navbar_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_keyboard_backspace_black" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/current_conditions_plain_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="24dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="UNITS"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/settings_plain_text"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_layout" />
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <View
+                android:id="@+id/top_line_divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/light_grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_layout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:paddingBottom="150dp"
+                android:theme="@style/AppTheme.BlackTextColor"
+                tools:context=".ui.settings.SettingsFragment">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:theme="@style/AppTheme.BlackTextColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/units_settings_type_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="24dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="UNITS"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/units_main_constraint_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/black_settings_layout_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/units_settings_type_name"
+                        app:layout_constraintTop_toBottomOf="@+id/units_settings_type_name">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/units_left_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/left_each_settings_item_background"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/units_right_layout"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/units_left_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="Imperial"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/units_left_each_item_description"
+                                style="@style/settings_each_item_description"
+                                android:text="°F, mph, in"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/units_left_each_item_name" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/units_right_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/right_selected_each_settings_item_background"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/units_left_layout">
+
+                            <TextView
+                                android:id="@+id/units_right_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="Metric"
+                                android:textColor="@android:color/white"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/units_right_each_item_description"
+                                style="@style/settings_each_item_description"
+                                android:text="°C, mph, mm"
+                                android:textColor="@color/light_grey"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/units_right_each_item_name" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:theme="@style/AppTheme.BlackTextColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+                    <TextView
+                        android:id="@+id/wind_settings_type_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="24dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="WIND DIRECTION"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/wind_main_constraint_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/black_settings_layout_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/wind_settings_type_name"
+                        app:layout_constraintTop_toBottomOf="@+id/wind_settings_type_name">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/wind_left_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/left_each_settings_item_background"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/wind_right_layout"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/wind_left_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="Cardinal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/wind_left_each_item_description"
+                                style="@style/settings_each_item_description"
+                                android:text="N, E, S, W"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/wind_left_each_item_name" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/wind_right_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/right_selected_each_settings_item_background"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/wind_left_layout">
+
+                            <TextView
+                                android:id="@+id/wind_right_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="Degrees"
+                                android:textColor="@android:color/white"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/wind_right_each_item_description"
+                                style="@style/settings_each_item_description"
+                                android:text='0° - 360°'
+                                android:textColor="@color/light_grey"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/wind_right_each_item_name" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:theme="@style/AppTheme.BlackTextColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
+
+                    <TextView
+                        android:id="@+id/time_settings_type_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="24dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="TIME FORMAT"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/time_main_constraint_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/black_settings_layout_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/time_settings_type_name"
+                        app:layout_constraintTop_toBottomOf="@+id/time_settings_type_name">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/time_left_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/left_each_settings_item_background"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/time_right_layout"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/time_left_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="12 Hour"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/time_left_each_item_description"
+                                style="@style/settings_each_item_description"
+                                android:text="2 PM, 3 PM .etc"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/time_left_each_item_name" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/time_right_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/right_selected_each_settings_item_background"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_10sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/time_left_layout">
+
+                            <TextView
+                                android:id="@+id/time_right_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="24 Hour"
+                                android:textColor="@android:color/white"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/time_right_each_item_description"
+                                style="@style/settings_each_item_description"
+                                android:text="12:00, 13:00 .etc"
+                                android:textColor="@color/light_grey"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/time_right_each_item_name" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:theme="@style/AppTheme.BlackTextColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+
+                    <TextView
+                        android:id="@+id/display_settings_type_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="24dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:text="DISPLAY MODE"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/display_main_constraint_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@drawable/black_settings_layout_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/display_settings_type_name"
+                        app:layout_constraintTop_toBottomOf="@+id/display_settings_type_name">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/display_left_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/left_each_settings_item_background"
+                            android:paddingTop="@dimen/_15sdp"
+                            android:paddingBottom="@dimen/_15sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/display_right_layout"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <TextView
+                                android:id="@+id/display_left_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="Light"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/display_right_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/right_selected_each_settings_item_background"
+                            android:paddingTop="@dimen/_15sdp"
+                            android:paddingBottom="@dimen/_15sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/display_left_layout">
+
+                            <TextView
+                                android:id="@+id/display_right_each_item_name"
+                                style="@style/settings_each_item_title"
+                                android:text="Dark"
+                                android:textColor="@android:color/white"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

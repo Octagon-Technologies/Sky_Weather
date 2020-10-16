@@ -5,10 +5,6 @@
 
     <data>
 
-        <!--        <variable-->
-        <!--            name="fullHourlyForecast"-->
-        <!--            type="java.util.ArrayList&lt;com.example.kotlinweatherapp.network.hourly_forecast.EachHourlyForecast&gt;" />-->
-
         <variable
             name="viewModel"
             type="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastViewModel" />
@@ -66,10 +62,14 @@
                 app:layout_constraintTop_toTopOf="@+id/top_day_text" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <include-->
-<!--            layout="@layout/selected_hourly_forecast_layout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"/>-->
+        <include
+            android:id="@+id/selected_hourly_forecast_layout"
+            layout="@layout/selected_hourly_forecast_layout"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="60dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

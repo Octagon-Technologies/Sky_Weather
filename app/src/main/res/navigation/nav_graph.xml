@@ -49,4 +49,12 @@
         android:name="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastFragment"
         android:label="HourlyForecastFragment"
         tools:layout="@layout/hourly_forecast_fragment"/>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.kotlinweatherapp.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/futureForecastFragment"
+        android:name="com.example.kotlinweatherapp.ui.future_forecast.FutureForecastFragment"
+        android:label="FutureForecastFragment" />
 </navigation>

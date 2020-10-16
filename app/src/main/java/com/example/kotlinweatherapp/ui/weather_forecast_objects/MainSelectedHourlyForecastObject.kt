@@ -15,7 +15,7 @@ import java.net.UnknownHostException
 object MainSelectedHourlyForecastObject {
     suspend fun getSelectedSingleForecastAsync(mainDataBase: MainDataBase?, timeInIso: String): SingleForecast? {
         return try {
-            val uiScope = CoroutineScope(Dispatchers.Main)
+//            val uiScope = CoroutineScope(Dispatchers.Main)
             val remoteLunarForecast =
                 SelectedHourlyForecastItem.selectedHourlyRetrofitService.getSelectedHourlyForecastAsync(
                     startTimeInISO = timeInIso,
@@ -23,19 +23,20 @@ object MainSelectedHourlyForecastObject {
                 )
                     .await()
 
-            uiScope.launch {
-                insertSelectedHourlyForecastToLocalStorage(mainDataBase, remoteLunarForecast)
-            }
+//            uiScope.launch {
+//                insertSelectedHourlyForecastToLocalStorage(mainDataBase, remoteLunarForecast)
+//            }
 
             remoteLunarForecast
         }
         catch (e: HttpException) {
             Timber.e(e)
-            getLocalSelectedHourlyForecastAsync(mainDataBase)
+            null
         }
         catch (e: UnknownHostException) {
             Timber.e(e)
-            getLocalSelectedHourlyForecastAsync(mainDataBase)
+            null
+            //getLocalSelectedHourlyForecastAsync(mainDataBase)
         }
         catch (e: Exception) {
             throw e
@@ -43,17 +44,17 @@ object MainSelectedHourlyForecastObject {
     }
 
 
-    private suspend fun insertSelectedHourlyForecastToLocalStorage(mainDataBase: MainDataBase?, singleForecast: SingleForecast) {
-        withContext(Dispatchers.IO) {
-            val selectedSingleForecastDatabaseClass =
-                SelectedSingleForecastDatabaseClass(selectedSingleForecastForecast = singleForecast)
-            mainDataBase?.selectedSingleForecastDao?.insertSelectedSingleForecastDatabaseClass(selectedSingleForecastDatabaseClass)
-        }
-    }
-
-    private suspend fun getLocalSelectedHourlyForecastAsync(mainDataBase: MainDataBase?): SingleForecast? {
-        return withContext(Dispatchers.IO) {
-            mainDataBase?.selectedSingleForecastDao?.getSelectedSingleForecastDatabaseClass()?.selectedSingleForecastForecast
-        }
-    }
+//    private suspend fun insertSelectedHourlyForecastToLocalStorage(mainDataBase: MainDataBase?, singleForecast: SingleForecast) {
+//        withContext(Dispatchers.IO) {
+//            val selectedSingleForecastDatabaseClass =
+//                SelectedSingleForecastDatabaseClass(selectedSingleForecastForecast = singleForecast)
+//            mainDataBase?.selectedSingleForecastDao?.insertSelectedSingleForecastDatabaseClass(selectedSingleForecastDatabaseClass)
+//        }
+//    }
+//
+//    private suspend fun getLocalSelectedHourlyForecastAsync(mainDataBase: MainDataBase?): SingleForecast? {
+//        return withContext(Dispatchers.IO) {
+//            mainDataBase?.selectedSingleForecastDao?.getSelectedSingleForecastDatabaseClass()?.selectedSingleForecastForecast
+//        }
+//    }
 }

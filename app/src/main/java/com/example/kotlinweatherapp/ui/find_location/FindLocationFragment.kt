@@ -31,6 +31,7 @@ class FindLocationFragment : Fragment() {
         binding.viewModel = viewModel
 
         setOnClickListeners()
+        viewModel.getFavouriteLocations()
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -51,7 +52,7 @@ class FindLocationFragment : Fragment() {
         })
 
         viewModel.reversedGeoCodingLocation.observe(viewLifecycleOwner, {
-            val address = it.address
+            val address = it.reverseGeoCodingAddress
             Timber.d("address is $address")
 
             if(address != null) {
@@ -59,7 +60,7 @@ class FindLocationFragment : Fragment() {
                 binding.enableLocationLayout.visibility = View.GONE
 
                 binding.gpsLocationCity.text = "${address.suburb}, ${address.city}"
-                binding.gpsLocationCountry.text = it.address.country
+                binding.gpsLocationCountry.text = it.reverseGeoCodingAddress.country
             }
         })
 
@@ -75,6 +76,8 @@ class FindLocationFragment : Fragment() {
         binding.closeBtn.setOnClickListener { findNavController().popBackStack() }
         binding.searchQuery.setOnClickListener { findNavController().navigate(R.id.action_findLocationFragment_to_searchLocationFragment) }
         binding.enableLocationLayout.setOnClickListener { viewModel.checkIfPermissionIsGranted() }
+
+        binding.gpsLocationLayout.setOnClickListener {viewModel.addLocationToDatabase()}
     }
 
 }

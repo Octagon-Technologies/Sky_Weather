@@ -34,10 +34,13 @@ class SearchLocationFragment : Fragment() {
 
         binding.findLocationViewModel = findLocationViewModel
         binding.locationItems = viewModel.locationSuggestions
-        binding.navController = findNavController()
         binding.fragmentLifecycleOwner = viewLifecycleOwner
 
-        val handler = object : CountDownTimer(1200, 500) {
+        binding.cancelBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        val handler = object : CountDownTimer(500, 500) {
             override fun onTick(millisUntilFinished: Long) {}
 
             override fun onFinish() {

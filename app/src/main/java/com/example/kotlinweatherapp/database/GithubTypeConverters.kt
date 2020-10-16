@@ -56,17 +56,17 @@ class GithubTypeConverters {
 
     @TypeConverter
     fun stringToArrayOfEachHourlyForecast(data: String?): ArrayList<EachHourlyForecast>? {
-        val type = Types.newParameterizedType(ArrayList::class.java, EachHourlyForecast::class.java)
-        val jsonAdapter: JsonAdapter<ArrayList<EachHourlyForecast>> = moshi.adapter(type)
+        val type = Types.newParameterizedType(List::class.java, EachHourlyForecast::class.java)
+        val jsonAdapter: JsonAdapter<List<EachHourlyForecast>> = moshi.adapter(type)
         Timber.d(jsonAdapter.fromJson(data ?: return null).toString())
-        return jsonAdapter.fromJson(data)
+        return jsonAdapter.fromJson(data) as ArrayList<EachHourlyForecast>?
     }
     @TypeConverter
     fun arrayOfEachHourlyForecastToString(arrayOfEachHourlyForecast: ArrayList<EachHourlyForecast>?): String? {
-        val type = Types.newParameterizedType(ArrayList::class.java, EachHourlyForecast::class.java)
-        val jsonAdapter: JsonAdapter<ArrayList<EachHourlyForecast>> = moshi.adapter(type)
-        Timber.d(jsonAdapter.toJson(arrayOfEachHourlyForecast ?: return null))
-        return jsonAdapter.toJson(arrayOfEachHourlyForecast)
+        val type = Types.newParameterizedType(List::class.java, EachHourlyForecast::class.java)
+        val jsonAdapter: JsonAdapter<List<EachHourlyForecast>> = moshi.adapter(type)
+        Timber.d(jsonAdapter.toJson(arrayOfEachHourlyForecast?.toList() ?: return null))
+        return jsonAdapter.toJson(arrayOfEachHourlyForecast.toList())
     }
 
 
@@ -83,15 +83,15 @@ class GithubTypeConverters {
 
     @TypeConverter
     fun stringToArrayOfFavouritesLocation(data: String?): ArrayList<LocationItem?>? {
-        val typeToken = Types.newParameterizedType(ArrayList::class.java, LocationItem::class.java)
-        val jsonAdapter: JsonAdapter<ArrayList<LocationItem?>?> = moshi.adapter(typeToken)
-        return jsonAdapter.fromJson(data ?: return null)
+        val typeToken = Types.newParameterizedType(List::class.java, LocationItem::class.java)
+        val jsonAdapter: JsonAdapter<List<LocationItem?>?> = moshi.adapter(typeToken)
+        return jsonAdapter.fromJson(data ?: return null) as ArrayList<LocationItem?>?
     }
     @TypeConverter
     fun arrayOfFavouritesLocationOfString(arrayOfFavouritesLocations: ArrayList<LocationItem?>?): String? {
-        val typeToken = Types.newParameterizedType(ArrayList::class.java, LocationItem::class.java)
-        val jsonAdapter: JsonAdapter<ArrayList<LocationItem?>?> = moshi.adapter(typeToken)
-        return jsonAdapter.toJson(arrayOfFavouritesLocations ?: return null)
+        val typeToken = Types.newParameterizedType(List::class.java, LocationItem::class.java)
+        val jsonAdapter: JsonAdapter<List<LocationItem?>?> = moshi.adapter(typeToken)
+        return jsonAdapter.toJson(arrayOfFavouritesLocations?.toList() ?: return null)
     }
 
     @TypeConverter

@@ -4,6 +4,7 @@ import com.example.kotlinweatherapp.network.allergy_forecast.Allergy
 import com.example.kotlinweatherapp.network.current_forecast.SingleForecast
 import com.example.kotlinweatherapp.network.hourly_forecast.EachHourlyForecast
 import com.example.kotlinweatherapp.network.location.Location
+import com.example.kotlinweatherapp.network.location.LocationItem
 import com.example.kotlinweatherapp.network.lunar_forecast.LunarForecast
 import com.example.kotlinweatherapp.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -73,7 +74,7 @@ interface LocationApiService {
         @Query("key") key: String = LOCATION_KEY,
         @Query("q") query: String,
         @Query("limit") limit: Int = 10
-    ): Deferred<List<Location>>
+    ): Deferred<List<LocationItem>>
 
 //  https://us1.locationiq.com/v1/reverse.php?key=2a13f417c6d3f3&lat=-1.3135887888876425&lon=36.81903851535387&zoom=16&format=json
     @GET("reverse.php")
@@ -118,7 +119,7 @@ interface SelectedHourlyForecastApiService {
         @Query("lon") lon: Double = mockLon,
         @Query("start_time") startTimeInISO: String,
         @Query("end_time") endTimeInISO: String,
-        @Query("fields") fields: String = fullAttrsString
+        @Query("fields", encoded = true) fields: String = fullAttrsString
     ): Deferred<SingleForecast>
 }
 
@@ -142,9 +143,11 @@ interface HourlyForecastApiService {
         @Query("lat") lat: Double = mockLat,
         @Query("lon") lon: Double = mockLon,
         @Query("start_time") startTimeInISO: String = "now",
-        @Query("fields") fields: String = hourlyForecastAttrsString
+        @Query("fields", encoded = true) fields: String = hourlyForecastAttrsString
     ): Deferred<List<EachHourlyForecast>>
 }
+// "https://api.climacell.co/v3/weather/"
+// https://api.climacell.co/v3/weather/forecast/hourly?lat=1&lon=36&unit_system=si&start_time=now&apikey=KcZ9fTuH4YC6YIIlqC1OWfei4NFfivwA&fields=precipitation%2Cprecipitation_type%2Ctemp%2Cfeels_like%2Cdewpoint%2Cwind_speed%2Cwind_gust%2Cbaro_pressure%2Cvisibility%2Chumidity%2Cwind_direction%2Csunrise%2Csunset%2Ccloud_cover%2Ccloud_ceiling%2Ccloud_base%2Csurface_shortwave_radiation%2Cmoon_phase%2Cweather_code
 
 object HourlyForecastItem{
     val hourlyRetrofitService: HourlyForecastApiService by lazy {

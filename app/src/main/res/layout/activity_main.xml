@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#2196F3">
+        android:background="@color/current_forecast_night_time">
 
 
         <include
@@ -37,8 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintBottom_toTopOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <LinearLayout
                 android:id="@+id/location_name_layout"
@@ -73,11 +72,11 @@
 
             <ImageView
                 android:id="@+id/menu_btn"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginLeft="12dp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:contentDescription="@string/back_button"
                 android:onClick="menuImageOnClick"
+                android:padding="@dimen/_10sdp"
                 app:layout_constraintBottom_toBottomOf="@+id/location_name_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/location_name_layout"

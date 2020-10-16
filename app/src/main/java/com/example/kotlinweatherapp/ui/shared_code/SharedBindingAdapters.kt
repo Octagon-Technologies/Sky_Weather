@@ -22,6 +22,7 @@ fun TextView.getWeatherStatus(singleForecast: SingleForecast?){
 fun ImageView.getWeatherImageBasedOnTime(observationTime: ObservationTime?) {
     observationTime?.value?.let {
         val date = DateTime(it).toLocalDate().toDate()
+        Timber.d("Joda datetime is ${date.time}")
         val hours = SimpleDateFormat("hh", Locale.getDefault()).format(date)
         Timber.d("hours is $hours")
 

@@ -4,6 +4,7 @@ import android.widget.Button
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinweatherapp.R
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @BindingAdapter("addLocationSuggestionsToRecyclerView")
-fun RecyclerView.addLocationSuggestionsToRecyclerView(locationItems: ArrayList<Location>?) {
+fun RecyclerView.addLocationSuggestionsToRecyclerView(locationItems: ArrayList<LocationItem>?) {
     val groupAdapter = GroupAdapter<GroupieViewHolder>()
     adapter = groupAdapter
     layoutManager = LinearLayoutManager(context)
@@ -30,12 +31,13 @@ fun RecyclerView.addLocationSuggestionsToRecyclerView(locationItems: ArrayList<L
     val uiScope = CoroutineScope(Dispatchers.Main)
     val mainDataBase = MainDataBase.getInstance(context)
     val favouriteItemsMap = LinkedHashMap<String?, LocationItem?>()
-    val arrayOfEachAdapterLocationItem =  ArrayList<EachAdapterLocationItem>()
+    val arrayOfEachAdapterLocationItem = ArrayList<EachAdapterLocationItem>()
 
     uiScope.launch {
-        val arrayOfFavouriteLocationDatabaseClassItems = MainFavouriteLocationsObject.getFavouriteLocationsAsync(mainDataBase)
+        val arrayOfFavouriteLocationDatabaseClassItems =
+            MainFavouriteLocationsObject.getFavouriteLocationsAsync(mainDataBase)
         arrayOfFavouriteLocationDatabaseClassItems?.forEach { eachFavouriteLocation ->
-            eachFavouriteLocation?.let {
+            eachFavouriteLocation.let {
                 favouriteItemsMap[it.placeId] = it
             }
             Timber.d("eachFavouriteLocation is $eachFavouriteLocation")
@@ -44,27 +46,25 @@ fun RecyclerView.addLocationSuggestionsToRecyclerView(locationItems: ArrayList<L
 
     Timber.d("List of location is ${locationItems?.size}")
 
-    locationItems?.forEach {eachLocation ->
-        Timber.d("eachLocation is $eachLocation")
-        Timber.d("eachLocation.size is ${eachLocation.size}")
+    locationItems?.forEach {
+        Timber.d("eachLocation is $it")
+        arrayOfEachAdapterLocationItem.add(
+            EachAdapterLocationItem(
+                (it in favouriteItemsMap.values),
+                it
+            )
+        )
 
-        eachLocation.forEach {
-            Timber.d("eachLocationItem is $it")
+
+        arrayOfEachAdapterLocationItem.forEach { eachAdapterLocationItem ->
+            val eachSearchResultItem = EachSearchResultItem(eachAdapterLocationItem)
+            groupAdapter.add(eachSearchResultItem)
         }
-    }
-
-    locationItems?.get(0)?.forEach {
-        arrayOfEachAdapterLocationItem.add(EachAdapterLocationItem((it in favouriteItemsMap.values), it))
-    }
-
-    arrayOfEachAdapterLocationItem.forEach {
-        val eachSearchResultItem = EachSearchResultItem(it)
-        groupAdapter.add(eachSearchResultItem)
     }
 }
 
-@BindingAdapter("getNavController", "getFindLocationViewModel", "getLifecycleOwner")
-fun Button.getCurrentLocation(navController: NavController, findLocationViewModel: FindLocationViewModel, lifecycleOwner: LifecycleOwner) {
+@BindingAdapter("getFindLocationViewModel", "getLifecycleOwner")
+fun Button.getCurrentLocation(findLocationViewModel: FindLocationViewModel, lifecycleOwner: LifecycleOwner) {
     val mainDataBase: MainDataBase? by lazy { MainDataBase.getInstance(context) }
     findLocationViewModel.reversedGeoCodingLocation.observe(lifecycleOwner, {
         Timber.d("Button.getCurrentLocation: reversedGeoLocation is $it")
@@ -73,7 +73,7 @@ fun Button.getCurrentLocation(navController: NavController, findLocationViewMode
         CoroutineScope(Dispatchers.IO).launch {
             mainDataBase?.locationDao?.insertLocationDatabaseClass(locationDatabaseClass)
         }
-        navController.popBackStack(R.id.currentForecastFragment, false)
+        findNavController().popBackStack(R.id.currentForecastFragment, false)
     })
 
     setOnClickListener {
@@ -81,9 +81,3 @@ fun Button.getCurrentLocation(navController: NavController, findLocationViewMode
     }
 }
 
-@BindingAdapter("cancelInSearchLocation")
-fun Button.cancelInSearchLocation(navController: NavController) {
-    setOnClickListener {
-        navController.popBackStack()
-    }
-}

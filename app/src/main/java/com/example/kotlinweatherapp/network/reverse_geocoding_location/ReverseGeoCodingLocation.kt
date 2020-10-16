@@ -2,11 +2,10 @@ package com.example.kotlinweatherapp.network.reverse_geocoding_location
 
 
 import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
 data class ReverseGeoCodingLocation(
     @Json(name = "address")
-    val address: Address?,
+    val reverseGeoCodingAddress: ReverseGeoCodingAddress?,
     @Json(name = "boundingbox")
     val boundingbox: List<String>?,
     @Json(name = "display_name")

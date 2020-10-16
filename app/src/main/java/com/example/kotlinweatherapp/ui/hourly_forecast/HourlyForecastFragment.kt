@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinweatherapp.databinding.HourlyForecastFragmentBinding
 import com.example.kotlinweatherapp.ui.hourly_forecast.each_hourly_forecast_item.EachDayTextItem
 import com.example.kotlinweatherapp.ui.hourly_forecast.each_hourly_forecast_item.EachHourlyForecastItem
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
@@ -30,9 +31,33 @@ class HourlyForecastFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+        viewModel.loadData()
+
         binding.hourlyRecyclerView.addCustomScrollListener(binding)
 
-        viewModel.loadData()
+        val bottomSheetBehaviour = BottomSheetBehavior.from(binding.selectedHourlyForecastLayout.root)
+
+        bottomSheetBehaviour.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Timber.d("newState is $newState")
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                Timber.d("slideOffset is $slideOffset")
+            }
+        })
+
+        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        val groupAdapter = binding.hourlyRecyclerView.adapter as GroupAdapter
+
+        groupAdapter.setOnItemClickListener { item, _ ->
+            if (item is EachDayTextItem) return@setOnItemClickListener
+            val eachHourlyForecastItem = item as EachHourlyForecastItem
+
+            viewModel.getSelectedSingleForecast(eachHourlyForecastItem.eachHourlyForecast.observationTime)
+            bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         return binding.root
     }

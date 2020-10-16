@@ -11,6 +11,7 @@ import com.example.kotlinweatherapp.network.hourly_forecast.EachHourlyForecast
 import com.example.kotlinweatherapp.ui.weather_forecast_objects.MainHourlyForecastObject.getHourlyForecastAsync
 import com.example.kotlinweatherapp.ui.weather_forecast_objects.MainSelectedHourlyForecastObject.getSelectedSingleForecastAsync
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.util.ArrayList
 
 class HourlyForecastViewModel(context: Context) : ViewModel() {
@@ -30,9 +31,13 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
         getHourlyForecast()
     }
 
-    fun getSelectedSingleForecast(observationTime: ObservationTime) {
+    fun getSelectedSingleForecast(observationTime: ObservationTime?) {
         uiScope.launch {
-            _selectedSingleForecast.value = getSelectedSingleForecastAsync(mainDataBase, observationTime.value.toString())
+            Timber.d("observation time is $observationTime")
+            observationTime?.let {
+                _selectedSingleForecast.value =
+                    getSelectedSingleForecastAsync(mainDataBase, observationTime.value.toString())
+            }
         }
     }
 

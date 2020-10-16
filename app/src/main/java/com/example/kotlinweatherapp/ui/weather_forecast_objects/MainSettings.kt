@@ -27,21 +27,21 @@ class MainSettings (private val context: Context) {
     val timeFormatName = "time_format"
     val displayModeName = "display_mode"
 
-    private val unitsKey = preferencesKey<Units>(unitsName)
-    private val windDirectionKey = preferencesKey<WindDirectionUnits>(windDirectionName)
-    private val timeFormatKey = preferencesKey<TimeFormat>(timeFormatName)
-    private val displayModeKey = preferencesKey<DisplayMode>(displayModeName)
+    private val unitsKey = preferencesKey<String>(unitsName)
+    private val windDirectionKey = preferencesKey<String>(windDirectionName)
+    private val timeFormatKey = preferencesKey<String>(timeFormatName)
+    private val displayModeKey = preferencesKey<String>(displayModeName)
 
 
-    fun editDataStoreSettings(eachDataStoreItem: EachDataStoreItem) {
+    private fun editDataStoreSettings(eachDataStoreItem: EachDataStoreItem) {
         val newValue = eachDataStoreItem.newValue
         CoroutineScope(Dispatchers.Main).launch {
             dataStore.edit {
                 when (eachDataStoreItem.preferencesName) {
-                    unitsName -> it[unitsKey] = newValue as Units
-                    windDirectionName -> it[windDirectionKey] = newValue as WindDirectionUnits
-                    timeFormatName -> it[timeFormatKey] = newValue as TimeFormat
-                    displayModeName -> it[displayModeKey] = newValue as DisplayMode
+                    unitsName -> it[unitsKey] = newValue.toString()
+                    windDirectionName -> it[windDirectionKey] = newValue.toString()
+                    timeFormatName -> it[timeFormatKey] = newValue.toString()
+                    displayModeName -> it[displayModeKey] = newValue.toString()
                     else -> throw RuntimeException("Unexpected parameter. eachDataStoreItem is $eachDataStoreItem")
                 }
                 Timber.d("Success. DataStore edited")
@@ -49,31 +49,43 @@ class MainSettings (private val context: Context) {
         }
     }
 
-    private fun getDataStoreData(preferencesName: String): Flow<Any?> {
+    private fun getDataStoreData(preferencesName: String): Flow<String?> {
         return dataStore.data.map {
             when (preferencesName) {
-                unitsName -> unitsKey
-                windDirectionName -> windDirectionKey
-                timeFormatName -> timeFormatKey
-                displayModeName -> displayModeKey
+                unitsName -> it[unitsKey]
+                windDirectionName -> it[windDirectionKey]
+                timeFormatName -> it[timeFormatKey]
+                displayModeName -> it[displayModeKey]
                 else -> throw RuntimeException("Unexpected parameter. preferencesName is $preferencesName")
             }
         }
     }
 
-    suspend fun getUnits(): Units? {
-        return getDataStoreData(unitsName).first() as Units?
+    fun editDataStore(newValue: Any) {
+        val eachDataStoreItem = when(newValue) {
+            is Units -> EachDataStoreItem(unitsName, newValue)
+            is WindDirectionUnits -> EachDataStoreItem(windDirectionName, newValue)
+            is TimeFormat -> EachDataStoreItem(timeFormatName, newValue)
+            is DisplayMode -> EachDataStoreItem(displayModeName, newValue)
+            else -> throw RuntimeException("Unexpected parameter. newValue is $newValue")
+        }
+
+        editDataStoreSettings(eachDataStoreItem)
     }
 
-    suspend fun getWindDirections(): WindDirectionUnits? {
-        return getDataStoreData(windDirectionName).first() as WindDirectionUnits?
+    suspend fun getUnits(): Units {
+        return Units.valueOf(getDataStoreData(unitsName).first() ?: "METRIC")
     }
 
-    suspend fun getTimeFormat(): TimeFormat? {
-        return getDataStoreData(timeFormatName).first() as TimeFormat?
+    suspend fun getWindDirections(): WindDirectionUnits {
+        return WindDirectionUnits.valueOf(getDataStoreData(windDirectionName).first() ?: "CARDINAL")
     }
 
-    suspend fun getDisplayMode(): DisplayMode? {
-        return getDataStoreData(displayModeName).first() as DisplayMode?
+    suspend fun getTimeFormat(): TimeFormat {
+        return TimeFormat.valueOf(getDataStoreData(timeFormatName).first() ?: "FULL_DAY")
+    }
+
+    suspend fun getDisplayMode(): DisplayMode {
+        return DisplayMode.valueOf(getDataStoreData(displayModeName).first() ?: "LIGHT")
     }
 }

@@ -4,7 +4,7 @@ package com.example.kotlinweatherapp.network.reverse_geocoding_location
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
-data class Address(
+data class ReverseGeoCodingAddress(
     @Json(name = "city")
     val city: String?,
     @Json(name = "country")

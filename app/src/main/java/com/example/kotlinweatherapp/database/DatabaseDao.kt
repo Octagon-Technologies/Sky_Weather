@@ -65,6 +65,6 @@ interface FavouriteLocationDao{
     @Delete
     fun deleteFavouriteLocationDatabaseClass(favouriteLocationDatabaseClass: FavouriteLocationDatabaseClass)
 
-//    @Query("SELECT * FROM favouriteLocationDatabaseClass")
-//    fun getFavouriteLocationsDatabaseClass(): List<FavouriteLocationDatabaseClass>?
+    @Query("SELECT * FROM favouriteLocationDatabaseClass")
+    fun getFavouriteLocationsDatabaseClass(): List<FavouriteLocationDatabaseClass>?
 }

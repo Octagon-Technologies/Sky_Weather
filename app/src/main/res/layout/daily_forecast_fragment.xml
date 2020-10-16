@@ -10,8 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:theme="@style/AppTheme.WhiteTextColor"
         android:background="@color/current_forecast_night_time"
+        android:theme="@style/AppTheme.WhiteTextColor"
         tools:context=".ui.future_forecast.daily_forecast.DailyForecastFragment">
 
 
@@ -36,5 +36,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="October" />
+
+        <include
+            android:id="@+id/selected_daily_forecast_layout"
+            layout="@layout/selected_daily_forecast_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="70dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

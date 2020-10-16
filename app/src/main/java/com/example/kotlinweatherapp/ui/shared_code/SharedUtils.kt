@@ -1,6 +1,7 @@
 package com.example.kotlinweatherapp.ui.shared_code
 
 import android.os.Build
+import android.os.Build.VERSION_CODES.M
 import android.view.View
 import android.view.WindowManager
 import androidx.core.content.res.ResourcesCompat
@@ -15,7 +16,7 @@ fun checkIfItemIsAtTheBottom(list: ArrayList<*>, itemPosition: Int): Boolean {
     return lastItemPosition == itemPosition
 }
 
-fun Fragment.removeToolbarAndBottomNav() {
+fun Fragment.removeToolbarAndBottomNav(colorInt: Int = R.color.line_grey) {
     val mainActivity = (this.activity as MainActivity)
     val gone = View.GONE
 
@@ -26,8 +27,11 @@ fun Fragment.removeToolbarAndBottomNav() {
         mainActivity.apply {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            if (Build.VERSION.SDK_INT >= M) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
             window.statusBarColor =
-                ResourcesCompat.getColor(resources, R.color.line_grey, null)
+                ResourcesCompat.getColor(resources, colorInt, null)
         }
     }
 }
@@ -43,6 +47,9 @@ fun Fragment.addToolbarAndBottomNav() {
         mainActivity.apply {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            if (Build.VERSION.SDK_INT >= M) {
+                window.decorView.systemUiVisibility = 0
+            }
             window.statusBarColor =
                 ResourcesCompat.getColor(resources, R.color.current_forecast_night_time, null)
         }

@@ -12,7 +12,9 @@ import com.example.kotlinweatherapp.network.reverse_geocoding_location.ReverseGe
 import com.example.kotlinweatherapp.ui.find_location.Coordinates
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
@@ -33,8 +35,8 @@ object MainLocationObject{
         return coordinates ?: Coordinates(lon = mockLon, lat = mockLat)
     }
 
-    suspend fun getLocationSuggestionsFromQuery(query: String): ArrayList<Location>? {
-        return LocationItem.locationRetrofitService.getLocationSuggestionsAsync(query = query).await() as ArrayList<Location>?
+    suspend fun getLocationSuggestionsFromQuery(query: String): ArrayList<com.example.kotlinweatherapp.network.location.LocationItem>? {
+        return LocationItem.locationRetrofitService.getLocationSuggestionsAsync(query = query).await() as ArrayList<com.example.kotlinweatherapp.network.location.LocationItem>?
     }
 
     suspend fun getLocationNameFromCoordinatesAsync(coordinates: Coordinates, mainDataBase: MainDataBase?): ReverseGeoCodingLocation? {
@@ -73,6 +75,17 @@ object MainLocationObject{
     suspend fun getLocalLocationAsync(mainDataBase: MainDataBase?): ReverseGeoCodingLocation? {
         return withContext(Dispatchers.IO) {
             mainDataBase?.locationDao?.getLocationDatabaseClass()?.reversedLocation
+        }
+    }
+
+    fun addSelectedLocation(mainDatabase: MainDataBase?, reversedLocation: ReverseGeoCodingLocation) {
+        val locationDatabaseClass = LocationDatabaseClass(reversedLocation = reversedLocation)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.IO) {
+                mainDatabase?.locationDao?.insertLocationDatabaseClass(locationDatabaseClass)
+            }
+
         }
     }
 

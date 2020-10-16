@@ -43,29 +43,12 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
 
-        CoroutineScope(Dispatchers.Main).launch {
-            val mainDataBase = MainDataBase.getInstance(applicationContext)
-            reverseLocation = MainLocationObject.getLocalLocationAsync(mainDataBase)
-            if (reverseLocation == null) navController.navigate(R.id.findLocationFragment)
-        }
-
         binding.locationNameLayout.setOnClickListener {
             navController.navigate(R.id.findLocationFragment)
         }
-
         NavigationUI.setupWithNavController(navView, navController)
 
-        navView.setOnNavigationItemSelectedListener {
-            if (Build.VERSION.SDK_INT >= O) {
-                it.iconTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, android.R.color.white, null))
-            }
-
-            navController.navigate(it.itemId)
-
-            true
-        }
-
-        navView.menu.findItem(navView.selectedItemId)
+        binding.menuBtn.setOnClickListener { navController.navigate(R.id.settingsFragment) }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -85,16 +68,32 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (navController.currentDestination == NavDestination("com.example.kotlinweatherapp.ui.find_location.FindLocationFragment")) {
-            Timber.d("NavDestination is com.example.kotlinweatherapp.ui.find_location.FindLocationFragment")
-            if (reverseLocation != null) navController.popBackStack() else {
-                Toast.makeText(
-                    applicationContext,
-                    "Location is needed to get weather forecast.",
-                    Toast.LENGTH_LONG
-                ).show()
-                finish()
+        CoroutineScope(Dispatchers.Main).launch {
+
+            val mainDataBase = MainDataBase.getInstance(applicationContext)
+            reverseLocation = MainLocationObject.getLocalLocationAsync(mainDataBase)
+            Timber.d("reverseLocation is $reverseLocation")
+            Timber.d("navController.currentDestination is ${navController.currentDestination?.navigatorName}")
+
+            if (navController.currentDestination == NavDestination("com.example.kotlinweatherapp.ui.find_location.FindLocationFragment")) {
+                Timber.d("NavDestination is com.example.kotlinweatherapp.ui.find_location.FindLocationFragment")
+                if (reverseLocation != null) {
+                    navController.popBackStack()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "Location is needed to get weather forecast.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
             }
+            else {
+                super.onBackPressed()
+            }
+
         }
     }
+
+
 }

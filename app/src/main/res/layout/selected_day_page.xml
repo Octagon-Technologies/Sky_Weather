@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.lifecycle.LiveData"/>
+        <import type="com.example.kotlinweatherapp.network.lunar_forecast.LunarForecast"/>
+
+        <variable
+            name="lunarForecast"
+            type="LiveData&lt;LunarForecast&gt;" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:paddingBottom="200dp"
+        android:theme="@style/AppTheme.BlackTextColor">
+
+        <ImageView
+            android:id="@+id/selected_day_weather_icon"
+            android:layout_width="@dimen/_65sdp"
+            android:layout_height="@dimen/_65sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.38"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/dark_sun" />
+
+        <TextView
+            android:id="@+id/selected_day_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:fontFamily="@font/roboto"
+            android:text="27°"
+            android:textSize="@dimen/_50ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/selected_day_weather_icon"
+            app:layout_constraintStart_toEndOf="@+id/selected_day_weather_icon"
+            app:layout_constraintTop_toTopOf="@+id/selected_day_weather_icon" />
+
+        <ImageView
+            android:id="@+id/selected_day_water_plain_image_drop"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_14sdp"
+            app:layout_constraintEnd_toEndOf="@+id/selected_day_weather_icon"
+            app:layout_constraintStart_toStartOf="@+id/selected_day_weather_icon"
+            app:layout_constraintTop_toBottomOf="@+id/selected_day_weather_icon"
+            app:srcCompat="@drawable/dark_drop" />
+
+        <TextView
+            android:id="@+id/selected_day_precipitation_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="@dimen/_6sdp"
+            android:text="@string/precipitation_plain_text"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/selected_day_water_plain_image_drop"
+            app:layout_constraintStart_toEndOf="@+id/selected_day_water_plain_image_drop"
+            app:layout_constraintTop_toTopOf="@+id/selected_day_water_plain_image_drop" />
+
+        <TextView
+            android:id="@+id/selected_day_weather_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="Cloudy"
+            android:textSize="@dimen/_16ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selected_day_precipitation_text" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selected_day_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_28sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selected_day_weather_status" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/selected_sun_constraint_layout"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:layout_constraintStart_toStartOf="@+id/selected_day_recyclerview"
+            app:layout_constraintTop_toBottomOf="@+id/selected_day_recyclerview">
+
+            <ImageView
+                android:id="@+id/selected_sun_image"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_sun_minutes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selected_sun_hours"
+                app:srcCompat="@drawable/dark_sun" />
+
+            <TextView
+                android:id="@+id/selected_sun_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/_9ssp"
+                app:getCurrentSolarHours="@{lunarForecast}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="12 hrs" />
+
+            <TextView
+                android:id="@+id/selected_sun_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_9ssp"
+                app:getCurrentSolarMinutes="@{lunarForecast}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_sun_hours"
+                tools:text="7 mins" />
+
+            <View
+                android:id="@+id/selected_sun_top_line"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/line_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_sun_minutes" />
+
+            <TextView
+                android:id="@+id/selected_sun_rise_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Rise"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_sun_top_line" />
+
+            <TextView
+                android:id="@+id/selected_sun_rise_display_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@{lunarForecast.sunRise}"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_sun_rise_plain_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selected_sun_rise_plain_text"
+                tools:text="6:19" />
+
+            <View
+                android:id="@+id/selected_sun_middle_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/line_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_sun_rise_plain_text" />
+
+            <TextView
+                android:id="@+id/selected_sun_set_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Set"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_sun_middle_line" />
+
+            <TextView
+                android:id="@+id/selected_sun_set_display_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@{lunarForecast.sunSet}"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_sun_set_plain_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selected_sun_set_plain_text"
+                tools:text="18:26" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/selected_moon_constraint_layout"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:layout_constraintEnd_toEndOf="@+id/selected_day_recyclerview"
+            app:layout_constraintTop_toTopOf="@+id/selected_sun_constraint_layout">
+
+            <ImageView
+                android:id="@+id/selected_moon_image"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_moon_minutes"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selected_moon_hours"
+                app:srcCompat="@drawable/dark_moon" />
+
+            <TextView
+                android:id="@+id/selected_moon_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/_9ssp"
+                app:getCurrentMoonHours="@{lunarForecast}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="12 hrs" />
+
+            <TextView
+                android:id="@+id/selected_moon_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_9ssp"
+                app:getCurrentMoonMinutes="@{lunarForecast}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_moon_hours"
+                tools:text="7 mins" />
+
+            <View
+                android:id="@+id/selected_moon_top_line"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/line_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_moon_minutes" />
+
+            <TextView
+                android:id="@+id/selected_moon_rise_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Rise"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_moon_top_line" />
+
+            <TextView
+                android:id="@+id/selected_moon_rise_display_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@{lunarForecast.moonRise}"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_moon_rise_plain_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selected_moon_rise_plain_text"
+                tools:text="6:19" />
+
+            <View
+                android:id="@+id/selected_moon_middle_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/line_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_moon_rise_plain_text" />
+
+            <TextView
+                android:id="@+id/selected_moon_set_plain_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Set"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_moon_middle_line" />
+
+            <TextView
+                android:id="@+id/selected_moon_set_display_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@{lunarForecast.moonSet}"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_moon_set_plain_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selected_moon_set_plain_text"
+                tools:text="18:26" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

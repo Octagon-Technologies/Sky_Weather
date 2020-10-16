@@ -46,7 +46,7 @@
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/_4sdp"
         android:layout_marginLeft="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_125sdp"
+        android:layout_marginTop="@dimen/_140sdp"
         android:layout_marginEnd="@dimen/_4sdp"
         android:layout_marginRight="@dimen/_4sdp"
         android:background="?android:attr/listDivider"

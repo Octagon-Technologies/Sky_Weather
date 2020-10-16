@@ -7,15 +7,11 @@
 
         <import type="androidx.lifecycle.LiveData"/>
         <import type="java.util.ArrayList"/>
-        <import type="com.example.kotlinweatherapp.network.location.Location"/>
+        <import type="com.example.kotlinweatherapp.network.location.LocationItem"/>
 
         <variable
             name="locationItems"
-            type="LiveData&lt;ArrayList&lt;Location&gt;&gt;" />
-
-        <variable
-            name="navController"
-            type="androidx.navigation.NavController"/>
+            type="LiveData&lt;ArrayList&lt;LocationItem&gt;&gt;" />
 
         <variable
             name="findLocationViewModel"
@@ -75,7 +71,6 @@
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/cancel_plain_text"
                 android:textAllCaps="false"
-                cancelInSearchLocation="@{navController}"
                 app:layout_constraintBottom_toBottomOf="@+id/search_query"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/search_query"
@@ -87,7 +82,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@android:color/transparent"
-                getNavController="@{navController}"
                 getFindLocationViewModel="@{findLocationViewModel}"
                 getLifecycleOwner="@{fragmentLifecycleOwner}"
                 android:drawableStart="@drawable/ic_check_circle_black"

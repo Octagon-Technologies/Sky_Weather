@@ -14,19 +14,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
+        addLocationToStorage="@{locationItem}"
         android:theme="@style/AppTheme.BlackTextColor">
 
         <TextView
             android:id="@+id/search_city_name"
-            android:layout_width="wrap_content"
+            getSearchResultCityName="@{locationItem}"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/dark_black"
             android:textSize="@dimen/_12ssp"
-            getSearchResultCityName="@{locationItem.address}"
+            app:layout_constraintEnd_toStartOf="@+id/add_to_favourites_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Lagos, Lagos, NG" />

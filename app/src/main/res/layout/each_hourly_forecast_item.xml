@@ -12,6 +12,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="+@id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/current_forecast_night_time"
@@ -70,7 +71,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:fontFamily="@font/roboto_medium"
-            android:text="@{String.valueOf(eachHourlyForecast.temp.value.intValue()) ?? `--`}"
+            android:text="@{String.valueOf(eachHourlyForecast.temp.value.intValue()) + `°` ?? `--`}"
             android:textSize="@dimen/_20sdp"
             app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
             app:layout_constraintStart_toEndOf="@+id/weather_icon"

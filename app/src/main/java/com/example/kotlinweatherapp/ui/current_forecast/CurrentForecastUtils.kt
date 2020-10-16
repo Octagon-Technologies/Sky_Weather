@@ -83,7 +83,8 @@ fun getWeedPollen(weedPollen: Int?): String {
 
 fun getLunarBasicTime(lunarForecast: LunarForecast?): Long {
     val actualMoonRise = lunarForecast?.moonRise?.replace(":", "")?.toLong() ?: 1900  // 22:46 -> 2246
-    val actualMoonSet = (lunarForecast?.moonSet?.replace(":", "")?.toLong())?.plus(2400) ?: 3100 // 10:17 -> 3417
+    val actualMoonSet = (lunarForecast?.moonSet?.replace(":", "")?.toLong()) ?: 3100 // 10:17 -> 3417
+    if (actualMoonSet < actualMoonRise) actualMoonSet.plus(2400)
 
     Timber.d("Actual time is ${actualMoonSet - actualMoonRise}")
     val lunarHours = (actualMoonSet - actualMoonRise).toString().take(2).toLong() + (actualMoonSet - actualMoonRise).toString().takeLast(2).toLong() / 60
@@ -137,7 +138,15 @@ fun getBasicForecastConditions(singleForecast: SingleForecast?): ArrayList<EachW
                     if (temp?.value?.toInt() == feelsLike?.value?.toInt()) {
                         feelsLike?.value?.toInt() ?: 24
                     } else {
-                        Random.nextInt(temp?.value?.toInt() ?: 24, feelsLike?.value?.toInt() ?: 28)
+                        try {
+                            Random.nextInt(
+                                temp?.value?.toInt() ?: 24,
+                                feelsLike?.value?.toInt() ?: 28
+                            )
+                        }
+                        catch (e: IllegalArgumentException) {
+                            feelsLike?.value?.toInt() ?: 28
+                        }
                     }
                 }°"
             )

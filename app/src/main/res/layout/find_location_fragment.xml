@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        android:theme="@style/AppTheme.BlackTextColor"
+        android:theme="@style/DefaultLayout.BlackTextColor"
         tools:context=".ui.find_location.FindLocationFragment">
 
 
@@ -236,6 +236,7 @@
                     android:id="@+id/favourite_recycler_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    getFavouriteLocations="@{viewModel.favouriteLocationsList}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/favourites_line" />
@@ -246,7 +247,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="80dp"
                     android:fontFamily="@font/coda"
                     android:text="@string/recent_plain_text"
                     android:textSize="@dimen/_11ssp"

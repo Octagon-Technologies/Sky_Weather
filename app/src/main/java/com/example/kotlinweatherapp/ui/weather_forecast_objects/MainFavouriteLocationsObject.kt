@@ -51,10 +51,16 @@ object MainFavouriteLocationsObject {
         }
     }
 
-     suspend fun getFavouriteLocationsAsync(mainDataBase: MainDataBase?): ArrayList<LocationItem?>? {
+     suspend fun getFavouriteLocationsAsync(mainDataBase: MainDataBase?): ArrayList<LocationItem>? {
          return try {
              withContext(Dispatchers.IO) {
-                 ArrayList() //mainDataBase?.favouriteLocationDao?.getFavouriteLocationsDatabaseClass()
+                 val arrayOfLocationItems = ArrayList<LocationItem>()
+                 val list = mainDataBase?.favouriteLocationDao?.getFavouriteLocationsDatabaseClass()
+                 list?.forEach {
+                     arrayOfLocationItems.add(it.favouriteLocation)
+                 }
+
+                 arrayOfLocationItems
              }
          } catch (io: IOException) {
              Timber.e(io)

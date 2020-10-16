@@ -17,7 +17,7 @@
         app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/dailyForecast"
+        android:id="@+id/futureForecastFragment"
         android:icon="@drawable/daily_calender"
         android:title="Daily"
         app:itemIconTint="@drawable/bottom_nav_icon_color_selector"

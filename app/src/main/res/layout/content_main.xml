@@ -27,7 +27,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:labelVisibilityMode="labeled"
-            style="@style/CustomBottomNavBarStyle"
             android:background="@color/main_image_color_night_time"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

@@ -15,12 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFFFF"
-        app:behavior_hideable="false"
-        app:behavior_peekHeight="40dp"
-        android:theme="@style/AppTheme.BlackTextColor"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        android:theme="@style/AppTheme.BlackTextColor">
 
-        <View
+    <View
             android:id="@+id/top_bar_line"
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_3sdp"
@@ -41,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_bar_line"
-            tools:text="23:00, Tuesday" />
+            android:text="23:00, Tuesday" />
 
         <View
             android:id="@+id/middle_line"
