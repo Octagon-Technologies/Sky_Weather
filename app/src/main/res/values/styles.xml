@@ -36,7 +36,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textFontWeight">320</item>
+<!--        <item name="android:textFontWeight">320</item>-->
         <item name="android:textSize">14sp</item>
     </style>
 
@@ -44,7 +44,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textFontWeight">420</item>
+<!--        <item name="android:textFontWeight">420</item>-->
     </style>
 
     <style name="CustomBottomNavBarStyle" parent="Widget.MaterialComponents.BottomNavigationView">
