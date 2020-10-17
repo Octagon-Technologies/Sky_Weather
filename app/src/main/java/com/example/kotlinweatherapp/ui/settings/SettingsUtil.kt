@@ -107,7 +107,7 @@ fun ConstraintLayout.doTimeFormatChange(viewModel: SettingsViewModel, binding: S
     }
 }
 
-@BindingAdapter("doDisplayModeChange")
+//@BindingAdapter("doDisplayModeChange")
 fun ConstraintLayout.doDisplayModeChange(viewModel: SettingsViewModel, binding: SettingsFragmentBinding) {
     val basicSettingsDataClass = viewModel.basicSettingsDataClass.value
     if (basicSettingsDataClass?.windDirectionUnits == WindDirectionUnits.CARDINAL) {
