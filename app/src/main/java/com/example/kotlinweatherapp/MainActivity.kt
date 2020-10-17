@@ -1,8 +1,6 @@
 package com.example.kotlinweatherapp
 
-import android.content.res.ColorStateList
 import android.os.Build
-import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -10,9 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -37,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.activity = this
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -66,6 +62,10 @@ class MainActivity : AppCompatActivity() {
         Timber.d("menuImageOnClick called")
     }
 
+    fun onPickCountryLinearLayoutOnClick() {
+        Toast.makeText(this, "You found magic :D", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         CoroutineScope(Dispatchers.Main).launch {
@@ -87,8 +87,7 @@ class MainActivity : AppCompatActivity() {
                     ).show()
                     finish()
                 }
-            }
-            else {
+            } else {
                 super.onBackPressed()
             }
 

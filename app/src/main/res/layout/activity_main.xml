@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="activity"
+            type="com.example.kotlinweatherapp.MainActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="12dp"
-                android:onClick="pickCountryLinearLayoutOnClick"
+                android:onClick="@{()-> activity.onPickCountryLinearLayoutOnClick()}"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
