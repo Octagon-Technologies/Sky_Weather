@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Sky Weather</string>
     <string name="current_conditions">Current Conditions</string>
     <string name="temp_unit_C">C</string>
     <string name="weather_image_content_description">Weather Image</string>
