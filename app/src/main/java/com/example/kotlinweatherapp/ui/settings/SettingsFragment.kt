@@ -57,8 +57,8 @@ class SettingsFragment : Fragment() {
         binding.unitsRightEachItemName.doTextChange(units == Units.METRIC, true)
         binding.unitsRightEachItemDescription.doTextChange(units == Units.METRIC, false)
 
-        binding.unitsLeftLayout.doUnitsChange(viewModel)
-        binding.unitsRightLayout.doUnitsChange(viewModel)
+        binding.unitsLeftLayout.doUnitsChange(viewModel, binding)
+        binding.unitsRightLayout.doUnitsChange(viewModel, binding)
     }
 
     private fun BasicSettingsDataClass.updateWindLayout() {
@@ -67,8 +67,8 @@ class SettingsFragment : Fragment() {
         binding.windRightEachItemName.doTextChange(windDirectionUnits == WindDirectionUnits.DEGREES, true)
         binding.windRightEachItemDescription.doTextChange(windDirectionUnits == WindDirectionUnits.DEGREES, false)
 
-        binding.windLeftLayout.doWindDirectionChange(viewModel)
-        binding.windRightLayout.doWindDirectionChange(viewModel)
+        binding.windLeftLayout.doWindDirectionChange(viewModel, binding)
+        binding.windRightLayout.doWindDirectionChange(viewModel, binding)
     }
 
     private fun BasicSettingsDataClass.updateTimeLayout() {
@@ -77,16 +77,16 @@ class SettingsFragment : Fragment() {
         binding.timeRightEachItemName.doTextChange(timeFormat == TimeFormat.FULL_DAY, true)
         binding.timeRightEachItemDescription.doTextChange(timeFormat == TimeFormat.FULL_DAY, false)
 
-        binding.timeLeftLayout.doTimeFormatChange(viewModel)
-        binding.timeRightLayout.doTimeFormatChange(viewModel)
+        binding.timeLeftLayout.doTimeFormatChange(viewModel, binding)
+        binding.timeRightLayout.doTimeFormatChange(viewModel, binding)
     }
 
     private fun BasicSettingsDataClass.updateDisplayLayout() {
         binding.displayLeftEachItemName.doTextChange(displayMode == DisplayMode.LIGHT, true)
         binding.displayRightEachItemName.doTextChange(displayMode == DisplayMode.LIGHT, true)
 
-        binding.displayLeftLayout.doDisplayModeChange(viewModel)
-        binding.displayRightLayout.doDisplayModeChange(viewModel)
+        binding.displayLeftLayout.doDisplayModeChange(viewModel, binding)
+        binding.displayRightLayout.doDisplayModeChange(viewModel, binding)
     }
 
     override fun onStart() {
