@@ -5,20 +5,33 @@
 
     <data>
 
+        <import type="com.octagon_technologies.sky_weather.ui.current_forecast.EachWeatherDescription" />
+
+        <import type="com.octagon_technologies.sky_weather.Theme" />
+
+        <variable
+            name="eachWeatherDescription"
+            type="EachWeatherDescription" />
+
+        <variable
+            name="theme"
+            type="Theme" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:paddingTop="14dp">
+        tools:background="@color/light_theme_blue"
+        android:paddingTop="@dimen/_12sdp">
 
         <View
             android:id="@+id/bottom_line"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="14dp"
-            android:background="@color/default_navbar_color"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            tools:background="@color/light_white"
+            android:background="@{theme == Theme.DARK ? @color/default_navbar_color : @color/light_white }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description_name" />
@@ -27,22 +40,26 @@
             android:id="@+id/description_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/coda"
-            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif"
+            android:text="@{eachWeatherDescription.descriptionName ?? `--`}"
+            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Temperature" />
+            tools:text="Temperature"
+            tools:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/description_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/advent_pro_semibold"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/_18ssp"
+            android:fontFamily="sans-serif-medium"
+            android:text="@{eachWeatherDescription.descriptionData}"
+            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+            android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="23°" />
+            tools:text="23°"
+            tools:textColor="@android:color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

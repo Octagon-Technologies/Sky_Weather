@@ -10,4 +10,13 @@
     <color name="main_image_color_night_time">#2A6088</color>
     <color name="default_navbar_color">#737272</color>
     <color name="dark_black">#272525</color>
+
+    <color name="light_theme_blue">#2072AF</color>
+    <color name="dark_theme_blue">#084673</color>
+
+    <color name="light_black">#525252</color>
+    <color name="light_white">#D1CCCC</color>
+
+    <color name="bottom_nav_bar_unselected">#C1BEBE</color>
+    <color name="dark_orange">#F4460F</color>
 </resources>

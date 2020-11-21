@@ -5,37 +5,78 @@
 
     <data>
 
+        <import type="com.xwray.groupie.GroupAdapter" />
+
+        <import type="com.xwray.groupie.GroupieViewHolder" />
+
+        <import type="com.octagon_technologies.sky_weather.Units" />
+
+        <variable
+            name="units"
+            type="Units" />
+
+        <variable
+            name="groupAdapter"
+            type="GroupAdapter&lt;GroupieViewHolder&gt;" />
+
+        <variable
+            name="dailyForecastViewModel"
+            type="com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel" />
+
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/current_forecast_night_time"
-        android:theme="@style/AppTheme.WhiteTextColor"
-        tools:context=".ui.future_forecast.daily_forecast.DailyForecastFragment">
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:theme="@style/AppTheme.WhiteTextColor"
+            tools:background="@color/dark_theme_blue"
+            tools:context=".ui.daily_forecast.DailyForecastFragment">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/day_recyclerview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_16sdp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/month_text" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/day_recyclerview"
+                addDailyForecast="@{dailyForecastViewModel.dailyForecast}"
+                addDailyGroupAdapter="@{groupAdapter}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/month_text" />
 
-        <TextView
-            android:id="@+id/month_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="@dimen/_17sdp"
-            android:fontFamily="@font/roboto_medium"
-            android:textSize="@dimen/_16ssp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="October" />
+            <TextView
+                android:id="@+id/month_text"
+                getMonthFromDate="@{dailyForecastViewModel.dailyForecast.get(0).observationTime}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_17sdp"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_16ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="October" />
+
+            <TextView
+                android:id="@+id/daily_temp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:fontFamily="@font/coda"
+                android:text="@{ units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@+id/month_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/month_text"
+                tools:text="@string/hourly_forecast_temp_unit_C" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
             android:id="@+id/selected_daily_forecast_layout"
@@ -43,10 +84,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="70dp"
+            app:behavior_peekHeight="@dimen/_60sdp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

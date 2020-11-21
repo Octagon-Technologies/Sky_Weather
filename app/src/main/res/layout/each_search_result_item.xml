@@ -4,55 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="com.octagon_technologies.sky_weather.Theme" />
+
         <variable
             name="locationItem"
-            type="com.example.kotlinweatherapp.network.location.LocationItem" />
+            type="com.octagon_technologies.sky_weather.network.location.LocationItem" />
+
+        <variable
+            name="theme"
+            type="Theme" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        addLocationToStorage="@{locationItem}"
-        android:theme="@style/AppTheme.BlackTextColor">
+        android:background="@android:color/transparent"
+        tools:background="@color/dark_black">
 
         <TextView
             android:id="@+id/search_city_name"
-            getSearchResultCityName="@{locationItem}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginLeft="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_14sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_20sdp"
             android:fontFamily="sans-serif-medium"
-            android:textColor="@color/dark_black"
+            android:text="@{locationItem.displayName}"
+            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintEnd_toStartOf="@+id/add_to_favourites_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Lagos, Lagos, NG" />
+            tools:text="Lagos, Lagos, NG"
+            tools:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/add_to_favourites_btn"
+            changeIconTintFromTint="@{theme}"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_20sdp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            addToFavouriteIcon="@{locationItem}"
+            android:layout_marginEnd="@dimen/_14sdp"
+            android:layout_marginRight="@dimen/_14sdp"
+            android:contentDescription="@string/add_city_to_favourites_plain_text"
             app:layout_constraintBottom_toBottomOf="@+id/search_city_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/search_city_name"
             app:srcCompat="@drawable/ic_add_circle_outline_black"
-            android:contentDescription="@string/add_city_to_favourites_plain_text" />
+            tools:tint="@android:color/white" />
 
         <View
             android:id="@+id/bottom_divider"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_14sdp"
             android:background="@color/line_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,115 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/current_forecast_night_time"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:theme="@style/AppTheme.WhiteTextColor">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/day_text"
+    <data>
+
+        <import type="com.octagon_technologies.sky_weather.network.daily_forecast.EachDailyForecast" />
+
+        <import type="com.octagon_technologies.sky_weather.Units" />
+
+        <variable
+            name="eachDailyForecast"
+            type="EachDailyForecast" />
+
+        <variable
+            name="units"
+            type="Units" />
+
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_medium"
-        android:textSize="@dimen/_11ssp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="S" />
+        android:background="@android:color/transparent"
+        android:paddingLeft="@dimen/_14sdp"
+        android:paddingRight="@dimen/_14sdp"
+        android:theme="@style/AppTheme.WhiteTextColor"
+        tools:background="@color/dark_theme_blue">
 
-    <TextView
-        android:id="@+id/date_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/day_text"
-        tools:text="7" />
+        <TextView
+            android:id="@+id/day_text"
+            getFirstLetterOfDay="@{eachDailyForecast.observationTime}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="S" />
 
-    <ImageView
-        android:id="@+id/weather_image"
-        android:layout_width="@dimen/_26sdp"
-        android:layout_height="@dimen/_26sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_text"
-        app:srcCompat="@drawable/cloudy" />
+        <TextView
+            android:id="@+id/date_text"
+            getDayOfMonth="@{eachDailyForecast.observationTime}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/day_text"
+            tools:text="7" />
 
-    <View
-        android:id="@+id/bottom_divider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/_4sdp"
-        android:layout_marginLeft="@dimen/_4sdp"
-        android:layout_marginTop="@dimen/_140sdp"
-        android:layout_marginEnd="@dimen/_4sdp"
-        android:layout_marginRight="@dimen/_4sdp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weather_image" />
+        <ImageView
+            android:id="@+id/weather_image"
+            addObservationTime="@{eachDailyForecast.observationTime}"
+            getWeatherIconFrom="@{eachDailyForecast.weatherCode}"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_text"
+            app:srcCompat="@drawable/cloudy"
+            tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/temp_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:importantForAccessibility="no"
-        android:src="@drawable/daily_forecast_range_image"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weather_image" />
+        <View
+            android:id="@+id/bottom_divider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_170sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weather_image" />
 
-    <TextView
-        android:id="@+id/max_temp_of_the_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:fontFamily="@font/roboto_medium"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintBottom_toTopOf="@+id/temp_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="28°" />
+        <ImageView
+            android:id="@+id/temp_bar"
+            addUnits="@{units}"
+            getBarHeightFromTempRange="@{eachDailyForecast.temp}"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/daily_forecast_range_image"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weather_image" />
 
-    <TextView
-        android:id="@+id/min_temp_of_the_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/roboto_medium"
-        android:textColor="#C6C6C6"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temp_bar"
-        tools:text="16°" />
+        <TextView
+            android:id="@+id/max_temp_of_the_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintBottom_toTopOf="@+id/temp_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="28°" />
 
-    <TextView
-        android:id="@+id/humidity_display_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/roboto_medium"
-        android:importantForAccessibility="no"
-        android:textSize="@dimen/_12ssp"
-        app:layout_constraintEnd_toEndOf="@+id/bottom_divider"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_divider"
-        tools:text="56%" />
+        <TextView
+            android:id="@+id/min_temp_of_the_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temp_bar"
+            tools:text="16°" />
 
-    <ImageView
-        android:id="@+id/humidity_icon"
-        android:layout_width="@dimen/_14sdp"
-        android:layout_height="@dimen/_14sdp"
-        android:contentDescription="@string/drop_of_water_content_description"
-        app:layout_constraintBottom_toBottomOf="@+id/humidity_display_text"
-        app:layout_constraintEnd_toStartOf="@+id/humidity_display_text"
-        app:layout_constraintStart_toStartOf="@+id/bottom_divider"
-        app:layout_constraintTop_toTopOf="@+id/humidity_display_text"
-        app:srcCompat="@drawable/drop" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/humidity_display_text"
+            getAverageHumidity="@{eachDailyForecast.humidity}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintEnd_toEndOf="@+id/bottom_divider"
+            app:layout_constraintTop_toBottomOf="@+id/bottom_divider"
+            tools:text="56%" />
+
+        <ImageView
+            android:id="@+id/humidity_icon"
+            android:layout_width="@dimen/_13sdp"
+            android:layout_height="@dimen/_13sdp"
+            android:contentDescription="@string/drop_of_water_content_description"
+            app:layout_constraintBottom_toBottomOf="@+id/humidity_display_text"
+            app:layout_constraintEnd_toStartOf="@+id/humidity_display_text"
+            app:layout_constraintStart_toStartOf="@+id/bottom_divider"
+            app:layout_constraintTop_toTopOf="@+id/humidity_display_text"
+            app:srcCompat="@drawable/drop" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

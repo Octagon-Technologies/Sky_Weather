@@ -6,30 +6,16 @@
         android:id="@+id/currentForecastFragment"
         android:icon="@drawable/today"
         android:title="Today"
-        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
-        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
         app:showAsAction="ifRoom|withText" />
     <item
         android:id="@+id/hourlyForecastFragment"
         android:icon="@drawable/clock"
         android:title="Hourly"
-        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
-        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/futureForecastFragment"
+        android:id="@+id/dailyForecastFragment"
         android:icon="@drawable/daily_calender"
         android:title="Daily"
-        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
-        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
-        app:showAsAction="ifRoom|withText" />
-
-    <item
-        android:id="@+id/radarFragment"
-        android:icon="@drawable/radar"
-        android:title="Radar"
-        app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
-        app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
         app:showAsAction="ifRoom|withText" />
 
 

@@ -5,20 +5,43 @@
 
     <data>
 
+        <import type="com.xwray.groupie.GroupAdapter" />
+
+        <import type="com.xwray.groupie.GroupieViewHolder" />
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <import type="com.octagon_technologies.sky_weather.TimeFormat" />
+
+        <import type="com.octagon_technologies.sky_weather.Units" />
+
+        <variable
+            name="units"
+            type="LiveData&lt;Units&gt;" />
+
+        <variable
+            name="groupAdapter"
+            type="GroupAdapter&lt;GroupieViewHolder&gt;" />
+
+        <variable
+            name="timeFormat"
+            type="LiveData&lt;TimeFormat&gt;" />
+
         <variable
             name="viewModel"
-            type="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastViewModel" />
+            type="com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel" />
 
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/current_forecast_night_time"
+            android:layout_marginBottom="@dimen/_50sdp"
             android:theme="@style/AppTheme.WhiteTextColor"
             tools:context=".ui.hourly_forecast.HourlyForecastFragment">
 
@@ -28,9 +51,9 @@
                 formatIsoDate="@{viewModel.hourlyForecast.get(0)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginLeft="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_14sdp"
                 android:fontFamily="@font/roboto_medium"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/_16ssp"
@@ -40,10 +63,12 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hourly_recycler_view"
+                addGroupAdapter="@{groupAdapter}"
+                addRecyclerViewTimeFormat="@{timeFormat}"
+                getHourlyForecastRecyclerView="@{viewModel.hourlyForecast}"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="16dp"
-                app:getHourlyForecastRecyclerView="@{viewModel.hourlyForecast}"
+                android:layout_marginTop="@dimen/_14sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,23 +78,26 @@
                 android:id="@+id/temp_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_20sdp"
                 android:fontFamily="@font/coda"
-                android:text="@string/hourly_forecast_temp_unit_C"
+                android:textSize="@dimen/_14ssp"
+                android:text="@{ units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
                 app:layout_constraintBottom_toBottomOf="@+id/top_day_text"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/top_day_text" />
+                app:layout_constraintTop_toTopOf="@+id/top_day_text"
+                tools:text="@string/hourly_forecast_temp_unit_C" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
             android:id="@+id/selected_hourly_forecast_layout"
             layout="@layout/selected_hourly_forecast_layout"
-            app:behavior_hideable="false"
-            app:behavior_peekHeight="60dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="@dimen/_50sdp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

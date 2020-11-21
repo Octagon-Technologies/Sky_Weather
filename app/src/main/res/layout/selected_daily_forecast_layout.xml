@@ -1,81 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <View
-        android:id="@+id/top_bar_line"
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_3sdp"
-        android:layout_marginTop="8dp"
-        android:background="@color/default_navbar_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-    <TextView
-        android:id="@+id/date_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/roboto_medium"
-        android:text="Monday, October 12"
-        android:textColor="@color/dark_black"
-        android:textSize="@dimen/_14ssp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar_line" />
+        <import type="androidx.lifecycle.LiveData" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/layout_view_pager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+        <import type="com.octagon_technologies.sky_weather.Theme" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/date_text"
-        app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
-        app:tabTextColor="@color/color_black">
+        <import type="com.octagon_technologies.sky_weather.TimeFormat" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/day_tab_item"
+        <import type="com.octagon_technologies.sky_weather.Units" />
+
+        <variable
+            name="dailyForecastViewModel"
+            type="com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel" />
+
+        <variable
+            name="theme"
+            type="LiveData&lt;Theme&gt;" />
+
+        <variable
+            name="timeFormat"
+            type="LiveData&lt;TimeFormat&gt;" />
+
+
+        <variable
+            name="units"
+            type="LiveData&lt;Units&gt;" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
+        tools:background="#FFFFFF">
+
+        <View
+            android:id="@+id/top_bar_line"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_3sdp"
+            android:layout_marginTop="8dp"
+            android:background="@color/default_navbar_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Day" />
+            android:layout_marginTop="@dimen/_14sdp"
+            android:fontFamily="@font/roboto_medium"
+            tools:text="Monday, October 12"
+            isDailySelected="@{true}"
+            addSelectedTimeFormat="@{timeFormat}"
+            formatSelectedDate="@{dailyForecastViewModel.selectedDailyForecast.observationTime}"
+            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+            tools:textColor="@color/dark_black"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_bar_line" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/night_tab_item"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/layout_view_pager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_14sdp"
+            app:tabPadding="@dimen/_8sdp"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date_text"
+            app:tabGravity="fill"
+            app:tabMaxWidth="@dimen/_500sdp"
+            app:tabPaddingEnd="@dimen/_50sdp"
+            app:tabPaddingStart="@dimen/_50sdp"
+            app:tabTextAppearance="@style/CustomTabItem"
+            tools:tabTextColor="@color/dark_black">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/day_tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/day_plain_text" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/night_tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/night_plain_text" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+        <TextView
+            android:id="@+id/temp_unit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Night" />
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <TextView
-        android:id="@+id/temp_unit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:fontFamily="@font/coda"
-        android:text="@string/hourly_forecast_temp_unit_C"
-        android:textColor="@color/color_black"
-        android:textSize="@dimen/_13ssp"
-        app:layout_constraintBottom_toBottomOf="@+id/date_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/date_text" />
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:fontFamily="@font/coda"
+            android:text="@{ units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
+            tools:text="@string/hourly_forecast_temp_unit_C"
+            tools:textColor="@color/dark_black"
+            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/date_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/date_text" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

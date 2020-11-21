@@ -5,19 +5,35 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
+
+        <import type="com.xwray.groupie.GroupAdapter" />
+
+        <import type="com.xwray.groupie.GroupieViewHolder" />
+
+        <import type="com.octagon_technologies.sky_weather.Theme" />
+        <import type="com.octagon_technologies.sky_weather.Units" />
+
+        <variable
+            name="units"
+            type="Units" />
+
+        <variable
+            name="theme"
+            type="Theme" />
 
         <variable
             name="viewModel"
-            type="com.example.kotlinweatherapp.ui.find_location.FindLocationViewModel" />
+            type="com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:theme="@style/DefaultLayout.BlackTextColor"
+        android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
+        android:theme="@style/AppTheme.BlackTextColor"
+        tools:background="@color/dark_black"
         tools:context=".ui.find_location.FindLocationFragment">
 
 
@@ -25,22 +41,25 @@
             android:id="@+id/top_grey_constraint_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/line_grey"
-            android:paddingBottom="16dp"
+            android:background="@{theme == Theme.LIGHT ? @color/line_grey : @color/color_black}"
+            android:paddingBottom="@dimen/_14sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/color_black">
 
             <ImageView
                 android:id="@+id/close_btn"
-                android:layout_width="@dimen/_26sdp"
-                android:layout_height="@dimen/_26sdp"
-                android:layout_marginTop="2dp"
+                changeIconTintFromTint="@{theme}"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:contentDescription="@string/close_button_plain_text"
+                android:padding="@dimen/_4sdp"
                 app:layout_constraintStart_toStartOf="@+id/search_query"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close_black"
-                android:contentDescription="@string/close_button_plain_text" />
+                tools:tint="@android:color/white" />
 
             <TextView
                 android:id="@+id/location_plain_text"
@@ -48,36 +67,42 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/locations_plain_text"
+                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@+id/close_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/close_btn" />
+                app:layout_constraintTop_toTopOf="@+id/close_btn"
+                tools:textColor="@android:color/white" />
 
             <TextView
                 android:id="@+id/temp_unit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
                 android:fontFamily="@font/coda"
-                android:text="@string/hourly_forecast_temp_unit_C"
-                android:textSize="@dimen/_13ssp"
+                android:text="@{units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
+                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:textSize="@dimen/_14ssp"
+                app:layout_constraintBottom_toBottomOf="@+id/close_btn"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/location_plain_text" />
+                app:layout_constraintTop_toTopOf="@+id/close_btn"
+                tools:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/search_query"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
                 android:background="@drawable/find_location_background"
                 android:drawableStart="@drawable/ic_search_black"
                 android:drawableLeft="@drawable/ic_search_black"
-                android:drawablePadding="14dp"
+                android:drawablePadding="@dimen/_15sdp"
                 android:ems="10"
                 android:gravity="start|center_vertical"
                 android:padding="8dp"
@@ -93,7 +118,7 @@
                 android:id="@+id/gps_location_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/_22sdp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -105,22 +130,25 @@
                     android:id="@+id/gps_cardinal_direction_image"
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginLeft="24dp"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginLeft="@dimen/_16sdp"
                     android:contentDescription="@string/drop_of_water_content_description"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/dark_drop" />
+                    app:srcCompat="@drawable/ic_near_me"
+                    changeIconTintFromTint="@{theme}"
+                    tools:tint="@android:color/white" />
 
                 <TextView
                     android:id="@+id/gps_current_plain_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:layout_marginLeft="@dimen/_7sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/current_plain_text"
-                    android:textColor="@android:color/black"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    tools:textColor="@android:color/white"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/gps_cardinal_direction_image"
                     app:layout_constraintStart_toEndOf="@+id/gps_cardinal_direction_image"
@@ -130,9 +158,11 @@
                     android:id="@+id/gps_location_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/_12sdp"
                     android:fontFamily="@font/advent_pro_semibold"
                     android:textSize="@dimen/_16ssp"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    tools:textColor="@android:color/white"
                     app:layout_constraintStart_toStartOf="@+id/gps_cardinal_direction_image"
                     app:layout_constraintTop_toBottomOf="@+id/gps_current_plain_text"
                     tools:text="Upper Hill" />
@@ -143,6 +173,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:textSize="@dimen/_11ssp"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    tools:textColor="@android:color/white"
                     app:layout_constraintStart_toStartOf="@+id/gps_location_city"
                     app:layout_constraintTop_toBottomOf="@+id/gps_location_city"
                     tools:text="Kenya" />
@@ -152,45 +184,50 @@
                 android:id="@+id/enable_location_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginStart="@dimen/_14sdp"
+                android:layout_marginLeft="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_14sdp"
+                android:layout_marginRight="@dimen/_14sdp"
                 android:background="@android:color/transparent"
                 android:orientation="horizontal"
-                android:paddingTop="8dp"
-                android:paddingBottom="10dp"
+                android:paddingTop="@dimen/_6sdp"
+                android:paddingBottom="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/search_query"
-                tools:visibility="gone">
+                tools:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/search_query">
 
                 <ImageView
                     android:id="@+id/enable_location_image"
+                    changeIconTintFromTint="@{theme}"
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_gravity="start|center_vertical"
                     android:contentDescription="@string/drop_of_water_content_description"
-                    android:src="@drawable/dark_drop" />
+                    app:srcCompat="@drawable/ic_near_me" />
 
                 <TextView
                     android:id="@+id/enable_location_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginLeft="@dimen/_8sdp"
                     android:fontFamily="@font/roboto"
-                    tools:text="@string/enable_location_services_plain_text" />
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    tools:text="@string/enable_location_services_plain_text"
+                    tools:textColor="@android:color/white" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_grey_constraint_layout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -201,14 +238,16 @@
                     android:id="@+id/favourites_plain_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/favourites_plain_text"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:textColor="@android:color/white" />
 
                 <View
                     android:id="@+id/favourites_line"
@@ -224,19 +263,21 @@
                     android:id="@+id/empty_favourite_list_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
                     android:gravity="center"
                     android:text="@string/you_haven_t_added_any_locations_yet_plain_text"
-                    android:textColor="@color/color_black"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/favourites_line" />
+                    app:layout_constraintTop_toBottomOf="@+id/favourites_line"
+                    tools:textColor="@android:color/white" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/favourite_recycler_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    getFavouriteLocations="@{viewModel.favouriteLocationsList}"
+                    android:layout_marginTop="@dimen/_6sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/favourites_line" />
@@ -245,21 +286,23 @@
                     android:id="@+id/recent_plain_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginStart="@dimen/_14sdp"
+                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginTop="@dimen/_60sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/recent_plain_text"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/favourite_recycler_view" />
+                    app:layout_constraintTop_toBottomOf="@+id/favourite_recycler_view"
+                    tools:textColor="@android:color/white" />
 
                 <View
                     android:id="@+id/recent_line"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:background="@color/line_grey"
                     android:layout_marginTop="8dp"
+                    android:background="@color/line_grey"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recent_plain_text" />
@@ -268,13 +311,15 @@
                     android:id="@+id/empty_recent_list_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
                     android:gravity="center"
                     android:text="@string/it_looks_like_your_recent_history_is_empty_plain_text"
-                    android:textColor="@color/color_black"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/recent_line" />
+                    app:layout_constraintTop_toBottomOf="@+id/recent_line"
+                    tools:textColor="@android:color/white" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recent_recycler_view"
@@ -288,27 +333,33 @@
                     android:id="@+id/edit_favourites_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:padding="4dp"
-                    android:text="@string/edit_plain_text"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
+                    android:onClick="@{() -> viewModel.deleteAllFavourite()}"
+                    android:padding="@dimen/_4sdp"
+                    android:text="@string/clear_all_plain_text"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/favourites_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/favourites_plain_text" />
+                    app:layout_constraintTop_toTopOf="@+id/favourites_plain_text"
+                    tools:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/clear_recent_history_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:padding="4dp"
+                    android:layout_marginEnd="@dimen/_14sdp"
+                    android:layout_marginRight="@dimen/_14sdp"
+                    android:onClick="@{() -> viewModel.deleteAllRecent()}"
+                    android:padding="@dimen/_4sdp"
                     android:text="@string/clear_all_plain_text"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/recent_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/recent_plain_text" />
+                    app:layout_constraintTop_toTopOf="@+id/recent_plain_text"
+                    tools:textColor="@android:color/white" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

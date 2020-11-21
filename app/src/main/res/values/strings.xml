@@ -7,7 +7,7 @@
     <string name="drop_of_water_content_description">Drop of water</string>
     <string name="hourly_forecast_temp_unit_C">°C</string>
     <string name="hourly_forecast_temp_unit_F">°F</string>
-    <string name="precipitation_plain_text">Precipitation</string>
+    <string name="precipitation_plain_text">Precipitation: %d%</string>
     <string name="favourites_plain_text">FAVOURITES</string>
     <string name="recent_plain_text">RECENT</string>
     <string name="edit_plain_text">Edit</string>
@@ -20,11 +20,50 @@
     <string name="locations_plain_text">Locations</string>
     <string name="close_button_plain_text">Close Button</string>
     <string name="add_city_to_favourites_plain_text">Add City to Favourites</string>
-    <string name="use_current_location_plain_text">USE CURRENT LOCATION</string>
+    <string name="use_current_location_plain_text">Use Current Location</string>
     <string name="cancel_plain_text">Cancel</string>
     <string name="settings_plain_text">Settings</string>
     <string name="loading_plain_text">Loading</string>
+
+    <string name="temp_format">%s°</string>
+    <string name="feelslike_format">FeelsLike %s°</string>
+
+    <string name="hrs_format">%s hrs</string>
+    <string name="mins_format">%s mins</string>
+    <string name="c_plain_text">C</string>
+    <string name="f_plain_text">F</string>
+    <string name="see_weekly_outlook_plain_text">See Weekly Outlook→</string>
+    <string name="see_more_plain_text">See More →</string>
+    <string name="current_conditions_plain_text">Current Conditions</string>
+    <string name="set_plain_text">Set</string>
+    <string name="rise_plain_text">Rise</string>
+    <string name="today_s_details_plain_text">Today\'s Details</string>
+    <string name="looking_ahead_plain_text">Looking Ahead →</string>
+    <string name="allergy_outlook_plain_text">Allergy Outlook</string>
+    <string name="open_menu_plain_text">Open Menu</string>
+    <string name="in_24_hours_plain_text">In 24 hours:</string>
+    <string name="in_6_hours_plain_text">In 6 hours:</string>
+    <string name="in_1_hour_plain_text">In 1 hour:</string>
+    <string name="day_plain_text">Day</string>
+    <string name="night_plain_text">Night</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="imperial_plain_text">Imperial</string>
+    <string name="units_plain_text">UNITS</string>
+    <string name="f_mph_in_plain_text">°F, mph, in</string>
+    <string name="metric_plain_text">Metric</string>
+    <string name="c_kph_mm_plain_text">°C, kph, mm</string>
+    <string name="wind_direction_plain_text">WIND DIRECTION</string>
+    <string name="cardinal_plain_text">Cardinal</string>
+    <string name="n_e_s_w_plain_text">N, E, S, W</string>
+    <string name="degrees_plain_text">Degrees</string>
+    <string name="_0_360_plain_text">0° - 360°</string>
+    <string name="time_format_plain_text">TIME FORMAT</string>
+    <string name="_12_hour_plain_text">12 Hour</string>
+    <string name="_2_pm_3_pm_etc_plain_text">2 PM, 3 PM .etc</string>
+    <string name="_24_hour_plain_text">24 Hour</string>
+    <string name="_12_00_13_00_etc_plain_text">12:00, 13:00 .etc</string>
+    <string name="display_mode_plain_text">DISPLAY MODE</string>
+    <string name="light_plain_text">Light</string>
+    <string name="dark_plain_text">Dark</string>
 </resources>

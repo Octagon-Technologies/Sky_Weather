@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <import type="com.octagon_technologies.sky_weather.network.lunar_forecast.LunarForecast" />
+
+        <import type="com.octagon_technologies.sky_weather.Theme" />
+
+        <import type="com.octagon_technologies.sky_weather.TimeFormat" />
+
+        <import type="com.octagon_technologies.sky_weather.network.selected_daily_forecast.SelectedDailyForecast" />
+
+
+        <variable
+            name="timeFormat"
+            type="LiveData&lt;TimeFormat&gt;" />
+
+        <variable
+            name="lunarForecast"
+            type="LiveData&lt;LunarForecast&gt;" />
+
+        <variable
+            name="theme"
+            type="LiveData&lt;Theme&gt;" />
+
+        <variable
+            name="selectedDailyForecast"
+            type="LiveData&lt;SelectedDailyForecast&gt;" />
+
+        <variable
+            name="isDay"
+            type="Boolean" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:paddingBottom="@dimen/_20sdp"
+            tools:background="@android:color/white"
+            tools:theme="@style/AppTheme.BlackTextColor">
+
+            <ImageView
+                android:id="@+id/selected_day_weather_icon"
+                changeWeatherIconTint="@{theme}"
+                isDayForWeatherIcon="@{isDay}"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.38"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/sun"
+                tools:tint="@color/dark_orange" />
+
+            <TextView
+                android:id="@+id/selected_day_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="@{String.valueOf(isDay == true ? selectedDailyForecast.temp.get(1).max.value.intValue() : selectedDailyForecast.temp.get(0).min.value.intValue()) + `°`}"
+                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:textSize="@dimen/_40ssp"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_day_weather_icon"
+                app:layout_constraintStart_toEndOf="@+id/selected_day_weather_icon"
+                app:layout_constraintTop_toTopOf="@+id/selected_day_weather_icon"
+                tools:text="27°"
+                tools:textColor="@color/dark_black" />
+
+            <ImageView
+                android:id="@+id/selected_day_water_plain_image_drop"
+                changeIconTintFromTint="@{theme}"
+                android:layout_width="@dimen/_16sdp"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/_3sdp"
+                android:layout_marginRight="@dimen/_3sdp"
+                app:layout_constraintBottom_toBottomOf="@+id/selected_day_precipitation_text"
+                app:layout_constraintEnd_toStartOf="@+id/selected_day_precipitation_text"
+                app:layout_constraintTop_toTopOf="@+id/selected_day_precipitation_text"
+                app:srcCompat="@drawable/drop" />
+
+            <TextView
+                android:id="@+id/selected_day_precipitation_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_14sdp"
+                android:fontFamily="@font/advent_pro_medium"
+                android:text="@{`Humidity: ` + String.valueOf(isDay == true ? selectedDailyForecast.humidity.get(0).min.value.intValue() : selectedDailyForecast.humidity.get(1).max.value.intValue()) + `%`}"
+                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:textSize="@dimen/_16ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.55"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_day_weather_icon"
+                tools:text="Humidity: 12%"
+                tools:textColor="@color/dark_black" />
+
+            <TextView
+                android:id="@+id/selected_day_weather_status"
+                capitalizeWordsWithUnderscore="@{selectedDailyForecast.weatherCode}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:textSize="@dimen/_16ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_day_precipitation_text"
+                tools:text="Cloudy"
+                tools:textColor="@color/dark_black" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/selected_day_recyclerview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_day_weather_status" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/selected_sun_constraint_layout"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="@dimen/_20sdp"
+                app:layout_constraintStart_toStartOf="@+id/selected_day_recyclerview"
+                app:layout_constraintTop_toBottomOf="@+id/selected_day_recyclerview">
+
+                <ImageView
+                    android:id="@+id/selected_sun_image"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    app:layout_constraintBottom_toBottomOf="@+id/selected_sun_minutes"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selected_sun_hours"
+                    app:srcCompat="@drawable/sun"
+                    app:tint="@color/dark_orange" />
+
+                <TextView
+                    android:id="@+id/selected_sun_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textSize="@dimen/_11ssp"
+                    app:getCurrentSolarHours="@{lunarForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="12 hrs"
+                    tools:textColor="@color/dark_black" />
+
+                <TextView
+                    android:id="@+id/selected_sun_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textSize="@dimen/_11ssp"
+                    app:getCurrentSolarMinutes="@{lunarForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_hours"
+                    tools:text="7 mins"
+                    tools:textColor="@color/dark_black" />
+
+                <View
+                    android:id="@+id/selected_sun_top_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_minutes" />
+
+                <TextView
+                    android:id="@+id/selected_sun_rise_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Rise"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_top_line"
+                    tools:textColor="@color/color_black" />
+
+                <TextView
+                    android:id="@+id/selected_sun_rise_display_time"
+                    addTimeFormatToLunarTime="@{timeFormat}"
+                    changeLunarTime="@{lunarForecast.sunRise}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    app:layout_constraintBottom_toBottomOf="@+id/selected_sun_rise_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selected_sun_rise_plain_text"
+                    tools:text="6:19"
+                    tools:textColor="@color/dark_black" />
+
+                <View
+                    android:id="@+id/selected_sun_middle_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_rise_plain_text" />
+
+                <TextView
+                    android:id="@+id/selected_sun_set_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Set"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_middle_line"
+                    tools:textColor="@color/color_black" />
+
+                <TextView
+                    android:id="@+id/selected_sun_set_display_time"
+                    addTimeFormatToLunarTime="@{timeFormat}"
+                    changeLunarTime="@{lunarForecast.sunSet}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    app:layout_constraintBottom_toBottomOf="@+id/selected_sun_set_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selected_sun_set_plain_text"
+                    tools:text="18:26"
+                    tools:textColor="@color/dark_black" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/selected_moon_constraint_layout"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:layout_constraintEnd_toEndOf="@+id/selected_day_recyclerview"
+                app:layout_constraintTop_toTopOf="@+id/selected_sun_constraint_layout">
+
+                <ImageView
+                    android:id="@+id/selected_moon_image"
+                    android:layout_width="@dimen/_28sdp"
+                    android:layout_height="@dimen/_28sdp"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    app:layout_constraintBottom_toBottomOf="@+id/selected_moon_minutes"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selected_moon_hours"
+                    app:srcCompat="@drawable/moon"
+                    changeIconTintFromTint="@{theme}"
+                    tools:tint="@color/color_black" />
+
+                <TextView
+                    android:id="@+id/selected_moon_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_6sdp"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textSize="@dimen/_11ssp"
+                    getCurrentMoonHours="@{lunarForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="12 hrs"
+                    tools:textColor="@color/dark_black" />
+
+                <TextView
+                    android:id="@+id/selected_moon_minutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textSize="@dimen/_11ssp"
+                    getCurrentMoonMinutes="@{lunarForecast}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_hours"
+                    tools:text="7 mins"
+                    tools:textColor="@color/dark_black" />
+
+                <View
+                    android:id="@+id/selected_moon_top_line"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_minutes" />
+
+                <TextView
+                    android:id="@+id/selected_moon_rise_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Rise"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_top_line"
+                    tools:textColor="@color/color_black" />
+
+                <TextView
+                    android:id="@+id/selected_moon_rise_display_time"
+                    addTimeFormatToLunarTime="@{timeFormat}"
+                    changeLunarTime="@{lunarForecast.moonRise}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    app:layout_constraintBottom_toBottomOf="@+id/selected_moon_rise_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selected_moon_rise_plain_text"
+                    tools:text="6:19"
+                    tools:textColor="@color/dark_black" />
+
+                <View
+                    android:id="@+id/selected_moon_middle_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/line_grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_rise_plain_text" />
+
+                <TextView
+                    android:id="@+id/selected_moon_set_plain_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="Set"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_middle_line"
+                    tools:textColor="@color/color_black" />
+
+                <TextView
+                    android:id="@+id/selected_moon_set_display_time"
+                    addTimeFormatToLunarTime="@{timeFormat}"
+                    changeLunarTime="@{lunarForecast.moonSet}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    app:layout_constraintBottom_toBottomOf="@+id/selected_moon_set_plain_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/selected_moon_set_plain_text"
+                    tools:text="18:26"
+                    tools:textColor="@color/dark_black" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

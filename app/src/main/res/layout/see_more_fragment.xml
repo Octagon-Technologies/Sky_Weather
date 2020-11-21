@@ -4,41 +4,68 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="com.octagon_technologies.sky_weather.Units" />
+
+        <import type="com.octagon_technologies.sky_weather.WindDirectionUnits" />
+
+        <import type="com.xwray.groupie.GroupAdapter" />
+
+        <import type="com.xwray.groupie.GroupieViewHolder" />
+
+        <import type="com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast" />
+
         <variable
-            name="viewModel"
-            type="com.example.kotlinweatherapp.ui.see_more_current.SeeMoreViewModel" />
+            name="singleForecast"
+            type="SingleForecast" />
+
+        <variable
+            name="windDirectionUnits"
+            type="WindDirectionUnits" />
+
+        <variable
+            name="groupAdapter"
+            type="GroupAdapter&lt;GroupieViewHolder&gt;" />
+
+        <variable
+            name="units"
+            type="Units" />
+
     </data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/current_forecast_night_time"
-        android:paddingBottom="@dimen/_20sdp"
+        android:background="@android:color/transparent"
+        android:paddingBottom="@dimen/_24sdp"
         android:theme="@style/AppTheme.WhiteTextColor"
+        tools:background="@color/dark_theme_blue"
         tools:context=".ui.see_more_current.SeeMoreFragment">
 
 
         <ImageView
             android:id="@+id/see_more_weather_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:src="@drawable/sun"
+            addObservationTime="@{singleForecast.observationTime}"
+            getWeatherIconFrom="@{singleForecast.weatherCode}"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_28sdp"
+            android:contentDescription="@string/weather_image_content_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
-            android:contentDescription="@string/weather_image_content_description" />
+            tools:src="@drawable/sun" />
 
         <TextView
             android:id="@+id/see_more_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
             android:fontFamily="@font/coda"
-            android:text="@{String.valueOf(viewModel.currentForecast.temp.value.intValue()) + `°`}"
+            android:text="@{singleForecast.temp.value == null ? `--°` : String.valueOf(singleForecast.temp.value.intValue()) + `°`}"
             android:textSize="@dimen/_40ssp"
             app:layout_constraintBottom_toBottomOf="@+id/see_more_weather_image"
             app:layout_constraintStart_toEndOf="@+id/see_more_weather_image"
@@ -50,36 +77,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/coda"
-            android:text="@string/temp_unit_C"
+            android:text="@{units == Units.IMPERIAL ? `F` : `C`}"
             android:textColor="@color/light_grey"
-            android:textSize="20sp"
+            android:textSize="@dimen/_18ssp"
             app:layout_constraintBottom_toBottomOf="@+id/see_more_temp"
-            app:layout_constraintEnd_toEndOf="@+id/see_more_temp" />
+            app:layout_constraintEnd_toEndOf="@+id/see_more_temp"
+            tools:text="@string/temp_unit_C" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/see_more_description_recyclerview"
+            addSeeMoreAdapter="@{groupAdapter}"
+            addUnitSystemToSeeMore="@{units}"
+            addWindDirectionToSeeMore="@{windDirectionUnits}"
+            getCurrentConditionsForSeeMorePage="@{singleForecast}"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            app:getCurrentConditionsForSeeMorePage="@{viewModel.currentForecast}"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_28sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/see_more_highlight" />
 
-
         <TextView
             android:id="@+id/see_more_highlight"
+            getWeatherStatus="@{singleForecast}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/_28sdp"
             android:fontFamily="@font/roboto_medium"
-            android:textSize="18sp"
-            app:getWeatherStatus="@{viewModel.currentForecast}"
+            android:textSize="@dimen/_16ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/see_more_weather_image"
@@ -95,17 +124,15 @@
 
             <ImageView
                 android:id="@+id/back_btn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="6dp"
-                android:layout_marginLeft="6dp"
-                android:padding="6dp"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:contentDescription="@string/back_button"
+                android:padding="@dimen/_8sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/abc_vector_test"
-                tools:ignore="PrivateResource"
-                android:contentDescription="@string/back_button" />
+                tools:ignore="PrivateResource" />
 
             <TextView
                 android:id="@+id/current_conditions_plain_text"
@@ -120,9 +147,9 @@
 
             <View
                 android:id="@+id/top_line_divider"
-                android:layout_width="358dp"
-                android:layout_height="1dp"
-                android:background="@color/default_navbar_color"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:background="@android:drawable/divider_horizontal_dark"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

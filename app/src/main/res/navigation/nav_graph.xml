@@ -7,22 +7,20 @@
 
     <fragment
         android:id="@+id/currentForecastFragment"
-        android:name="com.example.kotlinweatherapp.ui.current_forecast.CurrentForecastFragment"
+        android:name="com.octagon_technologies.sky_weather.ui.current_forecast.CurrentForecastFragment"
         android:label="CurrentForecastFragment"
         tools:layout="@layout/current_forecast_fragment">
         <action
             android:id="@+id/action_currentForecastFragment_to_findLocationFragment"
             app:destination="@id/findLocationFragment" />
-        <action
-            android:id="@+id/action_currentForecastFragment_to_allergyOutlookFragment"
-            app:destination="@id/allergyOutlookFragment" />
+
         <action
             android:id="@+id/action_currentForecastFragment_to_seeMoreFragment"
             app:destination="@id/seeMoreFragment" />
     </fragment>
     <fragment
         android:id="@+id/findLocationFragment"
-        android:name="com.example.kotlinweatherapp.ui.find_location.FindLocationFragment"
+        android:name="com.octagon_technologies.sky_weather.ui.find_location.FindLocationFragment"
         android:label="FindLocationFragment"
         tools:layout="@layout/find_location_fragment">
         <action
@@ -31,30 +29,32 @@
     </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"
-        android:name="com.example.kotlinweatherapp.ui.search_location.SearchLocationFragment"
+        android:name="com.octagon_technologies.sky_weather.ui.search_location.SearchLocationFragment"
         android:label="SearchLocationFragment"
         tools:layout="@layout/search_location_fragment"/>
-    <fragment
-        android:id="@+id/allergyOutlookFragment"
-        android:name="com.example.kotlinweatherapp.ui.allergy_outlook.AllergyOutlookFragment"
-        android:label="AllergyOutlookFragment"
-        tools:layout="@layout/allergy_outlook_fragment"/>
+
     <fragment
         android:id="@+id/seeMoreFragment"
-        android:name="com.example.kotlinweatherapp.ui.see_more_current.SeeMoreFragment"
+        android:name="com.octagon_technologies.sky_weather.ui.see_more_current.SeeMoreFragment"
         android:label="SeeMoreFragment"
-        tools:layout="@layout/see_more_fragment"/>
+        tools:layout="@layout/see_more_fragment">
+        <argument
+            android:name="singleForecastJson"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/hourlyForecastFragment"
-        android:name="com.example.kotlinweatherapp.ui.hourly_forecast.HourlyForecastFragment"
+        android:name="com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastFragment"
         android:label="HourlyForecastFragment"
         tools:layout="@layout/hourly_forecast_fragment"/>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.kotlinweatherapp.ui.settings.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:name="com.octagon_technologies.sky_weather.ui.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/settings_fragment"/>
     <fragment
-        android:id="@+id/futureForecastFragment"
-        android:name="com.example.kotlinweatherapp.ui.future_forecast.FutureForecastFragment"
-        android:label="FutureForecastFragment" />
+        android:id="@+id/dailyForecastFragment"
+        android:name="com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastFragment"
+        android:label="DailyForecastFragment"
+        tools:layout="@layout/daily_forecast_fragment"/>
 </navigation>
