@@ -124,4 +124,7 @@ dependencies {
 
     // SwipeToRefresh
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    // Switch Button
+    implementation "com.kyleduo.switchbutton:library:2.0.2"
 }

@@ -3,6 +3,7 @@ package com.octagon_technologies.sky_weather.ui.find_location
 import android.Manifest
 import android.content.Context
 import android.location.LocationManager
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.ui.shared_code.MainRecentLocationsObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +29,6 @@ import timber.log.Timber
 
 class FindLocationViewModel(private val context: Context) : ViewModel() {
     val mainDatabase = MainDataBase.getInstance(context)
-    val uiScope = CoroutineScope(Dispatchers.Main)
 
     private var _reversedGeoCodingLocation = MutableLiveData<ReverseGeoCodingLocation>()
     val reversedGeoCodingLocation: LiveData<ReverseGeoCodingLocation>
@@ -51,21 +52,21 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     }
 
     private fun getFavouriteLocations() {
-        uiScope.launch {
+        viewModelScope.launch {
             _favouriteLocationsList.value = MainFavouriteLocationsObject.getFavouriteLocationsAsync(mainDatabase)
             Timber.d("_favouriteLocationsList.value.size is ${_favouriteLocationsList.value?.size}")
         }
     }
 
     private fun getRecentLocations() {
-        uiScope.launch {
+        viewModelScope.launch {
             _recentLocationsList.value = MainRecentLocationsObject.getRecentLocationsAsync(mainDatabase)
             Timber.d("_recentLocationsList.value.size is ${_recentLocationsList.value?.size}")
         }
     }
 
     fun deleteAllFavourite() {
-        uiScope.launch {
+        viewModelScope.launch {
             MainFavouriteLocationsObject.removeAllFavouriteLocations(
                 mainDatabase, _favouriteLocationsList.value
             )
@@ -74,7 +75,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     }
 
     fun deleteAllRecent() {
-        uiScope.launch {
+        viewModelScope.launch {
             MainRecentLocationsObject.removeAllRecentLocations(
                 mainDatabase, _recentLocationsList.value
             )
@@ -82,17 +83,36 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
         }
     }
 
+    fun removeFromRecent(locationItem: LocationItem) {
+        viewModelScope.launch {
+            MainRecentLocationsObject.removeRecentLocationToLocalStorage(
+                mainDatabase,
+                locationItem
+            )
+        }
+    }
 
-    fun editLocationInDatabase(reverseGeoCodingLocation: ReverseGeoCodingLocation) {
-        CoroutineScope(Dispatchers.Main).launch {
+    fun removeFromFavourites(locationItem: LocationItem) {
+        viewModelScope.launch {
+            MainFavouriteLocationsObject.removeFavouriteLocationToLocalStorage(
+                mainDatabase,
+                locationItem
+            )
+        }
+    }
+
+    fun editLocationInDatabase(activity: FragmentActivity?, reverseGeoCodingLocation: ReverseGeoCodingLocation) {
+        viewModelScope.launch {
+            (activity as MainActivity).hasNotificationChanged = false
             MainLocationObject.insertLocationToLocalStorage(
                 mainDatabase, reverseGeoCodingLocation
             )
         }
     }
 
-    fun addCurrentLocationToDatabase() {
-        uiScope.launch {
+    fun addCurrentLocationToDatabase(activity: FragmentActivity?) {
+        viewModelScope.launch {
+            (activity as MainActivity).hasNotificationChanged = false
             MainLocationObject.insertLocationToLocalStorage(mainDatabase,
                 _reversedGeoCodingLocation.value
                     ?: throw RuntimeException("_reversedGeoCodingLocation.value is ${_reversedGeoCodingLocation.value}")

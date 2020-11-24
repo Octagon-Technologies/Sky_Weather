@@ -13,7 +13,7 @@ fun RecyclerView.getFavouriteLocations(
     theme: Theme?,
     arrayOfLocationItem: ArrayList<LocationItem>?,
     groupAdapter: GroupAdapter<GroupieViewHolder>?,
-    lambda: (EachSearchResultItem) -> Job
+    lambda: (EachSearchResultItem) -> Unit
 ) {
     layoutManager = LinearLayoutManager(context)
     adapter = groupAdapter
@@ -34,7 +34,7 @@ fun RecyclerView.getRecentLocations(
     theme: Theme?,
     arrayOfLocationItem: ArrayList<LocationItem>?,
     groupAdapter: GroupAdapter<GroupieViewHolder>?,
-    lambda: (EachSearchResultItem) -> Job
+    lambda: (EachSearchResultItem) -> Unit
 ) {
     layoutManager = LinearLayoutManager(context)
     adapter = groupAdapter

@@ -20,7 +20,7 @@ fun RecyclerView.addLocationSuggestionsToRecyclerView(
     mapOfLocationItems: Map<String?, LocationItem>,
     groupAdapter: GroupAdapter<GroupieViewHolder>,
     favouriteItemsMap: Map<String?, LocationItem>,
-    addToFavourite: (EachSearchResultItem) -> Job
+    addToFavourite: (EachSearchResultItem) -> Unit
 ) {
     adapter = groupAdapter
     layoutManager = LinearLayoutManager(context)

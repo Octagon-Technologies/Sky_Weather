@@ -21,7 +21,7 @@ object MainLunarForecastObject {
         coordinates: Coordinates,
         dateInMillis: Long = System.currentTimeMillis()
     ): LunarForecast? {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             try {
                 val formattedDate =
                     SimpleDateFormat(

@@ -27,11 +27,13 @@ class MainSettings (private val context: Context) {
     private val windDirectionName = "wind_direction"
     private val timeFormatName = "time_format"
     private val themeName = "theme_name"
+    private val notificationAllowedName = "notification_allowed"
 
     private val unitsKey = preferencesKey<String>(unitsName)
     private val windDirectionKey = preferencesKey<String>(windDirectionName)
     private val timeFormatKey = preferencesKey<String>(timeFormatName)
     private val themeKey = preferencesKey<String>(themeName)
+    private val notificationAllowedKey = preferencesKey<Boolean>(notificationAllowedName)
 
 
     private fun editDataStoreSettings(eachDataStoreItem: EachDataStoreItem) {
@@ -43,6 +45,7 @@ class MainSettings (private val context: Context) {
                     windDirectionName -> it[windDirectionKey] = newValue.toString()
                     timeFormatName -> it[timeFormatKey] = newValue.toString()
                     themeName -> it[themeKey] = newValue.toString()
+                    notificationAllowedName -> it[notificationAllowedKey] = newValue as Boolean
                     else -> throw RuntimeException("Unexpected parameter. eachDataStoreItem is $eachDataStoreItem")
                 }
                 Timber.d("Success. DataStore edited")
@@ -57,6 +60,7 @@ class MainSettings (private val context: Context) {
                 windDirectionName -> it[windDirectionKey] ?: WindDirectionUnits.CARDINAL.toString()
                 timeFormatName -> it[timeFormatKey] ?: TimeFormat.FULL_DAY.toString()
                 themeName -> it[themeKey] ?: Theme.LIGHT.toString()
+                notificationAllowedName -> it[notificationAllowedKey]?.toString() ?: "true"
                 else -> throw RuntimeException("Unexpected parameter. preferencesName is $preferencesName")
             }
         }
@@ -68,25 +72,16 @@ class MainSettings (private val context: Context) {
             is WindDirectionUnits -> EachDataStoreItem(windDirectionName, newValue)
             is TimeFormat -> EachDataStoreItem(timeFormatName, newValue)
             is Theme -> EachDataStoreItem(themeName, newValue)
+            is Boolean -> EachDataStoreItem(notificationAllowedName, newValue)
             else -> throw RuntimeException("Unexpected parameter. newValue is $newValue")
         }
 
         editDataStoreSettings(eachDataStoreItem)
     }
 
-    suspend fun getUnits(): Units {
-        return Units.valueOf(getDataStoreData(unitsName).first())
-    }
-
-    suspend fun getWindDirections(): WindDirectionUnits {
-        return WindDirectionUnits.valueOf(getDataStoreData(windDirectionName).first())
-    }
-
-    suspend fun getTimeFormat(): TimeFormat {
-        return TimeFormat.valueOf(getDataStoreData(timeFormatName).first())
-    }
-
-    suspend fun getTheme(): Theme {
-        return Theme.valueOf(getDataStoreData(themeName).first())
-    }
+    suspend fun getUnits(): Units = Units.valueOf(getDataStoreData(unitsName).first())
+    suspend fun getWindDirections(): WindDirectionUnits = WindDirectionUnits.valueOf(getDataStoreData(windDirectionName).first())
+    suspend fun getTimeFormat(): TimeFormat = TimeFormat.valueOf(getDataStoreData(timeFormatName).first())
+    suspend fun getTheme(): Theme = Theme.valueOf(getDataStoreData(themeName).first())
+    suspend fun getNotificationAllowed(): Boolean = getDataStoreData(notificationAllowedName).first().toBoolean()
 }

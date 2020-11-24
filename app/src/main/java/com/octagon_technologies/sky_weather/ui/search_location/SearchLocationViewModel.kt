@@ -55,5 +55,7 @@ class SearchLocationViewModel(val context: Context) : ViewModel() {
 
             Timber.d("addToFavourite called with isLikedByUser as ${eachSearchResultItem.isLikedByUser}")
         }
+
+        Unit
     }
 }

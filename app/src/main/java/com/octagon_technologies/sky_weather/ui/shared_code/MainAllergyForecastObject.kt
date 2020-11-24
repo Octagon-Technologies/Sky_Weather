@@ -17,7 +17,7 @@ object MainAllergyForecastObject {
         mainDataBase: MainDataBase?,
         coordinates: Coordinates
     ): Allergy? {
-        return withContext(Dispatchers.Default) {
+        return withContext(Dispatchers.IO) {
             try {
                 val remoteAllergyForecast =
                     AllergyForecastRetrofitItem.allergyRetrofitService.getAllergyAsync(

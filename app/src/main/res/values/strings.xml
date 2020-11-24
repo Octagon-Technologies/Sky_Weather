@@ -66,4 +66,5 @@
     <string name="display_mode_plain_text">DISPLAY MODE</string>
     <string name="light_plain_text">Light</string>
     <string name="dark_plain_text">Dark</string>
+    <string name="enable_notifications_plain_text">Enable notifications</string>
 </resources>

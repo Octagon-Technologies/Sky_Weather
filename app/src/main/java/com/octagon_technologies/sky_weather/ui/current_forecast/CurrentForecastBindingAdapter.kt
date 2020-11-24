@@ -21,27 +21,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-@BindingAdapter("getWeatherIconFrom", "addObservationTime")
-fun ImageView.getWeatherIconFrom(weatherCode: WeatherCode?, observationTime: ObservationTime?) {
-    weatherCode?.value?.let {
-        val hour = SimpleDateFormat("HH", Locale.ENGLISH).format(DateTime(observationTime?.value).toDate().time).toInt()
-        val drawable = when {
-            it.contains("rain") -> R.drawable.raining_clouds
-            it.contains("cloudy") -> if (hour in 4..18) R.drawable.cloudy else R.drawable.cloudy_night
-            it.contains("clear") -> if (hour in 4..18) R.drawable.sun else R.drawable.moon
-            it.contains("storm") -> if (hour in 4..18) R.drawable.storm else R.drawable.stormy_night
-            else -> R.drawable.cloudy_windy
-        }
-
-        contentDescription = it.capitalizeWordsWithUnderscore()
-
-        Glide.with(context)
-            .load(drawable)
-            .centerCrop()
-            .into(this)
-    }
-}
-
 @BindingAdapter("getCurrentRealFeel")
 fun TextView.getCurrentRealFeel(realFeelsLike: FeelsLike?) {
     this.text = resources.getString(

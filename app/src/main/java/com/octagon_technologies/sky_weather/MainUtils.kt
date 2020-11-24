@@ -5,21 +5,17 @@ import android.os.Build.VERSION_CODES.M
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import com.octagon_technologies.sky_weather.network.mockLat
 import com.octagon_technologies.sky_weather.network.mockLon
 import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.network.single_forecast.WeatherCode
 import com.octagon_technologies.sky_weather.ui.current_forecast.*
 import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(M)
@@ -44,6 +40,8 @@ enum class TimeFormat { HALF_DAY, FULL_DAY }
 enum class Theme { LIGHT, DARK }
 
 data class EachDataStoreItem(val preferencesName: String, val newValue: Any)
+
+fun Int.checkBuildVersion() = Build.VERSION.SDK_INT >= this
 
 fun Fragment.removeToolbarAndBottomNav(statusBarColor: Int = R.color.line_grey) {
     val mainActivity = (this.activity as MainActivity)
@@ -74,29 +72,37 @@ fun Fragment.removeToolbarAndBottomNav(statusBarColor: Int = R.color.line_grey) 
 }
 
 
-fun Fragment.addToolbarAndBottomNav(theme: Theme?, includeBottomNavView: Boolean = true) {
-    val mainActivity = (activity as MainActivity)
+fun Fragment.addToolbarAndBottomNav(theme: Theme?, includeBottomNavView: Boolean = true) =
+    (activity as MainActivity).addToolbarAndBottomNav(theme, includeBottomNavView)
+
+
+fun MainActivity.addToolbarAndBottomNav(theme: Theme?, includeBottomNavView: Boolean = true) {
     val visible = View.VISIBLE
     val defaultColor =
         if (theme == Theme.LIGHT) R.color.current_forecast_night_time else R.color.dark_theme_blue
     Timber.d("Theme is $theme")
 
-    mainActivity.binding.apply {
+    binding.apply {
         if (includeBottomNavView) navView.visibility = visible
         topToolbarConstraint.visibility = visible
         topLineDivider.visibility = visible
     }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        mainActivity.apply {
-            if (Build.VERSION.SDK_INT >= M) {
-                window.decorView.systemUiVisibility = whiteStatusIcons
-            }
-            window.statusBarColor =
-                ResourcesCompat.getColor(resources, defaultColor, null)
+        if (Build.VERSION.SDK_INT >= M) {
+            window.decorView.systemUiVisibility = whiteStatusIcons
         }
+        window.statusBarColor =
+            ResourcesCompat.getColor(resources, defaultColor, null)
     }
 }
+
+fun TimeFormat?.getAmOrPmBasedOnTime(hourIn24HourSystem: Int, date: Date): String =
+    if (this == TimeFormat.HALF_DAY)
+        SimpleDateFormat("hh:mm ", Locale.getDefault()).format(date) +
+                (if (hourIn24HourSystem <= 11) "am " else "pm ")
+    else SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
+
 
 interface CustomTextWatcher : TextWatcher {
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -108,11 +114,6 @@ interface CustomTextWatcher : TextWatcher {
 
 fun String.capitalizeWordsWithUnderscore(): String {
     return this.split("_").joinToString(" ") { it.capitalize(Locale.getDefault()) }
-}
-
-@BindingAdapter("capitalizeWordsWithUnderscore")
-fun TextView.capitalizeWordsWithUnderscore(weatherCode: WeatherCode?) {
-    text = weatherCode?.value?.capitalizeWordsWithUnderscore()
 }
 
 fun ReverseGeoCodingLocation?.getDisplayLocation(): String {
@@ -134,7 +135,10 @@ fun ReverseGeoCodingLocation?.getCoordinates(): Coordinates = Coordinates(
 )
 
 
-fun getBasicForecastConditions(singleForecast: SingleForecast?, windDirectionUnits: WindDirectionUnits?): ArrayList<EachWeatherDescription> {
+fun getBasicForecastConditions(
+    singleForecast: SingleForecast?,
+    windDirectionUnits: WindDirectionUnits?
+): ArrayList<EachWeatherDescription> {
     val arrayOfWeatherDescriptions = ArrayList<EachWeatherDescription>()
     singleForecast?.let {
         val temp = it.temp
@@ -179,31 +183,61 @@ fun getBasicForecastConditions(singleForecast: SingleForecast?, windDirectionUni
             )
         )
         arrayOfWeatherDescriptions.add(
-            EachWeatherDescription("Humidity",
-            "${it.humidity?.value?.toInt()}%"
-        )
+            EachWeatherDescription(
+                "Humidity",
+                "${it.humidity?.value?.toInt()}%"
+            )
         )
     }
 
     return arrayOfWeatherDescriptions
 }
 
-fun getAdvancedForecastDescription(singleForecast: SingleForecast?, units: Units?, windDirectionUnits: WindDirectionUnits?): ArrayList<EachWeatherDescription> {
+fun getAdvancedForecastDescription(
+    singleForecast: SingleForecast?,
+    units: Units?,
+    windDirectionUnits: WindDirectionUnits?
+): ArrayList<EachWeatherDescription> {
     val arrayOfWeatherDescriptions = ArrayList<EachWeatherDescription>()
     singleForecast?.let {
         arrayOfWeatherDescriptions.addAll(getBasicForecastConditions(it, windDirectionUnits))
 
-        arrayOfWeatherDescriptions.add(EachWeatherDescription("Dew Point", "${it.dewPoint?.value?.toInt() ?: 0}°"))
-        arrayOfWeatherDescriptions.add(EachWeatherDescription("Pressure", "${it.baroPressure?.value?.toInt() ?: 0} ${if (units == Units.METRIC) "mbar" else "inHg"}"))
-        arrayOfWeatherDescriptions.add(EachWeatherDescription("Cloud Cover", "${it.cloudCover?.value?.toInt() ?: 0}%"))
-        arrayOfWeatherDescriptions.add(EachWeatherDescription("Visibility", "${it.visibility?.value?.toInt()} ${it.visibility?.units ?: "--"}"))
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Dew Point",
+                "${it.dewPoint?.value?.toInt() ?: 0}°"
+            )
+        )
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Pressure",
+                "${it.baroPressure?.value?.toInt() ?: 0} ${if (units == Units.METRIC) "mbar" else "inHg"}"
+            )
+        )
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Cloud Cover",
+                "${it.cloudCover?.value?.toInt() ?: 0}%"
+            )
+        )
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Visibility",
+                "${it.visibility?.value?.toInt()} ${it.visibility?.units ?: "--"}"
+            )
+        )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Cloud Ceiling",
                 if (it.cloudCeiling?.value == null) "None" else "${it.cloudCeiling.value.toInt()} m"
             )
         )
-        arrayOfWeatherDescriptions.add(EachWeatherDescription("Moon Phase", (it.moonPhase?.value ?: "--").capitalizeWordsWithUnderscore()))
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Moon Phase",
+                (it.moonPhase?.value ?: "--").capitalizeWordsWithUnderscore()
+            )
+        )
     }
 
     return arrayOfWeatherDescriptions

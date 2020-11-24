@@ -1,6 +1,5 @@
 package com.octagon_technologies.sky_weather.ui.shared_code
 
-import com.octagon_technologies.sky_weather.database.FavouriteLocationDatabaseClass
 import com.octagon_technologies.sky_weather.database.MainDataBase
 import com.octagon_technologies.sky_weather.database.RecentLocationDatabaseClass
 import com.octagon_technologies.sky_weather.network.location.LocationItem
@@ -70,9 +69,10 @@ object MainRecentLocationsObject {
     suspend fun getRecentLocationsAsync(mainDataBase: MainDataBase?): ArrayList<LocationItem>? {
         return try {
             withContext(Dispatchers.IO) {
-                val localRecentLocations = mainDataBase?.recentLocationDao?.getRecentLocationsDatabaseClass()?.map {
-                    it.recentLocation
-                }?.toMutableList()
+                val localRecentLocations =
+                    mainDataBase?.recentLocationDao?.getRecentLocationsDatabaseClass()?.map {
+                        it.recentLocation
+                    }?.toMutableList()
 
                 ArrayList(localRecentLocations ?: mutableListOf())
             }

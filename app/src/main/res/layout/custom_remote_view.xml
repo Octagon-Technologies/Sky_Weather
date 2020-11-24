@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_remote_view"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:theme="@style/AppTheme.BlackTextColor">
+
+    <TextView
+        android:id="@+id/notification_place_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="Hurlingam, KE"
+        android:textColor="@color/dark_black"
+        android:textSize="@dimen/_11ssp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp">
+
+        <ImageView
+            android:id="@+id/notification_weather_icon"
+            android:layout_width="@dimen/_28sdp"
+            android:layout_height="@dimen/_28sdp"
+            app:srcCompat="@drawable/common_google_signin_btn_text_dark"
+            app:tint="@color/dark_black" />
+
+        <TextView
+            android:id="@+id/notification_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:paddingTop="@dimen/_2sdp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/notification_weather_icon"
+            android:layout_toRightOf="@+id/notification_weather_icon"
+            android:text="22°"
+            android:textSize="@dimen/_18ssp"/>
+
+        <TextView
+            android:id="@+id/notification_unit_system"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/notification_temp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/_2sdp"
+            android:layout_toEndOf="@id/notification_temp"
+            android:layout_toRightOf="@id/notification_temp"
+            android:text="C"
+            android:textSize="@dimen/_7ssp" />
+
+        <TextView
+            android:id="@+id/notification_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:text="19:16"
+            android:textSize="@dimen/_9ssp"
+            android:layout_marginEnd="@dimen/_4sdp" />
+    </RelativeLayout>
+
+</LinearLayout>
+
+    <!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/_64sdp"-->
+    <!--android:background="@android:color/white"-->
+    <!--android:id="@+id/custom_remote_view"-->
+    <!--android:theme="@style/AppTheme.BlackTextColor">-->
+
+    <!--<TextView-->
+    <!--    android:id="@+id/notification_place_name"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_marginStart="@dimen/_10sdp"-->
+    <!--    android:layout_marginLeft="@dimen/_10sdp"-->
+    <!--    android:layout_marginTop="@dimen/_6sdp"-->
+    <!--    android:fontFamily="sans-serif-condensed-medium"-->
+    <!--    android:text="Hurlingam, KE"-->
+    <!--    android:textColor="@color/dark_black"-->
+    <!--    android:textSize="@dimen/_11ssp"-->
+    <!--    app:layout_constraintStart_toStartOf="parent"-->
+    <!--    app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--<ImageView-->
+    <!--    android:id="@+id/notification_weather_icon"-->
+    <!--    android:layout_width="@dimen/_28sdp"-->
+    <!--    android:layout_height="@dimen/_28sdp"-->
+    <!--    android:layout_marginTop="@dimen/_4sdp"-->
+    <!--    app:layout_constraintStart_toStartOf="@+id/notification_place_name"-->
+    <!--    app:layout_constraintTop_toBottomOf="@+id/notification_place_name"-->
+    <!--    app:srcCompat="@drawable/cloudy_night"-->
+    <!--    app:tint="@color/dark_black" />-->
+
+    <!--<TextView-->
+    <!--    android:id="@+id/notification_temp"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_marginStart="@dimen/_8sdp"-->
+    <!--    android:layout_marginLeft="@dimen/_8sdp"-->
+    <!--    android:text="22° "-->
+    <!--    android:textSize="@dimen/_14ssp"-->
+    <!--    app:layout_constraintStart_toEndOf="@+id/notification_weather_icon"-->
+    <!--    app:layout_constraintTop_toTopOf="@+id/notification_weather_icon" />-->
+
+    <!--<TextView-->
+    <!--    android:id="@+id/notification_unit_system"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:text="C"-->
+    <!--    android:textSize="@dimen/_7ssp"-->
+    <!--    app:layout_constraintBottom_toBottomOf="@+id/notification_temp"-->
+    <!--    app:layout_constraintEnd_toEndOf="@+id/notification_temp" />-->
+
+    <!--<TextView-->
+    <!--    android:id="@+id/notification_feelslike"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:text="FeelsLike 25°"-->
+    <!--    android:textSize="@dimen/_9ssp"-->
+    <!--    app:layout_constraintStart_toStartOf="@+id/notification_temp"-->
+    <!--    app:layout_constraintTop_toBottomOf="@+id/notification_temp" />-->
+
+    <!--<TextView-->
+    <!--    android:id="@+id/notification_weather_code"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_marginStart="@dimen/_12sdp"-->
+    <!--    android:layout_marginLeft="@dimen/_12sdp"-->
+    <!--    android:text="Drizzle"-->
+    <!--    android:textSize="@dimen/_10ssp"-->
+    <!--    app:layout_constraintBottom_toBottomOf="@+id/notification_feelslike"-->
+    <!--    app:layout_constraintStart_toEndOf="@+id/notification_feelslike" />-->
+
+    <!--<TextView-->
+    <!--    android:id="@+id/notification_time_text"-->
+    <!--    android:layout_width="wrap_content"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_marginEnd="@dimen/_8sdp"-->
+    <!--    android:layout_marginRight="@dimen/_8sdp"-->
+    <!--    android:text="19:16"-->
+    <!--    android:textSize="@dimen/_9ssp"-->
+    <!--    app:layout_constraintBottom_toBottomOf="@+id/notification_weather_code"-->
+    <!--    app:layout_constraintEnd_toEndOf="parent" />-->

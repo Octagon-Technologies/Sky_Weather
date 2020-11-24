@@ -18,27 +18,30 @@ object MainHourlyForecastObject {
         coordinates: Coordinates,
         units: Units?
     ): ArrayList<EachHourlyForecast>? {
-        return try {
-            val remoteHourlyForecast =
-                WeatherForecastRetrofitItem.weatherRetrofitService.getHourlyForecastAsync(
-                    lat = coordinates.lat,
-                    lon = coordinates.lon,
-                    unitSystem = units?.value ?: Units.METRIC.value
-                ).await() as ArrayList<EachHourlyForecast>
-            remoteHourlyForecast.removeAt(0)
-            insertHourlyForecastToLocalStorage(mainDataBase, remoteHourlyForecast)
+        return withContext(Dispatchers.IO) {
+            try {
+                val remoteHourlyForecast =
+                    WeatherForecastRetrofitItem.weatherRetrofitService.getHourlyForecastAsync(
+                        lat = coordinates.lat,
+                        lon = coordinates.lon,
+                        unitSystem = units?.value ?: Units.METRIC.value
+                    ).await() as ArrayList<EachHourlyForecast>
+                remoteHourlyForecast.removeAt(0)
+                insertHourlyForecastToLocalStorage(mainDataBase, remoteHourlyForecast)
 
-            remoteHourlyForecast
-        } catch (e: HttpException) {
-            Timber.e(e)
-            getLocalHourlyForecastAsync(mainDataBase)
-        } catch (e: UnknownHostException) {
-            Timber.e(e)
-            getLocalHourlyForecastAsync(mainDataBase)
-        } catch (e: Exception) {
-            throw e
+                remoteHourlyForecast
+            } catch (e: HttpException) {
+                Timber.e(e)
+                getLocalHourlyForecastAsync(mainDataBase)
+            } catch (e: UnknownHostException) {
+                Timber.e(e)
+                getLocalHourlyForecastAsync(mainDataBase)
+            } catch (e: Exception) {
+                throw e
+            }
         }
     }
+
 
     private suspend fun getLocalHourlyForecastAsync(mainDataBase: MainDataBase?): ArrayList<EachHourlyForecast>? {
         return withContext(Dispatchers.IO) {
