@@ -7,6 +7,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
@@ -40,12 +41,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
+    var hasNotificationChanged = false
 
     var liveLocation = MutableLiveData<ReverseGeoCodingLocation>()
     var liveTheme = MutableLiveData<Theme>()
     var liveWindDirectionUnits = MutableLiveData<WindDirectionUnits>()
     var liveTimeFormat = MutableLiveData<TimeFormat>()
     var liveUnits = MutableLiveData<Units>()
+    var liveNotificationAllowed = MutableLiveData(true)
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +58,13 @@ class MainActivity : AppCompatActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.decorView.systemUiVisibility = whiteStatusIcons
+                }
+                window.statusBarColor =
+                    ResourcesCompat.getColor(resources, R.color.dark_theme_blue, null)
+            }
 
         ActivityOptionsCompat.makeCustomAnimation(
             applicationContext,
@@ -67,14 +77,14 @@ class MainActivity : AppCompatActivity() {
         binding.theme = liveTheme
 
         uiScope.launch {
-            liveTheme.value = mainSettings.getTheme()
-
             liveLocation.value = MainLocationObject.getLocalLocationAsync(mainDataBase)
             if (liveLocation.value == null) navController.navigate(R.id.findLocationFragment)
 
+            liveTheme.value = mainSettings.getTheme()
             liveWindDirectionUnits.value = mainSettings.getWindDirections()
             liveTimeFormat.value = mainSettings.getTimeFormat()
             liveUnits.value = mainSettings.getUnits()
+            liveNotificationAllowed.value = mainSettings.getNotificationAllowed()
         }
 
         binding.locationName.setOnClickListener { navController.navigate(R.id.findLocationFragment) }

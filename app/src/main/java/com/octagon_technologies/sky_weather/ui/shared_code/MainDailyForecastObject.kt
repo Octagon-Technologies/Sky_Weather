@@ -19,26 +19,28 @@ object MainDailyForecastObject {
         coordinates: Coordinates,
         units: Units?
     ): ArrayList<EachDailyForecast>? {
-        return try {
-            val remoteHourlyForecast =
-                (WeatherForecastRetrofitItem.weatherRetrofitService.getDailyForecastAsync(
-                    lat = coordinates.lat,
-                    lon = coordinates.lon,
-                    unitSystem = units?.value ?: Units.METRIC.value
-                ).await() as ArrayList).apply {
-                    removeLast()
-                }
+        return withContext(Dispatchers.IO) {
+            try {
+                val remoteHourlyForecast =
+                    (WeatherForecastRetrofitItem.weatherRetrofitService.getDailyForecastAsync(
+                        lat = coordinates.lat,
+                        lon = coordinates.lon,
+                        unitSystem = units?.value ?: Units.METRIC.value
+                    ).await() as ArrayList).apply {
+                        removeLast()
+                    }
 
-            insertDailyForecastToLocalStorage(mainDataBase, remoteHourlyForecast)
-            remoteHourlyForecast
-        } catch (e: HttpException) {
-            Timber.e(e)
-            getLocalDailyForecastAsync(mainDataBase)
-        } catch (e: UnknownHostException) {
-            Timber.e(e)
-            getLocalDailyForecastAsync(mainDataBase)
-        } catch (e: Exception) {
-            throw e
+                insertDailyForecastToLocalStorage(mainDataBase, remoteHourlyForecast)
+                remoteHourlyForecast
+            } catch (e: HttpException) {
+                Timber.e(e)
+                getLocalDailyForecastAsync(mainDataBase)
+            } catch (e: UnknownHostException) {
+                Timber.e(e)
+                getLocalDailyForecastAsync(mainDataBase)
+            } catch (e: Exception) {
+                throw e
+            }
         }
     }
 

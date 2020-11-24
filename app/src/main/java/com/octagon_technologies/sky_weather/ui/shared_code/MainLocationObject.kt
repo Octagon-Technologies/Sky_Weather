@@ -34,13 +34,15 @@ object MainLocationObject {
     }
 
     suspend fun getLocationSuggestionsFromQuery(query: String): Map<String?, LocationItem> {
-        return try {
-            LocationRetrofitItem.locationRetrofitService.getLocationSuggestionsAsync(query = query)
-                .await().map {
-                    (it.address?.suburb ?: it.address?.city ?: it.address?.state) to it
-                }.toMap()
-        } catch (noNetworkException: UnknownHostException) {
-            mapOf()
+        return withContext(Dispatchers.IO) {
+            try {
+                LocationRetrofitItem.locationRetrofitService.getLocationSuggestionsAsync(query = query)
+                    .await().map {
+                        (it.address?.suburb ?: it.address?.city ?: it.address?.state) to it
+                    }.toMap()
+            } catch (noNetworkException: UnknownHostException) {
+                mapOf()
+            }
         }
 
     }
@@ -49,24 +51,26 @@ object MainLocationObject {
         coordinates: Coordinates,
         mainDataBase: MainDataBase?
     ): ReverseGeoCodingLocation? {
-        return try {
-            val remoteReversedLocation =
-                LocationRetrofitItem.locationRetrofitService.getLocationNameFromCoordinatesAsync(
-                    lat = coordinates.lat,
-                    lon = coordinates.lon
-                ).await()
+        return withContext(Dispatchers.IO) {
+            try {
+                val remoteReversedLocation =
+                    LocationRetrofitItem.locationRetrofitService.getLocationNameFromCoordinatesAsync(
+                        lat = coordinates.lat,
+                        lon = coordinates.lon
+                    ).await()
 
-            insertLocationToLocalStorage(mainDataBase, remoteReversedLocation)
+                insertLocationToLocalStorage(mainDataBase, remoteReversedLocation)
 
-            remoteReversedLocation
-        } catch (e: HttpException) {
-            Timber.e(e)
-            getLocalLocationAsync(mainDataBase)
-        } catch (e: UnknownHostException) {
-            Timber.e(e)
-            getLocalLocationAsync(mainDataBase)
-        } catch (e: Exception) {
-            throw e
+                remoteReversedLocation
+            } catch (e: HttpException) {
+                Timber.e(e)
+                getLocalLocationAsync(mainDataBase)
+            } catch (e: UnknownHostException) {
+                Timber.e(e)
+                getLocalLocationAsync(mainDataBase)
+            } catch (e: Exception) {
+                throw e
+            }
         }
     }
 

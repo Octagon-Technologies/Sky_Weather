@@ -80,7 +80,7 @@ class SearchLocationFragment : Fragment() {
         }
 
         findLocationViewModel.reversedGeoCodingLocation.observe(viewLifecycleOwner, {
-            findLocationViewModel.addCurrentLocationToDatabase()
+            findLocationViewModel.addCurrentLocationToDatabase(activity)
             (activity as MainActivity).liveLocation.value = it
             findNavController().popBackStack(R.id.currentForecastFragment, false)
         })

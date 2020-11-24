@@ -9,16 +9,45 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
-import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Theme
-import com.octagon_technologies.sky_weather.TimeFormat
-import com.octagon_technologies.sky_weather.capitalizeWordsWithUnderscore
+import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.network.single_forecast.ObservationTime
 import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.network.single_forecast.WeatherCode
 import org.joda.time.DateTime
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
+
+@BindingAdapter("getWeatherIconFrom", "addObservationTime")
+fun ImageView.getWeatherIconFrom(weatherCode: WeatherCode?, observationTime: ObservationTime?) {
+    val hourIn24HourSystem = SimpleDateFormat(
+        "HH",
+        Locale.ENGLISH
+    ).format(DateTime(observationTime?.value).toDate().time).toInt()
+    val drawable = weatherCode.getDrawableFromWeatherCode(hourIn24HourSystem)
+
+    contentDescription = weatherCode?.value?.capitalizeWordsWithUnderscore()
+
+    Glide.with(context)
+        .load(drawable)
+        .centerCrop()
+        .into(this)
+}
+
+fun WeatherCode?.getDrawableFromWeatherCode(hourIn24HourSystem: Int) = this?.value?.let {
+    when {
+        it.contains("rain") -> R.drawable.raining_clouds
+        it.contains("cloudy") -> if (hourIn24HourSystem in 4..18) R.drawable.cloudy else R.drawable.cloudy_night
+        it.contains("clear") -> if (hourIn24HourSystem in 4..18) R.drawable.sun else R.drawable.moon
+        it.contains("storm") -> if (hourIn24HourSystem in 4..18) R.drawable.storm else R.drawable.stormy_night
+        else -> R.drawable.cloudy_windy
+    }
+} ?: -1
+
+@BindingAdapter("capitalizeWordsWithUnderscore")
+fun TextView.capitalizeWordsWithUnderscore(weatherCode: WeatherCode?) {
+    text = weatherCode?.value?.capitalizeWordsWithUnderscore()
+}
 
 @BindingAdapter("changeLunarTime", "addTimeFormatToLunarTime")
 fun TextView.changeLunarTime(lunarTime: String?, timeFormat: TimeFormat?) {
@@ -100,11 +129,11 @@ fun TextView.getWeatherStatus(singleForecast: SingleForecast?) {
 fun View.getWeatherImageBasedOnTime(observationTime: ObservationTime?, timeFormat: TimeFormat?) {
     observationTime?.value?.let {
         val date = DateTime(it).toDate()
-        val hours = SimpleDateFormat("HH", Locale.getDefault()).format(date).toInt()
-        Timber.d("hours is $hours")
+        val hourIn24HourSystem = SimpleDateFormat("HH", Locale.getDefault()).format(date).toInt()
+        Timber.d("hourIn24HourSystem is $hourIn24HourSystem")
 
         if (this is ImageView) {
-            val drawable = when (hours) {
+            val drawable = when (hourIn24HourSystem) {
                 in 6..19 -> R.drawable.sun
                 else -> R.drawable.moon
             }
@@ -113,17 +142,7 @@ fun View.getWeatherImageBasedOnTime(observationTime: ObservationTime?, timeForma
                 .into(this)
         } else {
             this as TextView
-            val defaultLocale = Locale.getDefault()
-            text = if (timeFormat == TimeFormat.FULL_DAY) SimpleDateFormat(
-                "HH:mm",
-                defaultLocale
-            ).format(date)
-            else "${
-                SimpleDateFormat(
-                    "hh:mm",
-                    defaultLocale
-                ).format(date)
-            } ${if (hours <= 11) "am" else "pm"}"
+            text = timeFormat.getAmOrPmBasedOnTime(hourIn24HourSystem, date)
         }
     }
 }

@@ -39,7 +39,8 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
 
     fun getHourlyForecastAsync(
         location: ReverseGeoCodingLocation?,
-        units: Units?
+        units: Units?,
+        shouldLoadSelectedHourlyForecast: Boolean = true
     ) {
         val coordinates = Coordinates(
             location?.lon?.toDouble() ?: mockLon,
@@ -48,9 +49,11 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
 
         uiScope.launch {
             _hourlyForecast.value = MainHourlyForecastObject.getHourlyForecastAsync(mainDataBase, coordinates, units)
-            getSelectedSingleForecast(
-                _hourlyForecast.value?.get(0)?.observationTime, units, coordinates
-            )
+            if (shouldLoadSelectedHourlyForecast) {
+                getSelectedSingleForecast(
+                    _hourlyForecast.value?.get(0)?.observationTime, units, coordinates
+                )
+            }
         }
     }
 

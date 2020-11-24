@@ -15,7 +15,7 @@ class EachSearchResultItem(
     val theme: Theme?,
     var isLikedByUser: Boolean = false,
     var locationItem: LocationItem,
-    val lambda: (EachSearchResultItem) -> Job
+    val lambda: (EachSearchResultItem) -> Unit
 ) : BindableItem<EachSearchResultItemBinding>() {
 
     var actualPosition: Int = 0

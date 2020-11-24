@@ -5,7 +5,7 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.Units
 import com.octagon_technologies.sky_weather.databinding.EachDailyForecastItemBinding
 import com.octagon_technologies.sky_weather.network.daily_forecast.EachDailyForecast
-import com.octagon_technologies.sky_weather.ui.current_forecast.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.ui.shared_code.getWeatherIconFrom
 import com.xwray.groupie.databinding.BindableItem
 import timber.log.Timber
 
