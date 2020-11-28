@@ -34,6 +34,7 @@ class CurrentForecastFragment : Fragment() {
             it.viewModel = viewModel
             it.units = mainActivity.liveUnits
             it.windDirectionUnits = mainActivity.liveWindDirectionUnits
+            it.timeFormat = mainActivity.liveTimeFormat
             it.hourlyForecastViewModel = hourlyForecastViewModel
         }
 

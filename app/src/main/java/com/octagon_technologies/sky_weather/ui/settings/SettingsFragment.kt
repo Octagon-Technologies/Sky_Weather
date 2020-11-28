@@ -107,8 +107,4 @@ class SettingsFragment : Fragment() {
         })
     }
 
-    override fun onStop() {
-        super.onStop()
-        addToolbarAndBottomNav(mainActivity.liveTheme.value)
-    }
 }

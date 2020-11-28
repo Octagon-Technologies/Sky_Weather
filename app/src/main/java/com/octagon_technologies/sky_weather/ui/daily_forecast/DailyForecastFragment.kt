@@ -9,6 +9,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.octagon_technologies.sky_weather.*
@@ -117,12 +118,8 @@ class DailyForecastFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mainActivity.liveTheme.observe(viewLifecycleOwner, {
-            addToolbarAndBottomNav(it, false)
+            addToolbarAndBottomNav(it, bottomSheet.state != BottomSheetBehavior.STATE_EXPANDED)
         })
-
-        if (bottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
-            mainActivity.binding.navView.visibility = View.GONE
-        }
     }
 
     inner class MyFragmentStateAdapter : FragmentStateAdapter(this) {
@@ -132,10 +129,17 @@ class DailyForecastFragment : Fragment() {
             Timber.d("MyFragmentStateAdapter.position is $position")
             return DailyTabFragment.getInstance(
                 constructorIsDay = position == 0,
-                constructorTheme = mainActivity.liveTheme,
-                constructorWindDirectionUnits = mainActivity.liveWindDirectionUnits,
+                mainActivity = mainActivity,
                 constructorDailyForecastViewModel = viewModel
             )
+        }
+
+        override fun onBindViewHolder(
+            holder: FragmentViewHolder,
+            position: Int,
+            payloads: MutableList<Any>
+        ) {
+            super.onBindViewHolder(holder, position, payloads)
         }
     }
 }

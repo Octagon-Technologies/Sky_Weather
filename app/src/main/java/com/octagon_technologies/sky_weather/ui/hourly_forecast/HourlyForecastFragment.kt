@@ -109,11 +109,7 @@ class HourlyForecastFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mainActivity.liveTheme.observe(viewLifecycleOwner, {
-            addToolbarAndBottomNav(it, false)
+            addToolbarAndBottomNav(it, bottomSheet.state != BottomSheetBehavior.STATE_EXPANDED)
         })
-
-        if (bottomSheet.state == BottomSheetBehavior.STATE_EXPANDED) {
-            mainActivity.binding.navView.visibility = View.GONE
-        }
     }
 }

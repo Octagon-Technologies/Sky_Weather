@@ -72,18 +72,17 @@ class DailyForecastViewModel(context: Context) : ViewModel() {
     ) {
         // 2020-11-18
         viewModelScope.launch {
-            val date = DateTime(eachDailyForecast.temp?.get(0)?.observationTime).toDate()?.time
-            val properFormattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(date)
-            Timber.d("properFormattedDate is $properFormattedDate")
+            val date = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(eachDailyForecast.observationTime?.value ?: return@launch)
+            Timber.d("properFormattedDate is ${eachDailyForecast.observationTime.value}")
 
             _selectedDailyForecast.value =
                 MainSelectedDailyForecastObject.getSelectedDailyForecastAsync(
                     coordinates,
-                    properFormattedDate.toString(),
+                    eachDailyForecast.observationTime.value.toString(),
                     units
                 )
             _lunarForecast.value =
-                MainLunarForecastObject.getLunarForecastAsync(mainDataBase, coordinates, date ?: 0)
+                MainLunarForecastObject.getLunarForecastAsync(mainDataBase, coordinates, date?.time ?: 0)
         }
 
     }

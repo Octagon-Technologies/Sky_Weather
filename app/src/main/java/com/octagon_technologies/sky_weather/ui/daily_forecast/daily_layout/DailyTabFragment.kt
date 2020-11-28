@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.Theme
+import com.octagon_technologies.sky_weather.TimeFormat
 import com.octagon_technologies.sky_weather.WindDirectionUnits
 import com.octagon_technologies.sky_weather.databinding.DailyTabFragmentBinding
 import com.octagon_technologies.sky_weather.network.selected_daily_forecast.Min
@@ -22,29 +24,31 @@ import com.octagon_technologies.sky_weather.ui.current_forecast.getActualWind
 import com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 class DailyTabFragment : Fragment() {
 
-    companion object {
-        lateinit var theme: LiveData<Theme>
-        lateinit var windDirectionUnits: LiveData<WindDirectionUnits>
-        lateinit var dailyForecastViewModel: DailyForecastViewModel
-        var isDay by Delegates.notNull<Boolean>()
+    lateinit var theme: LiveData<Theme>
+    lateinit var windDirectionUnits: LiveData<WindDirectionUnits>
+    lateinit var dailyForecastViewModel: DailyForecastViewModel
+    lateinit var timeFormat: LiveData<TimeFormat>
+    var isDay by Delegates.notNull<Boolean>()
 
+    companion object {
         fun getInstance(
             constructorIsDay: Boolean,
-            constructorTheme: LiveData<Theme>,
-            constructorWindDirectionUnits: LiveData<WindDirectionUnits>,
+            mainActivity: MainActivity,
             constructorDailyForecastViewModel: DailyForecastViewModel
-        ): DailyTabFragment {
-            isDay = constructorIsDay
-            theme = constructorTheme
-            windDirectionUnits = constructorWindDirectionUnits
-            dailyForecastViewModel = constructorDailyForecastViewModel
+        ) =
+            DailyTabFragment().apply {
+                isDay = constructorIsDay
+                theme = mainActivity.liveTheme
+                windDirectionUnits = mainActivity.liveWindDirectionUnits
+                timeFormat = mainActivity.liveTimeFormat
+                dailyForecastViewModel = constructorDailyForecastViewModel
 
-            return DailyTabFragment()
-        }
+            }
     }
 
     val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -55,6 +59,7 @@ class DailyTabFragment : Fragment() {
             it.theme = theme
             it.isDay = isDay
             it.lunarForecast = dailyForecastViewModel.lunarForecast
+            it.timeFormat = timeFormat
             it.selectedDailyForecast = dailyForecastViewModel.selectedDailyForecast
         }
     }
@@ -71,27 +76,27 @@ class DailyTabFragment : Fragment() {
             adapter = groupAdapter
         }
 
-        dailyForecastViewModel.selectedDailyForecast.observe(
-            viewLifecycleOwner,
-            { selectedDailyForecast ->
-                groupAdapter.clear()
-                selectedDailyForecast?.apply {
-                    val dailyConditions = arrayListOf(
-                        getFeelsLike(),
-                        getWind(),
-                        getRainFall(),
-                        getAirPressure()
-                    ).filterNotNull()
+        dailyForecastViewModel.selectedDailyForecast.observe(viewLifecycleOwner) { selectedDailyForecast ->
+            groupAdapter.clear()
+            selectedDailyForecast?.apply {
+                Timber.d("selectedDailyForecast called in DailyTabFragment with isDay as $isDay.")
 
-                    dailyConditions.forEach {
-                        groupAdapter.add(
-                            EachCurrentForecastDescriptionItem(
-                                dailyConditions.indexOf(it), it, theme.value
-                            )
+                val dailyConditions = arrayListOf(
+                    getFeelsLike(),
+                    getWind(),
+                    getRainFall(),
+                    getAirPressure()
+                ).filterNotNull()
+
+                dailyConditions.forEach {
+                    groupAdapter.add(
+                        EachCurrentForecastDescriptionItem(
+                            dailyConditions.indexOf(it), it, theme.value
                         )
-                    }
+                    )
                 }
-            })
+            }
+        }
     }
 
     private fun SelectedDailyForecast.getRainFall(): EachWeatherDescription? {

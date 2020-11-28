@@ -51,12 +51,15 @@ fun TextView.capitalizeWordsWithUnderscore(weatherCode: WeatherCode?) {
 
 @BindingAdapter("changeLunarTime", "addTimeFormatToLunarTime")
 fun TextView.changeLunarTime(lunarTime: String?, timeFormat: TimeFormat?) {
-    text =
+    text = lunarTime?.let {
+        val hour = it.split(":")[0].let { hour ->
+            (if (hour.length == 1) "0$hour" else hour).toInt()
+        }
         if (timeFormat == TimeFormat.HALF_DAY) {
-            lunarTime?.let {
-                "$it ${if (it.take(2).toInt() <= 11) "am" else "pm"}"
-            } ?: "--:--"
-        } else lunarTime ?: "--"
+            "$it ${if (hour <= 11) "am" else "pm"}"
+        } else lunarTime
+
+    } ?: "--"
 }
 
 @BindingAdapter("changeWeatherIconTint", "isDayForWeatherIcon")
