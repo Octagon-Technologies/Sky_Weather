@@ -30,9 +30,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    private val navController: NavController by lazy { findNavController(R.id.nav_host_fragment) }
-    private val mainDataBase: MainDataBase? by lazy { MainDataBase.getInstance(applicationContext) }
-    private val mainSettings: MainSettings by lazy { MainSettings(applicationContext) }
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
+    private val mainDataBase by lazy { MainDataBase.getInstance(applicationContext) }
+    private val mainSettings by lazy { MainSettings(applicationContext) }
     val singleForecastJsonAdapter: JsonAdapter<SingleForecast> by lazy {
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
