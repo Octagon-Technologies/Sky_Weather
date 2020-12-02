@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.EachHourlyForecastItemBinding
-import com.octagon_technologies.sky_weather.network.hourly_forecast.EachHourlyForecast
-import com.octagon_technologies.sky_weather.network.single_forecast.ObservationTime
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.EachCurrentForecastDescriptionItem
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachDayTextItem
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachHourlyForecastItem

@@ -5,10 +5,8 @@ import android.widget.ImageView
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.Theme
 import com.octagon_technologies.sky_weather.databinding.EachSearchResultItemBinding
-import com.octagon_technologies.sky_weather.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
 import com.xwray.groupie.databinding.BindableItem
-import kotlinx.coroutines.Job
-import timber.log.Timber
 import java.util.*
 
 class EachSearchResultItem(

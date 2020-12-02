@@ -13,11 +13,11 @@
 
         <import type="com.xwray.groupie.GroupieViewHolder" />
 
-        <import type="com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast" />
+        <import type="com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast" />
 
         <variable
             name="singleForecast"
-            type="SingleForecast" />
+            type="com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast" />
 
         <variable
             name="windDirectionUnits"

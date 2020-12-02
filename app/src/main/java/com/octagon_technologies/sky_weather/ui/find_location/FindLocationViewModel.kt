@@ -8,12 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.database.MainDataBase
-import com.octagon_technologies.sky_weather.network.location.LocationItem
-import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.ui.shared_code.MainFavouriteLocationsObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainLocationObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainLocationObject.turnOnGPS
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -21,14 +15,18 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.octagon_technologies.sky_weather.MainActivity
-import com.octagon_technologies.sky_weather.ui.shared_code.MainRecentLocationsObject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.octagon_technologies.sky_weather.repository.FavouriteLocationsRepo
+import com.octagon_technologies.sky_weather.repository.LocationRepo
+import com.octagon_technologies.sky_weather.repository.LocationRepo.turnOnGPS
+import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
+import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class FindLocationViewModel(private val context: Context) : ViewModel() {
-    val mainDatabase = MainDataBase.getInstance(context)
+    private val mainDatabase = MainDataBase.getInstance(context)
 
     private var _reversedGeoCodingLocation = MutableLiveData<ReverseGeoCodingLocation>()
     val reversedGeoCodingLocation: LiveData<ReverseGeoCodingLocation>
@@ -53,21 +51,21 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
 
     private fun getFavouriteLocations() {
         viewModelScope.launch {
-            _favouriteLocationsList.value = MainFavouriteLocationsObject.getFavouriteLocationsAsync(mainDatabase)
+            _favouriteLocationsList.value = FavouriteLocationsRepo.getFavouriteLocationsAsync(mainDatabase)
             Timber.d("_favouriteLocationsList.value.size is ${_favouriteLocationsList.value?.size}")
         }
     }
 
     private fun getRecentLocations() {
         viewModelScope.launch {
-            _recentLocationsList.value = MainRecentLocationsObject.getRecentLocationsAsync(mainDatabase)
+            _recentLocationsList.value = RecentLocationsRepo.getRecentLocationsAsync(mainDatabase)
             Timber.d("_recentLocationsList.value.size is ${_recentLocationsList.value?.size}")
         }
     }
 
     fun deleteAllFavourite() {
         viewModelScope.launch {
-            MainFavouriteLocationsObject.removeAllFavouriteLocations(
+            FavouriteLocationsRepo.removeAllFavouriteLocations(
                 mainDatabase, _favouriteLocationsList.value
             )
             _favouriteLocationsList.value = null
@@ -76,7 +74,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
 
     fun deleteAllRecent() {
         viewModelScope.launch {
-            MainRecentLocationsObject.removeAllRecentLocations(
+            RecentLocationsRepo.removeAllRecentLocations(
                 mainDatabase, _recentLocationsList.value
             )
             _recentLocationsList.value = null
@@ -85,7 +83,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
 
     fun removeFromRecent(locationItem: LocationItem) {
         viewModelScope.launch {
-            MainRecentLocationsObject.removeRecentLocationToLocalStorage(
+            RecentLocationsRepo.removeRecentLocationToLocalStorage(
                 mainDatabase,
                 locationItem
             )
@@ -94,7 +92,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
 
     fun removeFromFavourites(locationItem: LocationItem) {
         viewModelScope.launch {
-            MainFavouriteLocationsObject.removeFavouriteLocationToLocalStorage(
+            FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
                 mainDatabase,
                 locationItem
             )
@@ -104,7 +102,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     fun editLocationInDatabase(activity: FragmentActivity?, reverseGeoCodingLocation: ReverseGeoCodingLocation) {
         viewModelScope.launch {
             (activity as MainActivity).hasNotificationChanged = false
-            MainLocationObject.insertLocationToLocalStorage(
+            LocationRepo.insertLocationToLocalStorage(
                 mainDatabase, reverseGeoCodingLocation
             )
         }
@@ -113,7 +111,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     fun addCurrentLocationToDatabase(activity: FragmentActivity?) {
         viewModelScope.launch {
             (activity as MainActivity).hasNotificationChanged = false
-            MainLocationObject.insertLocationToLocalStorage(mainDatabase,
+            LocationRepo.insertLocationToLocalStorage(mainDatabase,
                 _reversedGeoCodingLocation.value
                     ?: throw RuntimeException("_reversedGeoCodingLocation.value is ${_reversedGeoCodingLocation.value}")
             )
@@ -122,7 +120,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
 
     private fun getCurrentLocation() {
         viewModelScope.launch {
-            _reversedGeoCodingLocation.value = MainLocationObject.getLocationNameFromCoordinatesAsync(turnOnGPS(context), mainDatabase)
+            _reversedGeoCodingLocation.value = LocationRepo.getLocationNameFromCoordinatesAsync(turnOnGPS(context), mainDatabase)
                 ?.also {
                 Timber.d("_coordinates.value is ${_reversedGeoCodingLocation.value}")
                 _isLoading.value = false

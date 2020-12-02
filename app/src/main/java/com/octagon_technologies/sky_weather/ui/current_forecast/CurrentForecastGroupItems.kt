@@ -7,9 +7,9 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.Theme
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastAllergyItemBinding
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastDescriptionItemBinding
-import com.octagon_technologies.sky_weather.network.single_forecast.WindDirection
-import com.octagon_technologies.sky_weather.network.single_forecast.WindGust
-import com.octagon_technologies.sky_weather.network.single_forecast.WindSpeed
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindDirection
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindGust
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindSpeed
 import com.xwray.groupie.databinding.BindableItem
 import timber.log.Timber
 

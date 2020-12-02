@@ -26,9 +26,9 @@ class FindLocationFragment : Fragment() {
             requireContext()
         )
     }
-    private val theme by lazy {
-        (activity as MainActivity).liveTheme.value
-    }
+    private val mainActivity by lazy { activity as MainActivity }
+    private val theme by lazy { mainActivity.liveTheme.value }
+    private val units by lazy { mainActivity.liveUnits.value }
 
     private val favouriteGroupAdapter = GroupAdapter<GroupieViewHolder>()
     private val recentGroupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -43,6 +43,7 @@ class FindLocationFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.theme = theme
+        binding.units = units
 
         viewModel.favouriteLocationsList.observe(viewLifecycleOwner, {
             favouriteGroupAdapter.clear()
@@ -77,7 +78,7 @@ class FindLocationFragment : Fragment() {
                     val reverseGeoCodingLocation = toReverseGeoCodingLocation().apply {
                         viewModel.editLocationInDatabase(activity, this)
                     }
-                    (activity as MainActivity).liveLocation.value = reverseGeoCodingLocation
+                    mainActivity.liveLocation.value = reverseGeoCodingLocation
                     findNavController().popBackStack(R.id.currentForecastFragment, false)
                 }
             }
@@ -127,7 +128,14 @@ class FindLocationFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.closeBtn.setOnClickListener {
-            findNavController().popBackStack()
+            mainActivity.liveLocation.value?.let {
+                findNavController().popBackStack()
+            } ?: run {
+                showShortToast(
+                    getStringResource(R.string.location_is_needed_to_get_weather_forecast)
+                )
+                mainActivity.finish()
+            }
         }
         binding.searchQuery.setOnClickListener { findNavController().navigate(R.id.action_findLocationFragment_to_searchLocationFragment) }
         binding.enableLocationLayout.setOnClickListener { viewModel.checkIfPermissionIsGranted() }
@@ -135,7 +143,7 @@ class FindLocationFragment : Fragment() {
         binding.gpsLocationLayout.setOnClickListener {
             viewModel.addCurrentLocationToDatabase(activity)
             viewModel.reversedGeoCodingLocation.value?.let {
-                (activity as MainActivity).liveLocation.value = it
+                mainActivity.liveLocation.value = it
                 findNavController().popBackStack(R.id.currentForecastFragment, false)
             }
         }

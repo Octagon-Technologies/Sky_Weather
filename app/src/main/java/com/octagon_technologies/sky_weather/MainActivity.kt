@@ -10,20 +10,19 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.octagon_technologies.sky_weather.database.MainDataBase
 import com.octagon_technologies.sky_weather.databinding.ActivityMainBinding
-import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.shared_code.MainLocationObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainSettings
+import com.octagon_technologies.sky_weather.repository.LocationRepo
+import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.ui.shared_code.SettingsRepo
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private val navController by lazy { findNavController(R.id.nav_host_fragment) }
     private val mainDataBase by lazy { MainDataBase.getInstance(applicationContext) }
-    private val mainSettings by lazy { MainSettings(applicationContext) }
+    private val mainSettings by lazy { SettingsRepo(applicationContext) }
     val singleForecastJsonAdapter: JsonAdapter<SingleForecast> by lazy {
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -40,7 +39,6 @@ class MainActivity : AppCompatActivity() {
             .adapter(SingleForecast::class.java)
     }
 
-    private val uiScope = CoroutineScope(Dispatchers.Main)
     var hasNotificationChanged = false
 
     var liveLocation = MutableLiveData<ReverseGeoCodingLocation>()
@@ -76,8 +74,8 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.theme = liveTheme
 
-        uiScope.launch {
-            liveLocation.value = MainLocationObject.getLocalLocationAsync(mainDataBase)
+        GlobalScope.launch(Dispatchers.Main) {
+            liveLocation.value = LocationRepo.getLocalLocationAsync(mainDataBase)
             if (liveLocation.value == null) navController.navigate(R.id.findLocationFragment)
 
             liveTheme.value = mainSettings.getTheme()
@@ -108,8 +106,8 @@ class MainActivity : AppCompatActivity() {
 
             Toast.makeText(
                 applicationContext,
-                "Location is needed to get weather forecast.",
-                Toast.LENGTH_LONG
+                resources.getString(R.string.location_is_needed_to_get_weather_forecast),
+                Toast.LENGTH_SHORT
             ).show()
 
             finish()

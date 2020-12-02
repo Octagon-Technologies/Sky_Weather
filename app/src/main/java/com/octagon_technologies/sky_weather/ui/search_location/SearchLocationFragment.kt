@@ -3,25 +3,20 @@ package com.octagon_technologies.sky_weather.ui.search_location
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.CustomTextWatcher
 import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Theme
 import com.octagon_technologies.sky_weather.databinding.SearchLocationFragmentBinding
 import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModel
 import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModelFactory
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
-import com.octagon_technologies.sky_weather.ui.shared_code.MainFavouriteLocationsObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainLocationObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainRecentLocationsObject
+import com.octagon_technologies.sky_weather.repository.LocationRepo
+import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.coroutines.CoroutineScope
@@ -64,12 +59,12 @@ class SearchLocationFragment : Fragment() {
                 val reverseGeoCodingLocation = toReverseGeoCodingLocation()
                 CoroutineScope(Dispatchers.Main).launch {
                     // Set current location to general ReverseGeoCodingLocation
-                    MainLocationObject.insertLocationToLocalStorage(
+                    LocationRepo.insertLocationToLocalStorage(
                         viewModel.mainDataBase, reverseGeoCodingLocation
                     )
 
                     // Add location to recent location
-                    MainRecentLocationsObject.insertRecentLocationToLocalStorage(
+                    RecentLocationsRepo.insertRecentLocationToLocalStorage(
                         viewModel.mainDataBase, this@apply
                     )
                 }

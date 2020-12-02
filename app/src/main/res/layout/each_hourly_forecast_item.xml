@@ -9,7 +9,7 @@
 
         <variable
             name="eachHourlyForecast"
-            type="com.octagon_technologies.sky_weather.network.hourly_forecast.EachHourlyForecast" />
+            type="com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast" />
 
         <variable
             name="timeFormat"

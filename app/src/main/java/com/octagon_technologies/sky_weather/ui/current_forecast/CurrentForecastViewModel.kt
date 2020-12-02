@@ -4,16 +4,17 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.octagon_technologies.sky_weather.StatusCode
 import com.octagon_technologies.sky_weather.Units
-import com.octagon_technologies.sky_weather.database.MainDataBase
 import com.octagon_technologies.sky_weather.getCoordinates
-import com.octagon_technologies.sky_weather.network.allergy_forecast.Allergy
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.network.lunar_forecast.LunarForecast
-import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.ui.shared_code.MainAllergyForecastObject.getAllergyValueAsync
-import com.octagon_technologies.sky_weather.ui.shared_code.MainCurrentForecastObject.getCurrentForecastAsync
-import com.octagon_technologies.sky_weather.ui.shared_code.MainLunarForecastObject.getLunarForecastAsync
+import com.octagon_technologies.sky_weather.repository.AllergyRepo.getAllergyValueAsync
+import com.octagon_technologies.sky_weather.repository.CurrentForecastRepo.getCurrentForecastAsync
+import com.octagon_technologies.sky_weather.repository.LunarRepo.getLunarForecastAsync
+import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
+import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,13 +38,17 @@ class CurrentForecastViewModel(context: Context) : ViewModel() {
     val lunarForecast: LiveData<LunarForecast?>
         get() = _lunarForecast
 
+    private var _statusCode = MutableLiveData<StatusCode>()
+    val statusCode: LiveData<StatusCode> = _statusCode
 
     fun getLocalLocation(units: Units?, location: ReverseGeoCodingLocation?) {
-        val coordinates = location?.getCoordinates()!!
+        val coordinates = location?.getCoordinates() ?: return
 
         uiScope.launch {
-            _singleForecast.value =
-                getCurrentForecastAsync(mainDataBase, coordinates, units)
+           val result = getCurrentForecastAsync(mainDataBase, coordinates, units)
+
+            _statusCode.value = result.first
+            _singleForecast.value = result.second
             _allergyForecast.value = getAllergyValueAsync(mainDataBase, coordinates)
             _lunarForecast.value = getLunarForecastAsync(mainDataBase, coordinates)
         }

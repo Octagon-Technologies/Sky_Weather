@@ -7,18 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.octagon_technologies.sky_weather.MainActivity
-import com.octagon_technologies.sky_weather.addToolbarAndBottomNav
+import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.HourlyForecastFragmentBinding
 import com.octagon_technologies.sky_weather.databinding.SelectedHourlyForecastLayoutBinding
-import com.octagon_technologies.sky_weather.getCoordinates
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachDayTextItem
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachHourlyForecastItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import org.joda.time.DateTime
 import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 
 class HourlyForecastFragment : Fragment() {
@@ -62,6 +58,16 @@ class HourlyForecastFragment : Fragment() {
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
+        viewModel.statusCode.observe(viewLifecycleOwner) {
+            val message = when(it ?: return@observe) {
+                StatusCode.Success -> return@observe
+                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
+                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
+            }
+
+            showLongToast(message)
+        }
+
         (activity as MainActivity).liveLocation.observe(viewLifecycleOwner, {
             it?.also {
                 viewModel.getHourlyForecastAsync(it, mainActivity.liveUnits.value)
@@ -70,13 +76,6 @@ class HourlyForecastFragment : Fragment() {
         })
 
         binding.hourlyRecyclerView.addCustomScrollListener(groupAdapter, binding)
-
-        viewModel.selectedSingleForecast.observe(viewLifecycleOwner) {
-            val hours = SimpleDateFormat("HH", Locale.ENGLISH)
-                .format(DateTime(it?.observationTime?.value).toDate().time)?.toInt()
-
-            viewModel.isDay.value = hours in 8..19
-        }
 
         bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {

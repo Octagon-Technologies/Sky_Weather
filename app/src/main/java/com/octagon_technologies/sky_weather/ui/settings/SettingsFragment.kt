@@ -11,20 +11,20 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.SettingsFragmentBinding
-import com.octagon_technologies.sky_weather.ui.shared_code.MainSettings
+import com.octagon_technologies.sky_weather.ui.shared_code.SettingsRepo
 import timber.log.Timber
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: SettingsFragmentBinding
 
-    private val mainSettings by lazy { MainSettings(requireContext()) }
+    private val mainSettings by lazy { SettingsRepo(requireContext()) }
     private val mainActivity by lazy { activity as MainActivity }
     private val notificationManagerCompat by lazy { NotificationManagerCompat.from(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = SettingsFragmentBinding.inflate(inflater)
 
         binding.apply {

@@ -5,13 +5,13 @@
 
     <data>
 
-        <import type="com.octagon_technologies.sky_weather.network.daily_forecast.EachDailyForecast" />
+        <import type="com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast" />
 
         <import type="com.octagon_technologies.sky_weather.Units" />
 
         <variable
             name="eachDailyForecast"
-            type="EachDailyForecast" />
+            type="com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast" />
 
         <variable
             name="units"

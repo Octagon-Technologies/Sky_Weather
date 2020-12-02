@@ -6,15 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.MainActivity
-import com.octagon_technologies.sky_weather.addToolbarAndBottomNav
+import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModelFactory
-import timber.log.Timber
 
 class CurrentForecastFragment : Fragment() {
 
@@ -28,7 +25,7 @@ class CurrentForecastFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = CurrentForecastFragmentBinding.inflate(layoutInflater).also {
             it.lifecycleOwner = viewLifecycleOwner
             it.viewModel = viewModel
@@ -47,6 +44,16 @@ class CurrentForecastFragment : Fragment() {
                 )
                 mainActivity.hasNotificationChanged = true
             }
+        }
+
+        viewModel.statusCode.observe(viewLifecycleOwner) {
+            val message = when(it ?: return@observe) {
+                StatusCode.Success -> return@observe
+                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
+                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
+            }
+
+            showLongToast(message)
         }
 
         binding.swipeToRefreshLayout.setOnRefreshListener {
@@ -80,8 +87,8 @@ class CurrentForecastFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        mainActivity.liveTheme.observe(viewLifecycleOwner, {
+        mainActivity.liveTheme.observe(viewLifecycleOwner) {
             addToolbarAndBottomNav(it)
-        })
+        }
     }
 }

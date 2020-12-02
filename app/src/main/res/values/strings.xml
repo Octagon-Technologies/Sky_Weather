@@ -17,6 +17,7 @@
     <string name="you_haven_t_added_any_locations_yet_plain_text">You haven\'t added any locations yet.</string>
     <string name="it_looks_like_your_recent_history_is_empty_plain_text">It looks like your recent history is empty.</string>
     <string name="current_plain_text">CURRENT</string>
+    <string name="location_is_needed_to_get_weather_forecast">Location is needed to get weather forecast</string>
     <string name="locations_plain_text">Locations</string>
     <string name="close_button_plain_text">Close Button</string>
     <string name="add_city_to_favourites_plain_text">Add City to Favourites</string>
@@ -24,6 +25,9 @@
     <string name="cancel_plain_text">Cancel</string>
     <string name="settings_plain_text">Settings</string>
     <string name="loading_plain_text">Loading</string>
+
+    <string name="no_network_availble_plain_text">No Network available</string>
+    <string name="api_limit_exceeded_plain_text">"Api limit has been exceeded. Try again in an hour.</string>
 
     <string name="temp_format">%s°</string>
     <string name="feelslike_format">FeelsLike %s°</string>
