@@ -13,11 +13,9 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BitmapCompat
 import com.octagon_technologies.sky_weather.*
-import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.shared_code.getDrawableFromWeatherCode
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import org.joda.time.DateTime
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -125,7 +123,7 @@ class CustomNotificationCompat(private val context: Context) {
             val notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
                 description = "Allows weather updates in notifications."
             }
@@ -141,7 +139,8 @@ class CustomNotificationCompat(private val context: Context) {
     ) {
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
             setNotificationSilent()
-            priority = NotificationCompat.PRIORITY_MAX
+            priority = NotificationCompat.PRIORITY_DEFAULT
+            setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
             setContent(getCustomExpandedRemoteView(singleForecast, reverseLocation, timeFormat))
             setSmallIcon(R.drawable.cloudy_night)
             setShowWhen(false)

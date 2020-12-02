@@ -4,28 +4,25 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.octagon_technologies.sky_weather.StatusCode
 import com.octagon_technologies.sky_weather.Units
-import com.octagon_technologies.sky_weather.database.MainDataBase
-import com.octagon_technologies.sky_weather.network.hourly_forecast.EachHourlyForecast
-import com.octagon_technologies.sky_weather.network.mockLat
-import com.octagon_technologies.sky_weather.network.mockLon
-import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.network.single_forecast.ObservationTime
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.repository.HourlyForecastRepo
+import com.octagon_technologies.sky_weather.repository.SelectedHourlyForecastRepo.getSelectedSingleForecastAsync
+import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
-import com.octagon_technologies.sky_weather.ui.shared_code.MainHourlyForecastObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainSelectedHourlyForecastObject.getSelectedSingleForecastAsync
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.joda.time.DateTime
 import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.*
 
 class HourlyForecastViewModel(context: Context) : ViewModel() {
     private val mainDataBase = MainDataBase.getInstance(context)
-    private val viewModelJob = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private var _hourlyForecast = MutableLiveData<ArrayList<EachHourlyForecast>>()
     val hourlyForecast: LiveData<ArrayList<EachHourlyForecast>>
@@ -35,6 +32,9 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
     val selectedSingleForecast: LiveData<SingleForecast>
         get() = _selectedSingleForecast
 
+    private var _statusCode = MutableLiveData<StatusCode>()
+    val statusCode: LiveData<StatusCode> = _statusCode
+
     var isDay = MutableLiveData<Boolean>()
 
     fun getHourlyForecastAsync(
@@ -43,12 +43,16 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
         shouldLoadSelectedHourlyForecast: Boolean = true
     ) {
         val coordinates = Coordinates(
-            location?.lon?.toDouble() ?: mockLon,
-            location?.lat?.toDouble() ?: mockLat
+            location?.lon?.toDouble() ?: return,
+            location.lat?.toDouble() ?: return
         )
 
-        uiScope.launch {
-            _hourlyForecast.value = MainHourlyForecastObject.getHourlyForecastAsync(mainDataBase, coordinates, units)
+        viewModelScope.launch {
+            val result = HourlyForecastRepo.getHourlyForecastAsync(mainDataBase, coordinates, units)
+
+            _statusCode.value = result.first
+            _hourlyForecast.value = result.second
+
             if (shouldLoadSelectedHourlyForecast) {
                 getSelectedSingleForecast(
                     _hourlyForecast.value?.get(0)?.observationTime, units, coordinates
@@ -57,12 +61,25 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun getSelectedSingleForecast(observationTime: ObservationTime?, units: Units?, coordinates: Coordinates) {
-        uiScope.launch {
+    fun getSelectedSingleForecast(
+        observationTime: ObservationTime?,
+        units: Units?,
+        coordinates: Coordinates
+    ) {
+        viewModelScope.launch {
             Timber.d("observation time is $observationTime")
             observationTime?.let {
                 _selectedSingleForecast.value =
-                    getSelectedSingleForecastAsync(coordinates, observationTime.value.toString(), units)
+                    getSelectedSingleForecastAsync(
+                        coordinates,
+                        observationTime.value.toString(),
+                        units
+                    )?.apply {
+                        val hours = SimpleDateFormat("HH", Locale.ENGLISH)
+                            .format(DateTime(observationTime.value).toDate().time)?.toInt()
+
+                        isDay.value = hours in 8..19
+                    }
             }
         }
     }

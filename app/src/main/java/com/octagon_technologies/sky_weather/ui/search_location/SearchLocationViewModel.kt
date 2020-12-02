@@ -5,14 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.database.MainDataBase
-import com.octagon_technologies.sky_weather.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
-import com.octagon_technologies.sky_weather.ui.shared_code.MainFavouriteLocationsObject
-import com.octagon_technologies.sky_weather.ui.shared_code.MainLocationObject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.octagon_technologies.sky_weather.repository.FavouriteLocationsRepo
+import com.octagon_technologies.sky_weather.repository.LocationRepo
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -26,7 +23,7 @@ class SearchLocationViewModel(val context: Context) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            favouriteItemsMap.value = MainFavouriteLocationsObject.getFavouriteLocationsAsync(mainDataBase)
+            favouriteItemsMap.value = FavouriteLocationsRepo.getFavouriteLocationsAsync(mainDataBase)
                 ?.sortedBy { it.displayName }?.associateBy { it.placeId }
         }
     }
@@ -35,19 +32,19 @@ class SearchLocationViewModel(val context: Context) : ViewModel() {
         if (query.isEmpty()) return
 
         viewModelScope.launch {
-            _locationSuggestions.value = MainLocationObject.getLocationSuggestionsFromQuery(query)
+            _locationSuggestions.value = LocationRepo.getLocationSuggestionsFromQuery(query)
         }
     }
 
     val addToFavourite = { eachSearchResultItem: EachSearchResultItem ->
         viewModelScope.launch {
             if (eachSearchResultItem.isLikedByUser) {
-                MainFavouriteLocationsObject.removeFavouriteLocationToLocalStorage(
+                FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
                     mainDataBase,
                     eachSearchResultItem.locationItem
                 )
             } else {
-                MainFavouriteLocationsObject.insertFavouriteLocationToLocalStorage(
+                FavouriteLocationsRepo.insertFavouriteLocationToLocalStorage(
                     mainDataBase,
                     eachSearchResultItem.locationItem
                 )

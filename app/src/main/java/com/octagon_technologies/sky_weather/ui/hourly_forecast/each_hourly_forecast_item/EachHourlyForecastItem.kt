@@ -2,10 +2,9 @@ package com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_fore
 
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.TimeFormat
-import com.octagon_technologies.sky_weather.Units
 import com.octagon_technologies.sky_weather.databinding.EachDayTextItemBinding
 import com.octagon_technologies.sky_weather.databinding.EachHourlyForecastItemBinding
-import com.octagon_technologies.sky_weather.network.hourly_forecast.EachHourlyForecast
+import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
 import com.xwray.groupie.databinding.BindableItem
 import timber.log.Timber
 

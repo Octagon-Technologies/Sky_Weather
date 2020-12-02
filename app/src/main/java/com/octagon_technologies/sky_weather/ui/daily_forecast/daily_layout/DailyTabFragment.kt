@@ -12,11 +12,11 @@ import com.octagon_technologies.sky_weather.Theme
 import com.octagon_technologies.sky_weather.TimeFormat
 import com.octagon_technologies.sky_weather.WindDirectionUnits
 import com.octagon_technologies.sky_weather.databinding.DailyTabFragmentBinding
-import com.octagon_technologies.sky_weather.network.selected_daily_forecast.Min
-import com.octagon_technologies.sky_weather.network.selected_daily_forecast.SelectedDailyForecast
-import com.octagon_technologies.sky_weather.network.single_forecast.WindDirection
-import com.octagon_technologies.sky_weather.network.single_forecast.WindGust
-import com.octagon_technologies.sky_weather.network.single_forecast.WindSpeed
+import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.Min
+import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindDirection
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindGust
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindSpeed
 import com.octagon_technologies.sky_weather.ui.current_forecast.EachCurrentForecastDescriptionItem
 import com.octagon_technologies.sky_weather.ui.current_forecast.EachWeatherDescription
 import com.octagon_technologies.sky_weather.ui.current_forecast.MainWind

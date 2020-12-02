@@ -9,7 +9,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.adapter.FragmentViewHolder
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.octagon_technologies.sky_weather.*
@@ -27,7 +26,8 @@ class DailyForecastFragment : Fragment() {
     }
 
     private lateinit var binding: DailyForecastFragmentBinding
-    private val bottomSheet by lazy { BottomSheetBehavior.from<View>(binding.selectedDailyForecastLayout.root) }
+
+    private lateinit var bottomSheet: BottomSheetBehavior<View>
     private val mainActivity by lazy { activity as MainActivity }
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
@@ -39,8 +39,8 @@ class DailyForecastFragment : Fragment() {
             it.lifecycleOwner = viewLifecycleOwner
             it.groupAdapter = groupAdapter
             it.dailyForecastViewModel = viewModel
+            it.units = mainActivity.liveUnits.value
         }
-
         binding.selectedDailyForecastLayout.let {
             it.lifecycleOwner = viewLifecycleOwner
             it.dailyForecastViewModel = viewModel
@@ -54,9 +54,39 @@ class DailyForecastFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bottomSheet = BottomSheetBehavior.from(binding.selectedDailyForecastLayout.root).also {
+            it.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
 
+        viewModel.statusCode.observe(viewLifecycleOwner) {
+            val message = when(it ?: return@observe) {
+                StatusCode.Success -> return@observe
+                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
+                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
+            }
 
-        bottomSheet.state = BottomSheetBehavior.STATE_COLLAPSED
+            showLongToast(message)
+        }
+
+        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Timber.d("newState is $newState in onStateChanged()")
+
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    Timber.d("State is expanded.")
+                    mainActivity.binding.navView.visibility = View.GONE
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    Timber.d("State is collapsed.")
+                    mainActivity.binding.navView.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        mainActivity.liveTheme.observe(viewLifecycleOwner) {
+            addToolbarAndBottomNav(it, true)
+        }
 
         val tabLayout = binding.selectedDailyForecastLayout.tabLayout.apply {
             tabTextColors = ColorStateList.valueOf(
@@ -78,28 +108,15 @@ class DailyForecastFragment : Fragment() {
             mainActivity.liveUnits.value
         )
 
-        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    Timber.d("State is expanded.")
-                    mainActivity.binding.navView.visibility = View.GONE
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    Timber.d("State is collapsed.")
-                    mainActivity.binding.navView.visibility = View.VISIBLE
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
-
         groupAdapter.setOnItemClickListener { item, _ ->
-            val coordinates = mainActivity.liveLocation.value?.getCoordinates()!!
+            val coordinates = mainActivity.liveLocation.value?.getCoordinates() ?: return@setOnItemClickListener
 
             viewModel.getSelectedDailyForecast(
                 coordinates,
                 (item as EachDailyForecastItem).eachDailyForecast,
                 mainActivity.liveUnits.value
             )
+
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
@@ -115,12 +132,6 @@ class DailyForecastFragment : Fragment() {
         ).attach()
     }
 
-    override fun onStart() {
-        super.onStart()
-        mainActivity.liveTheme.observe(viewLifecycleOwner, {
-            addToolbarAndBottomNav(it, bottomSheet.state != BottomSheetBehavior.STATE_EXPANDED)
-        })
-    }
 
     inner class MyFragmentStateAdapter : FragmentStateAdapter(this) {
         override fun getItemCount() = 2
@@ -133,21 +144,5 @@ class DailyForecastFragment : Fragment() {
                 constructorDailyForecastViewModel = viewModel
             )
         }
-
-        override fun onBindViewHolder(
-            holder: FragmentViewHolder,
-            position: Int,
-            payloads: MutableList<Any>
-        ) {
-            super.onBindViewHolder(holder, position, payloads)
-        }
     }
 }
-
-/*
-[{"temp":[{"observation_time":"2020-11-18T15:00:00Z","min":{"value":11.64,"units":"C"}},
-{"observation_time":"2020-11-17T23:00:00Z","max":{"value":24.8,"units":"C"}}],
-"humidity":[{"observation_time":"2020-11-17T23:00:00Z","min":{"value":27.85,"units":"%"}},
-{"observation_time":"2020-11-18T08:00:00Z","max":{"value":84.84,"units":"%"}}],"weather_code":{"value":"fog"},
-"observation_time":{"value":"2020-11-17"},"lat":34.08687645,"lon":-118.29337729},
- */

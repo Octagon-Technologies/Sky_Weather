@@ -6,8 +6,9 @@ import androidx.core.view.updateLayoutParams
 import androidx.databinding.BindingAdapter
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.Units
-import com.octagon_technologies.sky_weather.network.daily_forecast.*
-import com.octagon_technologies.sky_weather.network.single_forecast.ObservationTime
+import com.octagon_technologies.sky_weather.repository.network.daily_forecast.Humidity
+import com.octagon_technologies.sky_weather.repository.network.daily_forecast.Temp
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.fahrenheitToCelsius
 import org.joda.time.DateTime
 import timber.log.Timber

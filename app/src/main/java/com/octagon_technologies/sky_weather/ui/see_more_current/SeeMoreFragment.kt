@@ -10,8 +10,8 @@ import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.Theme
 import com.octagon_technologies.sky_weather.databinding.SeeMoreFragmentBinding
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.removeToolbarAndBottomNav
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 
@@ -24,7 +24,7 @@ class SeeMoreFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = SeeMoreFragmentBinding.inflate(inflater)
         (activity as MainActivity).singleForecastJsonAdapter
             .fromJson(SeeMoreFragmentArgs.fromBundle(requireArguments()).singleForecastJson)?.let {

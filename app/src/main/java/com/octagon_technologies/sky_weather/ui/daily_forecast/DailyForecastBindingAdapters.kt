@@ -4,8 +4,8 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.octagon_technologies.sky_weather.network.daily_forecast.*
-import com.octagon_technologies.sky_weather.network.single_forecast.ObservationTime
+import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
 import com.octagon_technologies.sky_weather.ui.daily_forecast.each_daily_forecast_item.EachDailyForecastItem
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder

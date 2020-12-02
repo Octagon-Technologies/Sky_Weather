@@ -5,13 +5,15 @@ import android.os.Build.VERSION_CODES.M
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.octagon_technologies.sky_weather.network.mockLat
-import com.octagon_technologies.sky_weather.network.mockLon
-import com.octagon_technologies.sky_weather.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.repository.network.mockLat
+import com.octagon_technologies.sky_weather.repository.network.mockLon
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.*
 import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
 import timber.log.Timber
@@ -39,9 +41,20 @@ enum class WindDirectionUnits { CARDINAL, DEGREES }
 enum class TimeFormat { HALF_DAY, FULL_DAY }
 enum class Theme { LIGHT, DARK }
 
+enum class StatusCode { Success, NoNetwork, ApiLimitExceeded }
+
 data class EachDataStoreItem(val preferencesName: String, val newValue: Any)
 
 fun Int.checkBuildVersion() = Build.VERSION.SDK_INT >= this
+
+private fun Fragment.showToast(message: String, length: Int) {
+    Toast.makeText(requireContext(), message, length).show()
+}
+
+fun Fragment.showLongToast(message: String) = showToast(message, Toast.LENGTH_LONG)
+fun Fragment.showShortToast(message: String) = showToast(message, Toast.LENGTH_SHORT)
+
+fun Fragment.getStringResource(@StringRes stringRes: Int) = resources.getString(stringRes)
 
 fun Fragment.removeToolbarAndBottomNav(statusBarColor: Int = R.color.line_grey) {
     val mainActivity = (this.activity as MainActivity)

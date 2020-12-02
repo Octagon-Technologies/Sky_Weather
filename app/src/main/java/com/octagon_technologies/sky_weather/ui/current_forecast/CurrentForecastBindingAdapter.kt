@@ -1,24 +1,20 @@
 package com.octagon_technologies.sky_weather.ui.current_forecast
 
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.WindDirectionUnits
-import com.octagon_technologies.sky_weather.capitalizeWordsWithUnderscore
 import com.octagon_technologies.sky_weather.getBasicForecastConditions
-import com.octagon_technologies.sky_weather.network.allergy_forecast.Allergy
-import com.octagon_technologies.sky_weather.network.single_forecast.*
-import com.octagon_technologies.sky_weather.network.lunar_forecast.LunarForecast
+import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
+import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.FeelsLike
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.Temp
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import org.joda.time.DateTime
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 @BindingAdapter("getCurrentRealFeel")
