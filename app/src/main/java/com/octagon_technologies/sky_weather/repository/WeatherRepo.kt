@@ -28,8 +28,13 @@ class WeatherRepo(context: Context) {
         HourlyForecastRepo.getHourlyForecastAsync(mainDataBase, coordinates, units)
         DailyForecastRepo.getDailyForecastAsync(mainDataBase, coordinates, units)
 
-        CurrentForecastRepo.getCurrentForecastAsync(mainDataBase, coordinates, units).second?.apply {
-            customNotificationCompat.createNotification(this, location, timeFormat)
+        CurrentForecastRepo.getCurrentForecastAsync(
+            mainDataBase,
+            coordinates,
+            units
+        ).second?.apply {
+            if (mainSettings.getNotificationAllowed())
+                customNotificationCompat.createNotification(this, location, timeFormat)
         }
     }
 

@@ -100,11 +100,7 @@ class SettingsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
-        mainActivity.liveTheme.observe(viewLifecycleOwner, {
-            Timber.d("liveTheme changed in observe to $it")
-            removeToolbarAndBottomNav(if (it == Theme.LIGHT) android.R.color.white else R.color.dark_black)
-        })
+        removeToolbarAndBottomNav(if (mainActivity.liveTheme.value == Theme.LIGHT) android.R.color.white else R.color.dark_black)
     }
 
 }
