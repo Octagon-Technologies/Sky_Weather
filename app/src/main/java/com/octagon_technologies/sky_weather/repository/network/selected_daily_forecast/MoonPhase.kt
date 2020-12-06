@@ -1,4 +1,4 @@
-package com.octagon_technologies.sky_weather.network.selected_daily_forecast
+package com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast
 
 
 import com.squareup.moshi.Json

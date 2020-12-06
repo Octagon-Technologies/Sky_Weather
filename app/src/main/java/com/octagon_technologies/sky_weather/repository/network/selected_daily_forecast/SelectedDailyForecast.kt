@@ -1,6 +1,5 @@
 package com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast
 
-import com.octagon_technologies.sky_weather.network.selected_daily_forecast.*
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WeatherCode
 import com.squareup.moshi.Json

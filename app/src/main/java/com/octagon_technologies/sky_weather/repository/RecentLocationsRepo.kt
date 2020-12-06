@@ -2,7 +2,7 @@ package com.octagon_technologies.sky_weather.repository
 
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase
 import com.octagon_technologies.sky_weather.repository.database.RecentLocationDatabaseClass
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -12,12 +12,12 @@ object RecentLocationsRepo {
 
     suspend fun insertRecentLocationToLocalStorage(
         mainDataBase: MainDataBase?,
-        locationItem: LocationItem
+        location: Location
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
                 mainDataBase?.recentLocationDao?.insertRecentLocationDatabaseClass(
-                    RecentLocationDatabaseClass(locationItem.placeId.toString(), locationItem)
+                    RecentLocationDatabaseClass(location.placeId.toString(), location)
                 )
 
                 true
@@ -30,12 +30,12 @@ object RecentLocationsRepo {
 
     suspend fun removeRecentLocationToLocalStorage(
         mainDataBase: MainDataBase?,
-        locationItem: LocationItem
+        location: Location
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
                 mainDataBase?.recentLocationDao?.deleteRecentLocationDatabaseClass(
-                    RecentLocationDatabaseClass(locationItem.placeId.toString(), locationItem)
+                    RecentLocationDatabaseClass(location.placeId.toString(), location)
                 )
 
                 true
@@ -48,7 +48,7 @@ object RecentLocationsRepo {
 
     suspend fun removeAllRecentLocations(
         mainDataBase: MainDataBase?,
-        listOfRecentLocations: ArrayList<LocationItem>?
+        listOfRecentLocations: ArrayList<Location>?
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
@@ -66,7 +66,7 @@ object RecentLocationsRepo {
         }
     }
 
-    suspend fun getRecentLocationsAsync(mainDataBase: MainDataBase?): ArrayList<LocationItem>? {
+    suspend fun getRecentLocationsAsync(mainDataBase: MainDataBase?): ArrayList<Location>? {
         return try {
             withContext(Dispatchers.IO) {
                 val localRecentLocations =

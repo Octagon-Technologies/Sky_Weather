@@ -9,7 +9,7 @@
 
         <variable
             name="locationItem"
-            type="com.octagon_technologies.sky_weather.repository.network.location.LocationItem" />
+            type="com.octagon_technologies.sky_weather.repository.network.location.Location" />
 
         <variable
             name="theme"

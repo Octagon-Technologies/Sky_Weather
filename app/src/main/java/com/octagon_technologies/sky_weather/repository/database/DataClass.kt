@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
@@ -64,7 +64,7 @@ data class FavouriteLocationDatabaseClass(
         val favouriteLocationKey: String,
 
         @ColumnInfo
-        val favouriteLocation: LocationItem
+        val favouriteLocation: Location
 )
 
 @Entity(tableName = "recentLocationDatabaseClass")
@@ -73,7 +73,7 @@ data class RecentLocationDatabaseClass(
         val recentLocationKey: String,
 
         @ColumnInfo
-        val recentLocation: LocationItem
+        val recentLocation: Location
 )
 
 @Entity(tableName = "dailyForecastDatabaseClass")

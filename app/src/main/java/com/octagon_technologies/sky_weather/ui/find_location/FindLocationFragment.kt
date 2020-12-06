@@ -37,7 +37,7 @@ class FindLocationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FindLocationFragmentBinding.inflate(inflater)
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -74,7 +74,7 @@ class FindLocationFragment : Fragment() {
 
         listOf(favouriteGroupAdapter, recentGroupAdapter).forEach {
             it.setOnItemClickListener { item, _ ->
-                (item as EachSearchResultItem).locationItem.apply {
+                (item as EachSearchResultItem).location.apply {
                     val reverseGeoCodingLocation = toReverseGeoCodingLocation().apply {
                         viewModel.editLocationInDatabase(activity, this)
                     }
@@ -150,7 +150,7 @@ class FindLocationFragment : Fragment() {
     }
 
     private val removeFromRecent = { eachSearchResultItem: EachSearchResultItem ->
-        viewModel.removeFromRecent(eachSearchResultItem.locationItem)
+        viewModel.removeFromRecent(eachSearchResultItem.location)
         recentGroupAdapter.apply {
             removeGroupAtAdapterPosition(eachSearchResultItem.actualPosition)
             (0 until itemCount).forEach { getItem(it).notifyChanged(it) }
@@ -161,7 +161,7 @@ class FindLocationFragment : Fragment() {
     }
 
     private val removeFromFavourites = { eachSearchResultItem: EachSearchResultItem ->
-        viewModel.removeFromFavourites(eachSearchResultItem.locationItem)
+        viewModel.removeFromFavourites(eachSearchResultItem.location)
         favouriteGroupAdapter.apply {
             removeGroupAtAdapterPosition(eachSearchResultItem.actualPosition)
             (0 until itemCount).forEach { getItem(it).notifyChanged(it) }

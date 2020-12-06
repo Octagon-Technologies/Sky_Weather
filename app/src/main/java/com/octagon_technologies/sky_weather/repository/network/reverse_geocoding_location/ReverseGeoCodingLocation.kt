@@ -2,7 +2,9 @@ package com.octagon_technologies.sky_weather.repository.network.reverse_geocodin
 
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class ReverseGeoCodingLocation(
     @Json(name = "address")
     val reverseGeoCodingAddress: ReverseGeoCodingAddress?,

@@ -1,8 +1,10 @@
 package com.octagon_technologies.sky_weather.repository.network.lunar_forecast
 
-import com.octagon_technologies.sky_weather.network.lunar_forecast.HourlyRating
 import com.squareup.moshi.Json
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class LunarForecast(
     @Json(name = "dayRating")
     val dayRating: Int?,

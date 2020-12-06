@@ -25,6 +25,8 @@ class DailyForecastFragment : Fragment() {
         DailyForecastViewModelFactory(requireContext())
     }
 
+//    private val viewModel: DailyForecastViewModel by createViewModel(this, DailyForecastViewModel(requireContext()))
+
     private lateinit var binding: DailyForecastFragmentBinding
 
     private lateinit var bottomSheet: BottomSheetBehavior<View>

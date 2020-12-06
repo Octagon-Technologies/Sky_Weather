@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
@@ -22,7 +22,7 @@ class GithubTypeConverters {
     private val singleForecastJsonAdapter = moshi.adapter(SingleForecast::class.java)
     private val allergyJsonAdapter = moshi.adapter(Allergy::class.java)
     private val lunarJsonAdapter = moshi.adapter(LunarForecast::class.java)
-    private val locationJsonAdapter = moshi.adapter(LocationItem::class.java)
+    private val locationJsonAdapter = moshi.adapter(Location::class.java)
     private val reversedLocationJsonAdapter = moshi.adapter(ReverseGeoCodingLocation::class.java)
 
     private val hourlyForecastType: ParameterizedType =
@@ -73,11 +73,11 @@ class GithubTypeConverters {
         dailyForecastJsonAdapter.toJson(arrayOfEachDailyForecast?.toList())
 
     @TypeConverter
-    fun favouritesLocationToString(favouritesLocation: LocationItem?): String =
+    fun favouritesLocationToString(favouritesLocation: Location?): String =
         locationJsonAdapter.toJson(favouritesLocation)
 
     @TypeConverter
-    fun stringToFavouritesLocation(data: String): LocationItem? = locationJsonAdapter.fromJson(data)
+    fun stringToFavouritesLocation(data: String): Location? = locationJsonAdapter.fromJson(data)
 
     @TypeConverter
     fun stringToReverseGeoCodingLocation(data: String): ReverseGeoCodingLocation? =

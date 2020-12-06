@@ -12,11 +12,11 @@ import com.octagon_technologies.sky_weather.CustomTextWatcher
 import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SearchLocationFragmentBinding
+import com.octagon_technologies.sky_weather.repository.LocationRepo
+import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
 import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModel
 import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModelFactory
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
-import com.octagon_technologies.sky_weather.repository.LocationRepo
-import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import kotlinx.coroutines.CoroutineScope
@@ -54,7 +54,7 @@ class SearchLocationFragment : Fragment() {
         })
 
         groupAdapter.setOnItemClickListener { item, _ ->
-            (item as EachSearchResultItem).locationItem.apply {
+            (item as EachSearchResultItem).location.apply {
 
                 val reverseGeoCodingLocation = toReverseGeoCodingLocation()
                 CoroutineScope(Dispatchers.Main).launch {
@@ -69,7 +69,10 @@ class SearchLocationFragment : Fragment() {
                     )
                 }
 
-                (activity as MainActivity).liveLocation.value = reverseGeoCodingLocation
+                (activity as MainActivity).apply {
+                    hasNotificationChanged = false
+                    liveLocation.value = reverseGeoCodingLocation
+                }
                 findNavController().popBackStack(R.id.currentForecastFragment, false)
             }
         }
