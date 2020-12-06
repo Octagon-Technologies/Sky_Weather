@@ -1,6 +1,5 @@
 package com.octagon_technologies.sky_weather.repository.network.single_forecast
 
-import com.octagon_technologies.sky_weather.network.single_forecast.*
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

@@ -20,7 +20,7 @@ import com.octagon_technologies.sky_weather.repository.LocationRepo
 import com.octagon_technologies.sky_weather.repository.LocationRepo.turnOnGPS
 import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -36,12 +36,12 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    private var _favouriteLocationsList = MutableLiveData<ArrayList<LocationItem>?>()
-    val favouriteLocationsList: LiveData<ArrayList<LocationItem>?>
+    private var _favouriteLocationsList = MutableLiveData<ArrayList<Location>?>()
+    val favouriteLocationsList: LiveData<ArrayList<Location>?>
         get() = _favouriteLocationsList
 
-    private var _recentLocationsList = MutableLiveData<ArrayList<LocationItem>?>()
-    val recentLocationsList: LiveData<ArrayList<LocationItem>?>
+    private var _recentLocationsList = MutableLiveData<ArrayList<Location>?>()
+    val recentLocationsList: LiveData<ArrayList<Location>?>
         get() = _recentLocationsList
 
     init {
@@ -81,20 +81,20 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
         }
     }
 
-    fun removeFromRecent(locationItem: LocationItem) {
+    fun removeFromRecent(location: Location) {
         viewModelScope.launch {
             RecentLocationsRepo.removeRecentLocationToLocalStorage(
                 mainDatabase,
-                locationItem
+                location
             )
         }
     }
 
-    fun removeFromFavourites(locationItem: LocationItem) {
+    fun removeFromFavourites(location: Location) {
         viewModelScope.launch {
             FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
                 mainDatabase,
-                locationItem
+                location
             )
         }
     }

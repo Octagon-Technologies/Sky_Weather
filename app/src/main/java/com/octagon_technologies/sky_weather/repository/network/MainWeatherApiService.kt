@@ -6,7 +6,7 @@ import com.octagon_technologies.sky_weather.repository.network.*
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
@@ -81,7 +81,7 @@ interface LocationApiService {
         @Query("key") key: String = LOCATION_KEY,
         @Query("q") query: String,
         @Query("limit") limit: Int = 10
-    ): Deferred<List<LocationItem>>
+    ): Deferred<List<Location>>
 
     //  https://us1.locationiq.com/v1/reverse.php?key=2a13f417c6d3f3&lat=-1.3135887888876425&lon=36.81903851535387&zoom=16&format=json
     @GET("reverse.php")

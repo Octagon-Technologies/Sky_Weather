@@ -7,7 +7,7 @@ import com.google.android.gms.location.LocationServices
 import com.octagon_technologies.sky_weather.repository.database.LocationDatabaseClass
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase
 import com.octagon_technologies.sky_weather.network.LocationRetrofitItem
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.mockLat
 import com.octagon_technologies.sky_weather.repository.network.mockLon
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
@@ -33,7 +33,7 @@ object LocationRepo {
         return coordinates ?: Coordinates(lon = mockLon, lat = mockLat)
     }
 
-    suspend fun getLocationSuggestionsFromQuery(query: String): Map<String?, LocationItem> {
+    suspend fun getLocationSuggestionsFromQuery(query: String): Map<String?, Location> {
         return withContext(Dispatchers.IO) {
             try {
                 LocationRetrofitItem.locationRetrofitService.getLocationSuggestionsAsync(query = query)

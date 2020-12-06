@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase
-import com.octagon_technologies.sky_weather.repository.network.location.LocationItem
+import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.repository.FavouriteLocationsRepo
 import com.octagon_technologies.sky_weather.repository.LocationRepo
@@ -16,10 +16,10 @@ import timber.log.Timber
 class SearchLocationViewModel(val context: Context) : ViewModel() {
     val mainDataBase by lazy { MainDataBase.getInstance(context) }
 
-    private var _locationSuggestions = MutableLiveData<Map<String?, LocationItem>>()
-    val locationSuggestions: LiveData<Map<String?, LocationItem>> = _locationSuggestions
+    private var _locationSuggestions = MutableLiveData<Map<String?, Location>>()
+    val locationSuggestions: LiveData<Map<String?, Location>> = _locationSuggestions
 
-    var favouriteItemsMap: MutableLiveData<Map<String?, LocationItem>> = MutableLiveData(mapOf())
+    var favouriteItemsMap: MutableLiveData<Map<String?, Location>> = MutableLiveData(mapOf())
 
     init {
         viewModelScope.launch {
@@ -41,12 +41,12 @@ class SearchLocationViewModel(val context: Context) : ViewModel() {
             if (eachSearchResultItem.isLikedByUser) {
                 FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
                     mainDataBase,
-                    eachSearchResultItem.locationItem
+                    eachSearchResultItem.location
                 )
             } else {
                 FavouriteLocationsRepo.insertFavouriteLocationToLocalStorage(
                     mainDataBase,
-                    eachSearchResultItem.locationItem
+                    eachSearchResultItem.location
                 )
             }
 

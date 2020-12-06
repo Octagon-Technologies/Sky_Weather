@@ -1,12 +1,11 @@
 package com.octagon_technologies.sky_weather.repository.network.hourly_forecast
 
-import com.octagon_technologies.sky_weather.network.single_forecast.*
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.FeelsLike
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.Temp
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.WeatherCode
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.*
 import com.squareup.moshi.Json
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class EachHourlyForecast (
     @Json(name = "feels_like")
     val feelsLike: FeelsLike?,

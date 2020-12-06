@@ -123,7 +123,7 @@ class CustomNotificationCompat(private val context: Context) {
             val notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Allows weather updates in notifications."
             }
@@ -139,7 +139,7 @@ class CustomNotificationCompat(private val context: Context) {
     ) {
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
             setNotificationSilent()
-            priority = NotificationCompat.PRIORITY_DEFAULT
+            priority = NotificationCompat.PRIORITY_HIGH
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
             setContent(getCustomExpandedRemoteView(singleForecast, reverseLocation, timeFormat))
             setSmallIcon(R.drawable.cloudy_night)
