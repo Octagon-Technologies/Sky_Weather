@@ -19,11 +19,16 @@ class WidgetRepo(private val context: Context) {
     private val widgetSettings by lazy { WidgetSettings(context) }
     private val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
 
-    fun createWidget(widgetId: Int, transparencyOutOf255: Int, reverseGeoCodingLocation: ReverseGeoCodingLocation?, onComplete: (Boolean) -> Unit) {
+    fun createWidget(
+        widgetId: Int,
+        transparencyOutOf255: Int,
+        reverseGeoCodingLocation: ReverseGeoCodingLocation?,
+        onComplete: (Result<SingleForecast?>) -> Unit
+    ) {
         GlobalScope.launch(Dispatchers.IO) {
             val location = reverseGeoCodingLocation ?: run {
                 Timber.d("reverseGeoCodingLocation.value is $reverseGeoCodingLocation.value in addWidget()")
-                onComplete(false)
+                onComplete(Result.failure(Throwable("Location has not been selected")))
                 return@launch
             }
 
@@ -35,12 +40,14 @@ class WidgetRepo(private val context: Context) {
                 units = settingsRepo.getUnits()
             )
             widgetSettings.addWidgetId(widgetData)
-            updateSingleWidget(widgetData)
-            onComplete(true)
+            updateSingleWidget(widgetData, onComplete)
         }
     }
 
-    fun updateAllWidgets(paramAppWidgetIds: IntArray? = null) {
+    fun updateAllWidgets(
+        paramAppWidgetIds: IntArray? = null,
+        onComplete: (Result<SingleForecast?>) -> Unit
+    ) {
         val cn = ComponentName(
             "com.octagon_technologies.sky_weather",
             "com.octagon_technologies.sky_weather.widgets.WeatherWidget"
@@ -54,17 +61,21 @@ class WidgetRepo(private val context: Context) {
             Timber.d("widgetsToUpdate is $widgetsToUpdate")
 
             widgetsToUpdate.forEach {
-                updateSingleWidget(it)
+                updateSingleWidget(it, onComplete)
             }
         }
     }
 
-    private suspend fun updateSingleWidget(widgetData: WidgetData) {
-        Timber.d("Updating widget in updateSingleWidget with widgetData as $widgetData")
-        val widgetForecast = widgetSettings.getWeatherForecastFromWidgetData(
-            widgetData.reverseGeoCodingLocation?.getCoordinates(),
-            widgetData.units
-        )
+    private suspend fun updateSingleWidget(
+        widgetData: WidgetData,
+        onComplete: (Result<SingleForecast?>) -> Unit
+    ) {
+        Timber.d("Updating widget in updateSingleWidget with widgetData as ${widgetData.widgetId}")
+
+        val widgetResult = getWeatherForecastFromWidgetData(widgetData.reverseGeoCodingLocation)
+        onComplete(widgetResult)
+
+        val widgetForecast = widgetResult.getOrNull()
 
         // Construct the RemoteViews object
         val widgetRemoteView = CustomRemoteView(context).getCustomRemoteView(
@@ -81,7 +92,7 @@ class WidgetRepo(private val context: Context) {
         appWidgetManager.updateAppWidget(widgetData.widgetId, widgetRemoteView)
     }
 
-    suspend fun getWeatherForecastFromWidgetData(reverseGeoCodingLocation: ReverseGeoCodingLocation?): Result<SingleForecast> {
+    private suspend fun getWeatherForecastFromWidgetData(reverseGeoCodingLocation: ReverseGeoCodingLocation?): Result<SingleForecast?> {
         val coordinates = reverseGeoCodingLocation?.getCoordinates() ?: run {
             Timber.d("coordinates is null in loadDataForWidget")
             return Result.failure(NullPointerException("Location has not been selected"))

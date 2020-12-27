@@ -60,7 +60,7 @@ class WidgetSettings(private val context: Context) {
         addOrRemoveWidgetLambda: (MutableList<WidgetData>) -> List<WidgetData>
     ) {
         withContext(Dispatchers.IO) {
-            val newWidgetList = addOrRemoveWidgetLambda.invoke(getAllWidgets())
+            val newWidgetList = addOrRemoveWidgetLambda(getAllWidgets())
             Timber.d("newWidgetList is $newWidgetList in updateWidgetList()")
             dataStore.edit {
                 it[widgetListKey] = jsonAdapter.toJson(newWidgetList) ?: return@edit

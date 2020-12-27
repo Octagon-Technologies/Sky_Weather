@@ -13,8 +13,9 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.databinding.WidgetConfigureBinding
+import com.octagon_technologies.sky_weather.databinding.ActivityWidgetConfigureBinding
 import com.octagon_technologies.sky_weather.utils.*
+import timber.log.Timber
 
 /**
  * The configuration screen for the [WeatherWidget] AppWidget.
@@ -30,7 +31,7 @@ class WidgetConfigureActivity : AppCompatActivity() {
         )[WidgetConfigureViewModel::class.java]
     }
 
-    private lateinit var binding: WidgetConfigureBinding
+    private lateinit var binding: ActivityWidgetConfigureBinding
     private lateinit var navController: NavController
 
     @SuppressLint("NewApi")
@@ -50,7 +51,7 @@ class WidgetConfigureActivity : AppCompatActivity() {
             )
         }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.widget_configure)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_widget_configure)
         binding.also {
             it.lifecycleOwner = this
             it.viewModel = viewModel
@@ -70,21 +71,29 @@ class WidgetConfigureActivity : AppCompatActivity() {
         viewModel.shouldCreateWidget.observe(this) {
             if (it == true) {
                 val location = viewModel.reverseGeoCodingLocation.value ?: run {
-                    Snackbar.make(binding.root, "Select location first.", Snackbar.LENGTH_SHORT)
-                        .setBackgroundTint(getResColor(R.color.dark_orange))
-                        .setTextColor(getResColor(android.R.color.white))
-                        .show()
+                    showShortSnackBar("Select location first.")
 
                     viewModel.shouldCreateWidget.value = false
                     return@observe
                 }
 
-                widgetRepo.createWidget(appWidgetId, getTransparentColorFromProgress(), location) {
-                    // Make sure we pass back the original appWidgetId
-                    val resultValue = Intent()
-                    resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                    setResult(RESULT_OK, resultValue)
-                    finish()
+                widgetRepo.createWidget(
+                    appWidgetId,
+                    getTransparentColorFromProgress(),
+                    location
+                ) { result ->
+                    result
+                        .onSuccess {
+                            // Make sure we pass back the original appWidgetId
+                            val resultValue = Intent()
+                            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                            setResult(RESULT_OK, resultValue)
+                            finish()
+                        }
+                        .onFailure { throwable ->
+                            showShortSnackBar(throwable.message ?: return@onFailure)
+                            Timber.d(throwable)
+                        }
                 }
             }
         }
@@ -128,6 +137,12 @@ class WidgetConfigureActivity : AppCompatActivity() {
             getResColor(android.R.color.white),
             (binding.transparencySeekbar.progress * 2.55).toInt()
         )
+
+    private fun showShortSnackBar(message: String) =
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+            .setBackgroundTint(getResColor(R.color.dark_orange))
+            .setTextColor(getResColor(android.R.color.white))
+            .show()
 
     override fun onBackPressed() {
         if (viewModel.navigateToLocationFragment.value == true) {

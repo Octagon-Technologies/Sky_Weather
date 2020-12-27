@@ -47,6 +47,12 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
         getRecentLocations()
     }
 
+    fun setIsLoadingAsFalse() {
+        if (isLoading.value == true) {
+            _isLoading.value = false
+        }
+    }
+
     private fun getFavouriteLocations() {
         viewModelScope.launch {
             _favouriteLocationsList.value =

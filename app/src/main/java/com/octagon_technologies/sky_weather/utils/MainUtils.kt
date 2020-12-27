@@ -1,17 +1,10 @@
 package com.octagon_technologies.sky_weather.utils
 
-import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.annotation.StringRes
-import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
-import com.octagon_technologies.sky_weather.MainActivity
-import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.*
@@ -66,6 +59,7 @@ fun String.capitalizeWordsWithUnderscore(): String {
 }
 
 fun ReverseGeoCodingLocation?.getDisplayLocation(): String {
+    if (this.isNull()) return "--"
     return if (
         this?.reverseGeoCodingAddress?.suburb.isNull() ||
         this?.reverseGeoCodingAddress?.city.isNull()

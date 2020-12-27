@@ -24,7 +24,9 @@ class WeatherWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         widgetRepo = WidgetRepo(context)
-        widgetRepo.updateAllWidgets(appWidgetIds)
+        widgetRepo.updateAllWidgets(appWidgetIds) {
+            Timber.d("In WeatherWidget, updateAllWidgets.isSuccess is ${it.isSuccess}")
+        }
 
         Timber.d("onUpdate() called in widget with appWidgetIds is ${appWidgetIds.asList()}")
     }

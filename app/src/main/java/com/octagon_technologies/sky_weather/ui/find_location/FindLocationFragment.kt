@@ -98,15 +98,17 @@ class FindLocationFragment : Fragment() {
                 )
         })
 
-        viewModel.reversedGeoCodingLocation.observe(viewLifecycleOwner, {
-            it.reverseGeoCodingAddress?.apply {
+        viewModel.reversedGeoCodingLocation.observe(viewLifecycleOwner) {
+            it?.reverseGeoCodingAddress?.apply {
                 binding.gpsLocationLayout.visibility = View.VISIBLE
                 binding.enableLocationLayout.visibility = View.GONE
 
                 binding.gpsLocationCity.text = it.getDisplayLocation()
                 binding.gpsLocationCountry.text = country
+            } ?: run {
+                viewModel.setIsLoadingAsFalse()
             }
-        })
+        }
 
         return binding.root
     }

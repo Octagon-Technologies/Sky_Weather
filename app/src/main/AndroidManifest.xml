@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:requiredNotFeature=""
+        android:requiredNotFeature="true"
         tools:ignore="UnusedAttribute" />
 
     <application
@@ -15,9 +15,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
+        android:manageSpaceActivity=".clear_data.ClearDataActivity"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".clear_data.ClearDataActivity"
+            android:theme="@style/DarkBlueStatusBar" />
 
         <activity
             android:name=".SplashActivity"

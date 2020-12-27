@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class App: Application() {
+class App : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
     private val widgetRepo by lazy { WidgetRepo(applicationContext) }
 
@@ -42,6 +42,8 @@ class App: Application() {
             Timber.e(e, "Work manager wasn't initialized")
         }
 
-        widgetRepo.updateAllWidgets()
+        widgetRepo.updateAllWidgets {
+            Timber.d("In App, updateAllWidgets.isSuccess is ${it.isSuccess}")
+        }
     }
 }
