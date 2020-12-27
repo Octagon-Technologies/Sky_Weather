@@ -5,31 +5,31 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.widget.SeekBar
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.ActivityWidgetConfigureBinding
 import com.octagon_technologies.sky_weather.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * The configuration screen for the [WeatherWidget] AppWidget.
  */
+@AndroidEntryPoint
 class WidgetConfigureActivity : AppCompatActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
-    private val widgetRepo by lazy { WidgetRepo(applicationContext) }
 
-    val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            WidgetConfigureViewModel.Factory(applicationContext)
-        )[WidgetConfigureViewModel::class.java]
-    }
+    @Inject
+    lateinit var widgetRepo: WidgetRepo
+
+    val viewModel by viewModels<WidgetConfigureViewModel>()
 
     private lateinit var binding: ActivityWidgetConfigureBinding
     private lateinit var navController: NavController

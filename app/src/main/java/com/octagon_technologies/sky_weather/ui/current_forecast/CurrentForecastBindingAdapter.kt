@@ -5,17 +5,19 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
-import com.octagon_technologies.sky_weather.utils.getBasicForecastConditions
+import com.octagon_technologies.sky_weather.models.EachAllergyDescription
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.FeelsLike
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.Temp
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastAllergyItem
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastDescriptionItem
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.getBasicForecastConditions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
-import kotlin.collections.ArrayList
 
 @BindingAdapter("getCurrentRealFeel")
 fun TextView.getCurrentRealFeel(realFeelsLike: FeelsLike?) {

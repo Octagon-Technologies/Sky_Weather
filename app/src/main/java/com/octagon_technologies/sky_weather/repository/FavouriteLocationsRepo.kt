@@ -1,7 +1,7 @@
 package com.octagon_technologies.sky_weather.repository
 
 import com.octagon_technologies.sky_weather.repository.database.FavouriteLocationDatabaseClass
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,12 +11,12 @@ import java.io.IOException
 object FavouriteLocationsRepo {
 
     suspend fun insertFavouriteLocationToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         location: Location
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                mainDataBase?.favouriteLocationDao?.insertFavouriteLocationDatabaseClass(
+                weatherDataBase?.favouriteLocationDao?.insertFavouriteLocationDatabaseClass(
                     FavouriteLocationDatabaseClass(location.placeId.toString(), location)
                 )
 
@@ -29,12 +29,12 @@ object FavouriteLocationsRepo {
     }
 
     suspend fun removeFavouriteLocationToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         location: Location
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                mainDataBase?.favouriteLocationDao?.deleteFavouriteLocationDatabaseClass(
+                weatherDataBase?.favouriteLocationDao?.deleteFavouriteLocationDatabaseClass(
                     FavouriteLocationDatabaseClass(location.placeId.toString(), location)
                 )
 
@@ -47,12 +47,12 @@ object FavouriteLocationsRepo {
     }
 
     suspend fun removeAllFavouriteLocations(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         listOfFavouriteLocations: ArrayList<Location>?
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                mainDataBase?.favouriteLocationDao?.deleteAllFavourite(
+                weatherDataBase?.favouriteLocationDao?.deleteAllFavourite(
                     listOfFavouriteLocations?.map {
                         FavouriteLocationDatabaseClass(it.placeId ?: "", it)
                     } ?: listOf()
@@ -66,10 +66,10 @@ object FavouriteLocationsRepo {
         }
     }
 
-    suspend fun getFavouriteLocationsAsync(mainDataBase: MainDataBase?): ArrayList<Location>? {
+    suspend fun getFavouriteLocationsAsync(weatherDataBase: WeatherDataBase?): ArrayList<Location>? {
         return try {
             withContext(Dispatchers.IO) {
-                val localFavouriteLocations = mainDataBase?.favouriteLocationDao?.getFavouriteLocationsDatabaseClass()?.map {
+                val localFavouriteLocations = weatherDataBase?.favouriteLocationDao?.getFavouriteLocationsDatabaseClass()?.map {
                     it.favouriteLocation
                 }?.toMutableList()
 

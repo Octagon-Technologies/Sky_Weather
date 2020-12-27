@@ -12,23 +12,25 @@ import androidx.navigation.ui.NavigationUI
 import com.octagon_technologies.sky_weather.databinding.ActivityMainBinding
 import com.octagon_technologies.sky_weather.repository.LocationRepo
 import com.octagon_technologies.sky_weather.repository.SettingsRepo
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.utils.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
     private val navController by lazy { findNavController(R.id.nav_host_fragment) }
-    private val mainDataBase by lazy { MainDataBase.getInstance(applicationContext) }
+    private val mainDataBase by lazy { WeatherDataBase.getInstance(applicationContext) }
     private val mainSettings by lazy { SettingsRepo(applicationContext) }
     val singleForecastJsonAdapter: JsonAdapter<SingleForecast> by lazy {
         Moshi.Builder()

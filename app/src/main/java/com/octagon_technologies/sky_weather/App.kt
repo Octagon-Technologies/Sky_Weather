@@ -4,15 +4,20 @@ import android.app.Application
 import androidx.work.*
 import com.octagon_technologies.sky_weather.widgets.WidgetRepo
 import com.octagon_technologies.sky_weather.work.RefreshDataWork
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
+@HiltAndroidApp
 class App : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
-    private val widgetRepo by lazy { WidgetRepo(applicationContext) }
+
+    @Inject
+    lateinit var widgetRepo: WidgetRepo
 
     override fun onCreate() {
         super.onCreate()

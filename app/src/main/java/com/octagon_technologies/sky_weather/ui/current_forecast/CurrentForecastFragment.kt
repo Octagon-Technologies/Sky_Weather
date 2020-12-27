@@ -11,22 +11,15 @@ import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel
-import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModelFactory
 import com.octagon_technologies.sky_weather.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CurrentForecastFragment : Fragment() {
 
     private lateinit var binding: CurrentForecastFragmentBinding
-    private val viewModel by viewModels<CurrentForecastViewModel> {
-        CurrentForecastViewModelFactory(
-            requireContext()
-        )
-    }
-    private val hourlyForecastViewModel by viewModels<HourlyForecastViewModel> {
-        HourlyForecastViewModelFactory(
-            requireContext()
-        )
-    }
+    private val viewModel by viewModels<CurrentForecastViewModel>()
+    private val hourlyForecastViewModel by viewModels<HourlyForecastViewModel>()
     private val mainActivity by lazy { (activity as MainActivity) }
     private val customNotificationCompat by lazy { CustomNotificationCompat(requireContext()) }
 

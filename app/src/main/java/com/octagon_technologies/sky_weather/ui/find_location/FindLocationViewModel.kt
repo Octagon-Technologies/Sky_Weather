@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.location.LocationManager
 import androidx.fragment.app.FragmentActivity
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,14 +18,17 @@ import com.octagon_technologies.sky_weather.repository.FavouriteLocationsRepo
 import com.octagon_technologies.sky_weather.repository.LocationRepo
 import com.octagon_technologies.sky_weather.repository.LocationRepo.turnOnGPS
 import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class FindLocationViewModel(private val context: Context) : ViewModel() {
-    private val mainDatabase = MainDataBase.getInstance(context)
+class FindLocationViewModel @ViewModelInject constructor(
+    @ApplicationContext private val context: Context,
+    private val weatherDataBase: WeatherDataBase
+) : ViewModel() {
 
     private var _reversedGeoCodingLocation = MutableLiveData<ReverseGeoCodingLocation>()
     val reversedGeoCodingLocation: LiveData<ReverseGeoCodingLocation>
@@ -56,14 +60,15 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     private fun getFavouriteLocations() {
         viewModelScope.launch {
             _favouriteLocationsList.value =
-                FavouriteLocationsRepo.getFavouriteLocationsAsync(mainDatabase)
+                FavouriteLocationsRepo.getFavouriteLocationsAsync(this@FindLocationViewModel.weatherDataBase)
             Timber.d("_favouriteLocationsList.value.size is ${_favouriteLocationsList.value?.size}")
         }
     }
 
     private fun getRecentLocations() {
         viewModelScope.launch {
-            _recentLocationsList.value = RecentLocationsRepo.getRecentLocationsAsync(mainDatabase)
+            _recentLocationsList.value =
+                RecentLocationsRepo.getRecentLocationsAsync(this@FindLocationViewModel.weatherDataBase)
             Timber.d("_recentLocationsList.value.size is ${_recentLocationsList.value?.size}")
         }
     }
@@ -71,7 +76,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     fun deleteAllFavourite() {
         viewModelScope.launch {
             FavouriteLocationsRepo.removeAllFavouriteLocations(
-                mainDatabase, _favouriteLocationsList.value
+                this@FindLocationViewModel.weatherDataBase, _favouriteLocationsList.value
             )
             _favouriteLocationsList.value = null
         }
@@ -80,7 +85,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     fun deleteAllRecent() {
         viewModelScope.launch {
             RecentLocationsRepo.removeAllRecentLocations(
-                mainDatabase, _recentLocationsList.value
+                this@FindLocationViewModel.weatherDataBase, _recentLocationsList.value
             )
             _recentLocationsList.value = null
         }
@@ -89,7 +94,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     fun removeFromRecent(location: Location) {
         viewModelScope.launch {
             RecentLocationsRepo.removeRecentLocationToLocalStorage(
-                mainDatabase,
+                this@FindLocationViewModel.weatherDataBase,
                 location
             )
         }
@@ -98,7 +103,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     fun removeFromFavourites(location: Location) {
         viewModelScope.launch {
             FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
-                mainDatabase,
+                this@FindLocationViewModel.weatherDataBase,
                 location
             )
         }
@@ -111,7 +116,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             (activity as? MainActivity)?.hasNotificationChanged = false
             LocationRepo.insertLocationToLocalStorage(
-                mainDatabase, reverseGeoCodingLocation
+                this@FindLocationViewModel.weatherDataBase, reverseGeoCodingLocation
             )
         }
     }
@@ -122,7 +127,7 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
             (activity as? MainActivity)?.let {
                 it.hasNotificationChanged = false
                 LocationRepo.insertLocationToLocalStorage(
-                    mainDatabase,
+                    this@FindLocationViewModel.weatherDataBase,
                     _reversedGeoCodingLocation.value
                         ?: throw RuntimeException("_reversedGeoCodingLocation.value is ${_reversedGeoCodingLocation.value}")
                 )
@@ -133,7 +138,10 @@ class FindLocationViewModel(private val context: Context) : ViewModel() {
     private fun getCurrentLocation() {
         viewModelScope.launch {
             _reversedGeoCodingLocation.value =
-                LocationRepo.getLocationNameFromCoordinatesAsync(turnOnGPS(context), mainDatabase)
+                LocationRepo.getLocationNameFromCoordinatesAsync(
+                    turnOnGPS(context),
+                    this@FindLocationViewModel.weatherDataBase
+                )
                     ?.also {
                         Timber.d("_coordinates.value is ${_reversedGeoCodingLocation.value}")
                         _isLoading.value = false

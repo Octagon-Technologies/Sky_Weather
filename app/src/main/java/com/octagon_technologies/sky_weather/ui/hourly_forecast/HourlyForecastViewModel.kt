@@ -1,28 +1,27 @@
 package com.octagon_technologies.sky_weather.ui.hourly_forecast
 
-import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.utils.StatusCode
-import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.repository.HourlyForecastRepo
 import com.octagon_technologies.sky_weather.repository.SelectedHourlyForecastRepo.getSelectedSingleForecastAsync
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Units
 import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HourlyForecastViewModel(context: Context) : ViewModel() {
-    private val mainDataBase = MainDataBase.getInstance(context)
+class HourlyForecastViewModel @ViewModelInject constructor(private val weatherDataBase: WeatherDataBase) : ViewModel() {
 
     private var _hourlyForecast = MutableLiveData<ArrayList<EachHourlyForecast>>()
     val hourlyForecast: LiveData<ArrayList<EachHourlyForecast>>
@@ -48,7 +47,7 @@ class HourlyForecastViewModel(context: Context) : ViewModel() {
         )
 
         viewModelScope.launch {
-            val result = HourlyForecastRepo.getHourlyForecastAsync(mainDataBase, coordinates, units)
+            val result = HourlyForecastRepo.getHourlyForecastAsync(this@HourlyForecastViewModel.weatherDataBase, coordinates, units)
 
             _statusCode.value = result.first
             _hourlyForecast.value = result.second

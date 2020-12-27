@@ -1,6 +1,6 @@
 package com.octagon_technologies.sky_weather.ui.current_forecast
 
-import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.octagon_technologies.sky_weather.repository.AllergyRepo.getAllergyValueAsync
 import com.octagon_technologies.sky_weather.repository.CurrentForecastRepo.getCurrentForecastAsync
 import com.octagon_technologies.sky_weather.repository.LunarRepo.getLunarForecastAsync
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
@@ -18,8 +18,8 @@ import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.getCoordinates
 import kotlinx.coroutines.launch
 
-class CurrentForecastViewModel(context: Context) : ViewModel() {
-    private val mainDataBase = MainDataBase.getInstance(context)
+class CurrentForecastViewModel @ViewModelInject constructor(private val weatherDataBase: WeatherDataBase) :
+    ViewModel() {
 
     private var _singleForecast = MutableLiveData<SingleForecast?>()
     val singleForecast: LiveData<SingleForecast?>
@@ -40,12 +40,12 @@ class CurrentForecastViewModel(context: Context) : ViewModel() {
         val coordinates = location?.getCoordinates() ?: return
 
         viewModelScope.launch {
-           val result = getCurrentForecastAsync(mainDataBase, coordinates, units)
+            val result = getCurrentForecastAsync(weatherDataBase, coordinates, units)
 
             _statusCode.value = result.first
             _singleForecast.value = result.second
-            _allergyForecast.value = getAllergyValueAsync(mainDataBase, coordinates)
-            _lunarForecast.value = getLunarForecastAsync(mainDataBase, coordinates)
+            _allergyForecast.value = getAllergyValueAsync(weatherDataBase, coordinates)
+            _lunarForecast.value = getLunarForecastAsync(weatherDataBase, coordinates)
         }
     }
 }

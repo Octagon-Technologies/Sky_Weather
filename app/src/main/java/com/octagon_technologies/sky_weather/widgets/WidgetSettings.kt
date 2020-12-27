@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.datastore.preferences.*
 import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
+import com.octagon_technologies.sky_weather.models.WidgetData
 import com.octagon_technologies.sky_weather.utils.Units
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

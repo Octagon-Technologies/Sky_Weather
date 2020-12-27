@@ -1,29 +1,28 @@
 package com.octagon_technologies.sky_weather.ui.daily_forecast
 
-import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.utils.StatusCode
-import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.repository.DailyForecastRepo
 import com.octagon_technologies.sky_weather.repository.LunarRepo
 import com.octagon_technologies.sky_weather.repository.SelectedDailyForecastRepo
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Units
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DailyForecastViewModel(context: Context) : ViewModel() {
-    private val mainDataBase = MainDataBase.getInstance(context)
-
+class DailyForecastViewModel @ViewModelInject constructor(private val weatherDataBase: WeatherDataBase) :
+    ViewModel() {
     private var _dailyForecast = MutableLiveData<ArrayList<EachDailyForecast>>()
     val dailyForecast: LiveData<ArrayList<EachDailyForecast>>
         get() = _dailyForecast
@@ -49,7 +48,8 @@ class DailyForecastViewModel(context: Context) : ViewModel() {
         )
 
         viewModelScope.launch {
-            val result = DailyForecastRepo.getDailyForecastAsync(mainDataBase, coordinates, units)
+            val result =
+                DailyForecastRepo.getDailyForecastAsync(weatherDataBase, coordinates, units)
 
             _statusCode.value = result.first
             _dailyForecast.value = result.second?.apply {
@@ -78,7 +78,7 @@ class DailyForecastViewModel(context: Context) : ViewModel() {
                     units
                 )
             _lunarForecast.value =
-                LunarRepo.getLunarForecastAsync(mainDataBase, coordinates, date?.time ?: 0)
+                LunarRepo.getLunarForecastAsync(weatherDataBase, coordinates, date?.time ?: 0)
         }
 
     }

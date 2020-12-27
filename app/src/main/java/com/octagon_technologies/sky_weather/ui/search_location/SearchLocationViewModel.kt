@@ -1,20 +1,20 @@
 package com.octagon_technologies.sky_weather.ui.search_location
 
-import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
-import com.octagon_technologies.sky_weather.repository.network.location.Location
-import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.repository.FavouriteLocationsRepo
 import com.octagon_technologies.sky_weather.repository.LocationRepo
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
+import com.octagon_technologies.sky_weather.repository.network.location.Location
+import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class SearchLocationViewModel(val context: Context) : ViewModel() {
-    val mainDataBase by lazy { MainDataBase.getInstance(context) }
+class SearchLocationViewModel @ViewModelInject constructor(val weatherDataBase: WeatherDataBase) :
+    ViewModel() {
 
     private var _locationSuggestions = MutableLiveData<Map<String?, Location>>()
     val locationSuggestions: LiveData<Map<String?, Location>> = _locationSuggestions
@@ -23,8 +23,9 @@ class SearchLocationViewModel(val context: Context) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            favouriteItemsMap.value = FavouriteLocationsRepo.getFavouriteLocationsAsync(mainDataBase)
-                ?.sortedBy { it.displayName }?.associateBy { it.placeId }
+            favouriteItemsMap.value =
+                FavouriteLocationsRepo.getFavouriteLocationsAsync(weatherDataBase)
+                    ?.sortedBy { it.displayName }?.associateBy { it.placeId }
         }
     }
 
@@ -40,12 +41,12 @@ class SearchLocationViewModel(val context: Context) : ViewModel() {
         viewModelScope.launch {
             if (eachSearchResultItem.isLikedByUser) {
                 FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
-                    mainDataBase,
+                    weatherDataBase,
                     eachSearchResultItem.location
                 )
             } else {
                 FavouriteLocationsRepo.insertFavouriteLocationToLocalStorage(
-                    mainDataBase,
+                    weatherDataBase,
                     eachSearchResultItem.location
                 )
             }

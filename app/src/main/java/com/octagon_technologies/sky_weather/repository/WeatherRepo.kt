@@ -2,12 +2,12 @@ package com.octagon_technologies.sky_weather.repository
 
 import android.content.Context
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
+import com.octagon_technologies.sky_weather.models.Coordinates
 import timber.log.Timber
 
 class WeatherRepo(context: Context) {
-    private val mainDataBase by lazy { MainDataBase.getInstance(context) }
+    private val mainDataBase by lazy { WeatherDataBase.getInstance(context) }
     private val mainSettings by lazy { SettingsRepo(context) }
     private val customNotificationCompat by lazy { CustomNotificationCompat(context) }
 

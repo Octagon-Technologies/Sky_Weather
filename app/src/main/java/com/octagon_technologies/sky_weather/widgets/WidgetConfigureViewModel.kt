@@ -1,29 +1,28 @@
 package com.octagon_technologies.sky_weather.widgets
 
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
+import com.octagon_technologies.sky_weather.models.WidgetData
 import com.octagon_technologies.sky_weather.repository.SettingsRepo
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class WidgetConfigureViewModel(private val context: Context) : ViewModel() {
-
-    val settingsRepo by lazy { SettingsRepo(context) }
-    private val widgetSettings by lazy { WidgetSettings(context) }
-    val mainDataBase by lazy { MainDataBase.getInstance(context) }
-
+class WidgetConfigureViewModel @ViewModelInject constructor(
+    @ApplicationContext private val context: Context,
+    private val settingsRepo: SettingsRepo,
+    private val weatherDataBase: WeatherDataBase,
+    private val widgetSettings: WidgetSettings
+    ) : ViewModel() {
     val reverseGeoCodingLocation = MutableLiveData<ReverseGeoCodingLocation>()
 
     val navigateToLocationFragment = MutableLiveData(false)
     val shouldCreateWidget = MutableLiveData<Boolean>(false)
-
-    private var _widgetWeatherForecast = MutableLiveData<SingleForecast>()
-    val widgetWeatherForecast: LiveData<SingleForecast> = _widgetWeatherForecast
 
     init {
         initDataWithLocalData()
@@ -32,7 +31,7 @@ class WidgetConfigureViewModel(private val context: Context) : ViewModel() {
     private fun initDataWithLocalData() {
         viewModelScope.launch(Dispatchers.IO) {
             val localReverseLocation = try {
-                mainDataBase.locationDao.getLocationDatabaseClass().reversedLocation
+                weatherDataBase.locationDao.getLocationDatabaseClass().reversedLocation
             } catch (e: Exception) {
                 Timber.e(e)
                 return@launch
@@ -66,12 +65,6 @@ class WidgetConfigureViewModel(private val context: Context) : ViewModel() {
 
     fun navigateToLocationFragment() {
         navigateToLocationFragment.value = true
-    }
-
-    class Factory(val context: Context) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T =
-            WidgetConfigureViewModel(context) as T
     }
 
 }

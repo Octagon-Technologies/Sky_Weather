@@ -1,6 +1,8 @@
 package com.octagon_technologies.sky_weather.repository.network.location
 
 
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingAddress
+import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -32,4 +34,21 @@ data class Location(
     val placeId: String?,
     @Json(name = "type")
     val type: String?
-)
+) {
+    fun toReverseGeoCodingLocation(): ReverseGeoCodingLocation {
+        val reverseGeoCodingAddress = with(address!!) {
+            ReverseGeoCodingAddress(city, country, countryCode, postcode, null, state, suburb)
+        }
+        return ReverseGeoCodingLocation(
+            reverseGeoCodingAddress,
+            boundingbox,
+            displayName,
+            lat,
+            licence,
+            lon,
+            osmId,
+            osmType,
+            placeId
+        )
+    }
+}

@@ -5,10 +5,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.RequiresApi
+import com.octagon_technologies.sky_weather.models.EachWeatherDescription
+import com.octagon_technologies.sky_weather.models.MainWind
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.*
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*

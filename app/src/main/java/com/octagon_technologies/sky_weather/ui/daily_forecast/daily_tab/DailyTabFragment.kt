@@ -1,4 +1,4 @@
-package com.octagon_technologies.sky_weather.ui.daily_forecast.daily_layout
+package com.octagon_technologies.sky_weather.ui.daily_forecast.daily_tab
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,9 +17,9 @@ import com.octagon_technologies.sky_weather.repository.network.selected_daily_fo
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindDirection
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindGust
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindSpeed
-import com.octagon_technologies.sky_weather.ui.current_forecast.EachCurrentForecastDescriptionItem
-import com.octagon_technologies.sky_weather.ui.current_forecast.EachWeatherDescription
-import com.octagon_technologies.sky_weather.ui.current_forecast.MainWind
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastDescriptionItem
+import com.octagon_technologies.sky_weather.models.EachWeatherDescription
+import com.octagon_technologies.sky_weather.models.MainWind
 import com.octagon_technologies.sky_weather.ui.current_forecast.getActualWind
 import com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel
 import com.xwray.groupie.GroupAdapter

@@ -15,18 +15,17 @@ import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.FindLocationFragmentBinding
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
-import com.octagon_technologies.sky_weather.ui.search_location.toReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.utils.*
 import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FindLocationFragment : Fragment() {
 
     private lateinit var binding: FindLocationFragmentBinding
-    private val viewModel by viewModels<FindLocationViewModel> {
-        FindLocationViewModelFactory(requireContext())
-    }
+    private val viewModel by viewModels<FindLocationViewModel>()
     private val mainActivity by lazy { activity as? MainActivity }
     private val widgetConfigureActivity by lazy { activity as? WidgetConfigureActivity }
     private val theme by lazy { mainActivity?.liveTheme?.value ?: Theme.DARK }
