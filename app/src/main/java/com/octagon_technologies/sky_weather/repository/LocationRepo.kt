@@ -5,13 +5,13 @@ import android.content.Context
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.octagon_technologies.sky_weather.repository.database.LocationDatabaseClass
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.network.LocationRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.mockLat
 import com.octagon_technologies.sky_weather.repository.network.mockLon
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -49,7 +49,7 @@ object LocationRepo {
 
     suspend fun getLocationNameFromCoordinatesAsync(
         coordinates: Coordinates,
-        mainDataBase: MainDataBase?
+        weatherDataBase: WeatherDataBase?
     ): ReverseGeoCodingLocation? {
         return withContext(Dispatchers.IO) {
             try {
@@ -59,15 +59,15 @@ object LocationRepo {
                         lon = coordinates.lon
                     ).await()
 
-                insertLocationToLocalStorage(mainDataBase, remoteReversedLocation)
+                insertLocationToLocalStorage(weatherDataBase, remoteReversedLocation)
 
                 remoteReversedLocation
             } catch (e: HttpException) {
                 Timber.e(e)
-                getLocalLocationAsync(mainDataBase)
+                getLocalLocationAsync(weatherDataBase)
             } catch (e: UnknownHostException) {
                 Timber.e(e)
-                getLocalLocationAsync(mainDataBase)
+                getLocalLocationAsync(weatherDataBase)
             } catch (e: Exception) {
                 throw e
             }
@@ -76,19 +76,19 @@ object LocationRepo {
 
 
     suspend fun insertLocationToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         reversedLocation: ReverseGeoCodingLocation
     ) {
         withContext(Dispatchers.IO) {
             val locationDatabaseClass =
                 LocationDatabaseClass(reversedLocation = reversedLocation)
-            mainDataBase?.locationDao?.insertLocationDatabaseClass(locationDatabaseClass)
+            weatherDataBase?.locationDao?.insertLocationDatabaseClass(locationDatabaseClass)
         }
     }
 
-    suspend fun getLocalLocationAsync(mainDataBase: MainDataBase?): ReverseGeoCodingLocation? {
+    suspend fun getLocalLocationAsync(weatherDataBase: WeatherDataBase?): ReverseGeoCodingLocation? {
         return withContext(Dispatchers.IO) {
-            mainDataBase?.locationDao?.getLocationDatabaseClass()?.reversedLocation
+            weatherDataBase?.locationDao?.getLocationDatabaseClass()?.reversedLocation
         }
     }
 

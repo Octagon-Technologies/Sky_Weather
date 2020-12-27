@@ -15,14 +15,14 @@ import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forec
 import com.octagon_technologies.sky_weather.utils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
 
+@AndroidEntryPoint
 class HourlyForecastFragment : Fragment() {
 
-    private val viewModel: HourlyForecastViewModel by viewModels {
-        HourlyForecastViewModelFactory(requireContext())
-    }
+    private val viewModel: HourlyForecastViewModel by viewModels()
     private lateinit var binding: HourlyForecastFragmentBinding
     private lateinit var selectedHourlyForecastLayout: SelectedHourlyForecastLayoutBinding
     private lateinit var bottomSheet: BottomSheetBehavior<View>

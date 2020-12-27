@@ -19,8 +19,8 @@ import androidx.room.TypeConverters
     version = 3,
     exportSchema = false
 )
-@TypeConverters(value = [(GithubTypeConverters::class)])
-abstract class MainDataBase : RoomDatabase() {
+@TypeConverters(value = [(RoomTypeConverters::class)])
+abstract class WeatherDataBase : RoomDatabase() {
 
     abstract val lunarForecastDao: LunarForecastDao
     abstract val allergyForecastDao: AllergyForecastDao
@@ -33,14 +33,14 @@ abstract class MainDataBase : RoomDatabase() {
 
     companion object {
         @Volatile
-        var INSTANCE: MainDataBase? = null
+        var INSTANCE: WeatherDataBase? = null
 
-        fun getInstance(context: Context): MainDataBase {
+        fun getInstance(context: Context): WeatherDataBase {
             var instance = INSTANCE
             if (instance == null) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
-                    MainDataBase::class.java,
+                    WeatherDataBase::class.java,
                     "namesDatabase"
                 )
                     .fallbackToDestructiveMigration()

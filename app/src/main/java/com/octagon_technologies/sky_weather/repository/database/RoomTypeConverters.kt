@@ -14,7 +14,7 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.lang.reflect.ParameterizedType
 
-class GithubTypeConverters {
+class RoomTypeConverters {
     private var moshi: Moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()

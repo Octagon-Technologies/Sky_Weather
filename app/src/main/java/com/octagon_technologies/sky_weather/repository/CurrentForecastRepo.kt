@@ -4,9 +4,9 @@ import com.octagon_technologies.sky_weather.utils.StatusCode
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.database.CurrentForecastDatabaseClass
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -16,7 +16,7 @@ import java.net.UnknownHostException
 object CurrentForecastRepo {
 
     suspend fun getCurrentForecastAsync(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         coordinates: Coordinates,
         units: Units?
     ): Pair<StatusCode, SingleForecast?> {
@@ -29,21 +29,21 @@ object CurrentForecastRepo {
                         unitSystem = units?.value ?: Units.METRIC.value
                     ).await()
 
-                insertSingleForecastToLocalStorage(mainDataBase, remoteSingleForecast)
+                insertSingleForecastToLocalStorage(weatherDataBase, remoteSingleForecast)
 
                 Pair(StatusCode.Success, remoteSingleForecast)
             } catch (e: HttpException) {
                 Timber.i("getCurrentForecastAsync caused HttpException ")
-                Pair(StatusCode.ApiLimitExceeded, getLocalSingleForecastAsync(mainDataBase))
+                Pair(StatusCode.ApiLimitExceeded, getLocalSingleForecastAsync(weatherDataBase))
             } catch (e: UnknownHostException) {
                 Timber.e(e, "getCurrentForecastAsync caused UnknownHostException ")
-                Pair(StatusCode.NoNetwork, getLocalSingleForecastAsync(mainDataBase))
+                Pair(StatusCode.NoNetwork, getLocalSingleForecastAsync(weatherDataBase))
             }
         }
     }
 
     private suspend fun insertSingleForecastToLocalStorage(
-        roomDatabase: MainDataBase?,
+        roomDatabase: WeatherDataBase?,
         remoteSingleForecast: SingleForecast
     ) {
         withContext(Dispatchers.IO) {
@@ -54,7 +54,7 @@ object CurrentForecastRepo {
     }
 
     private suspend fun getLocalSingleForecastAsync(
-        roomDatabase: MainDataBase?
+        roomDatabase: WeatherDataBase?
     ): SingleForecast? {
         return withContext(Dispatchers.IO) {
             val localSingleForecast =

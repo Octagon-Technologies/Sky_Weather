@@ -1,10 +1,10 @@
 package com.octagon_technologies.sky_weather.repository
 
 import com.octagon_technologies.sky_weather.repository.database.LunarDatabaseClass
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.network.LunarForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -17,7 +17,7 @@ import java.util.*
 object LunarRepo {
 
     suspend fun getLunarForecastAsync(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         coordinates: Coordinates,
         dateInMillis: Long = System.currentTimeMillis()
     ): LunarForecast? {
@@ -42,14 +42,14 @@ object LunarRepo {
                     ).await()
 
 
-                insertLunarForecastToLocalStorage(mainDataBase, remoteLunarForecast)
+                insertLunarForecastToLocalStorage(weatherDataBase, remoteLunarForecast)
                 remoteLunarForecast
             } catch (e: HttpException) {
                 Timber.e(e)
-                getLocalLunarForecastAsync(mainDataBase)
+                getLocalLunarForecastAsync(weatherDataBase)
             } catch (e: UnknownHostException) {
                 Timber.e(e)
-                getLocalLunarForecastAsync(mainDataBase)
+                getLocalLunarForecastAsync(weatherDataBase)
             } catch (e: Exception) {
                 throw e
             }
@@ -58,21 +58,21 @@ object LunarRepo {
 
 
     private suspend fun insertLunarForecastToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         lunarForecast: LunarForecast
     ) {
         withContext(Dispatchers.IO) {
             val lunarForecastDatabaseClass =
                 LunarDatabaseClass(lunarForecast = lunarForecast)
-            mainDataBase?.lunarForecastDao?.insertLunarForecastDatabaseClass(
+            weatherDataBase?.lunarForecastDao?.insertLunarForecastDatabaseClass(
                 lunarForecastDatabaseClass
             )
         }
     }
 
-    private suspend fun getLocalLunarForecastAsync(mainDataBase: MainDataBase?): LunarForecast? {
+    private suspend fun getLocalLunarForecastAsync(weatherDataBase: WeatherDataBase?): LunarForecast? {
         return withContext(Dispatchers.IO) {
-            mainDataBase?.lunarForecastDao?.getLunarForecastDatabaseClass()?.lunarForecast
+            weatherDataBase?.lunarForecastDao?.getLunarForecastDatabaseClass()?.lunarForecast
         }
     }
 }

@@ -5,13 +5,13 @@
 
     <data>
 
-        <import type="com.octagon_technologies.sky_weather.ui.current_forecast.EachWeatherDescription" />
+        <import type="com.octagon_technologies.sky_weather.models.EachWeatherDescription" />
 
         <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
             name="eachWeatherDescription"
-            type="EachWeatherDescription" />
+            type="com.octagon_technologies.sky_weather.models.EachWeatherDescription" />
 
         <variable
             name="theme"

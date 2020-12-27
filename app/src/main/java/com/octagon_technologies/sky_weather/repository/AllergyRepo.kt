@@ -2,9 +2,9 @@ package com.octagon_technologies.sky_weather.repository
 
 import com.octagon_technologies.sky_weather.network.AllergyForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.database.AllergyDatabaseClass
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -14,7 +14,7 @@ import java.net.UnknownHostException
 object AllergyRepo {
 
     suspend fun getAllergyValueAsync(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         coordinates: Coordinates
     ): Allergy? {
         return withContext(Dispatchers.IO) {
@@ -25,35 +25,35 @@ object AllergyRepo {
                         lon = coordinates.lon
                     ).await()
 
-                insertAllergyForecastToLocalStorage(mainDataBase, remoteAllergyForecast)
+                insertAllergyForecastToLocalStorage(weatherDataBase, remoteAllergyForecast)
 
                 remoteAllergyForecast
             } catch (e: HttpException) {
                 Timber.e(e)
-                getLocalAllergyForecastAsync(mainDataBase)
+                getLocalAllergyForecastAsync(weatherDataBase)
             } catch (e: UnknownHostException) {
                 Timber.e(e)
-                getLocalAllergyForecastAsync(mainDataBase)
+                getLocalAllergyForecastAsync(weatherDataBase)
             }
         }
     }
 
     private suspend fun insertAllergyForecastToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         allergyForecast: Allergy
     ) {
         withContext(Dispatchers.IO) {
             val allergyForecastDatabaseClass =
                 AllergyDatabaseClass(allergyForecast = allergyForecast)
-            mainDataBase?.allergyForecastDao?.insertAllergyForecastDatabaseClass(
+            weatherDataBase?.allergyForecastDao?.insertAllergyForecastDatabaseClass(
                 allergyForecastDatabaseClass
             )
         }
     }
 
-    private suspend fun getLocalAllergyForecastAsync(mainDataBase: MainDataBase?): Allergy? {
+    private suspend fun getLocalAllergyForecastAsync(weatherDataBase: WeatherDataBase?): Allergy? {
         return withContext(Dispatchers.IO) {
-            mainDataBase?.allergyForecastDao?.getAllergyForecastDatabaseClass()?.allergyForecast
+            weatherDataBase?.allergyForecastDao?.getAllergyForecastDatabaseClass()?.allergyForecast
         }
     }
 }

@@ -13,21 +13,18 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
 import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.DailyForecastFragmentBinding
-import com.octagon_technologies.sky_weather.ui.daily_forecast.daily_layout.DailyTabFragment
+import com.octagon_technologies.sky_weather.ui.daily_forecast.daily_tab.DailyTabFragment
 import com.octagon_technologies.sky_weather.ui.daily_forecast.each_daily_forecast_item.EachDailyForecastItem
 import com.octagon_technologies.sky_weather.utils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+@AndroidEntryPoint
 class DailyForecastFragment : Fragment() {
 
-    private val viewModel by viewModels<DailyForecastViewModel> {
-        DailyForecastViewModelFactory(requireContext())
-    }
-
-//    private val viewModel: DailyForecastViewModel by createViewModel(this, DailyForecastViewModel(requireContext()))
-
+    private val viewModel by viewModels<DailyForecastViewModel>()
     private lateinit var binding: DailyForecastFragmentBinding
 
     private lateinit var bottomSheet: BottomSheetBehavior<View>

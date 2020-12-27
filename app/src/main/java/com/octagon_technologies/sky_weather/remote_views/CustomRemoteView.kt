@@ -19,8 +19,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CustomRemoteView(private val context: Context) {
-    val clickIntent = Intent(context, SplashActivity::class.java)
-    val clickPendingIntent = PendingIntent.getActivity(context, 1234, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    private val clickIntent = Intent(context, SplashActivity::class.java)
+    private val clickPendingIntent: PendingIntent = PendingIntent.getActivity(context, 1234, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     @SuppressLint("NewApi")
     fun getCustomRemoteView(

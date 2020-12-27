@@ -15,7 +15,6 @@ import com.octagon_technologies.sky_weather.databinding.SearchLocationFragmentBi
 import com.octagon_technologies.sky_weather.repository.LocationRepo
 import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
 import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModel
-import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModelFactory
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.utils.CustomTextWatcher
 import com.octagon_technologies.sky_weather.utils.Theme
@@ -23,18 +22,16 @@ import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchLocationFragment : Fragment() {
 
     private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>() }
     private val theme by lazy { (activity as? MainActivity)?.liveTheme?.value ?: Theme.DARK }
-    private val viewModel: SearchLocationViewModel by viewModels {
-        SearchLocationViewModelFactory(requireContext())
-    }
-    private val findLocationViewModel: FindLocationViewModel by viewModels {
-        FindLocationViewModelFactory(requireContext())
-    }
+    private val viewModel: SearchLocationViewModel by viewModels()
+    private val findLocationViewModel: FindLocationViewModel by viewModels()
     private val binding by lazy {
         SearchLocationFragmentBinding.inflate(layoutInflater).also {
             it.theme = theme
@@ -76,12 +73,12 @@ class SearchLocationFragment : Fragment() {
                     // Set current location to general ReverseGeoCodingLocation if it was set in the MainActivity
                     (activity as? MainActivity)?.let {
                         LocationRepo.insertLocationToLocalStorage(
-                            viewModel.mainDataBase, reverseGeoCodingLocation
+                            viewModel.weatherDataBase, reverseGeoCodingLocation
                         )
 
                         // Add location to recent location
                         RecentLocationsRepo.insertRecentLocationToLocalStorage(
-                            viewModel.mainDataBase, this@apply
+                            viewModel.weatherDataBase, this@apply
                         )
                     }
 

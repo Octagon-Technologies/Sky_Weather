@@ -3,7 +3,7 @@ package com.octagon_technologies.sky_weather.repository
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
+import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber

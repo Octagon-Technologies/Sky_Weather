@@ -4,19 +4,25 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import com.octagon_technologies.sky_weather.R
+import com.octagon_technologies.sky_weather.models.WidgetData
 import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
 import com.octagon_technologies.sky_weather.repository.SettingsRepo
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.utils.getCoordinates
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class WidgetRepo(private val context: Context) {
-    private val settingsRepo by lazy { SettingsRepo(context) }
-    private val widgetSettings by lazy { WidgetSettings(context) }
+
+class WidgetRepo @Inject constructor (
+    @ApplicationContext private val context: Context,
+    private val widgetSettings: WidgetSettings,
+    private val settingsRepo: SettingsRepo
+) {
     private val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
 
     fun createWidget(

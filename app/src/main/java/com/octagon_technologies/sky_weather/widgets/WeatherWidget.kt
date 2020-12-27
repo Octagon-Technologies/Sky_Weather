@@ -3,27 +3,29 @@ package com.octagon_technologies.sky_weather.widgets
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Implementation of App Widget functionality.
  * App Widget Configuration implemented in [WidgetConfigureActivity]
  */
+@AndroidEntryPoint
 class WeatherWidget : AppWidgetProvider() {
+    @Inject
     lateinit var widgetSettings: WidgetSettings
-    private lateinit var widgetRepo: WidgetRepo
+
+    @Inject
+    lateinit var widgetRepo: WidgetRepo
 
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        widgetRepo = WidgetRepo(context)
         widgetRepo.updateAllWidgets(appWidgetIds) {
             Timber.d("In WeatherWidget, updateAllWidgets.isSuccess is ${it.isSuccess}")
         }
@@ -35,7 +37,7 @@ class WeatherWidget : AppWidgetProvider() {
         // When the user deletes the widget, delete the preference associated with it.
         GlobalScope.launch {
             appWidgetIds.forEach {
-                getInitWidgetSettings(context).removeWidgetId(it)
+                widgetSettings.removeWidgetId(it)
             }
         }
         Timber.d("onDeleted() called in widget with appWidgetIds is ${appWidgetIds.asList()}")
@@ -51,33 +53,11 @@ class WeatherWidget : AppWidgetProvider() {
         Timber.d("onDisabled called")
     }
 
-    private fun getInitWidgetSettings(context: Context) =
-        if (this::widgetSettings.isInitialized) widgetSettings
-        else {
-            widgetSettings = WidgetSettings(context)
-            widgetSettings
-        }
+//    private fun getInitWidgetSettings(context: Context) =
+//        if (this::widgetSettings.isInitialized) widgetSettings
+//        else {
+//            widgetSettings = WidgetSettings(context)
+//            widgetSettings
+//        }
 
-    private fun updateAppWidget(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        widgetForecast: SingleForecast?,
-        widgetData: WidgetData
-    ) {
-        GlobalScope.launch {
-            // Construct the RemoteViews object
-            val widgetRemoteView = CustomRemoteView(context).getCustomRemoteView(
-                widgetForecast,
-                widgetData.reverseGeoCodingLocation,
-                widgetData.timeFormat
-            )
-
-            widgetRemoteView.setInt(
-                R.id.base_layout, "setBackgroundColor", widgetData.transparencyOutOf255
-            )
-
-            // Instruct the widget manager to update the widget
-            appWidgetManager.updateAppWidget(widgetData.widgetId, widgetRemoteView)
-        }
-    }
 }

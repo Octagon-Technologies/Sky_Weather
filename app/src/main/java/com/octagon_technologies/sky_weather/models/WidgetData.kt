@@ -1,4 +1,4 @@
-package com.octagon_technologies.sky_weather.widgets
+package com.octagon_technologies.sky_weather.models
 
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.utils.TimeFormat

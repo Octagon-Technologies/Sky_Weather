@@ -1,6 +1,6 @@
 package com.octagon_technologies.sky_weather.repository
 
-import com.octagon_technologies.sky_weather.repository.database.MainDataBase
+import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.repository.database.RecentLocationDatabaseClass
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import kotlinx.coroutines.Dispatchers
@@ -11,12 +11,12 @@ import java.io.IOException
 object RecentLocationsRepo {
 
     suspend fun insertRecentLocationToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         location: Location
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                mainDataBase?.recentLocationDao?.insertRecentLocationDatabaseClass(
+                weatherDataBase?.recentLocationDao?.insertRecentLocationDatabaseClass(
                     RecentLocationDatabaseClass(location.placeId.toString(), location)
                 )
 
@@ -29,12 +29,12 @@ object RecentLocationsRepo {
     }
 
     suspend fun removeRecentLocationToLocalStorage(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         location: Location
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                mainDataBase?.recentLocationDao?.deleteRecentLocationDatabaseClass(
+                weatherDataBase?.recentLocationDao?.deleteRecentLocationDatabaseClass(
                     RecentLocationDatabaseClass(location.placeId.toString(), location)
                 )
 
@@ -47,12 +47,12 @@ object RecentLocationsRepo {
     }
 
     suspend fun removeAllRecentLocations(
-        mainDataBase: MainDataBase?,
+        weatherDataBase: WeatherDataBase?,
         listOfRecentLocations: ArrayList<Location>?
     ): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                mainDataBase?.recentLocationDao?.deleteAllRecent(
+                weatherDataBase?.recentLocationDao?.deleteAllRecent(
                     listOfRecentLocations?.map {
                         RecentLocationDatabaseClass(it.placeId ?: "", it)
                     } ?: listOf()
@@ -66,11 +66,11 @@ object RecentLocationsRepo {
         }
     }
 
-    suspend fun getRecentLocationsAsync(mainDataBase: MainDataBase?): ArrayList<Location>? {
+    suspend fun getRecentLocationsAsync(weatherDataBase: WeatherDataBase?): ArrayList<Location>? {
         return try {
             withContext(Dispatchers.IO) {
                 val localRecentLocations =
-                    mainDataBase?.recentLocationDao?.getRecentLocationsDatabaseClass()?.map {
+                    weatherDataBase?.recentLocationDao?.getRecentLocationsDatabaseClass()?.map {
                         it.recentLocation
                     }?.toMutableList()
 
