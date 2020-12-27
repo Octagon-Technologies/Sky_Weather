@@ -11,16 +11,16 @@
 
         <import type="com.xwray.groupie.GroupieViewHolder" />
 
-        <import type="com.octagon_technologies.sky_weather.Theme" />
-        <import type="com.octagon_technologies.sky_weather.Units" />
+        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
+        <import type="com.octagon_technologies.sky_weather.utils.Units" />
 
         <variable
             name="units"
-            type="Units" />
+            type="com.octagon_technologies.sky_weather.utils.Units" />
 
         <variable
             name="theme"
-            type="Theme" />
+            type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
             name="viewModel"
@@ -85,6 +85,7 @@
                 android:text="@{units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
                 android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_14ssp"
+                tools:text="@string/hourly_forecast_temp_unit_C"
                 app:layout_constraintBottom_toBottomOf="@+id/close_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/close_btn"

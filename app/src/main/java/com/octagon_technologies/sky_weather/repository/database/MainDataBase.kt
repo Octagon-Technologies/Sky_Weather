@@ -35,7 +35,7 @@ abstract class MainDataBase : RoomDatabase() {
         @Volatile
         var INSTANCE: MainDataBase? = null
 
-        fun getInstance(context: Context): MainDataBase? {
+        fun getInstance(context: Context): MainDataBase {
             var instance = INSTANCE
             if (instance == null) {
                 instance = Room.databaseBuilder(

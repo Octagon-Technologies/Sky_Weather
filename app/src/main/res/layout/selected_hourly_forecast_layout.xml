@@ -7,12 +7,13 @@
 
         <import type="androidx.lifecycle.LiveData" />
 
-        <import type="com.octagon_technologies.sky_weather.Theme" />
+        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
-        <import type="com.octagon_technologies.sky_weather.TimeFormat" />
+        <import type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
 
-        <import type="com.octagon_technologies.sky_weather.Units" />
-        <import type="com.octagon_technologies.sky_weather.WindDirectionUnits" />
+        <import type="com.octagon_technologies.sky_weather.utils.Units" />
+
+        <import type="com.octagon_technologies.sky_weather.utils.WindDirectionUnits" />
 
         <variable
             name="viewModel"
@@ -91,11 +92,11 @@
 
                 <ImageView
                     android:id="@+id/weather_image"
+                    changeWeatherIconTint="@{theme}"
+                    isDayForWeatherIcon="@{viewModel.isDay()}"
                     android:layout_width="@dimen/_45sdp"
                     android:layout_height="@dimen/_45sdp"
                     android:layout_marginTop="@dimen/_28sdp"
-                    changeWeatherIconTint="@{theme}"
-                    isDayForWeatherIcon="@{viewModel.isDay()}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.4"
                     app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +127,7 @@
                     app:layout_constraintStart_toStartOf="@+id/weather_image"
                     app:layout_constraintTop_toBottomOf="@+id/weather_image"
                     app:srcCompat="@drawable/drop"
-                    tools:tint="@android:color/white"/>
+                    tools:tint="@android:color/white" />
 
                 <TextView
                     android:id="@+id/precipitation_text"
@@ -134,10 +135,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_6sdp"
                     android:layout_marginLeft="@dimen/_6sdp"
-                    android:textSize="@dimen/_16ssp"
                     android:fontFamily="@font/advent_pro_medium"
                     android:text="@{`Humidity: ` + viewModel.selectedSingleForecast.humidity.value.intValue() + `%`}"
                     android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textSize="@dimen/_16ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/rain_drop_image"
                     app:layout_constraintStart_toEndOf="@+id/rain_drop_image"
                     app:layout_constraintTop_toTopOf="@+id/rain_drop_image"
@@ -164,13 +165,13 @@
                     addWindDirectionToSelectedHourly="@{windDirectionUnits}"
                     getSelectedHourlyRecyclerView="@{viewModel.selectedSingleForecast}"
                     android:layout_width="0dp"
-                    android:paddingBottom="@dimen/_24sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
+                    android:paddingBottom="@dimen/_24sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

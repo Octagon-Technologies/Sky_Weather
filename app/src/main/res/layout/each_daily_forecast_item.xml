@@ -7,7 +7,7 @@
 
         <import type="com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast" />
 
-        <import type="com.octagon_technologies.sky_weather.Units" />
+        <import type="com.octagon_technologies.sky_weather.utils.Units" />
 
         <variable
             name="eachDailyForecast"
@@ -15,7 +15,7 @@
 
         <variable
             name="units"
-            type="Units" />
+            type="com.octagon_technologies.sky_weather.utils.Units" />
 
 
     </data>

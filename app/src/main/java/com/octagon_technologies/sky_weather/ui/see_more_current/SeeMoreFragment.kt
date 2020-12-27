@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Theme
 import com.octagon_technologies.sky_weather.databinding.SeeMoreFragmentBinding
-import com.octagon_technologies.sky_weather.removeToolbarAndBottomNav
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 
@@ -42,9 +42,10 @@ class SeeMoreFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        val theme = (activity as MainActivity).liveTheme.value
         removeToolbarAndBottomNav(
-            if ((activity as MainActivity).liveTheme.value == Theme.LIGHT) R.color.light_theme_blue
-            else R.color.dark_theme_blue
+            if (theme == Theme.LIGHT) R.color.light_theme_blue else R.color.dark_theme_blue,
+            true
         )
     }
 

@@ -1,7 +1,7 @@
 package com.octagon_technologies.sky_weather.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.octagon_technologies.sky_weather.Units
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.repository.network.*
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast

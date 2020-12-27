@@ -23,3 +23,4 @@
 -keep class kotlin.Metadata { *; }
 -keep class com.squareup.moshi.Json
 -keep class com.squareup.moshi.JsonClass
+-dontobfuscate

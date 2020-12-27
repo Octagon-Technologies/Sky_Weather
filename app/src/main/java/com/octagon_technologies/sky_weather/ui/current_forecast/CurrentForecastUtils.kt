@@ -1,6 +1,6 @@
 package com.octagon_technologies.sky_weather.ui.current_forecast
 
-import com.octagon_technologies.sky_weather.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import timber.log.Timber
 
 fun getUVIndex(wattsPerSquareMeter: Long): UVClass {

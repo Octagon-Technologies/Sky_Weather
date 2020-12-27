@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:configure="com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity"
+    android:initialKeyguardLayout="@layout/custom_remote_view"
+    android:initialLayout="@layout/custom_remote_view"
+    android:minWidth="@dimen/_250sdp"
+    android:minHeight="@dimen/_70sdp"
+    android:previewImage="@drawable/appwidget_preview"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="3600000"
+    android:widgetCategory="home_screen"
+    tools:targetApi="jelly_bean_mr1" />

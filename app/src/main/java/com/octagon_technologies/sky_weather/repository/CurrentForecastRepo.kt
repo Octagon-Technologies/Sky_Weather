@@ -1,7 +1,7 @@
 package com.octagon_technologies.sky_weather.repository
 
-import com.octagon_technologies.sky_weather.StatusCode
-import com.octagon_technologies.sky_weather.Units
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.database.CurrentForecastDatabaseClass
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase

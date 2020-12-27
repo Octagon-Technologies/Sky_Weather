@@ -7,23 +7,28 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:requiredNotFeature=""
+        android:requiredNotFeature="true"
         tools:ignore="UnusedAttribute" />
 
     <application
-        android:name=".MainApplication"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
+        android:manageSpaceActivity=".clear_data.ClearDataActivity"
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".clear_data.ClearDataActivity"
+            android:theme="@style/DarkBlueStatusBar" />
 
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -32,6 +37,22 @@
             android:name=".MainActivity"
             android:configChanges="orientation"
             android:label="@string/app_name" />
+
+        <receiver android:name=".widgets.WeatherWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info" />
+        </receiver>
+
+        <activity android:name=".widgets.WidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"

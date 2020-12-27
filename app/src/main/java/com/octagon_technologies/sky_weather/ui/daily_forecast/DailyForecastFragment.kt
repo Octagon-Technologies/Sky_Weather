@@ -15,6 +15,7 @@ import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.DailyForecastFragmentBinding
 import com.octagon_technologies.sky_weather.ui.daily_forecast.daily_layout.DailyTabFragment
 import com.octagon_technologies.sky_weather.ui.daily_forecast.each_daily_forecast_item.EachDailyForecastItem
+import com.octagon_technologies.sky_weather.utils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
@@ -86,10 +87,6 @@ class DailyForecastFragment : Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
-        mainActivity.liveTheme.observe(viewLifecycleOwner) {
-            addToolbarAndBottomNav(it, true)
-        }
-
         val tabLayout = binding.selectedDailyForecastLayout.tabLayout.apply {
             tabTextColors = ColorStateList.valueOf(
                 ResourcesCompat.getColor(
@@ -134,6 +131,17 @@ class DailyForecastFragment : Fragment() {
         ).attach()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        mainActivity.liveTheme.observe(viewLifecycleOwner) {
+            addToolbarAndBottomNav(it, true)
+            changeSystemNavigationBarColor(
+                if (it == Theme.LIGHT) R.color.light_theme_blue
+                else R.color.dark_theme_blue
+            )
+        }
+    }
 
     inner class MyFragmentStateAdapter : FragmentStateAdapter(this) {
         override fun getItemCount() = 2

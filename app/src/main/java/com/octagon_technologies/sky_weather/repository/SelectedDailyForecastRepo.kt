@@ -1,6 +1,6 @@
 package com.octagon_technologies.sky_weather.repository
 
-import com.octagon_technologies.sky_weather.Units
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
 import com.octagon_technologies.sky_weather.ui.find_location.Coordinates

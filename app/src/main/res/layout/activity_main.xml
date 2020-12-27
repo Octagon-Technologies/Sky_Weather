@@ -5,12 +5,12 @@
 
     <data>
 
-        <import type="androidx.lifecycle.MutableLiveData" />
-        <import type="com.octagon_technologies.sky_weather.Theme" />
+        <import type="androidx.lifecycle.LiveData" />
+        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
             name="theme"
-            type="MutableLiveData&lt;Theme&gt;" />
+            type="LiveData&lt;Theme&gt;" />
 
     </data>
 

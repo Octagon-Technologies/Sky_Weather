@@ -5,8 +5,8 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.WindDirectionUnits
-import com.octagon_technologies.sky_weather.getBasicForecastConditions
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.getBasicForecastConditions
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.FeelsLike

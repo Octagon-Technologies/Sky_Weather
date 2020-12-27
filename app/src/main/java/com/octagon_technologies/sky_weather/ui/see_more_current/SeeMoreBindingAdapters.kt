@@ -3,9 +3,9 @@ package com.octagon_technologies.sky_weather.ui.see_more_current
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.octagon_technologies.sky_weather.Units
-import com.octagon_technologies.sky_weather.WindDirectionUnits
-import com.octagon_technologies.sky_weather.getAdvancedForecastDescription
+import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.getAdvancedForecastDescription
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.EachCurrentForecastDescriptionItem
 import com.xwray.groupie.GroupAdapter

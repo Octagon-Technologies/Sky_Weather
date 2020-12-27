@@ -12,6 +12,7 @@ import com.octagon_technologies.sky_weather.databinding.HourlyForecastFragmentBi
 import com.octagon_technologies.sky_weather.databinding.SelectedHourlyForecastLayoutBinding
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachDayTextItem
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachHourlyForecastItem
+import com.octagon_technologies.sky_weather.utils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
@@ -59,7 +60,7 @@ class HourlyForecastFragment : Fragment() {
         }
 
         viewModel.statusCode.observe(viewLifecycleOwner) {
-            val message = when(it ?: return@observe) {
+            val message = when (it ?: return@observe) {
                 StatusCode.Success -> return@observe
                 StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
                 StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
@@ -94,7 +95,8 @@ class HourlyForecastFragment : Fragment() {
             if (item is EachDayTextItem) return@setOnItemClickListener
             val eachHourlyForecastItem = item as EachHourlyForecastItem
 
-            val coordinates = mainActivity.liveLocation.value?.getCoordinates()!!
+            val coordinates =
+                mainActivity.liveLocation.value?.getCoordinates() ?: return@setOnItemClickListener
             viewModel.getSelectedSingleForecast(
                 eachHourlyForecastItem.eachHourlyForecast.observationTime,
                 mainActivity.liveUnits.value,
@@ -109,6 +111,10 @@ class HourlyForecastFragment : Fragment() {
         super.onStart()
         mainActivity.liveTheme.observe(viewLifecycleOwner, {
             addToolbarAndBottomNav(it, bottomSheet.state != BottomSheetBehavior.STATE_EXPANDED)
+            changeSystemNavigationBarColor(
+                if (it == Theme.LIGHT) R.color.light_theme_blue
+                else R.color.dark_theme_blue
+            )
         })
     }
 }

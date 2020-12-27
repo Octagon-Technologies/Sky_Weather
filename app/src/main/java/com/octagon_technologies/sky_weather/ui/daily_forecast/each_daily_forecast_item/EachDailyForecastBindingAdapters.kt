@@ -5,7 +5,7 @@ import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.databinding.BindingAdapter
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Units
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.Humidity
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.Temp
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime

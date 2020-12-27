@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.octagon_technologies.sky_weather.MainActivity
-import com.octagon_technologies.sky_weather.Theme
-import com.octagon_technologies.sky_weather.TimeFormat
-import com.octagon_technologies.sky_weather.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import com.octagon_technologies.sky_weather.databinding.DailyTabFragmentBinding
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.Min
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast

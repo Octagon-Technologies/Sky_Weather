@@ -1,4 +1,4 @@
-package com.octagon_technologies.sky_weather.ui.shared_code
+package com.octagon_technologies.sky_weather.repository
 
 import android.content.Context
 import androidx.datastore.DataStore
@@ -6,7 +6,7 @@ import androidx.datastore.preferences.Preferences
 import androidx.datastore.preferences.createDataStore
 import androidx.datastore.preferences.edit
 import androidx.datastore.preferences.preferencesKey
-import com.octagon_technologies.sky_weather.*
+import com.octagon_technologies.sky_weather.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
