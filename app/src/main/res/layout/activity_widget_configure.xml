@@ -26,7 +26,8 @@
             android:layout_height="match_parent"
             android:visibility="visible"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/widget_nav_graph" />
+            app:navGraph="@navigation/widget_nav_graph"
+            tools:ignore="FragmentTagUsage" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -45,7 +46,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/light_blue" />
+                android:background="@color/light_blue"
+                tools:ignore="ContentDescription" />
 
             <include
                 android:id="@+id/remote_view_display"
@@ -64,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:fontFamily="@font/advent_pro_semibold"
-                android:text="Widget Settings"
+                android:text="@string/widget_settings_plain_text"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintStart_toStartOf="@+id/top_divider"
                 app:layout_constraintTop_toBottomOf="@+id/remote_view_background" />
@@ -89,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:fontFamily="@font/advent_pro_semibold"
-                android:text="Location"
+                android:text="@string/location_plain_text"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintStart_toStartOf="@+id/top_divider"
                 app:layout_constraintTop_toBottomOf="@+id/top_divider" />
@@ -138,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_24sdp"
                 android:fontFamily="@font/advent_pro_semibold"
-                android:text="Background Transparency"
+                android:text="@string/background_transparency_plain_text"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintStart_toStartOf="@+id/widget_location_plain_text"
                 app:layout_constraintTop_toBottomOf="@+id/location_layout" />
@@ -167,7 +169,7 @@
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:layout_marginRight="@dimen/_12sdp"
                 android:fontFamily="@font/coda"
-                android:text="70%"
+                android:text="@string/_70_plain_text"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/background_transparency_plain_text" />
@@ -183,14 +185,12 @@
                 android:background="@drawable/create_widget_background"
                 android:onClick="@{() -> viewModel.launchCreateWidget()}"
                 android:padding="@dimen/_6sdp"
-                android:text="Create Widget"
+                android:text="@string/create_widget_plain_text"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </RelativeLayout>
 </layout>
