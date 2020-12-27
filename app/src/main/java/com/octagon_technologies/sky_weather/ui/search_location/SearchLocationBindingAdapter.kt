@@ -2,7 +2,7 @@ package com.octagon_technologies.sky_weather.ui.search_location
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.octagon_technologies.sky_weather.Theme
+import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.xwray.groupie.GroupAdapter

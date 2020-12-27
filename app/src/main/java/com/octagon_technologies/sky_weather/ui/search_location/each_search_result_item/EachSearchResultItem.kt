@@ -3,7 +3,7 @@ package com.octagon_technologies.sky_weather.ui.search_location.each_search_resu
 import android.annotation.SuppressLint
 import android.widget.ImageView
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Theme
+import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.databinding.EachSearchResultItemBinding
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.xwray.groupie.databinding.BindableItem

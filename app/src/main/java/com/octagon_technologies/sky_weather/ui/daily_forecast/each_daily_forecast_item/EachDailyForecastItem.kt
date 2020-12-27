@@ -2,10 +2,10 @@ package com.octagon_technologies.sky_weather.ui.daily_forecast.each_daily_foreca
 
 import android.annotation.SuppressLint
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Units
 import com.octagon_technologies.sky_weather.databinding.EachDailyForecastItemBinding
+import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
-import com.octagon_technologies.sky_weather.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.utils.Units
 import com.xwray.groupie.databinding.BindableItem
 
 class EachDailyForecastItem(val eachDailyForecast: EachDailyForecast) :

@@ -1,4 +1,4 @@
-package com.octagon_technologies.sky_weather
+package com.octagon_technologies.sky_weather.utils
 
 import android.content.res.ColorStateList
 import android.view.View
@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.ObservationTime
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WeatherCode

@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.StatusCode
-import com.octagon_technologies.sky_weather.Units
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.repository.DailyForecastRepo
 import com.octagon_technologies.sky_weather.repository.LunarRepo
 import com.octagon_technologies.sky_weather.repository.SelectedDailyForecastRepo

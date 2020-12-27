@@ -9,9 +9,11 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.*
+import com.octagon_technologies.sky_weather.MainActivity
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SettingsFragmentBinding
-import com.octagon_technologies.sky_weather.ui.shared_code.SettingsRepo
+import com.octagon_technologies.sky_weather.repository.SettingsRepo
+import com.octagon_technologies.sky_weather.utils.*
 import timber.log.Timber
 
 class SettingsFragment : Fragment() {
@@ -100,7 +102,17 @@ class SettingsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        removeToolbarAndBottomNav(if (mainActivity.liveTheme.value == Theme.LIGHT) android.R.color.white else R.color.dark_black)
+        mainActivity.liveTheme.observe(viewLifecycleOwner) {
+            if (it == Theme.LIGHT) {
+                removeToolbarAndBottomNav(android.R.color.white, false)
+            } else {
+                removeToolbarAndBottomNav(R.color.dark_black, true)
+            }
+            changeSystemNavigationBarColor(
+                if (it == Theme.LIGHT) android.R.color.white
+                else R.color.dark_black
+            )
+        }
     }
 
 }

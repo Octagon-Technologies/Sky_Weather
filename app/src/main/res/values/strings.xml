@@ -71,4 +71,7 @@
     <string name="light_plain_text">Light</string>
     <string name="dark_plain_text">Dark</string>
     <string name="enable_notifications_plain_text">Enable notifications</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 </resources>

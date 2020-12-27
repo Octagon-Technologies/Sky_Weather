@@ -12,12 +12,21 @@ import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentB
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModelFactory
+import com.octagon_technologies.sky_weather.utils.*
 
 class CurrentForecastFragment : Fragment() {
 
     private lateinit var binding: CurrentForecastFragmentBinding
-    private val viewModel by viewModels<CurrentForecastViewModel> { CurrentForecastViewModelFactory(requireContext()) }
-    private val hourlyForecastViewModel by viewModels<HourlyForecastViewModel>{  HourlyForecastViewModelFactory(requireContext()) }
+    private val viewModel by viewModels<CurrentForecastViewModel> {
+        CurrentForecastViewModelFactory(
+            requireContext()
+        )
+    }
+    private val hourlyForecastViewModel by viewModels<HourlyForecastViewModel> {
+        HourlyForecastViewModelFactory(
+            requireContext()
+        )
+    }
     private val mainActivity by lazy { (activity as MainActivity) }
     private val customNotificationCompat by lazy { CustomNotificationCompat(requireContext()) }
 
@@ -47,7 +56,7 @@ class CurrentForecastFragment : Fragment() {
         }
 
         viewModel.statusCode.observe(viewLifecycleOwner) {
-            val message = when(it ?: return@observe) {
+            val message = when (it ?: return@observe) {
                 StatusCode.Success -> return@observe
                 StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
                 StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
@@ -57,8 +66,15 @@ class CurrentForecastFragment : Fragment() {
         }
 
         binding.swipeToRefreshLayout.setOnRefreshListener {
-            viewModel.getLocalLocation(mainActivity.liveUnits.value, mainActivity.liveLocation.value)
-            hourlyForecastViewModel.getHourlyForecastAsync(mainActivity.liveLocation.value, mainActivity.liveUnits.value, false)
+            viewModel.getLocalLocation(
+                mainActivity.liveUnits.value,
+                mainActivity.liveLocation.value
+            )
+            hourlyForecastViewModel.getHourlyForecastAsync(
+                mainActivity.liveLocation.value,
+                mainActivity.liveUnits.value,
+                false
+            )
         }
 
         hourlyForecastViewModel.hourlyForecast.observe(viewLifecycleOwner, {
@@ -68,7 +84,11 @@ class CurrentForecastFragment : Fragment() {
         mainActivity.liveLocation.observe(viewLifecycleOwner, {
             it?.also {
                 viewModel.getLocalLocation(mainActivity.liveUnits.value, it)
-                hourlyForecastViewModel.getHourlyForecastAsync(it, mainActivity.liveUnits.value, false)
+                hourlyForecastViewModel.getHourlyForecastAsync(
+                    it,
+                    mainActivity.liveUnits.value,
+                    false
+                )
             }
         })
 
@@ -89,6 +109,10 @@ class CurrentForecastFragment : Fragment() {
         super.onStart()
         mainActivity.liveTheme.observe(viewLifecycleOwner) {
             addToolbarAndBottomNav(it)
+            changeSystemNavigationBarColor(
+                if (it == Theme.LIGHT) R.color.light_theme_blue
+                else R.color.dark_theme_blue
+            )
         }
     }
 }

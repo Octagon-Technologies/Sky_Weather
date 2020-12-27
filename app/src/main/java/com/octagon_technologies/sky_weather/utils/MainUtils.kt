@@ -1,4 +1,4 @@
-package com.octagon_technologies.sky_weather
+package com.octagon_technologies.sky_weather.utils
 
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
@@ -10,8 +10,8 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.octagon_technologies.sky_weather.repository.network.mockLat
-import com.octagon_technologies.sky_weather.repository.network.mockLon
+import com.octagon_technologies.sky_weather.MainActivity
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.*
@@ -22,7 +22,6 @@ import java.util.*
 
 @RequiresApi(M)
 const val darkStatusIcons = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
 @RequiresApi(M)
 const val whiteStatusIcons = 0
 
@@ -45,70 +44,7 @@ enum class StatusCode { Success, NoNetwork, ApiLimitExceeded }
 
 data class EachDataStoreItem(val preferencesName: String, val newValue: Any)
 
-fun Int.checkBuildVersion() = Build.VERSION.SDK_INT >= this
-
-private fun Fragment.showToast(message: String, length: Int) {
-    Toast.makeText(requireContext(), message, length).show()
-}
-
-fun Fragment.showLongToast(message: String) = showToast(message, Toast.LENGTH_LONG)
-fun Fragment.showShortToast(message: String) = showToast(message, Toast.LENGTH_SHORT)
-
-fun Fragment.getStringResource(@StringRes stringRes: Int) = resources.getString(stringRes)
-
-fun Fragment.removeToolbarAndBottomNav(statusBarColor: Int = R.color.line_grey) {
-    val mainActivity = (this.activity as MainActivity)
-    val gone = View.GONE
-
-    mainActivity.binding.apply {
-        navView.visibility = gone
-        topToolbarConstraint.visibility = gone
-        topLineDivider.visibility = gone
-    }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        mainActivity.apply {
-            if (Build.VERSION.SDK_INT >= M) {
-                window.decorView.systemUiVisibility =
-                    if (statusBarColor in listOf(
-                            R.color.color_black,
-                            R.color.light_theme_blue,
-                            R.color.dark_theme_blue,
-                            R.color.dark_black
-                        )
-                    ) whiteStatusIcons else darkStatusIcons
-            }
-            window.statusBarColor =
-                ResourcesCompat.getColor(resources, statusBarColor, null)
-        }
-    }
-}
-
-
-fun Fragment.addToolbarAndBottomNav(theme: Theme?, includeBottomNavView: Boolean = true) =
-    (activity as MainActivity).addToolbarAndBottomNav(theme, includeBottomNavView)
-
-
-fun MainActivity.addToolbarAndBottomNav(theme: Theme?, includeBottomNavView: Boolean = true) {
-    val visible = View.VISIBLE
-    val defaultColor =
-        if (theme == Theme.LIGHT) R.color.current_forecast_night_time else R.color.dark_theme_blue
-    Timber.d("Theme is $theme")
-
-    binding.apply {
-        if (includeBottomNavView) navView.visibility = visible
-        topToolbarConstraint.visibility = visible
-        topLineDivider.visibility = visible
-    }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        if (Build.VERSION.SDK_INT >= M) {
-            window.decorView.systemUiVisibility = whiteStatusIcons
-        }
-        window.statusBarColor =
-            ResourcesCompat.getColor(resources, defaultColor, null)
-    }
-}
+fun Any?.isNull() = this == null
 
 fun TimeFormat?.getAmOrPmBasedOnTime(hourIn24HourSystem: Int, date: Date): String =
     if (this == TimeFormat.HALF_DAY)
@@ -130,7 +66,10 @@ fun String.capitalizeWordsWithUnderscore(): String {
 }
 
 fun ReverseGeoCodingLocation?.getDisplayLocation(): String {
-    return "${
+    return if (
+        this?.reverseGeoCodingAddress?.suburb.isNull() ||
+        this?.reverseGeoCodingAddress?.city.isNull()
+    ) "${
         this?.reverseGeoCodingAddress?.let {
             when {
                 it.suburb != null -> it.suburb
@@ -140,12 +79,18 @@ fun ReverseGeoCodingLocation?.getDisplayLocation(): String {
             }
         } ?: "--"
     }, ${this?.reverseGeoCodingAddress?.countryCode?.toUpperCase(Locale.getDefault()) ?: "--"}"
+    else "${this?.reverseGeoCodingAddress?.suburb}, ${this?.reverseGeoCodingAddress?.city}"
 }
 
-fun ReverseGeoCodingLocation?.getCoordinates(): Coordinates = Coordinates(
-    this?.lon?.toDouble() ?: mockLon,
-    this?.lat?.toDouble() ?: mockLat
-)
+fun ReverseGeoCodingLocation?.getCoordinates(): Coordinates? =
+    try {
+        Coordinates(
+            this?.lon?.toDouble()!!,
+            this.lat?.toDouble()!!
+        )
+    } catch (npe: NullPointerException) {
+        null
+    }
 
 
 fun getBasicForecastConditions(

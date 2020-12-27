@@ -7,7 +7,7 @@
 
         <import type="com.octagon_technologies.sky_weather.ui.current_forecast.EachWeatherDescription" />
 
-        <import type="com.octagon_technologies.sky_weather.Theme" />
+        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
             name="eachWeatherDescription"
@@ -15,7 +15,7 @@
 
         <variable
             name="theme"
-            type="Theme" />
+            type="com.octagon_technologies.sky_weather.utils.Theme" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

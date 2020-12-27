@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.Theme
+import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastAllergyItemBinding
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastDescriptionItemBinding
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindDirection

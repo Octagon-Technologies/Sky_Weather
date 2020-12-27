@@ -7,13 +7,13 @@
 
         <import type="androidx.lifecycle.MutableLiveData" />
 
-        <import type="com.octagon_technologies.sky_weather.Theme" />
+        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
-        <import type="com.octagon_technologies.sky_weather.TimeFormat" />
+        <import type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
 
-        <import type="com.octagon_technologies.sky_weather.Units" />
+        <import type="com.octagon_technologies.sky_weather.utils.Units" />
 
-        <import type="com.octagon_technologies.sky_weather.WindDirectionUnits" />
+        <import type="com.octagon_technologies.sky_weather.utils.WindDirectionUnits" />
 
         <variable
             name="theme"

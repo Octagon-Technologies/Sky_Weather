@@ -11,10 +11,13 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.*
+import com.octagon_technologies.sky_weather.MainActivity
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.FindLocationFragmentBinding
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.ui.search_location.toReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.utils.*
+import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 
@@ -22,13 +25,15 @@ class FindLocationFragment : Fragment() {
 
     private lateinit var binding: FindLocationFragmentBinding
     private val viewModel by viewModels<FindLocationViewModel> {
-        FindLocationViewModelFactory(
-            requireContext()
-        )
+        FindLocationViewModelFactory(requireContext())
     }
-    private val mainActivity by lazy { activity as MainActivity }
-    private val theme by lazy { mainActivity.liveTheme.value }
-    private val units by lazy { mainActivity.liveUnits.value }
+    private val mainActivity by lazy { activity as? MainActivity }
+    private val widgetConfigureActivity by lazy { activity as? WidgetConfigureActivity }
+    private val theme by lazy { mainActivity?.liveTheme?.value ?: Theme.DARK }
+    private val units by lazy { mainActivity?.liveUnits?.value ?: Units.METRIC }
+    private val liveLocation by lazy {
+        mainActivity?.liveLocation ?: widgetConfigureActivity?.viewModel?.reverseGeoCodingLocation
+    }
 
     private val favouriteGroupAdapter = GroupAdapter<GroupieViewHolder>()
     private val recentGroupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -76,10 +81,12 @@ class FindLocationFragment : Fragment() {
             it.setOnItemClickListener { item, _ ->
                 (item as EachSearchResultItem).location.apply {
                     val reverseGeoCodingLocation = toReverseGeoCodingLocation().apply {
-                        viewModel.editLocationInDatabase(activity, this)
+                        mainActivity?.let {
+                            viewModel.editLocationInDatabase(activity, this)
+                        }
                     }
-                    mainActivity.liveLocation.value = reverseGeoCodingLocation
-                    findNavController().popBackStack(R.id.currentForecastFragment, false)
+                    liveLocation?.value = reverseGeoCodingLocation
+                    popBackStack()
                 }
             }
         }
@@ -96,8 +103,7 @@ class FindLocationFragment : Fragment() {
                 binding.gpsLocationLayout.visibility = View.VISIBLE
                 binding.enableLocationLayout.visibility = View.GONE
 
-                binding.gpsLocationCity.text =
-                    if (suburb == null || city == null) it.getDisplayLocation() else "${suburb}, $city"
+                binding.gpsLocationCity.text = it.getDisplayLocation()
                 binding.gpsLocationCountry.text = country
             }
         })
@@ -107,7 +113,15 @@ class FindLocationFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        removeToolbarAndBottomNav(if (theme == Theme.LIGHT) R.color.line_grey else R.color.color_black)
+        if (theme == Theme.LIGHT) {
+            removeToolbarAndBottomNav(R.color.line_grey, false)
+        } else {
+            removeToolbarAndBottomNav(R.color.color_black, true)
+        }
+        changeSystemNavigationBarColor(
+            if (theme == Theme.LIGHT) android.R.color.white
+            else R.color.dark_black
+        )
     }
 
     private fun checkIfFavouriteListIsEmpty() {
@@ -128,24 +142,39 @@ class FindLocationFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.closeBtn.setOnClickListener {
-            mainActivity.liveLocation.value?.let {
-                findNavController().popBackStack()
+            mainActivity?.also {
+                liveLocation?.value?.let {
+                    findNavController().popBackStack()
+                } ?: run {
+                    showShortToast(
+                        getStringResource(R.string.location_is_needed_to_get_weather_forecast)
+                    )
+                    mainActivity?.finish()
+                }
             } ?: run {
-                showShortToast(
-                    getStringResource(R.string.location_is_needed_to_get_weather_forecast)
-                )
-                mainActivity.finish()
+                widgetConfigureActivity?.viewModel?.navigateToLocationFragment?.value = false
             }
         }
-        binding.searchQuery.setOnClickListener { findNavController().navigate(R.id.action_findLocationFragment_to_searchLocationFragment) }
+        binding.searchQuery.setOnClickListener {
+            findNavController().navigate(if (activity is MainActivity) R.id.searchLocationFragment else R.id.widgetSearchLocationFragment)
+        }
         binding.enableLocationLayout.setOnClickListener { viewModel.checkIfPermissionIsGranted() }
 
         binding.gpsLocationLayout.setOnClickListener {
             viewModel.addCurrentLocationToDatabase(activity)
+
             viewModel.reversedGeoCodingLocation.value?.let {
-                mainActivity.liveLocation.value = it
-                findNavController().popBackStack(R.id.currentForecastFragment, false)
+                liveLocation?.value = it
+                popBackStack()
             }
+        }
+    }
+
+    private fun popBackStack() {
+        if (!mainActivity.isNull()) {
+            findNavController().popBackStack(R.id.currentForecastFragment, false)
+        } else {
+            widgetConfigureActivity?.viewModel?.navigateToLocationFragment?.value = false
         }
     }
 

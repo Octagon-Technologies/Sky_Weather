@@ -1,23 +1,21 @@
 package com.octagon_technologies.sky_weather
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.octagon_technologies.sky_weather.databinding.ActivityMainBinding
 import com.octagon_technologies.sky_weather.repository.LocationRepo
+import com.octagon_technologies.sky_weather.repository.SettingsRepo
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.shared_code.SettingsRepo
+import com.octagon_technologies.sky_weather.utils.*
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -51,18 +49,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    window.decorView.systemUiVisibility = whiteStatusIcons
-                }
-                window.statusBarColor =
-                    ResourcesCompat.getColor(resources, R.color.dark_theme_blue, null)
-            }
+        setUpStatusBarAndNavigationBar()
 
         ActivityOptionsCompat.makeCustomAnimation(
             applicationContext,
@@ -90,9 +77,9 @@ class MainActivity : AppCompatActivity() {
 
         NavigationUI.setupWithNavController(binding.navView, navController)
 
-        liveLocation.observe(this, {
+        liveLocation.observe(this) {
             binding.locationName.text = it?.getDisplayLocation()
-        })
+        }
     }
 
     override fun onSupportNavigateUp() = navController.navigateUp()

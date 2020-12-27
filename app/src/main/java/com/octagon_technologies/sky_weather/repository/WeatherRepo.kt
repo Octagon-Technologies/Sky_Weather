@@ -4,7 +4,6 @@ import android.content.Context
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.repository.database.MainDataBase
 import com.octagon_technologies.sky_weather.ui.find_location.Coordinates
-import com.octagon_technologies.sky_weather.ui.shared_code.SettingsRepo
 import timber.log.Timber
 
 class WeatherRepo(context: Context) {
