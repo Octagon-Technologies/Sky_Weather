@@ -81,7 +81,9 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:paddingBottom="@dimen/_5sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/middle_line">
@@ -158,6 +160,16 @@
                     app:layout_constraintTop_toBottomOf="@+id/precipitation_text"
                     tools:text="Clear" />
 
+                <include
+                    android:id="@+id/selected_hour_ad_view"
+                    layout="@layout/native_ads_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_24sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/selected_recycler_view" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/selected_recycler_view"
                     addSelectedHourlyTheme="@{theme}"
@@ -172,10 +184,12 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_24sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/weather_status" />
+                    app:layout_constraintTop_toBottomOf="@+id/weather_status">
+
+                </androidx.recyclerview.widget.RecyclerView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

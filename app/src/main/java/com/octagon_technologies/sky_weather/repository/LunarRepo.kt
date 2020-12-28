@@ -1,10 +1,10 @@
 package com.octagon_technologies.sky_weather.repository
 
+import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.repository.database.LunarDatabaseClass
 import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
-import com.octagon_technologies.sky_weather.network.LunarForecastRetrofitItem
+import com.octagon_technologies.sky_weather.repository.network.LunarForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
-import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -39,7 +39,7 @@ object LunarRepo {
                         lat = coordinates.lat,
                         lon = coordinates.lon,
                         timezone = timeZone
-                    ).await()
+                    )
 
 
                 insertLunarForecastToLocalStorage(weatherDataBase, remoteLunarForecast)

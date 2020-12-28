@@ -2,6 +2,7 @@ package com.octagon_technologies.sky_weather.utils
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -10,9 +11,16 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
 import timber.log.Timber
+
+fun LiveData<Theme>.getWhiteOrBlackTextColor(context: Context?) =
+    context?.getResColor(
+        if (value == Theme.LIGHT) R.color.dark_black
+        else android.R.color.white
+    ) ?: Color.WHITE
 
 fun Int.checkBuildVersion() = Build.VERSION.SDK_INT >= this
 

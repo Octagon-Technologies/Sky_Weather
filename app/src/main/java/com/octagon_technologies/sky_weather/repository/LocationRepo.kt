@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.repository.database.LocationDatabaseClass
 import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
-import com.octagon_technologies.sky_weather.network.LocationRetrofitItem
+import com.octagon_technologies.sky_weather.repository.network.LocationRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.location.Location
 import com.octagon_technologies.sky_weather.repository.network.mockLat
 import com.octagon_technologies.sky_weather.repository.network.mockLon
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -37,7 +37,7 @@ object LocationRepo {
         return withContext(Dispatchers.IO) {
             try {
                 LocationRetrofitItem.locationRetrofitService.getLocationSuggestionsAsync(query = query)
-                    .await().map {
+                    .map {
                         (it.address?.suburb ?: it.address?.city ?: it.address?.state) to it
                     }.toMap()
             } catch (noNetworkException: UnknownHostException) {
@@ -57,7 +57,7 @@ object LocationRepo {
                     LocationRetrofitItem.locationRetrofitService.getLocationNameFromCoordinatesAsync(
                         lat = coordinates.lat,
                         lon = coordinates.lon
-                    ).await()
+                    )
 
                 insertLocationToLocalStorage(weatherDataBase, remoteReversedLocation)
 

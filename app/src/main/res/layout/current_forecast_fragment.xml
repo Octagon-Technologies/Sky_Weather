@@ -280,7 +280,7 @@
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+                    app:layout_constraintTop_toBottomOf="@+id/ad_view" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/today_sun_constraint_layout"
@@ -643,6 +643,16 @@
                     app:layout_constraintStart_toStartOf="@+id/main_temp"
                     app:layout_constraintTop_toBottomOf="@+id/main_temp"
                     tools:text="FeelsLike 15°" />
+
+                <include
+                    android:id="@+id/ad_view"
+                    layout="@layout/native_ads_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_30sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

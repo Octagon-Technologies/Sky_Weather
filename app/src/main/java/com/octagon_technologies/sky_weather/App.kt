@@ -2,6 +2,7 @@ package com.octagon_technologies.sky_weather
 
 import android.app.Application
 import androidx.work.*
+import com.google.android.gms.ads.MobileAds
 import com.octagon_technologies.sky_weather.widgets.WidgetRepo
 import com.octagon_technologies.sky_weather.work.RefreshDataWork
 import dagger.hilt.android.HiltAndroidApp
@@ -21,6 +22,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        MobileAds.initialize(applicationContext)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         applicationScope.launch {
             setRecurringWork()

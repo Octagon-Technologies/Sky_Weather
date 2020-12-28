@@ -2,7 +2,7 @@ package com.octagon_technologies.sky_weather.widgets
 
 import android.content.Context
 import androidx.datastore.preferences.*
-import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
+import com.octagon_technologies.sky_weather.repository.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.models.WidgetData
@@ -36,7 +36,6 @@ class WidgetSettings(private val context: Context) {
                 lon = coordinates?.lon ?: return null,
                 lat = coordinates.lat
             )
-            .await()
     }
 
     suspend fun addWidgetId(widgetData: WidgetData) {

@@ -10,6 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.HourlyForecastFragmentBinding
 import com.octagon_technologies.sky_weather.databinding.SelectedHourlyForecastLayoutBinding
+import com.octagon_technologies.sky_weather.lazy.adHelpers
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachDayTextItem
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachHourlyForecastItem
 import com.octagon_technologies.sky_weather.utils.*
@@ -29,6 +30,7 @@ class HourlyForecastFragment : Fragment() {
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val mainActivity by lazy { activity as MainActivity }
+    private val adHelper by adHelpers()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +42,9 @@ class HourlyForecastFragment : Fragment() {
             it.groupAdapter = groupAdapter
             it.timeFormat = mainActivity.liveTimeFormat
             it.units = mainActivity.liveUnits
+
+            it.selectedHourlyForecastLayout.selectedHourAdView.advertisementPlainText
+                .setTextColor(mainActivity.liveTheme.getWhiteOrBlackTextColor(context))
         }
 
         selectedHourlyForecastLayout = binding.selectedHourlyForecastLayout.also {
@@ -105,6 +110,13 @@ class HourlyForecastFragment : Fragment() {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
+        adHelper.loadAd(binding.selectedHourlyForecastLayout.selectedHourAdView) {
+            Timber.d("Load ad listener return $it")
+            // If it failed in onAdFailedToLoad(), hide the ad view
+            if (!it) {
+                binding.selectedHourlyForecastLayout.selectedHourAdView.root.visibility = View.GONE
+            }
+        }
     }
 
     override fun onStart() {

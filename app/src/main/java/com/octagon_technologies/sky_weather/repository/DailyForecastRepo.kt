@@ -1,12 +1,12 @@
 package com.octagon_technologies.sky_weather.repository
 
-import com.octagon_technologies.sky_weather.utils.StatusCode
-import com.octagon_technologies.sky_weather.utils.Units
-import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
+import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.repository.database.DailyForecastDatabaseClass
 import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
+import com.octagon_technologies.sky_weather.repository.network.WeatherForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
-import com.octagon_technologies.sky_weather.models.Coordinates
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Units
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -26,7 +26,7 @@ object DailyForecastRepo {
                         lat = coordinates.lat,
                         lon = coordinates.lon,
                         unitSystem = units?.value ?: Units.METRIC.value
-                    ).await() as ArrayList).apply {
+                    ) as ArrayList).apply {
                         removeLast()
                     }
 

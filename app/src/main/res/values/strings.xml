@@ -82,4 +82,7 @@
     <string name="background_transparency_plain_text">Background Transparency</string>
     <string name="_70_plain_text">70%</string>
     <string name="create_widget_plain_text">Create Widget</string>
+    <string name="advertisement_plain_text">Advertisement</string>
+
+    <string name="ad_attribution">Ad</string>
 </resources>

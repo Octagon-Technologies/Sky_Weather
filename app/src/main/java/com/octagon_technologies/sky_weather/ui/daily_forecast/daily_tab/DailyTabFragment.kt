@@ -8,20 +8,22 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.octagon_technologies.sky_weather.MainActivity
-import com.octagon_technologies.sky_weather.utils.Theme
-import com.octagon_technologies.sky_weather.utils.TimeFormat
-import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import com.octagon_technologies.sky_weather.databinding.DailyTabFragmentBinding
+import com.octagon_technologies.sky_weather.lazy.adHelpers
+import com.octagon_technologies.sky_weather.models.EachWeatherDescription
+import com.octagon_technologies.sky_weather.models.MainWind
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.Min
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindDirection
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindGust
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindSpeed
-import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastDescriptionItem
-import com.octagon_technologies.sky_weather.models.EachWeatherDescription
-import com.octagon_technologies.sky_weather.models.MainWind
 import com.octagon_technologies.sky_weather.ui.current_forecast.getActualWind
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastDescriptionItem
 import com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.getWhiteOrBlackTextColor
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
@@ -34,6 +36,7 @@ class DailyTabFragment : Fragment() {
     lateinit var dailyForecastViewModel: DailyForecastViewModel
     lateinit var timeFormat: LiveData<TimeFormat>
     var isDay by Delegates.notNull<Boolean>()
+    private val adHelper by adHelpers()
 
     companion object {
         fun getInstance(
@@ -47,7 +50,6 @@ class DailyTabFragment : Fragment() {
                 windDirectionUnits = mainActivity.liveWindDirectionUnits
                 timeFormat = mainActivity.liveTimeFormat
                 dailyForecastViewModel = constructorDailyForecastViewModel
-
             }
     }
 
@@ -61,6 +63,9 @@ class DailyTabFragment : Fragment() {
             it.lunarForecast = dailyForecastViewModel.lunarForecast
             it.timeFormat = timeFormat
             it.selectedDailyForecast = dailyForecastViewModel.selectedDailyForecast
+
+            it.dailyTabAdView.advertisementPlainText
+                .setTextColor(theme.getWhiteOrBlackTextColor(context))
         }
     }
 
@@ -95,6 +100,14 @@ class DailyTabFragment : Fragment() {
                         )
                     )
                 }
+            }
+        }
+
+        adHelper.loadAd(binding.dailyTabAdView) {
+            Timber.d("Load ad listener return $it")
+            // If it failed in onAdFailedToLoad(), hide the ad view
+            if (!it) {
+                binding.dailyTabAdView.root.visibility = View.GONE
             }
         }
     }
