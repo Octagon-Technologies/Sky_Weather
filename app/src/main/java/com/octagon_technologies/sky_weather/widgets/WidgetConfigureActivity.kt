@@ -58,6 +58,13 @@ class WidgetConfigureActivity : AppCompatActivity() {
 
             // Make RemoteViewDisplay's transparency to match the default 70%
             it.remoteViewDisplay.setBackgroundColor(getTransparentColorFromProgress())
+
+            it.locationLayout.setOnClickListener {
+                viewModel.navigateToLocationFragment()
+                changeStatusBarIcons(true)
+                changeStatusBarColor(R.color.color_black)
+                changeSystemNavigationBarColor(R.color.dark_black)
+            }
         }
         navController = findNavController(R.id.widget_nav_host_fragment)
 
@@ -104,11 +111,7 @@ class WidgetConfigureActivity : AppCompatActivity() {
         }
 
         viewModel.navigateToLocationFragment.observe(this) {
-            if (it == true) {
-                changeStatusBarIcons(true)
-                changeStatusBarColor(R.color.color_black)
-                changeSystemNavigationBarColor(R.color.dark_black)
-            } else {
+            if (it == false) {
                 changeStatusBarIcons(true)
                 changeStatusBarColor(R.color.light_blue)
                 changeSystemNavigationBarColor(R.color.dark_theme_blue)

@@ -14,11 +14,8 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SearchLocationFragmentBinding
 import com.octagon_technologies.sky_weather.repository.LocationRepo
 import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
-import com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModel
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
-import com.octagon_technologies.sky_weather.utils.CustomTextWatcher
-import com.octagon_technologies.sky_weather.utils.Theme
-import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
+import com.octagon_technologies.sky_weather.utils.*
 import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -31,15 +28,10 @@ class SearchLocationFragment : Fragment() {
     private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>() }
     private val theme by lazy { (activity as? MainActivity)?.liveTheme?.value ?: Theme.DARK }
     private val viewModel: SearchLocationViewModel by viewModels()
-    private val findLocationViewModel: FindLocationViewModel by viewModels()
     private val binding by lazy {
         SearchLocationFragmentBinding.inflate(layoutInflater).also {
             it.theme = theme
         }
-    }
-    private val liveLocation by lazy {
-        (activity as? MainActivity)?.liveLocation
-            ?: (activity as? WidgetConfigureActivity)?.viewModel?.reverseGeoCodingLocation
     }
     private val imm by lazy { requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
 
@@ -80,31 +72,23 @@ class SearchLocationFragment : Fragment() {
                         RecentLocationsRepo.insertRecentLocationToLocalStorage(
                             viewModel.weatherDataBase, this@apply
                         )
-                    }
 
-                    (activity as? MainActivity)?.apply {
-                        hasNotificationChanged = false
-                        liveLocation.value = reverseGeoCodingLocation
-                    } ?: run {
-                        (activity as? WidgetConfigureActivity)?.viewModel?.reverseGeoCodingLocation?.value =
-                            reverseGeoCodingLocation
-                    }
+                        it.hasNotificationChanged = false
+                        it.liveLocation.value = reverseGeoCodingLocation
 
-                    (activity as? WidgetConfigureActivity)?.let {
-                        findNavController().popBackStack()
-                        it.viewModel.navigateToLocationFragment.value = false
-                    } ?: run {
                         findNavController().popBackStack(R.id.currentForecastFragment, false)
+                    } ?: run {
+                        val widgetConfigureViewModel =
+                            (activity as? WidgetConfigureActivity)?.viewModel?.also {
+                                it.reverseGeoCodingLocation.value = reverseGeoCodingLocation
+                            }
+
+                        findNavController().popBackStack()
+                        widgetConfigureViewModel?.navigateToLocationFragment?.value = false
                     }
                 }
             }
         }
-
-        findLocationViewModel.reversedGeoCodingLocation.observe(viewLifecycleOwner, {
-            findLocationViewModel.addCurrentLocationToDatabase(activity)
-            liveLocation?.value = it
-            findNavController().popBackStack(R.id.currentForecastFragment, false)
-        })
 
         return binding.root
     }
@@ -116,14 +100,6 @@ class SearchLocationFragment : Fragment() {
         override fun onFinish() {
             viewModel.getLocationSuggestions(binding.searchQuery.text.toString())
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        changeSystemNavigationBarColor(
-            if (theme == Theme.LIGHT) android.R.color.white
-            else R.color.dark_black
-        )
     }
 
     override fun onResume() {

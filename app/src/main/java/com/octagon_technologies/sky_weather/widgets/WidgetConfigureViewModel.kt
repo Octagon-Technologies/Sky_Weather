@@ -22,7 +22,7 @@ class WidgetConfigureViewModel @ViewModelInject constructor(
     val reverseGeoCodingLocation = MutableLiveData<ReverseGeoCodingLocation>()
 
     val navigateToLocationFragment = MutableLiveData(false)
-    val shouldCreateWidget = MutableLiveData<Boolean>(false)
+    val shouldCreateWidget = MutableLiveData(false)
 
     init {
         initDataWithLocalData()

@@ -30,6 +30,7 @@ class HourlyForecastFragment : Fragment() {
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val mainActivity by lazy { activity as MainActivity }
+    private val theme by lazy { mainActivity.liveTheme }
     private val adHelper by adHelpers()
 
     override fun onCreateView(
@@ -87,9 +88,17 @@ class HourlyForecastFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     mainActivity.binding.navView.visibility = View.GONE
+                    changeSystemNavigationBarColor(
+                        if (theme.value == Theme.LIGHT) android.R.color.white
+                        else R.color.dark_black
+                    )
                     Timber.d("State changed to $newState")
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     mainActivity.binding.navView.visibility = View.VISIBLE
+                    changeSystemNavigationBarColor(
+                        if (theme.value == Theme.LIGHT) R.color.light_theme_blue
+                        else R.color.dark_theme_blue
+                    )
                 }
             }
 

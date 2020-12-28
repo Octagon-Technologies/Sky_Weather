@@ -2,10 +2,10 @@ package com.octagon_technologies.sky_weather.widgets
 
 import android.content.Context
 import androidx.datastore.preferences.*
-import com.octagon_technologies.sky_weather.repository.network.WeatherForecastRetrofitItem
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.models.WidgetData
+import com.octagon_technologies.sky_weather.repository.network.WeatherForecastRetrofitItem
+import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.utils.Units
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -30,12 +30,16 @@ class WidgetSettings(private val context: Context) {
     }
 
     suspend fun getWeatherForecastFromWidgetData(coordinates: Coordinates?, units: Units): SingleForecast? {
-        return WeatherForecastRetrofitItem.weatherRetrofitService
-            .getCurrentForecastAsync(
-                unitSystem = units.value,
-                lon = coordinates?.lon ?: return null,
-                lat = coordinates.lat
-            )
+        return try {
+            WeatherForecastRetrofitItem.weatherRetrofitService
+                .getCurrentForecastAsync(
+                    unitSystem = units.value,
+                    lon = coordinates?.lon ?: return null,
+                    lat = coordinates.lat
+                )
+        } catch (e: Exception) {
+            null
+        }
     }
 
     suspend fun addWidgetId(widgetData: WidgetData) {

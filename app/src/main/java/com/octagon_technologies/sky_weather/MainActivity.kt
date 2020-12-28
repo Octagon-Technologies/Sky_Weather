@@ -23,15 +23,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var weatherDataBase: WeatherDataBase
+    @Inject
+    lateinit var settingsRepo: SettingsRepo
+
     private val navController by lazy { findNavController(R.id.nav_host_fragment) }
-    private val mainDataBase by lazy { WeatherDataBase.getInstance(applicationContext) }
-    private val mainSettings by lazy { SettingsRepo(applicationContext) }
     val singleForecastJsonAdapter: JsonAdapter<SingleForecast> by lazy {
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -64,14 +68,14 @@ class MainActivity : AppCompatActivity() {
         binding.theme = liveTheme
 
         GlobalScope.launch(Dispatchers.Main) {
-            liveLocation.value = LocationRepo.getLocalLocationAsync(mainDataBase)
+            liveLocation.value = LocationRepo.getLocalLocationAsync(weatherDataBase)
             if (liveLocation.value == null) navController.navigate(R.id.findLocationFragment)
 
-            liveTheme.value = mainSettings.getTheme()
-            liveWindDirectionUnits.value = mainSettings.getWindDirections()
-            liveTimeFormat.value = mainSettings.getTimeFormat()
-            liveUnits.value = mainSettings.getUnits()
-            liveNotificationAllowed.value = mainSettings.getNotificationAllowed()
+            liveTheme.value = settingsRepo.getTheme()
+            liveWindDirectionUnits.value = settingsRepo.getWindDirections()
+            liveTimeFormat.value = settingsRepo.getTimeFormat()
+            liveUnits.value = settingsRepo.getUnits()
+            liveNotificationAllowed.value = settingsRepo.getNotificationAllowed()
         }
 
         binding.locationName.setOnClickListener { navController.navigate(R.id.findLocationFragment) }

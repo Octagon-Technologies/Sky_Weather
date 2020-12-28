@@ -29,6 +29,7 @@ class DailyForecastFragment : Fragment() {
 
     private lateinit var bottomSheet: BottomSheetBehavior<View>
     private val mainActivity by lazy { activity as MainActivity }
+    private val theme by lazy { mainActivity.liveTheme }
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
@@ -75,9 +76,17 @@ class DailyForecastFragment : Fragment() {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     Timber.d("State is expanded.")
                     mainActivity.binding.navView.visibility = View.GONE
+                    changeSystemNavigationBarColor(
+                        if (theme.value == Theme.LIGHT) android.R.color.white
+                        else R.color.dark_black
+                    )
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     Timber.d("State is collapsed.")
                     mainActivity.binding.navView.visibility = View.VISIBLE
+                    changeSystemNavigationBarColor(
+                        if (theme.value == Theme.LIGHT) R.color.light_theme_blue
+                        else R.color.dark_theme_blue
+                    )
                 }
             }
 

@@ -114,15 +114,17 @@ class FindLocationFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (theme == Theme.LIGHT) {
-            removeToolbarAndBottomNav(R.color.line_grey, false)
-        } else {
-            removeToolbarAndBottomNav(R.color.color_black, true)
+        mainActivity?.let {
+            if (theme == Theme.LIGHT) {
+                removeToolbarAndBottomNav(R.color.line_grey, false)
+            } else {
+                removeToolbarAndBottomNav(R.color.color_black, true)
+            }
+            changeSystemNavigationBarColor(
+                if (theme == Theme.LIGHT) android.R.color.white
+                else R.color.dark_black
+            )
         }
-        changeSystemNavigationBarColor(
-            if (theme == Theme.LIGHT) android.R.color.white
-            else R.color.dark_black
-        )
     }
 
     private fun checkIfFavouriteListIsEmpty() {
