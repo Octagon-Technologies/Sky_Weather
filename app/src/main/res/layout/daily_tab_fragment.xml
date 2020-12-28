@@ -136,11 +136,11 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/selected_sun_constraint_layout"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 app:layout_constraintStart_toStartOf="@+id/selected_day_recyclerview"
-                app:layout_constraintTop_toBottomOf="@+id/selected_day_recyclerview">
+                app:layout_constraintTop_toBottomOf="@+id/daily_tab_ad_view">
 
                 <ImageView
                     android:id="@+id/selected_sun_image"
@@ -253,13 +253,14 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/selected_moon_constraint_layout"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
                 app:layout_constraintEnd_toEndOf="@+id/selected_day_recyclerview"
                 app:layout_constraintTop_toTopOf="@+id/selected_sun_constraint_layout">
 
                 <ImageView
                     android:id="@+id/selected_moon_image"
+                    changeIconTintFromTint="@{theme}"
                     android:layout_width="@dimen/_28sdp"
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginStart="@dimen/_5sdp"
@@ -268,17 +269,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/selected_moon_hours"
                     app:srcCompat="@drawable/moon"
-                    changeIconTintFromTint="@{theme}"
                     tools:tint="@color/color_black" />
 
                 <TextView
                     android:id="@+id/selected_moon_hours"
+                    getCurrentMoonHours="@{lunarForecast}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
                     android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
-                    getCurrentMoonHours="@{lunarForecast}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="12 hrs"
@@ -286,11 +286,11 @@
 
                 <TextView
                     android:id="@+id/selected_moon_minutes"
+                    getCurrentMoonMinutes="@{lunarForecast}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
-                    getCurrentMoonMinutes="@{lunarForecast}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/selected_moon_hours"
                     tools:text="7 mins"
@@ -368,6 +368,16 @@
                     tools:text="18:26"
                     tools:textColor="@color/dark_black" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include
+                android:id="@+id/daily_tab_ad_view"
+                layout="@layout/native_ads_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/selected_day_recyclerview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

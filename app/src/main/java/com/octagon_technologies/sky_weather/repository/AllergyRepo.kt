@@ -1,10 +1,10 @@
 package com.octagon_technologies.sky_weather.repository
 
-import com.octagon_technologies.sky_weather.network.AllergyForecastRetrofitItem
+import com.octagon_technologies.sky_weather.models.Coordinates
 import com.octagon_technologies.sky_weather.repository.database.AllergyDatabaseClass
 import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
+import com.octagon_technologies.sky_weather.repository.network.AllergyForecastRetrofitItem
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
-import com.octagon_technologies.sky_weather.models.Coordinates
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -23,7 +23,7 @@ object AllergyRepo {
                     AllergyForecastRetrofitItem.allergyRetrofitService.getAllergyAsync(
                         lat = coordinates.lat,
                         lon = coordinates.lon
-                    ).await()
+                    )
 
                 insertAllergyForecastToLocalStorage(weatherDataBase, remoteAllergyForecast)
 

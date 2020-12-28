@@ -1,9 +1,9 @@
 package com.octagon_technologies.sky_weather.repository
 
-import com.octagon_technologies.sky_weather.utils.Units
-import com.octagon_technologies.sky_weather.network.WeatherForecastRetrofitItem
-import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
 import com.octagon_technologies.sky_weather.models.Coordinates
+import com.octagon_technologies.sky_weather.repository.network.WeatherForecastRetrofitItem
+import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
+import com.octagon_technologies.sky_weather.utils.Units
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -22,7 +22,7 @@ object SelectedDailyForecastRepo {
                     unitSystem = units?.value ?: Units.METRIC.value,
                     lon = coordinates.lon,
                     lat = coordinates.lat
-                ).await()[0]
+                )[0]
             }
         } catch (e: Exception) {
             Timber.e(e)

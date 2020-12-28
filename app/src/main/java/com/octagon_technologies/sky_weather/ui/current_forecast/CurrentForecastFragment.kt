@@ -9,10 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.*
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
+import com.octagon_technologies.sky_weather.lazy.adHelpers
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel
 import com.octagon_technologies.sky_weather.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class CurrentForecastFragment : Fragment() {
@@ -21,6 +23,7 @@ class CurrentForecastFragment : Fragment() {
     private val viewModel by viewModels<CurrentForecastViewModel>()
     private val hourlyForecastViewModel by viewModels<HourlyForecastViewModel>()
     private val mainActivity by lazy { (activity as MainActivity) }
+    private val adHelper by adHelpers()
     private val customNotificationCompat by lazy { CustomNotificationCompat(requireContext()) }
 
     override fun onCreateView(
@@ -94,9 +97,16 @@ class CurrentForecastFragment : Fragment() {
             )
         }
 
+        adHelper.loadAd(binding.adView) {
+            Timber.d("Load ad listener return $it")
+            // If it failed in onAdFailedToLoad(), hide the ad view
+            if (!it) {
+                binding.adView.root.visibility = View.GONE
+            }
+        }
+
         return binding.root
     }
-
 
     override fun onStart() {
         super.onStart()

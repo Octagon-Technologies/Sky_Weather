@@ -1,8 +1,5 @@
-package com.octagon_technologies.sky_weather.network
+package com.octagon_technologies.sky_weather.repository.network
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.octagon_technologies.sky_weather.utils.Units
-import com.octagon_technologies.sky_weather.repository.network.*
 import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
 import com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast
@@ -11,9 +8,9 @@ import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.Lu
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.utils.Units
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -45,7 +42,6 @@ val okHttp: OkHttpClient = OkHttpClient.Builder()
 
 val retrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(MAIN_BASE)
     .client(okHttp)
     .build()
@@ -53,7 +49,6 @@ val retrofit: Retrofit = Retrofit.Builder()
 // Allergy: curl -X GET "https://api.ambeedata.com/latest/pollen/by-lat-lng?lat=25.2048&lng=55.2708" -H "accept: application/json" -H "x-api-key: oWJChLwX5MM5MqUopRh1Qr3QLpEkQw6gExN5QQa0"
 val allergyRetrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .client(okHttp)
     .baseUrl(ALLERGY_BASE)
     .build()
@@ -62,14 +57,12 @@ val allergyRetrofit: Retrofit = Retrofit.Builder()
 val lunarRetrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .client(okHttp)
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(LUNAR_BASE)
     .build()
 
 val locationRetrofit: Retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .client(okHttp)
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
     .baseUrl(LOCATION_BASE)
     .build()
 
@@ -77,31 +70,31 @@ val locationRetrofit: Retrofit = Retrofit.Builder()
 interface LocationApiService {
     //  https://api.locationiq.com/v1/autocomplete.php?key=2a13f417c6d3f3&q=Miller%20Estate&limit=10
     @GET("autocomplete.php")
-    fun getLocationSuggestionsAsync(
+    suspend fun getLocationSuggestionsAsync(
         @Query("key") key: String = LOCATION_KEY,
         @Query("q") query: String,
         @Query("limit") limit: Int = 10
-    ): Deferred<List<Location>>
+    ): List<Location>
 
     //  https://us1.locationiq.com/v1/reverse.php?key=2a13f417c6d3f3&lat=-1.3135887888876425&lon=36.81903851535387&zoom=16&format=json
     @GET("reverse.php")
-    fun getLocationNameFromCoordinatesAsync(
+    suspend fun getLocationNameFromCoordinatesAsync(
         @Query("key") key: String = LOCATION_KEY,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("zoom") zoom: Int = 16,
         @Query("format") format: String = "json"
-    ): Deferred<ReverseGeoCodingLocation>
+    ): ReverseGeoCodingLocation
 }
 
 interface LunarForecastApiService {
     @GET("solunar/{lat},{lon},{date},{timezone}")
-    fun getLunarForecastAsync(
+    suspend fun getLunarForecastAsync(
         @Path("lat") lat: Double,
         @Path("lon") lon: Double,
         @Path("date") date: String,
         @Path("timezone") timezone: String = "0"
-    ): Deferred<LunarForecast>
+    ): LunarForecast
 }
 
 interface AllergyApiService {
@@ -110,34 +103,34 @@ interface AllergyApiService {
         "x-api-key: oWJChLwX5MM5MqUopRh1Qr3QLpEkQw6gExN5QQa0"
     )
     @GET("latest/pollen/by-lat-lng")
-    fun getAllergyAsync(
+    suspend fun getAllergyAsync(
         @Query("lat") lat: Double,
         @Query("lng") lon: Double
-    ): Deferred<Allergy>
+    ): Allergy
 }
 
 interface WeatherForecastApiService {
     @GET("realtime")
-    fun getCurrentForecastAsync(
+    suspend fun getCurrentForecastAsync(
         @Query("apikey") apiKey: String = MAIN_API_KEY,
         @Query("unit_system") unitSystem: String,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("fields", encoded = true) fields: String = fullAttrsString
-    ): Deferred<SingleForecast>
+    ): SingleForecast
 
     @GET("forecast/hourly")
-    fun getHourlyForecastAsync(
+    suspend fun getHourlyForecastAsync(
         @Query("apikey") apiKey: String = MAIN_API_KEY,
         @Query("unit_system") unitSystem: String,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("start_time") startTimeInISO: String = "now",
         @Query("fields", encoded = true) fields: String = hourlyForecastAttrsString
-    ): Deferred<List<EachHourlyForecast>>
+    ): List<EachHourlyForecast>
 
     @GET("forecast/hourly")
-    fun getSelectedHourlyForecastAsync(
+    suspend fun getSelectedHourlyForecastAsync(
         @Query("apikey") apiKey: String = MAIN_API_KEY,
         @Query("unit_system") unitSystem: String,
         @Query("lat") lat: Double,
@@ -145,22 +138,22 @@ interface WeatherForecastApiService {
         @Query("start_time") startTimeInISO: String,
         @Query("end_time") endTimeInISO: String,
         @Query("fields", encoded = true) fields: String = fullAttrsString
-    ): Deferred<List<SingleForecast>>
+    ): List<SingleForecast>
 
     @GET("forecast/daily")
-    fun getDailyForecastAsync(
+    suspend fun getDailyForecastAsync(
         @Query("apikey") apiKey: String = MAIN_API_KEY,
         @Query("unit_system") unitSystem: String = Units.METRIC.value,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("start_time") startTimeInISO: String = "now",
         @Query("fields", encoded = true) fields: String = basicDailyForecastAttrsString
-    ): Deferred<List<EachDailyForecast>>
+    ): List<EachDailyForecast>
 
 
     // TODO: Problem is here !!! (Was using forecast/hourly instead of forecast/daily)
     @GET("forecast/daily")
-    fun getSelectedDailyForecastAsync(
+    suspend fun getSelectedDailyForecastAsync(
         @Query("apikey") apiKey: String = MAIN_API_KEY,
         @Query("unit_system") unitSystem: String,
         @Query("lat") lat: Double,
@@ -168,7 +161,7 @@ interface WeatherForecastApiService {
         @Query("start_time") startTimeInISO: String,
         @Query("end_time") endTimeInISO: String,
         @Query("fields", encoded = true) fields: String = selectedDailyForecastAttrsString
-    ): Deferred<List<SelectedDailyForecast>>
+    ): List<SelectedDailyForecast>
 }
 
 object WeatherForecastRetrofitItem {

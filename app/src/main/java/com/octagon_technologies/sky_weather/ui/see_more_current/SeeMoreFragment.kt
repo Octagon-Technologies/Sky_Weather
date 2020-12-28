@@ -19,7 +19,7 @@ class SeeMoreFragment : Fragment() {
 
     private lateinit var binding: SeeMoreFragmentBinding
     private lateinit var singleForecast: SingleForecast
-    val groupAdapter = GroupAdapter<GroupieViewHolder>()
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
