@@ -22,6 +22,7 @@ fun LiveData<Theme>.getWhiteOrBlackTextColor(context: Context?) =
         else android.R.color.white
     ) ?: Color.WHITE
 
+// TODO - Rename to make it more descriptive - like checkIfVersionFrom(maybe take in an argument) - consider converting to a Util class
 fun Int.checkBuildVersion() = Build.VERSION.SDK_INT >= this
 
 fun Context.getResColor(@ColorRes colorRes: Int) =

@@ -11,6 +11,8 @@ import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.Lu
 import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
 import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 
+// TODO - ColumnInfo without the name doesn't add any value
+
 @Entity(tableName = "hourlyForecastDatabaseClass")
 data class HourlyForecastDatabaseClass(
         @PrimaryKey(autoGenerate = false)
@@ -26,7 +28,6 @@ data class CurrentForecastDatabaseClass(
         @PrimaryKey(autoGenerate = false)
         val currentForecastId: Int = 1,
 
-        @ColumnInfo
         val currentForecast: SingleForecast
 )
 

@@ -56,7 +56,6 @@ fun TextView.getCurrentSolarHours(lunarForecast: LunarForecast?) {
     )
 }
 
-
 @BindingAdapter("getCurrentSolarMinutes")
 fun TextView.getCurrentSolarMinutes(lunarForecast: LunarForecast?) {
     text = resources.getString(

@@ -2,8 +2,11 @@ package com.octagon_technologies.sky_weather.repository.database
 
 import androidx.room.*
 
+// TODO - Consider base class, with commonly reused functions - Like Insert for example
+// All other daos extend it, and since it takes a generic as an arguement, you can pass any data class to it - refer the MaishaMeds Interview for reference
+
 @Dao
-interface CurrentWeatherDao{
+interface CurrentWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCurrentForecastDataClass(currentForecastDatabaseClass: CurrentForecastDatabaseClass)
 

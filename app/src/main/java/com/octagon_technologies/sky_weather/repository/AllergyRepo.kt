@@ -11,6 +11,9 @@ import retrofit2.HttpException
 import timber.log.Timber
 import java.net.UnknownHostException
 
+// TODO - For ALL REPOs - Check the Retrofit and Room  implementations to remove withContext(Dispatchers.IO) - They have inbuilt support
+// TODO - can simplify the return type by - Remove the "withContext(Dispatchers.IO)" and then assign the db call to the func using equals - also remove the return type
+// TODO - Replace on other repos as well
 object AllergyRepo {
 
     suspend fun getAllergyValueAsync(
@@ -51,9 +54,9 @@ object AllergyRepo {
         }
     }
 
-    private suspend fun getLocalAllergyForecastAsync(weatherDataBase: WeatherDataBase?): Allergy? {
-        return withContext(Dispatchers.IO) {
+    // TODO - Don't return nullable types
+    // TODO - No need to have the Async suffix on your method names
+    private suspend fun getLocalAllergyForecastAsync(weatherDataBase: WeatherDataBase?) =
             weatherDataBase?.allergyForecastDao?.getAllergyForecastDatabaseClass()?.allergyForecast
-        }
-    }
+
 }

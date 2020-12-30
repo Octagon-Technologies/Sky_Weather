@@ -34,6 +34,7 @@ class CustomNotificationCompat(private val context: Context) {
         createNotificationChannel()
     }
 
+    // TODO - Replace extension function with a simple if check - If used just once
     @SuppressLint("NewApi")
     fun createNotificationChannel() {
         if ((Build.VERSION_CODES.O).checkBuildVersion()) {

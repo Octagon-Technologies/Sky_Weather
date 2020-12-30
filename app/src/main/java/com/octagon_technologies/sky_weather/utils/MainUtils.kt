@@ -15,6 +15,11 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
+// TODO - Needs lots of cleanups (housekeeping)
+// group similar extension funcs together
+// remove enums and data classes here
+// Like Odari said - don't mix things together (group them accordingly) - easy to find
+
 @RequiresApi(M)
 const val darkStatusIcons = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 @RequiresApi(M)
@@ -39,6 +44,7 @@ enum class StatusCode { Success, NoNetwork, ApiLimitExceeded }
 
 data class EachDataStoreItem(val preferencesName: String, val newValue: Any)
 
+// TODO - Its already there in Kotlin
 fun Any?.isNull() = this == null
 
 fun TimeFormat?.getAmOrPmBasedOnTime(hourIn24HourSystem: Int, date: Date): String =

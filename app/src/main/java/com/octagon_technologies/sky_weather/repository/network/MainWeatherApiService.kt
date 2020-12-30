@@ -97,6 +97,8 @@ interface LunarForecastApiService {
     ): LunarForecast
 }
 
+// TODO - Consider using Interceptors to setup the headers
+// Move API Key to Build Config
 interface AllergyApiService {
     @Headers(
         "Content-Type: application/json",

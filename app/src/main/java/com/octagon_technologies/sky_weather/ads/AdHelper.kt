@@ -26,6 +26,7 @@ class AdHelper(private val activity: AppCompatActivity) {
         }
     }
 
+    // TODO - Avoid supressing deprecations
     @Suppress("DEPRECATION")
     private fun getAdLoader(
         nativeAdsLayoutBinding: NativeAdsLayoutBinding,

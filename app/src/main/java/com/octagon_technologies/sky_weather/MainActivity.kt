@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var settingsRepo: SettingsRepo
 
-    private val navController by lazy { findNavController(R.id.nav_host_fragment) }
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) } // TODO - There is a new extension method you can use
     val singleForecastJsonAdapter: JsonAdapter<SingleForecast> by lazy {
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -90,6 +90,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp() = navController.navigateUp()
 
+    // TODO - Setup Reactive Permission request (https://github.com/permissions-dispatcher/PermissionsDispatcher)
+    // https://gist.github.com/michaelbukachi/95f6b6cf70900101523a1f6e3e04b6d7
     override fun onBackPressed() {
         if (navController.currentDestination?.id == R.id.findLocationFragment) {
             liveLocation.value?.let {

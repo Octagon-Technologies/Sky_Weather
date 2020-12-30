@@ -21,6 +21,9 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
+
+// TODO - Check nullable types
+// TODO - CHECK IDE WARNINGS
 class HourlyForecastViewModel @ViewModelInject constructor(private val weatherDataBase: WeatherDataBase) : ViewModel() {
 
     private var _hourlyForecast = MutableLiveData<ArrayList<EachHourlyForecast>>()

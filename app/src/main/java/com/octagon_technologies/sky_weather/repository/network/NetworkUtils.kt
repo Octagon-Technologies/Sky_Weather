@@ -4,6 +4,7 @@ package com.octagon_technologies.sky_weather.repository.network
 precipitation, precipitation_type, temp, feels_like, dewpoint, wind_speed, wind_gust, baro_pressure, visibility, humidity, wind_direction, sunrise, sunset, cloud_cover, cloud_ceiling, cloud_base, surface_shortwave_radiation, moon_phase, weather_code
  */
 
+// TODO - Move to Build Config (https://blog.mindorks.com/using-local-properties-file-to-avoid-api-keys-check-in-into-version-control-system)
 const val MAIN_API_KEY = "KcZ9fTuH4YC6YIIlqC1OWfei4NFfivwA"
 const val mockLat = -1.3
 const val mockLon = 36.8

@@ -6,6 +6,7 @@
     <data>
 
         <import type="androidx.lifecycle.LiveData" />
+
         <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
@@ -14,6 +15,7 @@
 
     </data>
 
+    <!-- TODO Replace this with theming on the values folder-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -79,6 +81,7 @@
             app:layout_constraintTop_toBottomOf="@+id/top_toolbar_constraint"
             app:navGraph="@navigation/nav_graph" />
 
+        <!-- TODO Replace this with theming on the values folder-->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
             android:layout_width="0dp"

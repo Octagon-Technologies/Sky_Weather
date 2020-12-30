@@ -13,6 +13,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+// TODO - read this (https://blog.mindorks.com/using-local-properties-file-to-avoid-api-keys-check-in-into-version-control-system)
 @HiltAndroidApp
 class App : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
@@ -22,6 +23,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
         MobileAds.initialize(applicationContext)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         applicationScope.launch {
@@ -40,7 +42,7 @@ class App : Application() {
             .build()
 
         try {
-            WorkManager.getInstance().enqueueUniquePeriodicWork(
+            WorkManager.getInstance().enqueueUniquePeriodicWork( // TODO - Handle deprecated code
                 RefreshDataWork.WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
                 repeatingRequest

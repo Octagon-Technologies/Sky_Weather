@@ -4,6 +4,7 @@ import com.octagon_technologies.sky_weather.BuildConfig
 
 object Constants {
 
+    // TODO - MOve to build config (reference soundcloud app)
         val AD_ID = if (BuildConfig.DEBUG)
             "ca-app-pub-3940256099942544/2247696110"
         else
