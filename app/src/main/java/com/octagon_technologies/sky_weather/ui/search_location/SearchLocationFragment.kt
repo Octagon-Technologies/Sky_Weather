@@ -3,42 +3,38 @@ package com.octagon_technologies.sky_weather.ui.search_location
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.*
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.MainActivity
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SearchLocationFragmentBinding
-import com.octagon_technologies.sky_weather.repository.LocationRepo
-import com.octagon_technologies.sky_weather.repository.RecentLocationsRepo
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
-import com.octagon_technologies.sky_weather.utils.*
-import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
+import com.octagon_technologies.sky_weather.utils.CustomTextWatcher
+import com.octagon_technologies.sky_weather.utils.Theme
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchLocationFragment : Fragment() {
+class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
 
-    private val groupAdapter by lazy { GroupAdapter<GroupieViewHolder>() }
-    private val theme by lazy { (activity as? MainActivity)?.liveTheme?.value ?: Theme.DARK }
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
     private val viewModel: SearchLocationViewModel by viewModels()
-    private val binding by lazy {
-        SearchLocationFragmentBinding.inflate(layoutInflater).also {
-            it.theme = theme
-        }
-    }
+    private lateinit var binding: SearchLocationFragmentBinding
+
     private val imm by lazy { requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = SearchLocationFragmentBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+
+        setUpLocationSuggestionsRecyclerView()
+
         binding.cancelBtn.setOnClickListener { findNavController().popBackStack() }
         binding.searchQuery.addTextChangedListener(object : CustomTextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -47,50 +43,50 @@ class SearchLocationFragment : Fragment() {
             }
         })
 
-        viewModel.locationSuggestions.observe(viewLifecycleOwner, {
-            binding.searchLocationRecyclerview.addLocationSuggestionsToRecyclerView(
-                theme,
-                it,
-                groupAdapter,
-                viewModel.favouriteItemsMap.value!!,
-                viewModel.addToFavourite
-            )
-        })
 
         groupAdapter.setOnItemClickListener { item, _ ->
-            (item as EachSearchResultItem).location.apply {
-                lifecycleScope.launch {
-                    val reverseGeoCodingLocation = toReverseGeoCodingLocation()
+            val location = (item as EachSearchResultItem).location
 
-                    // Set current location to general ReverseGeoCodingLocation if it was set in the MainActivity
-                    (activity as? MainActivity)?.let {
-                        LocationRepo.insertLocationToLocalStorage(
-                            viewModel.weatherDataBase, reverseGeoCodingLocation
-                        )
+            // Change the current database location if it was set in the MainActivity; this prevents widget creation
+            // from being mistaken as user location setting
+            val mainActivity = (activity as? MainActivity)
 
-                        // Add location to recent location
-                        RecentLocationsRepo.insertRecentLocationToLocalStorage(
-                            viewModel.weatherDataBase, this@apply
-                        )
+            if (mainActivity != null) {
+                viewModel.selectLocation(location)
+//                mainActivity.hasNotificationChanged = false
 
-                        it.hasNotificationChanged = false
-                        it.liveLocation.value = reverseGeoCodingLocation
-
-                        findNavController().popBackStack(R.id.currentForecastFragment, false)
-                    } ?: run {
-                        val widgetConfigureViewModel =
-                            (activity as? WidgetConfigureActivity)?.viewModel?.also {
-                                it.reverseGeoCodingLocation.value = reverseGeoCodingLocation
-                            }
-
-                        findNavController().popBackStack()
-                        widgetConfigureViewModel?.navigateToLocationFragment?.value = false
-                    }
-                }
+                findNavController().popBackStack(R.id.currentForecastFragment, true)
             }
-        }
 
-        return binding.root
+//            val widgetConfigureActivity = (activity as? WidgetConfigureActivity)
+//            else if (widgetConfigureActivity != null) {
+//                        val widgetConfigureViewModel = widgetConfigureActivity.viewModel.also {
+//                                it.reverseGeoCodingLocation.value = location
+//                            }
+//
+//                        findNavController().popBackStack()
+//                        widgetConfigureViewModel?.navigateToLocationFragment?.value = false
+//                    }
+//                }
+
+        }
+    }
+
+    private fun setUpLocationSuggestionsRecyclerView() {
+        binding.searchLocationRecyclerview.adapter = groupAdapter
+
+        viewModel.searchLocationSuggestions.observe(viewLifecycleOwner) { suggestions ->
+            groupAdapter.update(
+                suggestions.map { location ->
+                    EachSearchResultItem(
+                        theme = viewModel.theme,
+                        isLikedByUser = viewModel.listOfFavouriteLocation.value?.contains(location) == true,
+                        location = location,
+                        onChangeFavoriteStatus = { isLikedByUser -> viewModel.changeFavoriteStatus(isLikedByUser, location) }
+                    )
+                }
+            )
+        }
     }
 
 

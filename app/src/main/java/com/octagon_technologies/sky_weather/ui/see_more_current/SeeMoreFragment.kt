@@ -6,43 +6,74 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.MainActivity
+import androidx.navigation.fragment.navArgs
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SeeMoreFragmentBinding
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.domain.getFormattedTemp
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
+import com.octagon_technologies.sky_weather.repository.repo.CurrentForecastRepo
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
 import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.utils.getAdvancedForecastDescription
+import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.utils.isLastIndex
 import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import javax.inject.Inject
 
-class SeeMoreFragment : Fragment() {
+class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
 
+    @Inject
+    lateinit var currentRepo: CurrentForecastRepo
+    @Inject
+    lateinit var settingsRepo: SettingsRepo
     private lateinit var binding: SeeMoreFragmentBinding
-    private lateinit var singleForecast: SingleForecast
+
+//    private val navArgs: SeeMoreFragmentArgs by navArgs()
+    private val currentForecast by lazy { currentRepo.currentForecast.value!! }
+
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = SeeMoreFragmentBinding.inflate(inflater)
-        (activity as MainActivity).singleForecastJsonAdapter
-            .fromJson(SeeMoreFragmentArgs.fromBundle(requireArguments()).singleForecastJson)?.let {
-                singleForecast = it
-            } ?: findNavController().popBackStack()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = SeeMoreFragmentBinding.bind(view)
 
-        binding.singleForecast = singleForecast
-        binding.groupAdapter = groupAdapter
-        binding.units = (activity as MainActivity).liveUnits.value
+        binding.seeMoreHighlight.text = currentForecast.weatherCode.getWeatherTitle()
+        binding.seeMoreTemp.text = currentForecast.getFormattedTemp()
+        binding.seeMoreTempUnits.text = if (settingsRepo.units.value == Units.IMPERIAL) "F" else "C"
+        binding.seeMoreWeatherImage.getWeatherIconFrom(currentForecast.weatherCode)
+
+        setUpSeeMoreConditions()
 
         binding.backBtn.setOnClickListener { findNavController().popBackStack() }
+    }
 
-        return binding.root
+    private fun setUpSeeMoreConditions() {
+        binding.seeMoreDescriptionRecyclerview.adapter = groupAdapter
+
+        val listOfWeatherDescriptions = getAdvancedForecastDescription(
+            singleForecast = currentForecast,
+            units = settingsRepo.units.value,
+            windDirectionUnits = settingsRepo.windDirectionUnits.value
+        )
+
+        groupAdapter.update(
+            listOfWeatherDescriptions.map {
+                MiniForecastDescription(
+                    isLastItem = listOfWeatherDescriptions.isLastIndex(it),
+                    eachWeatherDescription = it,
+                    theme = settingsRepo.theme.value
+                )
+            }
+        )
     }
 
     override fun onStart() {
         super.onStart()
-        val theme = (activity as MainActivity).liveTheme.value
+        val theme = settingsRepo.theme.value
         removeToolbarAndBottomNav(
             if (theme == Theme.LIGHT) R.color.light_theme_blue else R.color.dark_theme_blue,
             true

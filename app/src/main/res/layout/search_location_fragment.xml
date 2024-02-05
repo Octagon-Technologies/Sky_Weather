@@ -8,8 +8,8 @@
         <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
-            name="theme"
-            type="com.octagon_technologies.sky_weather.utils.Theme" />
+            name="viewModel"
+            type="com.octagon_technologies.sky_weather.ui.search_location.SearchLocationViewModel" />
 
     </data>
 
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:background="@color/dark_black"
-        android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
+        android:background="@{viewModel.theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
         android:theme="@style/AppTheme.BlackTextColor"
         tools:context=".ui.search_location.SearchLocationFragment">
 
@@ -26,7 +26,7 @@
             android:id="@+id/top_constraint_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@{theme == Theme.LIGHT ? @color/line_grey : @color/color_black}"
+            android:background="@{viewModel.theme == Theme.LIGHT ? @color/line_grey : @color/color_black}"
             android:paddingTop="@dimen/_15sdp"
             tools:background="@color/color_black"
             android:paddingBottom="@dimen/_15sdp"
@@ -40,10 +40,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_14sdp"
-                android:layout_marginLeft="@dimen/_14sdp"
                 android:background="@drawable/find_location_background"
                 android:drawableStart="@drawable/ic_search_black"
-                android:drawableLeft="@drawable/ic_search_black"
                 android:drawablePadding="@dimen/_10sdp"
                 android:importantForAutofill="no"
                 android:inputType="text"
@@ -63,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:fontFamily="@font/roboto_medium"
-                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 tools:textColor="@android:color/white"
                 android:text="@string/cancel_plain_text"
                 android:textAllCaps="false"
@@ -77,6 +75,7 @@
             android:id="@+id/search_location_recyclerview"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

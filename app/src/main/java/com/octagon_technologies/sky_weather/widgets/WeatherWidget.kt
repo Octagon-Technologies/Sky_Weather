@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,13 +22,16 @@ class WeatherWidget : AppWidgetProvider() {
     @Inject
     lateinit var widgetRepo: WidgetRepo
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetIds: IntArray
     ) {
-        widgetRepo.updateAllWidgets(appWidgetIds) {
-            Timber.d("In WeatherWidget, updateAllWidgets.isSuccess is ${it.isSuccess}")
+        GlobalScope.launch {
+            widgetRepo.updateAllWidgets(appWidgetIds) {
+                Timber.d("In WeatherWidget, updateAllWidgets.isSuccess is ${it.isSuccess}")
+            }
         }
 
         Timber.d("onUpdate() called in widget with appWidgetIds is ${appWidgetIds.asList()}")

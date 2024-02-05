@@ -1,63 +1,45 @@
 package com.octagon_technologies.sky_weather.widgets
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.octagon_technologies.sky_weather.models.WidgetData
-import com.octagon_technologies.sky_weather.repository.SettingsRepo
-import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
-import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
+import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
+import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.inject.Inject
 
-class WidgetConfigureViewModel @ViewModelInject constructor(
+@HiltViewModel
+class WidgetConfigureViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val settingsRepo: SettingsRepo,
-    private val weatherDataBase: WeatherDataBase,
+    private val locationRepo: LocationRepo,
     private val widgetSettings: WidgetSettings
-    ) : ViewModel() {
-    val reverseGeoCodingLocation = MutableLiveData<ReverseGeoCodingLocation>()
+) : ViewModel() {
+    val location = locationRepo.location
 
     val navigateToLocationFragment = MutableLiveData(false)
     val shouldCreateWidget = MutableLiveData(false)
-
-    init {
-        initDataWithLocalData()
-    }
-
-    private fun initDataWithLocalData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val localReverseLocation = try {
-                weatherDataBase.locationDao.getLocationDatabaseClass().reversedLocation
-            } catch (e: Exception) {
-                Timber.e(e)
-                return@launch
-            }
-
-            withContext(Dispatchers.Main.immediate) {
-                reverseGeoCodingLocation.value = localReverseLocation
-            }
-        }
-    }
 
     fun launchCreateWidget() { shouldCreateWidget.value = true }
 
     fun addWidget(widgetId: Int, transparencyOutOf255: Int) {
         viewModelScope.launch {
-            val location = reverseGeoCodingLocation.value ?: run {
-                Timber.d("reverseGeoCodingLocation.value is $reverseGeoCodingLocation.value in addWidget()")
+            val location = location.value ?: run {
+                Timber.d("location.value is $location.value in addWidget()")
                 return@launch
             }
 
             val widgetData = WidgetData(
                 widgetId = widgetId,
-                reverseGeoCodingLocation = location,
+                location = location,
                 transparencyOutOf255 = transparencyOutOf255,
-                timeFormat = settingsRepo.getTimeFormat(),
-                units = settingsRepo.getUnits()
+                timeFormat = settingsRepo.timeFormat.value ?: TimeFormat.FULL_DAY,
+                units = settingsRepo.units.value ?: Units.METRIC
             )
             widgetSettings.addWidgetId(widgetData)
         }

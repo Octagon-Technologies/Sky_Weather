@@ -85,4 +85,6 @@
     <string name="advertisement_plain_text">Advertisement</string>
 
     <string name="ad_attribution">Ad</string>
+    <string name="rise">Rise</string>
+    <string name="set">Set</string>
 </resources>

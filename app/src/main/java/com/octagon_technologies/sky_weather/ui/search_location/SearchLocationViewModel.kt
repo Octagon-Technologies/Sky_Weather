@@ -1,59 +1,54 @@
 package com.octagon_technologies.sky_weather.ui.search_location
 
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.repository.FavouriteLocationsRepo
-import com.octagon_technologies.sky_weather.repository.LocationRepo
-import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
-import com.octagon_technologies.sky_weather.repository.network.location.Location
-import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
+import com.octagon_technologies.sky_weather.domain.Location
+import com.octagon_technologies.sky_weather.repository.repo.FavouriteLocationRepo
+import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
+import com.octagon_technologies.sky_weather.repository.repo.RecentLocationsRepo
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class SearchLocationViewModel @ViewModelInject constructor(val weatherDataBase: WeatherDataBase) :
+@HiltViewModel
+class SearchLocationViewModel @Inject constructor(
+    private val settingsRepo: SettingsRepo,
+    private val locationRepo: LocationRepo,
+    private val favouriteLocationRepo: FavouriteLocationRepo,
+    private val recentLocationsRepo: RecentLocationsRepo
+) :
     ViewModel() {
 
-    private var _locationSuggestions = MutableLiveData<Map<String?, Location>>()
-    val locationSuggestions: LiveData<Map<String?, Location>> = _locationSuggestions
+    val theme = settingsRepo.theme
+    val searchLocationSuggestions = locationRepo.searchLocationSuggestions
 
-    var favouriteItemsMap: MutableLiveData<Map<String?, Location>> = MutableLiveData(mapOf())
+    val listOfFavouriteLocation = favouriteLocationRepo.listOfFavouriteLocation
 
-    init {
-        viewModelScope.launch {
-            favouriteItemsMap.value =
-                FavouriteLocationsRepo.getFavouriteLocationsAsync(weatherDataBase)
-                    ?.sortedBy { it.displayName }?.associateBy { it.placeId }
-        }
-    }
 
     fun getLocationSuggestions(query: String) {
-        if (query.isEmpty()) return
-
         viewModelScope.launch {
-            _locationSuggestions.value = LocationRepo.getLocationSuggestionsFromQuery(query)
+            locationRepo.getLocationSuggestionsFromQuery(query)
         }
     }
 
-    val addToFavourite = { eachSearchResultItem: EachSearchResultItem ->
+    fun selectLocation(location: Location) {
         viewModelScope.launch {
-            if (eachSearchResultItem.isLikedByUser) {
-                FavouriteLocationsRepo.removeFavouriteLocationToLocalStorage(
-                    weatherDataBase,
-                    eachSearchResultItem.location
-                )
-            } else {
-                FavouriteLocationsRepo.insertFavouriteLocationToLocalStorage(
-                    weatherDataBase,
-                    eachSearchResultItem.location
-                )
-            }
-
-            Timber.d("addToFavourite called with isLikedByUser as ${eachSearchResultItem.isLikedByUser}")
+            locationRepo.insertLocalLocation(location)
+            recentLocationsRepo.insertLocalRecentLocation(location)
         }
+    }
 
-        Unit
+    val changeFavoriteStatus: (Boolean, Location) -> Unit = { isLikedByUser, location ->
+        viewModelScope.launch {
+            if (isLikedByUser)
+                favouriteLocationRepo.removeLocalFavouriteLocation(location)
+            else
+                favouriteLocationRepo.insertLocalFavouriteLocation(location)
+
+
+            Timber.d("addToFavourite called with isLikedByUser as $isLikedByUser")
+        }
     }
 }

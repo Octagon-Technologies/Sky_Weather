@@ -11,9 +11,10 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.FindLocationFragmentBinding
+import com.octagon_technologies.sky_weather.domain.Location
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.utils.*
 import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
@@ -28,11 +29,9 @@ class FindLocationFragment : Fragment() {
     private val viewModel by viewModels<FindLocationViewModel>()
     private val mainActivity by lazy { activity as? MainActivity }
     private val widgetConfigureActivity by lazy { activity as? WidgetConfigureActivity }
-    private val theme by lazy { mainActivity?.liveTheme?.value ?: Theme.DARK }
-    private val units by lazy { mainActivity?.liveUnits?.value ?: Units.METRIC }
-    private val liveLocation by lazy {
-        mainActivity?.liveLocation ?: widgetConfigureActivity?.viewModel?.reverseGeoCodingLocation
-    }
+//    private val liveLocation by lazy {
+//        mainActivity?.liveLocation ?: widgetConfigureActivity?.viewModel?.reverseGeoCodingLocation
+//    }
 
     private val favouriteGroupAdapter = GroupAdapter<GroupieViewHolder>()
     private val recentGroupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -46,65 +45,37 @@ class FindLocationFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.theme = theme
-        binding.units = units
 
-        viewModel.favouriteLocationsList.observe(viewLifecycleOwner, {
-            favouriteGroupAdapter.clear()
 
-            binding.favouriteRecyclerView.getFavouriteLocations(
-                theme, it, favouriteGroupAdapter, removeFromFavourites
-            )
-            checkIfFavouriteListIsEmpty()
-        })
-
-        viewModel.recentLocationsList.observe(viewLifecycleOwner, {
-            recentGroupAdapter.clear()
-            binding.recentRecyclerView.getRecentLocations(
-                theme, it, recentGroupAdapter, removeFromRecent
-            )
-            checkIfRecentListIsEmpty()
-        })
-
+        setUpFavouriteRecyclerView()
+        setUpRecentRecyclerView()
+        setUpTheme()
         setOnClickListeners()
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            viewModel.turnOnCurrentLocation()
-        }
+        checkPermissions()
 
-        listOf(favouriteGroupAdapter, recentGroupAdapter).forEach {
-            it.setOnItemClickListener { item, _ ->
+
+        listOf(favouriteGroupAdapter, recentGroupAdapter).forEach { adapter ->
+            adapter.setOnItemClickListener { item, _ ->
                 (item as EachSearchResultItem).location.apply {
-                    val reverseGeoCodingLocation = toReverseGeoCodingLocation().apply {
-                        mainActivity?.let {
-                            viewModel.editLocationInDatabase(activity, this)
-                        }
-                    }
-                    liveLocation?.value = reverseGeoCodingLocation
+                    val mainActivity = activity as? MainActivity
+                    if (mainActivity != null)
+                        viewModel.setNewLocation(this)
+
                     popBackStack()
                 }
             }
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner, {
-            binding.enableLocationText.text =
-                if (it!!) resources.getString(R.string.loading_plain_text) else resources.getString(
-                    R.string.enable_location_services_plain_text
-                )
-        })
 
-        viewModel.reversedGeoCodingLocation.observe(viewLifecycleOwner) {
-            it?.reverseGeoCodingAddress?.apply {
+        viewModel.location.observe(viewLifecycleOwner) { location ->
+            if (location?.isGps == true) {
                 binding.gpsLocationLayout.visibility = View.VISIBLE
                 binding.enableLocationLayout.visibility = View.GONE
 
-                binding.gpsLocationCity.text = it.getDisplayLocation()
-                binding.gpsLocationCountry.text = country
-            } ?: run {
+                binding.gpsLocationCity.text = location.displayNameWithoutCountryCode
+                binding.gpsLocationCountry.text = location.country
+            } else {
                 viewModel.setIsLoadingAsFalse()
             }
         }
@@ -112,9 +83,55 @@ class FindLocationFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        mainActivity?.let {
+    private fun checkPermissions() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            viewModel.useGPSLocation(requireContext())
+        }
+    }
+
+    private fun setUpRecentRecyclerView() {
+        binding.recentRecyclerView.adapter = recentGroupAdapter
+
+        viewModel.recentLocationsList.observe(viewLifecycleOwner) { recentLocationsList ->
+            if (recentLocationsList != null) {
+                recentGroupAdapter.update(
+                    recentLocationsList.map { location ->
+                        EachSearchResultItem(
+                            theme = viewModel.theme,
+                            location = location
+                        ) { removeFromRecent(location) }
+
+                    }
+                )
+                checkIfRecentListIsEmpty()
+            }
+        }
+    }
+
+    fun setUpFavouriteRecyclerView() {
+        binding.favouriteRecyclerView.adapter = favouriteGroupAdapter
+
+        viewModel.favouriteLocationsList.observe(viewLifecycleOwner) { favouriteLocationsList ->
+            if (favouriteLocationsList != null) {
+                favouriteGroupAdapter.update(
+                    favouriteLocationsList.map { location ->
+                        EachSearchResultItem(
+                            theme = viewModel.theme,
+                            location = location
+                        ) { removeFromFavourites(location) }
+                    }
+                )
+            }
+            checkIfFavouriteListIsEmpty()
+        }
+    }
+
+    private fun setUpTheme() {
+        viewModel.theme.observe(viewLifecycleOwner) { theme ->
             if (theme == Theme.LIGHT) {
                 removeToolbarAndBottomNav(R.color.line_grey, false)
             } else {
@@ -146,7 +163,7 @@ class FindLocationFragment : Fragment() {
     private fun setOnClickListeners() {
         binding.closeBtn.setOnClickListener {
             mainActivity?.also {
-                liveLocation?.value?.let {
+                viewModel.location.value?.let {
                     findNavController().popBackStack()
                 } ?: run {
                     showShortToast(
@@ -159,17 +176,20 @@ class FindLocationFragment : Fragment() {
             }
         }
         binding.searchQuery.setOnClickListener {
-            findNavController().navigate(if (activity is MainActivity) R.id.searchLocationFragment else R.id.widgetSearchLocationFragment)
+            findNavController().navigate(
+                if (activity is MainActivity) R.id.searchLocationFragment
+                else R.id.widgetSearchLocationFragment
+            )
         }
-        binding.enableLocationLayout.setOnClickListener { viewModel.checkIfPermissionIsGranted() }
+        binding.enableLocationLayout.setOnClickListener {
+            viewModel.checkIfPermissionIsGranted(requireContext())
+        }
 
         binding.gpsLocationLayout.setOnClickListener {
-            viewModel.addCurrentLocationToDatabase(activity)
+            viewModel.useGPSLocation(requireContext())
 
-            viewModel.reversedGeoCodingLocation.value?.let {
-                liveLocation?.value = it
+            if (viewModel.location.value != null)
                 popBackStack()
-            }
         }
     }
 
@@ -181,22 +201,23 @@ class FindLocationFragment : Fragment() {
         }
     }
 
-    private val removeFromRecent = { eachSearchResultItem: EachSearchResultItem ->
-        viewModel.removeFromRecent(eachSearchResultItem.location)
+    private val removeFromRecent = { location: Location ->
+        viewModel.removeFromRecent(location)
         recentGroupAdapter.apply {
-            removeGroupAtAdapterPosition(eachSearchResultItem.actualPosition)
-            (0 until itemCount).forEach { getItem(it).notifyChanged(it) }
+//            remove(eachSearchResultItem)
+            // removeGroupAtAdapterPosition(eachSearchResultItem.actualPosition)
+//            (0 until itemCount).forEach { getItem(it).notifyChanged(it) }
             checkIfRecentListIsEmpty()
         }
 
         Unit
     }
 
-    private val removeFromFavourites = { eachSearchResultItem: EachSearchResultItem ->
-        viewModel.removeFromFavourites(eachSearchResultItem.location)
+    private val removeFromFavourites = { location: Location ->
+        viewModel.removeFromFavourites(location)
         favouriteGroupAdapter.apply {
-            removeGroupAtAdapterPosition(eachSearchResultItem.actualPosition)
-            (0 until itemCount).forEach { getItem(it).notifyChanged(it) }
+//            removeGroupAtAdapterPosition(eachSearchResultItem.actualPosition)
+//            (0 until itemCount).forEach { getItem(it).notifyChanged(it) }
             checkIfFavouriteListIsEmpty()
         }
 

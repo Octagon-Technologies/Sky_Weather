@@ -2,108 +2,92 @@ package com.octagon_technologies.sky_weather.ui.current_forecast
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.models.EachAllergyDescription
-import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
-import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.FeelsLike
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.Temp
+import com.octagon_technologies.sky_weather.domain.Allergy
+import com.octagon_technologies.sky_weather.domain.Lunar
+import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastAllergyItem
-import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastDescriptionItem
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import com.octagon_technologies.sky_weather.utils.getBasicForecastConditions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import timber.log.Timber
-
-@BindingAdapter("getCurrentRealFeel")
-fun TextView.getCurrentRealFeel(realFeelsLike: FeelsLike?) {
-    this.text = resources.getString(
-        R.string.feelslike_format,
-        realFeelsLike?.value?.toInt()?.toString() ?: "--"
-    )
-}
-
-@BindingAdapter("getCurrentTemp")
-fun TextView.getCurrentTemp(temp: Temp?) {
-    this.text = resources.getString(
-        R.string.temp_format,
-        temp?.value?.toInt()?.toString() ?: "--"
-    )
-}
 
 @BindingAdapter("getCurrentMoonHours")
-fun TextView.getCurrentMoonHours(lunarForecast: LunarForecast?) {
+fun TextView.getCurrentMoonHours(lunar: Lunar?) {
     text = resources.getString(
-        R.string.hrs_format, getFinalHours(lunarForecast?.moonRise, lunarForecast?.moonSet)
+        R.string.hrs_format, getFinalHours(lunar?.moonRise, lunar?.moonSet)
     )
 }
 
 @BindingAdapter("getCurrentMoonMinutes")
-fun TextView.getCurrentMoonMinutes(lunarForecast: LunarForecast?) {
+fun TextView.getCurrentMoonMinutes(lunar: Lunar?) {
     text = resources.getString(
-        R.string.mins_format, getFinalMinutes(lunarForecast?.moonRise, lunarForecast?.moonSet)
+        R.string.mins_format, getFinalMinutes(lunar?.moonRise, lunar?.moonSet)
     )
 }
 
 @BindingAdapter("getCurrentSolarHours")
-fun TextView.getCurrentSolarHours(lunarForecast: LunarForecast?) {
+fun TextView.getCurrentSolarHours(lunar: Lunar?) {
     text = resources.getString(
-        R.string.hrs_format, getFinalHours(lunarForecast?.sunRise, lunarForecast?.sunSet)
+        R.string.hrs_format, getFinalHours(lunar?.sunRise, lunar?.sunSet)
     )
 }
 
 
 @BindingAdapter("getCurrentSolarMinutes")
-fun TextView.getCurrentSolarMinutes(lunarForecast: LunarForecast?) {
+fun TextView.getCurrentSolarMinutes(lunar: Lunar?) {
     text = resources.getString(
-        R.string.mins_format, getFinalMinutes(lunarForecast?.sunRise, lunarForecast?.sunSet)
+        R.string.mins_format, getFinalMinutes(lunar?.sunRise, lunar?.sunSet)
     )
 }
 
 @BindingAdapter("getCurrentAllergyForecast")
-fun RecyclerView.getCurrentAllergyForecast(allergyForecast: Allergy?) {
-    layoutManager = LinearLayoutManager(context)
+fun RecyclerView.getCurrentAllergyForecast(allergy: Allergy?) {
     val groupAdapter = GroupAdapter<GroupieViewHolder>()
     adapter = groupAdapter
-    val arrayOfAllergyForecast = ArrayList<EachAllergyDescription>()
 
-    try {
-        allergyForecast?.data?.get(0)?.risk?.let {
-//        arrayOfAllergyForecast.add(EachAllergyDescription("Overall Risk", it.risk.toString()))
-            arrayOfAllergyForecast.add(EachAllergyDescription("Grass Pollen", it.grassPollen))
-            arrayOfAllergyForecast.add(EachAllergyDescription("Tree Pollen", it.treePollen))
-            arrayOfAllergyForecast.add(EachAllergyDescription("Weed Pollen", it.weedPollen))
+    val listOfMiniAllergy = listOf(allergy?.grassPollen, allergy?.weedPollen, allergy?.treePollen)
+
+    listOfMiniAllergy.forEach { miniAllergy ->
+        if (miniAllergy != null) {
+            val currentForecastAllergyItem =
+                EachCurrentForecastAllergyItem(listOfMiniAllergy.last() == miniAllergy, miniAllergy)
+            groupAdapter.add(currentForecastAllergyItem)
         }
-    } catch (emptyList: IndexOutOfBoundsException) {
-        Timber.i("Selected country does't have pollen data")
-    }
-
-    arrayOfAllergyForecast.forEach {
-        val currentForecastAllergyItem =
-            EachCurrentForecastAllergyItem(arrayOfAllergyForecast.size - 1, it)
-        groupAdapter.add(currentForecastAllergyItem)
     }
 }
 
 
-@BindingAdapter("getCurrentConditionsForMainPage", "addWindDirectionForCurrentConditions")
-fun RecyclerView.getCurrentConditionsForMainPage(singleForecast: SingleForecast?, windDirectionUnits: WindDirectionUnits?) {
-    layoutManager = LinearLayoutManager(context)
+@BindingAdapter(
+    "setUpCurrentConditions",
+    "addWindDirectionForCurrentConditions",
+    "addUnitsForCurrentConditions",
+    "addThemeForCurrentConditions"
+)
+fun RecyclerView.setUpCurrentConditions(
+    singleForecast: SingleForecast?,
+    windDirectionUnits: WindDirectionUnits?,
+    units: Units?,
+    theme: Theme?
+) {
     val groupAdapter = GroupAdapter<GroupieViewHolder>()
     adapter = groupAdapter
-    val arrayOfWeatherDescriptions = getBasicForecastConditions(singleForecast, windDirectionUnits)
 
-    arrayOfWeatherDescriptions.forEach {
-        groupAdapter.add(
-            EachCurrentForecastDescriptionItem(
-                arrayOfWeatherDescriptions.size - 1,
-                it,
-                null
+    val arrayOfWeatherDescriptions =
+        getBasicForecastConditions(singleForecast, units, windDirectionUnits)
+    val lastIndex = arrayOfWeatherDescriptions.size - 1
+
+    groupAdapter.addAll(
+        arrayOfWeatherDescriptions.map { eachWeatherDescription ->
+            MiniForecastDescription(
+                isLastItem = arrayOfWeatherDescriptions.indexOf(eachWeatherDescription) == lastIndex,
+                eachWeatherDescription = eachWeatherDescription,
+                theme = theme
             )
-        )
-    }
+        }
+    )
 }

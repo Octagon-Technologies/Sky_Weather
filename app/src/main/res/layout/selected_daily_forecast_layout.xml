@@ -9,31 +9,15 @@
 
         <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
-        <import type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.Units" />
-
-        <variable
-            name="dailyForecastViewModel"
-            type="com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel" />
-
         <variable
             name="theme"
             type="LiveData&lt;Theme&gt;" />
-
-        <variable
-            name="timeFormat"
-            type="LiveData&lt;TimeFormat&gt;" />
-
-
-        <variable
-            name="units"
-            type="LiveData&lt;Units&gt;" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        app:elevation="8dp"
         android:layout_height="match_parent"
         android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
         tools:background="#FFFFFF">
@@ -49,10 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/date_text"
-            addSelectedTimeFormat="@{timeFormat}"
-            formatSelectedDate="@{dailyForecastViewModel.selectedDailyForecast.observationTime}"
-            isDailySelected="@{true}"
+            android:id="@+id/daily_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_14sdp"
@@ -82,7 +63,7 @@
             android:background="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date_text"
+            app:layout_constraintTop_toBottomOf="@+id/daily_date_text"
             app:tabGravity="fill"
             app:tabMaxWidth="@dimen/_500sdp"
             app:tabPadding="@dimen/_8sdp"
@@ -110,14 +91,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
             android:fontFamily="@font/coda"
-            android:text="@{ units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
             android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_13ssp"
-            app:layout_constraintBottom_toBottomOf="@+id/date_text"
+            app:layout_constraintBottom_toBottomOf="@+id/daily_date_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/date_text"
+            app:layout_constraintTop_toTopOf="@+id/daily_date_text"
             tools:text="@string/hourly_forecast_temp_unit_C"
             tools:textColor="@color/dark_black" />
 

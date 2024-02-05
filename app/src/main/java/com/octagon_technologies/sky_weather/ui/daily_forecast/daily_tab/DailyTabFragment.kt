@@ -1,173 +1,129 @@
 package com.octagon_technologies.sky_weather.ui.daily_forecast.daily_tab
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.octagon_technologies.sky_weather.MainActivity
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.DailyTabFragmentBinding
+import com.octagon_technologies.sky_weather.domain.daily.TimePeriod
+import com.octagon_technologies.sky_weather.domain.daily.getFormattedFeelsLike
+import com.octagon_technologies.sky_weather.domain.daily.getFormattedHumidity
+import com.octagon_technologies.sky_weather.domain.daily.getFormattedTemp
 import com.octagon_technologies.sky_weather.lazy.adHelpers
 import com.octagon_technologies.sky_weather.models.EachWeatherDescription
-import com.octagon_technologies.sky_weather.models.MainWind
-import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.Min
-import com.octagon_technologies.sky_weather.repository.network.selected_daily_forecast.SelectedDailyForecast
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindDirection
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindGust
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.WindSpeed
-import com.octagon_technologies.sky_weather.ui.current_forecast.getActualWind
-import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastDescriptionItem
-import com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastViewModel
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
+import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
-import com.octagon_technologies.sky_weather.utils.getWhiteOrBlackTextColor
+import com.octagon_technologies.sky_weather.utils.changeWeatherIconTint
+import com.octagon_technologies.sky_weather.utils.isLastIndex
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import timber.log.Timber
 import kotlin.properties.Delegates
 
-class DailyTabFragment : Fragment() {
+class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
 
-    lateinit var theme: LiveData<Theme>
-    lateinit var windDirectionUnits: LiveData<WindDirectionUnits>
-    lateinit var dailyForecastViewModel: DailyForecastViewModel
-    lateinit var timeFormat: LiveData<TimeFormat>
-    var isDay by Delegates.notNull<Boolean>()
-    private val adHelper by adHelpers()
+    lateinit var settingsRepo: SettingsRepo
 
-    companion object {
-        fun getInstance(
-            constructorIsDay: Boolean,
-            mainActivity: MainActivity,
-            constructorDailyForecastViewModel: DailyForecastViewModel
-        ) =
-            DailyTabFragment().apply {
-                isDay = constructorIsDay
-                theme = mainActivity.liveTheme
-                windDirectionUnits = mainActivity.liveWindDirectionUnits
-                timeFormat = mainActivity.liveTimeFormat
-                dailyForecastViewModel = constructorDailyForecastViewModel
-            }
-    }
-
-    val groupAdapter = GroupAdapter<GroupieViewHolder>()
-
-    val binding by lazy {
-        DailyTabFragmentBinding.inflate(layoutInflater).also {
-            it.lifecycleOwner = viewLifecycleOwner
-            it.theme = theme
-            it.isDay = isDay
-            it.lunarForecast = dailyForecastViewModel.lunarForecast
-            it.timeFormat = timeFormat
-            it.selectedDailyForecast = dailyForecastViewModel.selectedDailyForecast
-
-            it.dailyTabAdView.advertisementPlainText
-                .setTextColor(theme.getWhiteOrBlackTextColor(context))
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ) = binding.root
-
+    private lateinit var binding: DailyTabFragmentBinding
+    private lateinit var timePeriod: LiveData<TimePeriod>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.selectedDayRecyclerview.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = groupAdapter
-        }
+        binding = DailyTabFragmentBinding.bind(view)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.theme = settingsRepo.theme
 
-        dailyForecastViewModel.selectedDailyForecast.observe(viewLifecycleOwner) { selectedDailyForecast ->
-            groupAdapter.clear()
-            selectedDailyForecast?.apply {
-                Timber.d("selectedDailyForecast called in DailyTabFragment with isDay as $isDay.")
+        setUpWeatherConditions()
+//        setUpAd()
+    }
 
-                val dailyConditions = arrayListOf(
-                    getFeelsLike(),
-                    getWind(),
-                    getRainFall(),
-                    getAirPressure()
-                ).filterNotNull()
+//    private fun setUpAd() {
+//        adHelper.loadAd(binding.dailyTabAdView) {
+//            Timber.d("Load ad listener return $it")
+//            // If it failed in onAdFailedToLoad(), hide the ad view
+//            if (!it) {
+//                binding.dailyTabAdView.root.visibility = View.GONE
+//            }
+//        }
+//    }
 
-                dailyConditions.forEach {
-                    groupAdapter.add(
-                        EachCurrentForecastDescriptionItem(
-                            dailyConditions.indexOf(it), it, theme.value
-                        )
+    private fun setUpWeatherConditions() {
+        val groupAdapter = GroupAdapter<GroupieViewHolder>()
+        binding.selectedDayRecyclerview.adapter = groupAdapter
+
+        timePeriod.observe(viewLifecycleOwner) { timePeriod ->
+            binding.selectedDayTemp.text = timePeriod.getFormattedTemp()
+            binding.selectedDayHumidityText.text = timePeriod.getFormattedHumidity()
+            binding.selectedDayWeatherIcon.changeWeatherIconTint(
+                settingsRepo.theme.value,
+                timePeriod.isDay
+            )
+            binding.selectedDayWeatherStatus.text = timePeriod.weatherCode.getWeatherTitle()
+
+            binding.selectedSunHours.text = timePeriod.lunar.sunHrsOnly
+            binding.selectedSunMinutes.text = timePeriod.lunar.sunMinsOnly
+            binding.selectedMoonHours.text = timePeriod.lunar.moonHrsOnly
+            binding.selectedMoonMinutes.text = timePeriod.lunar.moonMinsOnly
+
+            val timeFormat = settingsRepo.timeFormat.value
+            binding.selectedSunRiseDisplayTime.text = timePeriod.lunar.getSunRiseDisplay(timeFormat)
+            binding.selectedSunSetDisplayTime.text = timePeriod.lunar.getSunSetDisplay(timeFormat)
+            binding.selectedMoonRiseDisplayTime.text =
+                timePeriod.lunar.getMoonRiseDisplay(timeFormat)
+            binding.selectedMoonSetDisplayTime.text = timePeriod.lunar.getMoonSetDisplay(timeFormat)
+
+            val dailyConditions = listOf(
+                EachWeatherDescription(
+                    "Temp",
+                    timePeriod.getFormattedTemp()
+                ),
+                EachWeatherDescription(
+                    "FeelsLike",
+                    timePeriod.getFormattedFeelsLike()
+                ),
+                EachWeatherDescription(
+                    "Humidity",
+                    timePeriod.getFormattedHumidity()
+                ),
+                EachWeatherDescription(
+                    "Average Wind",
+                    timePeriod.wind.getWindSpeedWithDirection(
+                        settingsRepo.units.value,
+                        settingsRepo.windDirectionUnits.value
+                    )
+                ),
+                EachWeatherDescription(
+                    "Pressure",
+                    "${timePeriod.pressure.toInt()} ${if (settingsRepo.units.value == Units.IMPERIAL) "inHg" else "mbar"}"
+                )
+            )
+
+            groupAdapter.update(
+                dailyConditions.map {
+                    MiniForecastDescription(
+                        dailyConditions.isLastIndex(it),
+                        it,
+                        settingsRepo.theme.value
                     )
                 }
-            }
-        }
-
-        adHelper.loadAd(binding.dailyTabAdView) {
-            Timber.d("Load ad listener return $it")
-            // If it failed in onAdFailedToLoad(), hide the ad view
-            if (!it) {
-                binding.dailyTabAdView.root.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun SelectedDailyForecast.getRainFall(): EachWeatherDescription? {
-        val rainInMM = try {
-            precipitation?.get(if (isDay) 1 else 0)
-        } catch (e: Exception) {
-            precipitation?.get(0)
-        }?.max?.value
-        return EachWeatherDescription("Rain Amount", "$rainInMM mm")
-    }
-
-    private fun SelectedDailyForecast.getFeelsLike(): EachWeatherDescription? {
-        return try {
-            feelsLike?.get(if (isDay) 1 else 0)
-        } catch (e: Exception) {
-            feelsLike?.get(0)
-        }?.let {
-            EachWeatherDescription(
-                "FeelsLike ${if (isDay) "High" else "Low"}",
-                (if (isDay) it.max else it.min)?.value?.toString()
             )
         }
     }
 
-    private fun SelectedDailyForecast.getAirPressure(): EachWeatherDescription? {
-        val it = try {
-            baroPressure?.get(if (isDay) 1 else 0)
-        } catch (e: Exception) {
-            baroPressure?.get(0)
-        }
-        return EachWeatherDescription(
-            "Pressure",
-            "${(if (isDay) it?.max else it?.min)?.value?.toInt() ?: "--"} mbar"
-        )
-    }
 
-    private fun SelectedDailyForecast.getWind(): EachWeatherDescription {
-        val values =
-            try {
-                Pair(windDirection?.get(if (isDay) 1 else 0), windSpeed?.get(if (isDay) 1 else 0))
-            } catch (e: Exception) {
-                Pair(windDirection?.get(0), windSpeed?.get(0))
+    companion object {
+        fun getInstance(
+            selectedTimePeriod: LiveData<TimePeriod>,
+            provideSettingsRepo: SettingsRepo
+        ) =
+            DailyTabFragment().apply {
+                timePeriod = selectedTimePeriod
+                settingsRepo = provideSettingsRepo
             }
-
-        val descriptionData =
-            if (isDay) getMainWind(values.first?.max, values.second?.max)
-            else getMainWind(values.first?.min, values.second?.min)
-
-        return EachWeatherDescription("Average Wind", descriptionData)
-    }
-
-    private fun getMainWind(minWindDirection: Min?, minWindSpeed: Min?): String? {
-        val mainWind = MainWind(
-            WindDirection(minWindDirection?.units, minWindDirection?.value),
-            WindSpeed(minWindSpeed?.units, minWindSpeed?.value),
-            WindGust(null, null)
-        )
-
-        return getActualWind(mainWind, windDirectionUnits.value)
     }
 }

@@ -8,7 +8,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.formats.NativeAdOptions
 import com.google.android.gms.ads.formats.UnifiedNativeAd
-import com.google.android.gms.ads.formats.UnifiedNativeAdView
 import com.octagon_technologies.sky_weather.databinding.NativeAdsLayoutBinding
 import com.octagon_technologies.sky_weather.utils.Constants
 import com.octagon_technologies.sky_weather.utils.isNull

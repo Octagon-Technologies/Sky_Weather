@@ -15,6 +15,7 @@
         android:layout_marginBottom="@dimen/_40sdp"
         android:fontFamily="@font/roboto_medium"
         android:text="Real-time forecast"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/_20sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

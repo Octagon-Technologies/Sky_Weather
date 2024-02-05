@@ -4,11 +4,25 @@
     package="com.octagon_technologies.sky_weather"
     android:installLocation="auto">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        tools:node="remove" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:requiredNotFeature="true"
+        tools:ignore="UnusedAttribute" />
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
         android:requiredNotFeature="true"
@@ -21,15 +35,16 @@
         android:label="@string/app_name"
         android:manageSpaceActivity=".clear_data.ClearDataActivity"
         android:roundIcon="@mipmap/app_icon_round"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:supportsRtl="true">
         <activity
             android:name=".clear_data.ClearDataActivity"
             android:theme="@style/DarkBlueStatusBar" />
 
         <activity
-            android:name=".SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:name=".main_activity.MainActivity"
+            android:theme="@style/Theme.App.Starting"
+            android:configChanges="orientation"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,12 +52,9 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="orientation"
-            android:label="@string/app_name" />
-
-        <receiver android:name=".widgets.WeatherWidget">
+        <receiver
+            android:name=".widgets.WeatherWidget"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -52,7 +64,9 @@
                 android:resource="@xml/weather_widget_info" />
         </receiver>
 
-        <activity android:name=".widgets.WidgetConfigureActivity">
+        <activity
+            android:name=".widgets.WidgetConfigureActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -60,7 +74,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9000696988586021~2374497269"/>
+            android:value="ca-app-pub-9000696988586021~2374497269" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

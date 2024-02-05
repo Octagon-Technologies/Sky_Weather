@@ -3,36 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="com.xwray.groupie.GroupAdapter" />
-
-        <import type="com.xwray.groupie.GroupieViewHolder" />
-
-        <import type="androidx.lifecycle.LiveData" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.Units" />
-
-        <variable
-            name="units"
-            type="LiveData&lt;Units&gt;" />
-
-        <variable
-            name="groupAdapter"
-            type="GroupAdapter&lt;GroupieViewHolder&gt;" />
-
-        <variable
-            name="timeFormat"
-            type="LiveData&lt;TimeFormat&gt;" />
-
-        <variable
-            name="viewModel"
-            type="com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel" />
-
-    </data>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,11 +18,9 @@
 
             <TextView
                 android:id="@+id/top_day_text"
-                formatIsoDate="@{viewModel.hourlyForecast.get(0)}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_14sdp"
-                android:layout_marginLeft="@dimen/_14sdp"
                 android:layout_marginTop="@dimen/_14sdp"
                 android:fontFamily="@font/roboto_medium"
                 android:textColor="@android:color/white"
@@ -63,11 +31,11 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hourly_recycler_view"
-                addGroupAdapter="@{groupAdapter}"
-                addRecyclerViewTimeFormat="@{timeFormat}"
-                getHourlyForecastRecyclerView="@{viewModel.hourlyForecast}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                tools:listitem="@layout/each_hourly_forecast_item"
+                tools:itemCount="12"
                 android:layout_marginTop="@dimen/_14sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -79,10 +47,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_20sdp"
-                android:layout_marginRight="@dimen/_20sdp"
                 android:fontFamily="@font/coda"
                 android:textSize="@dimen/_14ssp"
-                android:text="@{ units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
                 app:layout_constraintBottom_toBottomOf="@+id/top_day_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/top_day_text"

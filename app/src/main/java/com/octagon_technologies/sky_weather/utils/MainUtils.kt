@@ -5,27 +5,30 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.RequiresApi
-import com.octagon_technologies.sky_weather.models.EachWeatherDescription
-import com.octagon_technologies.sky_weather.models.MainWind
-import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.ui.current_forecast.*
+import com.octagon_technologies.sky_weather.domain.SingleForecast
+import com.octagon_technologies.sky_weather.domain.getFormattedCloudCeiling
+import com.octagon_technologies.sky_weather.domain.getFormattedCloudCover
+import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
+import com.octagon_technologies.sky_weather.domain.getFormattedHumidity
+import com.octagon_technologies.sky_weather.domain.getFormattedTemp
 import com.octagon_technologies.sky_weather.models.Coordinates
-import timber.log.Timber
+import com.octagon_technologies.sky_weather.models.EachWeatherDescription
+import com.octagon_technologies.sky_weather.repository.network.location.reverse_geocoding_location.ReverseGeoCodingLocation
 import java.text.SimpleDateFormat
 import java.util.*
 
 @RequiresApi(M)
 const val darkStatusIcons = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
 @RequiresApi(M)
 const val whiteStatusIcons = 0
 
 enum class Units {
     IMPERIAL {
-        override var value = "us"
+        override var value = "imperial"
     },
     METRIC {
-        override var value = "si"
+        override var value = "metric"
     };
 
     open lateinit var value: String
@@ -91,58 +94,46 @@ fun ReverseGeoCodingLocation?.getCoordinates(): Coordinates? =
 
 fun getBasicForecastConditions(
     singleForecast: SingleForecast?,
+    units: Units?,
     windDirectionUnits: WindDirectionUnits?
 ): ArrayList<EachWeatherDescription> {
     val arrayOfWeatherDescriptions = ArrayList<EachWeatherDescription>()
-    singleForecast?.let {
-        val temp = it.temp
-        val feelsLike = it.feelsLike
-        val mainWind = MainWind(it.windDirection, it.windSpeed, it.windGust)
-        val uvIndex = getUVIndex((it.surfaceShortwaveRadiation?.value ?: 50).toLong())
-        Timber.d("uvIndex is $uvIndex")
-
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "Temperature",
-                "${temp?.value?.toInt()}°"
-            )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "Temperature",
+            singleForecast.getFormattedTemp()
         )
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "FeelsLike Temperature",
-                "${feelsLike?.value?.toInt()}°"
-            )
+    )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "FeelsLike Temperature",
+            singleForecast.getFormattedFeelsLike()
         )
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "Wind",
-                getActualWind(mainWind, windDirectionUnits) ?: "--"
-            )
+    )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "Wind",
+            singleForecast?.wind?.getWindSpeedWithDirection(units, windDirectionUnits) ?: "--"
         )
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "Max Wind Gusts",
-                with(mainWind.windGust) {
-                    if (this?.units == "m/s")
-                        getWindSpeedInKm((value ?: 4).toLong())
-                    else
-                        "${this?.value?.toInt() ?: "--"} mph"
-                }
-            )
+    )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "Max Wind Gusts",
+            singleForecast?.wind?.getWindSpeed(units) ?: "--"
         )
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "UV Index",
-                "${uvIndex.uvIndex} ${uvIndex.uvLevelString}"
-            )
+    )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "UV Index",
+            singleForecast?.uvIndex?.toString() ?: "Moderate"
         )
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "Humidity",
-                "${it.humidity?.value?.toInt()}%"
-            )
+    )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "Humidity",
+            singleForecast?.getFormattedHumidity() ?: "--%"
         )
-    }
+    )
 
     return arrayOfWeatherDescriptions
 }
@@ -154,42 +145,36 @@ fun getAdvancedForecastDescription(
 ): ArrayList<EachWeatherDescription> {
     val arrayOfWeatherDescriptions = ArrayList<EachWeatherDescription>()
     singleForecast?.let {
-        arrayOfWeatherDescriptions.addAll(getBasicForecastConditions(it, windDirectionUnits))
+        arrayOfWeatherDescriptions.addAll(getBasicForecastConditions(it, units, windDirectionUnits))
 
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Dew Point",
-                "${it.dewPoint?.value?.toInt() ?: 0}°"
+                "${singleForecast.dewPoint.toInt()}°"
             )
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Pressure",
-                "${it.baroPressure?.value?.toInt() ?: 0} ${if (units == Units.METRIC) "mbar" else "inHg"}"
+                "${singleForecast.pressure.toInt()} ${if (units == Units.METRIC) "mbar" else "inHg"}"
             )
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Cloud Cover",
-                "${it.cloudCover?.value?.toInt() ?: 0}%"
+                singleForecast.getFormattedCloudCover()
             )
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Visibility",
-                "${it.visibility?.value?.toInt()} ${it.visibility?.units ?: "--"}"
+                "${singleForecast.visibility}%"
             )
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Cloud Ceiling",
-                if (it.cloudCeiling?.value == null) "None" else "${it.cloudCeiling.value.toInt()} m"
-            )
-        )
-        arrayOfWeatherDescriptions.add(
-            EachWeatherDescription(
-                "Moon Phase",
-                (it.moonPhase?.value ?: "--").capitalizeWordsWithUnderscore()
+                singleForecast.getFormattedCloudCeiling()
             )
         )
     }

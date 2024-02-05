@@ -1,31 +1,31 @@
 package com.octagon_technologies.sky_weather.ui.current_forecast
 
 import com.octagon_technologies.sky_weather.models.MainWind
-import com.octagon_technologies.sky_weather.models.UVClass
 import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import timber.log.Timber
 
-fun getUVIndex(wattsPerSquareMeter: Long): UVClass {
-    val milliWattPerSquareMeter = (wattsPerSquareMeter * 0.1 / 25).toInt()
-    Timber.d("milliWattPerSquareMeter is $milliWattPerSquareMeter and wattsPerSquareMeter is $wattsPerSquareMeter")
-    val uvLevelString = when (milliWattPerSquareMeter) {
-        0, 1, 2 -> "Low"
-        3, 4, 5 -> "Moderate"
-        6, 7 -> "High"
-        8, 9, 10 -> "Very High"
-        else -> "Extreme"
-    }
-    Timber.d("uvLevel is $uvLevelString")
-    return UVClass(milliWattPerSquareMeter, uvLevelString)
-}
+//fun getUVIndex(wattsPerSquareMeter: Long): UVClass {
+//    val milliWattPerSquareMeter = (wattsPerSquareMeter * 0.1 / 25).toInt()
+//    Timber.d("milliWattPerSquareMeter is $milliWattPerSquareMeter and wattsPerSquareMeter is $wattsPerSquareMeter")
+//    val uvLevelString = when (milliWattPerSquareMeter) {
+//        0, 1, 2 -> "Low"
+//        3, 4, 5 -> "Moderate"
+//        6, 7 -> "High"
+//        8, 9, 10 -> "Very High"
+//        else -> "Extreme"
+//    }
+//    Timber.d("uvLevel is $uvLevelString")
+//    return UVClass(milliWattPerSquareMeter, uvLevelString)
+//}
 
 fun getActualWind(mainWind: MainWind, windDirectionUnits: WindDirectionUnits?): String? {
     Timber.d("mainWind.windDirection?.value is ${mainWind.windDirection?.value}")
     val cardinalDirection =
         if (windDirectionUnits == WindDirectionUnits.DEGREES)
-            "${mainWind.windDirection?.value?.toInt()?.toString() ?: "--"}°"
+            mainWind.windDirection?.value?.toInt()?.toString() ?: "--"
         else
             when (((mainWind.windDirection?.value ?: return null) / 22.5).toInt()) {
+                1 -> "N"
                 2 -> "NNE"
                 3 -> "NE"
                 4 -> "ENE"
@@ -78,6 +78,9 @@ fun getFinalMinutes(rise: String?, set: String?): String {
     return (if (diff >= 0) diff else (diff + 2400)).toHoursAndMinutes().second.toString()
 }
 
+/*
+TODO: Test this function extensively to eliminate odd numbers e.g 36 hours of sunlight
+ */
 fun getFinalHours(rise: String?, set: String?): String {
     if (rise == null || set == null) return "--"
     val riseList = rise.split(":").map { it.toInt() }

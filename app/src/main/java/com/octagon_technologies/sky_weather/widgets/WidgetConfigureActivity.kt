@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +17,7 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.ActivityWidgetConfigureBinding
 import com.octagon_technologies.sky_weather.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -77,37 +79,36 @@ class WidgetConfigureActivity : AppCompatActivity() {
 
         viewModel.shouldCreateWidget.observe(this) {
             if (it == true) {
-                val location = viewModel.reverseGeoCodingLocation.value ?: run {
+                val location = viewModel.location.value ?: run {
                     showShortSnackBar("Select location first.")
 
                     viewModel.shouldCreateWidget.value = false
                     return@observe
                 }
 
-                widgetRepo.createWidget(
-                    appWidgetId,
-                    getTransparentColorFromProgress(),
-                    location
-                ) { result ->
-                    result
-                        .onSuccess {
-                            // Make sure we pass back the original appWidgetId
-                            val resultValue = Intent()
-                            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                            setResult(RESULT_OK, resultValue)
-                            finish()
-                        }
-                        .onFailure { throwable ->
-                            showShortSnackBar(throwable.message ?: return@onFailure)
-                            Timber.d(throwable)
-                        }
+                lifecycleScope.launch {
+                    widgetRepo.createWidget(
+                        appWidgetId,
+                        getTransparentColorFromProgress(),
+                        location
+                    ) { result ->
+                        result
+                            .onSuccess {
+                                // Make sure we pass back the original appWidgetId
+                                completeWidgetCreation()
+                            }
+                            .onFailure { throwable ->
+                                showShortSnackBar(throwable.message ?: return@onFailure)
+                                Timber.d(throwable)
+                            }
+                    }
                 }
             }
         }
 
-        viewModel.reverseGeoCodingLocation.observe(this) {
-            binding.widgetLocationArea.text = it.getDisplayLocation()
-            binding.widgetCountry.text = it?.reverseGeoCodingAddress?.country ?: "--"
+        viewModel.location.observe(this) { location ->
+            binding.widgetLocationArea.text = location.displayName
+            binding.widgetCountry.text = location.country
         }
 
         viewModel.navigateToLocationFragment.observe(this) {
@@ -117,6 +118,13 @@ class WidgetConfigureActivity : AppCompatActivity() {
                 changeSystemNavigationBarColor(R.color.dark_theme_blue)
             }
         }
+    }
+
+    private fun completeWidgetCreation() {
+        val resultValue = Intent()
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        setResult(RESULT_OK, resultValue)
+        finish()
     }
 
     private fun setUpSeekbarWithPercentTag() {

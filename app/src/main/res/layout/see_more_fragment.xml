@@ -3,37 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="com.octagon_technologies.sky_weather.utils.Units" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.WindDirectionUnits" />
-
-        <import type="com.xwray.groupie.GroupAdapter" />
-
-        <import type="com.xwray.groupie.GroupieViewHolder" />
-
-        <import type="com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast" />
-
-        <variable
-            name="singleForecast"
-            type="com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast" />
-
-        <variable
-            name="windDirectionUnits"
-            type="com.octagon_technologies.sky_weather.utils.WindDirectionUnits" />
-
-        <variable
-            name="groupAdapter"
-            type="GroupAdapter&lt;GroupieViewHolder&gt;" />
-
-        <variable
-            name="units"
-            type="com.octagon_technologies.sky_weather.utils.Units" />
-
-    </data>
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,8 +15,6 @@
 
         <ImageView
             android:id="@+id/see_more_weather_image"
-            addObservationTime="@{singleForecast.observationTime}"
-            getWeatherIconFrom="@{singleForecast.weatherCode}"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
             android:layout_marginTop="@dimen/_28sdp"
@@ -56,7 +23,7 @@
             app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
-            tools:src="@drawable/sun" />
+            tools:src="@drawable/yellow_sun" />
 
         <TextView
             android:id="@+id/see_more_temp"
@@ -65,7 +32,6 @@
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_10sdp"
             android:fontFamily="@font/coda"
-            android:text="@{singleForecast.temp.value == null ? `--°` : String.valueOf(singleForecast.temp.value.intValue()) + `°`}"
             android:textSize="@dimen/_40ssp"
             app:layout_constraintBottom_toBottomOf="@+id/see_more_weather_image"
             app:layout_constraintStart_toEndOf="@+id/see_more_weather_image"
@@ -77,7 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/coda"
-            android:text="@{units == Units.IMPERIAL ? `F` : `C`}"
             android:textColor="@color/light_grey"
             android:textSize="@dimen/_18ssp"
             app:layout_constraintBottom_toBottomOf="@+id/see_more_temp"
@@ -87,15 +52,12 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/see_more_description_recyclerview"
-            addSeeMoreAdapter="@{groupAdapter}"
-            addUnitSystemToSeeMore="@{units}"
-            addWindDirectionToSeeMore="@{windDirectionUnits}"
-            getCurrentConditionsForSeeMorePage="@{singleForecast}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginTop="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_14sdp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +65,6 @@
 
         <TextView
             android:id="@+id/see_more_highlight"
-            getWeatherStatus="@{singleForecast}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_28sdp"

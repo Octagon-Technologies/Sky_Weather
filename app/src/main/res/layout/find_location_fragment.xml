@@ -5,22 +5,8 @@
 
     <data>
 
-        <import type="android.view.View" />
-
-        <import type="com.xwray.groupie.GroupAdapter" />
-
-        <import type="com.xwray.groupie.GroupieViewHolder" />
-
         <import type="com.octagon_technologies.sky_weather.utils.Theme" />
         <import type="com.octagon_technologies.sky_weather.utils.Units" />
-
-        <variable
-            name="units"
-            type="com.octagon_technologies.sky_weather.utils.Units" />
-
-        <variable
-            name="theme"
-            type="com.octagon_technologies.sky_weather.utils.Theme" />
 
         <variable
             name="viewModel"
@@ -31,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
+        android:background="@{viewModel.theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
         android:theme="@style/AppTheme.BlackTextColor"
         tools:background="@color/dark_black"
         tools:context=".ui.find_location.FindLocationFragment">
@@ -41,7 +27,7 @@
             android:id="@+id/top_grey_constraint_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@{theme == Theme.LIGHT ? @color/line_grey : @color/color_black}"
+            android:background="@{viewModel.theme == Theme.LIGHT ? @color/line_grey : @color/color_black}"
             android:paddingBottom="@dimen/_14sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -51,7 +37,7 @@
 
             <ImageView
                 android:id="@+id/close_btn"
-                changeIconTintFromTint="@{theme}"
+                changeIconTintFromTint="@{viewModel.theme}"
                 android:layout_width="@dimen/_30sdp"
                 android:layout_height="@dimen/_28sdp"
                 android:contentDescription="@string/close_button_plain_text"
@@ -67,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/locations_plain_text"
-                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/close_btn"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,8 +68,8 @@
                 android:layout_marginEnd="@dimen/_16sdp"
                 android:layout_marginRight="@dimen/_16sdp"
                 android:fontFamily="@font/coda"
-                android:text="@{units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
-                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                android:text="@{viewModel.units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
+                android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_14ssp"
                 tools:text="@string/hourly_forecast_temp_unit_C"
                 app:layout_constraintBottom_toBottomOf="@+id/close_btn"
@@ -137,7 +123,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_near_me"
-                    changeIconTintFromTint="@{theme}"
+                    changeIconTintFromTint="@{viewModel.theme}"
                     tools:tint="@android:color/white" />
 
                 <TextView
@@ -148,7 +134,7 @@
                     android:layout_marginLeft="@dimen/_7sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/current_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     tools:textColor="@android:color/white"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/gps_cardinal_direction_image"
@@ -162,7 +148,7 @@
                     android:layout_marginTop="@dimen/_12sdp"
                     android:fontFamily="@font/advent_pro_semibold"
                     android:textSize="@dimen/_16ssp"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     tools:textColor="@android:color/white"
                     app:layout_constraintStart_toStartOf="@+id/gps_cardinal_direction_image"
                     app:layout_constraintTop_toBottomOf="@+id/gps_current_plain_text"
@@ -174,7 +160,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:textSize="@dimen/_11ssp"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     tools:textColor="@android:color/white"
                     app:layout_constraintStart_toStartOf="@+id/gps_location_city"
                     app:layout_constraintTop_toBottomOf="@+id/gps_location_city"
@@ -201,7 +187,7 @@
 
                 <ImageView
                     android:id="@+id/enable_location_image"
-                    changeIconTintFromTint="@{theme}"
+                    changeIconTintFromTint="@{viewModel.theme}"
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
                     android:layout_gravity="start|center_vertical"
@@ -216,7 +202,8 @@
                     android:layout_marginStart="@dimen/_8sdp"
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:fontFamily="@font/roboto"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:text="@{viewModel.isLoading() == true ? @string/loading_plain_text : @string/enable_location_services_plain_text}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     tools:text="@string/enable_location_services_plain_text"
                     tools:textColor="@android:color/white" />
             </LinearLayout>
@@ -244,7 +231,7 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/favourites_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -268,7 +255,7 @@
                     android:layout_marginBottom="@dimen/_20sdp"
                     android:gravity="center"
                     android:text="@string/you_haven_t_added_any_locations_yet_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/favourites_line"
@@ -278,6 +265,7 @@
                     android:id="@+id/favourite_recycler_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_marginTop="@dimen/_6sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -292,7 +280,7 @@
                     android:layout_marginTop="@dimen/_60sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/recent_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/favourite_recycler_view"
@@ -316,7 +304,7 @@
                     android:layout_marginBottom="@dimen/_20sdp"
                     android:gravity="center"
                     android:text="@string/it_looks_like_your_recent_history_is_empty_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/recent_line"
@@ -325,6 +313,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recent_recycler_view"
                     android:layout_width="0dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -339,7 +328,7 @@
                     android:onClick="@{() -> viewModel.deleteAllFavourite()}"
                     android:padding="@dimen/_4sdp"
                     android:text="@string/clear_all_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/favourites_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -355,7 +344,7 @@
                     android:onClick="@{() -> viewModel.deleteAllRecent()}"
                     android:padding="@dimen/_4sdp"
                     android:text="@string/clear_all_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
+                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/recent_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -1,17 +1,25 @@
 package com.octagon_technologies.sky_weather.notification
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.single.BasePermissionListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.octagon_technologies.sky_weather.R
+import com.octagon_technologies.sky_weather.domain.Location
+import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
-import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
 import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.checkBuildVersion
 import com.octagon_technologies.sky_weather.utils.isNull
 import timber.log.Timber
@@ -51,34 +59,29 @@ class CustomNotificationCompat(private val context: Context) {
 
     fun createNotification(
         singleForecast: SingleForecast?,
-        reverseLocation: ReverseGeoCodingLocation?,
-        timeFormat: TimeFormat?
+        location: Location?,
+        timeFormat: TimeFormat?,
+        units: Units?
     ) {
-        if (singleForecast.isNull() || reverseLocation.isNull() || timeFormat.isNull()) {
-            Timber.d("createNotification failed because singleForecast is ${singleForecast.isNull()}, reverseLocation is ${reverseLocation.isNull()} and timeFormat is ${timeFormat.isNull()}")
+        if (singleForecast.isNull() || location.isNull() || timeFormat.isNull() || units.isNull()) {
+            Timber.d("createNotification failed because singleForecast is ${singleForecast.isNull()}, reverseLocation is ${location.isNull()}, units is ${units.isNull()} and timeFormat is ${timeFormat.isNull()}")
             return
         }
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
-            setNotificationSilent()
+            setSilent(true)
             priority = NotificationCompat.PRIORITY_HIGH
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-            setContent(customRemoteView.getCustomRemoteView(singleForecast, reverseLocation, timeFormat))
+            setContent(customRemoteView.getCustomRemoteView(singleForecast, location, timeFormat, units))
             setSmallIcon(R.drawable.cloudy_night)
             setShowWhen(false)
             setSound(null)
             setCustomContentView(
-                customRemoteView.getCustomRemoteView(
-                    singleForecast,
-                    reverseLocation,
-                    timeFormat
-                )
+                customRemoteView
+                    .getCustomRemoteView(singleForecast, location, timeFormat, units)
             )
             setCustomBigContentView(
-                customRemoteView.getCustomRemoteView(
-                    singleForecast,
-                    reverseLocation,
-                    timeFormat
-                )
+                customRemoteView
+                    .getCustomRemoteView(singleForecast, location, timeFormat, units)
             )
             setCustomHeadsUpContentView(null)
             setOngoing(true)
@@ -86,6 +89,19 @@ class CustomNotificationCompat(private val context: Context) {
 
         Timber.d("createNotification called with notification as $notification")
         notificationManagerCompat.cancelAll()
-        notificationManagerCompat.notify(NOTIFICATION_ID, notification)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Dexter.withContext(context).withPermission(Manifest.permission.POST_NOTIFICATIONS)
+                .withListener(object : BasePermissionListener() {
+                    @SuppressLint("MissingPermission")
+                    override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                        super.onPermissionGranted(p0)
+                        notificationManagerCompat.notify(NOTIFICATION_ID, notification)
+                    }
+                })
+        }
     }
+
+
+
 }

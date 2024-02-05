@@ -3,19 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
-
-        <variable
-            name="eachHourlyForecast"
-            type="com.octagon_technologies.sky_weather.repository.network.hourly_forecast.EachHourlyForecast" />
-
-        <variable
-            name="timeFormat"
-            type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
@@ -34,12 +21,9 @@
 
         <TextView
             android:id="@+id/time_display_text"
-            addTimeFormat="@{timeFormat}"
-            getEachHourlyTime="@{eachHourlyForecast.observationTime}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_14sdp"
-            android:layout_marginLeft="@dimen/_14sdp"
             android:textSize="@dimen/_12ssp"
             app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,11 +32,9 @@
 
         <ImageView
             android:id="@+id/weather_icon"
-            getEachHourlyTime="@{eachHourlyForecast.observationTime}"
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
             android:layout_marginStart="@dimen/_20sdp"
-            android:layout_marginLeft="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:layout_marginBottom="@dimen/_20sdp"
             android:contentDescription="@string/weather_image_content_description"
@@ -66,10 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4sdp"
-            android:layout_marginLeft="@dimen/_4sdp"
             android:fontFamily="@font/roboto_medium"
-            android:text="@{String.valueOf(eachHourlyForecast.temp.value.intValue()) + `°` ?? `--`}"
-            android:textSize="@dimen/_20sdp"
+             android:textSize="@dimen/_20sdp"
             app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
             app:layout_constraintStart_toEndOf="@+id/weather_icon"
             app:layout_constraintTop_toTopOf="@+id/weather_icon"
@@ -80,9 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_12sdp"
-            android:layout_marginRight="@dimen/_12sdp"
             android:fontFamily="sans-serif-condensed"
-            android:text="@{`FeelsLike ` + String.valueOf(eachHourlyForecast.feelsLike.value.intValue()) + `°`}"
             android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toBottomOf="@+id/temp_text"
             app:layout_constraintEnd_toStartOf="@+id/water_drop_image"
@@ -104,8 +82,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:text="@{` ` + String.valueOf(eachHourlyForecast.humidity.value.intValue()) + `%`}"
             app:layout_constraintBottom_toBottomOf="@+id/feels_like_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/feels_like_text"

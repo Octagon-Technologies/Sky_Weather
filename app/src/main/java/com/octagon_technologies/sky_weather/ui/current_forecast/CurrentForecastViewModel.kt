@@ -1,51 +1,86 @@
 package com.octagon_technologies.sky_weather.ui.current_forecast
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.octagon_technologies.sky_weather.repository.AllergyRepo.getAllergyValueAsync
-import com.octagon_technologies.sky_weather.repository.CurrentForecastRepo.getCurrentForecastAsync
-import com.octagon_technologies.sky_weather.repository.LunarRepo.getLunarForecastAsync
-import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
-import com.octagon_technologies.sky_weather.repository.network.allergy_forecast.Allergy
-import com.octagon_technologies.sky_weather.repository.network.lunar_forecast.LunarForecast
-import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
+import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
+import com.octagon_technologies.sky_weather.repository.repo.AllergyRepo
+import com.octagon_technologies.sky_weather.repository.repo.CurrentForecastRepo
+import com.octagon_technologies.sky_weather.repository.repo.HourlyForecastRepo
+import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
+import com.octagon_technologies.sky_weather.repository.repo.LunarRepo
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
-import com.octagon_technologies.sky_weather.utils.Units
-import com.octagon_technologies.sky_weather.utils.getCoordinates
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.net.UnknownHostException
+import javax.inject.Inject
 
-class CurrentForecastViewModel @ViewModelInject constructor(private val weatherDataBase: WeatherDataBase) :
-    ViewModel() {
+@HiltViewModel
+class CurrentForecastViewModel @Inject constructor(
+    private val currentForecastRepo: CurrentForecastRepo,
+    private val hourlyForecastRepo: HourlyForecastRepo,
+    private val allergyRepo: AllergyRepo,
+    private val lunarRepo: LunarRepo,
+    private val settingsRepo: SettingsRepo,
+    private val locationRepo: LocationRepo,
+    private val customNotificationCompat: CustomNotificationCompat
+) : ViewModel() {
 
-    private var _singleForecast = MutableLiveData<SingleForecast?>()
-    val singleForecast: LiveData<SingleForecast?>
-        get() = _singleForecast
+    val theme = settingsRepo.theme
+    val units = settingsRepo.units
+    val windDirectionUnits = settingsRepo.windDirectionUnits
+    val timeFormat = settingsRepo.timeFormat
 
-    private var _allergyForecast = MutableLiveData<Allergy?>()
-    val allergyForecast: LiveData<Allergy?>
-        get() = _allergyForecast
+    val location = locationRepo.location
+    val currentForecast = currentForecastRepo.currentForecast
+    val allergyForecast = allergyRepo.allergy
+    val lunarForecast = lunarRepo.currentLunar
 
-    private var _lunarForecast = MutableLiveData<LunarForecast?>()
-    val lunarForecast: LiveData<LunarForecast?>
-        get() = _lunarForecast
+    val oneHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it.getOrNull(0) }
+    val sixHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it.getOrNull(5) }
+    val twentyFourHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it.getOrNull(23) }
 
     private var _statusCode = MutableLiveData<StatusCode>()
     val statusCode: LiveData<StatusCode> = _statusCode
 
-    fun getLocalLocation(units: Units?, location: ReverseGeoCodingLocation?) {
-        val coordinates = location?.getCoordinates() ?: return
+    private val _isRefreshing = MutableLiveData(false)
+    val isRefreshing: LiveData<Boolean> = _isRefreshing
+
+    init {
+        refreshWeatherForecast()
+    }
+
+    fun refreshWeatherForecast() {
+        if (isRefreshing.value == true) return
 
         viewModelScope.launch {
-            val result = getCurrentForecastAsync(weatherDataBase, coordinates, units)
+            location.value?.let {
+                _isRefreshing.value = true
+                try {
+                    currentForecastRepo.refreshCurrentForecast(it, settingsRepo.units.value)
+                    hourlyForecastRepo.refreshHourlyForecast(it, settingsRepo.units.value)
+                    allergyRepo.refreshAllergyForecast(it)
+                    lunarRepo.refreshCurrentLunarForecast(it)
 
-            _statusCode.value = result.first
-            _singleForecast.value = result.second
-            _allergyForecast.value = getAllergyValueAsync(weatherDataBase, coordinates)
-            _lunarForecast.value = getLunarForecastAsync(weatherDataBase, coordinates)
+                    if (settingsRepo.isNotificationAllowed.value == true)
+                        customNotificationCompat.createNotification(
+                            singleForecast = currentForecast.value,
+                            location = it,
+                            timeFormat = timeFormat.value,
+                            units = units.value
+                        )
+                } catch (http: HttpException) {
+                    _statusCode.value = StatusCode.ApiLimitExceeded
+                } catch (unknown: UnknownHostException) {
+                    _statusCode.value = StatusCode.NoNetwork
+                } finally {
+                    _isRefreshing.value = false
+                }
+            }
         }
     }
 }

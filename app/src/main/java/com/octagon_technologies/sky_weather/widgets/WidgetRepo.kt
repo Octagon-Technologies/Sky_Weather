@@ -1,56 +1,52 @@
 package com.octagon_technologies.sky_weather.widgets
 
+import android.app.Application
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
-import android.content.Context
 import com.octagon_technologies.sky_weather.R
+import com.octagon_technologies.sky_weather.domain.Location
+import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.models.WidgetData
 import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
-import com.octagon_technologies.sky_weather.repository.SettingsRepo
-import com.octagon_technologies.sky_weather.repository.network.reverse_geocoding_location.ReverseGeoCodingLocation
-import com.octagon_technologies.sky_weather.repository.network.single_forecast.SingleForecast
-import com.octagon_technologies.sky_weather.utils.getCoordinates
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
+import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
 import timber.log.Timber
 import javax.inject.Inject
 
-
-class WidgetRepo @Inject constructor (
-    @ApplicationContext private val context: Context,
+class WidgetRepo @Inject constructor(
+    private val application: Application,
     private val widgetSettings: WidgetSettings,
     private val settingsRepo: SettingsRepo
 ) {
-    private val appWidgetManager: AppWidgetManager = AppWidgetManager.getInstance(context)
+    private val appWidgetManager: AppWidgetManager =
+        AppWidgetManager.getInstance(application.applicationContext)
 
-    fun createWidget(
+    suspend fun createWidget(
         widgetId: Int,
         transparencyOutOf255: Int,
-        reverseGeoCodingLocation: ReverseGeoCodingLocation?,
+        location: Location?,
         onComplete: (Result<SingleForecast?>) -> Unit
     ) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val location = reverseGeoCodingLocation ?: run {
-                Timber.d("reverseGeoCodingLocation.value is $reverseGeoCodingLocation.value in addWidget()")
-                onComplete(Result.failure(Throwable("Location has not been selected")))
-                return@launch
-            }
-
-            val widgetData = WidgetData(
-                widgetId = widgetId,
-                reverseGeoCodingLocation = location,
-                transparencyOutOf255 = transparencyOutOf255,
-                timeFormat = settingsRepo.getTimeFormat(),
-                units = settingsRepo.getUnits()
-            )
-            widgetSettings.addWidgetId(widgetData)
-            updateSingleWidget(widgetData, onComplete)
+        location ?: run {
+            Timber.d("location.value is $location.value in addWidget()")
+            onComplete(Result.failure(Throwable("Location has not been selected")))
+            return
         }
+
+        val widgetData = WidgetData(
+            widgetId = widgetId,
+            location = location,
+            transparencyOutOf255 = transparencyOutOf255,
+            timeFormat = settingsRepo.timeFormat.value ?: TimeFormat.FULL_DAY,
+            units = settingsRepo.units.value ?: Units.METRIC
+        )
+
+        widgetSettings.addWidgetId(widgetData)
+        updateSingleWidget(widgetData, onComplete)
     }
 
-    fun updateAllWidgets(
+    suspend fun updateAllWidgets(
         paramAppWidgetIds: IntArray? = null,
         onComplete: (Result<SingleForecast?>) -> Unit
     ) {
@@ -61,14 +57,12 @@ class WidgetRepo @Inject constructor (
         val appWidgetIds = (paramAppWidgetIds ?: appWidgetManager.getAppWidgetIds(cn)).asList()
         Timber.d("appWidgetIds is $appWidgetIds")
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val widgetsToUpdate = widgetSettings.getAllWidgets()
-                .filter { it.widgetId in appWidgetIds }
-            Timber.d("widgetsToUpdate is $widgetsToUpdate")
+        val widgetsToUpdate = widgetSettings.getAllWidgets()
+            .filter { it.widgetId in appWidgetIds }
+        Timber.d("widgetsToUpdate is $widgetsToUpdate")
 
-            widgetsToUpdate.forEach {
-                updateSingleWidget(it, onComplete)
-            }
+        widgetsToUpdate.forEach {
+            updateSingleWidget(it, onComplete)
         }
     }
 
@@ -78,16 +72,17 @@ class WidgetRepo @Inject constructor (
     ) {
         Timber.d("Updating widget in updateSingleWidget with widgetData as ${widgetData.widgetId}")
 
-        val widgetResult = getWeatherForecastFromWidgetData(widgetData.reverseGeoCodingLocation)
+        val widgetResult = getWeatherForecastFromWidgetData(widgetData.location)
         onComplete(widgetResult)
 
         val widgetForecast = widgetResult.getOrNull()
 
         // Construct the RemoteViews object
-        val widgetRemoteView = CustomRemoteView(context).getCustomRemoteView(
+        val widgetRemoteView = CustomRemoteView(application.applicationContext).getCustomRemoteView(
             widgetForecast,
-            widgetData.reverseGeoCodingLocation,
-            widgetData.timeFormat
+            widgetData.location,
+            widgetData.timeFormat,
+            widgetData.units
         )
 
         widgetRemoteView.setInt(
@@ -98,20 +93,17 @@ class WidgetRepo @Inject constructor (
         appWidgetManager.updateAppWidget(widgetData.widgetId, widgetRemoteView)
     }
 
-    private suspend fun getWeatherForecastFromWidgetData(reverseGeoCodingLocation: ReverseGeoCodingLocation?): Result<SingleForecast?> {
-        val coordinates = reverseGeoCodingLocation?.getCoordinates() ?: run {
-            Timber.d("coordinates is null in loadDataForWidget")
-            return Result.failure(NullPointerException("Location has not been selected"))
-        }
+    private suspend fun getWeatherForecastFromWidgetData(location: Location?): Result<SingleForecast?> {
+        location?.let {
+            val widgetWeatherForecast =
+                widgetSettings.getWeatherForecastFromWidgetData(location, settingsRepo.units.value)
+                    ?: run {
+                        return Result.failure(NullPointerException("Getting weather result failed"))
+                    }
 
-        val widgetWeatherForecast =
-            widgetSettings.getWeatherForecastFromWidgetData(coordinates, settingsRepo.getUnits())
-                ?: run {
-                    return Result.failure(NullPointerException("Getting weather result failed"))
-                }
-
-        Timber.d("widgetWeatherForecast is $widgetWeatherForecast in getWeatherForecastFromWidgetData()")
-        return Result.success(widgetWeatherForecast)
+            Timber.d("widgetWeatherForecast is $widgetWeatherForecast in getWeatherForecastFromWidgetData()")
+            return Result.success(widgetWeatherForecast)
+        } ?: return Result.failure(NullPointerException("location is $location"))
     }
 
 }

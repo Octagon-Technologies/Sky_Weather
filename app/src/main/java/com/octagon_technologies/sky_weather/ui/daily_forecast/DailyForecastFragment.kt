@@ -8,14 +8,25 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.map
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayoutMediator
-import com.octagon_technologies.sky_weather.*
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.DailyForecastFragmentBinding
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.ui.daily_forecast.daily_tab.DailyTabFragment
 import com.octagon_technologies.sky_weather.ui.daily_forecast.each_daily_forecast_item.EachDailyForecastItem
-import com.octagon_technologies.sky_weather.utils.*
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
+import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
+import com.octagon_technologies.sky_weather.utils.getDayWithMonth
+import com.octagon_technologies.sky_weather.utils.getFullMonth
+import com.octagon_technologies.sky_weather.utils.getStringResource
+import com.octagon_technologies.sky_weather.utils.showLongToast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,26 +39,16 @@ class DailyForecastFragment : Fragment() {
     private lateinit var binding: DailyForecastFragmentBinding
 
     private lateinit var bottomSheet: BottomSheetBehavior<View>
-    private val mainActivity by lazy { activity as MainActivity }
-    private val theme by lazy { mainActivity.liveTheme }
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DailyForecastFragmentBinding.inflate(layoutInflater).also {
-            it.lifecycleOwner = viewLifecycleOwner
-            it.groupAdapter = groupAdapter
-            it.dailyForecastViewModel = viewModel
-            it.units = mainActivity.liveUnits.value
-        }
+        binding = DailyForecastFragmentBinding.inflate(layoutInflater)
         binding.selectedDailyForecastLayout.let {
             it.lifecycleOwner = viewLifecycleOwner
-            it.dailyForecastViewModel = viewModel
-            it.theme = mainActivity.liveTheme
-            it.timeFormat = mainActivity.liveTimeFormat
-            it.units = mainActivity.liveUnits
+            it.theme = viewModel.theme
         }
 
         return binding.root
@@ -55,49 +56,36 @@ class DailyForecastFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomSheet = BottomSheetBehavior.from(binding.selectedDailyForecastLayout.root).also {
-            it.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding.dailyTempUnitText.text = if (viewModel.units.value == Units.METRIC) "°C" else "°F"
+
+        setUpStatusCode()
+        setUpDailyRecyclerView()
+        setUpSelectedDailyForecast()
+        setUpLiveData()
+        setUpTabLayout()
+        setUpBottomSheet()
+    }
+
+    private fun setUpSelectedDailyForecast() {
+        viewModel.selectedDailyForecast.observe(viewLifecycleOwner) { selectedDailyForecast ->
+            binding.selectedDailyForecastLayout.dailyDateText.text = selectedDailyForecast.timeInMillis.getDayWithMonth()
+            binding.selectedDailyForecastLayout.tempUnitText.text = if (viewModel.units.value == Units.METRIC) "°C" else "°F"
         }
+    }
 
-        viewModel.statusCode.observe(viewLifecycleOwner) {
-            val message = when(it ?: return@observe) {
-                StatusCode.Success -> return@observe
-                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
-                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
-            }
-
-            showLongToast(message)
+    private fun setUpLiveData() {
+        viewModel.listOfDailyForecast.observe(viewLifecycleOwner) { listOfDailyForecast ->
+            val timeInMillis = listOfDailyForecast?.firstOrNull()?.timeInMillis
+            binding.monthText.text = getFullMonth(timeInMillis)
         }
+    }
 
-        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Timber.d("newState is $newState in onStateChanged()")
-
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    Timber.d("State is expanded.")
-                    mainActivity.binding.navView.visibility = View.GONE
-                    changeSystemNavigationBarColor(
-                        if (theme.value == Theme.LIGHT) android.R.color.white
-                        else R.color.dark_black
-                    )
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    Timber.d("State is collapsed.")
-                    mainActivity.binding.navView.visibility = View.VISIBLE
-                    changeSystemNavigationBarColor(
-                        if (theme.value == Theme.LIGHT) R.color.light_theme_blue
-                        else R.color.dark_theme_blue
-                    )
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
-
+    private fun setUpTabLayout() {
         val tabLayout = binding.selectedDailyForecastLayout.tabLayout.apply {
             tabTextColors = ColorStateList.valueOf(
                 ResourcesCompat.getColor(
                     resources,
-                    if (mainActivity.liveTheme.value == Theme.LIGHT) R.color.dark_black
+                    if (viewModel.theme.value == Theme.LIGHT) R.color.dark_black
                     else android.R.color.white,
                     null
                 )
@@ -108,22 +96,6 @@ class DailyForecastFragment : Fragment() {
         viewPager2.adapter = MyFragmentStateAdapter()
         viewPager2.isSaveEnabled = false
 
-        viewModel.getDailyForecastAsync(
-            mainActivity.liveLocation.value,
-            mainActivity.liveUnits.value
-        )
-
-        groupAdapter.setOnItemClickListener { item, _ ->
-            val coordinates = mainActivity.liveLocation.value?.getCoordinates() ?: return@setOnItemClickListener
-
-            viewModel.getSelectedDailyForecast(
-                coordinates,
-                (item as EachDailyForecastItem).eachDailyForecast,
-                mainActivity.liveUnits.value
-            )
-
-            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-        }
 
         val tabConfigurationStrategy =
             TabLayoutMediator.TabConfigurationStrategy { tab, position ->
@@ -137,10 +109,68 @@ class DailyForecastFragment : Fragment() {
         ).attach()
     }
 
+    private fun setUpBottomSheet() {
+        bottomSheet = BottomSheetBehavior.from(binding.selectedDailyForecastLayout.root).also {
+            it.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Timber.d("newState is $newState in onStateChanged()")
+
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    Timber.d("State is expanded.")
+//                    mainActivity.binding.navView.visibility = View.GONE
+                    changeSystemNavigationBarColor(
+                        if (viewModel.theme.value == Theme.LIGHT) android.R.color.white
+                        else R.color.dark_black
+                    )
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    Timber.d("State is collapsed.")
+//                    mainActivity.binding.navView.visibility = View.VISIBLE
+                    changeSystemNavigationBarColor(
+                        if (viewModel.theme.value == Theme.LIGHT) R.color.light_theme_blue
+                        else R.color.dark_theme_blue
+                    )
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+    }
+
+    private fun setUpStatusCode() {
+        viewModel.statusCode.observe(viewLifecycleOwner) {
+            val message = when (it ?: return@observe) {
+                StatusCode.Success -> return@observe
+                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
+                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
+            }
+
+            showLongToast(message)
+        }
+    }
+
+    private fun setUpDailyRecyclerView() {
+        binding.dayRecyclerview.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.dayRecyclerview.adapter = groupAdapter
+
+        viewModel.listOfDailyForecast.observe(viewLifecycleOwner) { listOfDailyForecast ->
+            groupAdapter.update(
+                listOfDailyForecast.map { dailyForecast ->
+                    EachDailyForecastItem(dailyForecast) {
+                        viewModel.selectDailyForecast(it)
+                        bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+                    }
+                }
+            )
+        }
+    }
+
     override fun onStart() {
         super.onStart()
 
-        mainActivity.liveTheme.observe(viewLifecycleOwner) {
+        viewModel.theme.observe(viewLifecycleOwner) {
             addToolbarAndBottomNav(it, true)
             changeSystemNavigationBarColor(
                 if (it == Theme.LIGHT) R.color.light_theme_blue
@@ -155,9 +185,8 @@ class DailyForecastFragment : Fragment() {
         override fun createFragment(position: Int): Fragment {
             Timber.d("MyFragmentStateAdapter.position is $position")
             return DailyTabFragment.getInstance(
-                constructorIsDay = position == 0,
-                mainActivity = mainActivity,
-                constructorDailyForecastViewModel = viewModel
+                selectedTimePeriod = viewModel.selectedDailyForecast.map { if (position == 0) it.dayTime else it.nightTime },
+                provideSettingsRepo = viewModel.settingsRepo
             )
         }
     }

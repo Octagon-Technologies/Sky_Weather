@@ -3,35 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.Units" />
-
-        <variable
-            name="eachDailyForecast"
-            type="com.octagon_technologies.sky_weather.repository.network.daily_forecast.EachDailyForecast" />
-
-        <variable
-            name="units"
-            type="com.octagon_technologies.sky_weather.utils.Units" />
-
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:paddingLeft="@dimen/_14sdp"
-        android:paddingRight="@dimen/_14sdp"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingEnd="@dimen/_10sdp"
         android:theme="@style/AppTheme.WhiteTextColor"
         tools:background="@color/dark_theme_blue">
 
         <TextView
             android:id="@+id/day_text"
-            getFirstLetterOfDay="@{eachDailyForecast.observationTime}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
@@ -42,8 +24,7 @@
             tools:text="S" />
 
         <TextView
-            android:id="@+id/date_text"
-            getDayOfMonth="@{eachDailyForecast.observationTime}"
+            android:id="@+id/daily_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp"
@@ -55,14 +36,12 @@
 
         <ImageView
             android:id="@+id/weather_image"
-            addObservationTime="@{eachDailyForecast.observationTime}"
-            getWeatherIconFrom="@{eachDailyForecast.weatherCode}"
             android:layout_width="@dimen/_28sdp"
             android:layout_height="@dimen/_28sdp"
             android:layout_marginTop="@dimen/_12sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date_text"
+            app:layout_constraintTop_toBottomOf="@+id/daily_date_text"
             app:srcCompat="@drawable/cloudy"
             tools:ignore="ContentDescription" />
 
@@ -82,8 +61,6 @@
 
         <ImageView
             android:id="@+id/temp_bar"
-            addUnits="@{units}"
-            getBarHeightFromTempRange="@{eachDailyForecast.temp}"
             android:layout_width="@dimen/_20sdp"
             android:layout_height="@dimen/_60sdp"
             android:importantForAccessibility="no"
@@ -119,7 +96,6 @@
 
         <TextView
             android:id="@+id/humidity_display_text"
-            getAverageHumidity="@{eachDailyForecast.humidity}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"

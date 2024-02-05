@@ -1,7 +1,7 @@
 package com.octagon_technologies.sky_weather.di
 
 import android.content.Context
-import com.octagon_technologies.sky_weather.repository.SettingsRepo
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

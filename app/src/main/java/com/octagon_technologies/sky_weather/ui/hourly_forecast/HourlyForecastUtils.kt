@@ -3,8 +3,8 @@ package com.octagon_technologies.sky_weather.ui.hourly_forecast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.octagon_technologies.sky_weather.databinding.HourlyForecastFragmentBinding
-import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachDayTextItem
-import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.EachHourlyForecastItem
+import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.HeaderMiniHourlyForecast
+import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.MiniHourlyForecast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import org.joda.time.DateTime
@@ -21,14 +21,14 @@ fun RecyclerView.addCustomScrollListener(groupAdapter: GroupAdapter<GroupieViewH
             var item = groupAdapter.getItem(position)
             Timber.d("Initial position is $position")
 
-            while (item is EachDayTextItem) {
+            while (item is HeaderMiniHourlyForecast) {
                 position++
                 item = groupAdapter.getItem(position)
                 Timber.d("modified position is $position")
             }
 
             val timeInISO =
-                (item as EachHourlyForecastItem).eachHourlyForecast.observationTime?.value
+                (item as MiniHourlyForecast).hourlyForecast.timeInMillis
             val date = getDayOfWeek(timeInISO)
 
             binding.topDayText.text.apply {
@@ -40,7 +40,7 @@ fun RecyclerView.addCustomScrollListener(groupAdapter: GroupAdapter<GroupieViewH
     })
 }
 
-fun getDayOfWeek(timeInISO: String?): String? {
+fun getDayOfWeek(timeInISO: Long?): String? {
     val date = DateTime(timeInISO).toLocalDate().toDate()
-    return SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
+    return if (timeInISO != null) SimpleDateFormat("EEEE", Locale.getDefault()).format(date) else "-----"
 }

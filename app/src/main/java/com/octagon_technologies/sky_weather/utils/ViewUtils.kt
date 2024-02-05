@@ -12,7 +12,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import com.octagon_technologies.sky_weather.MainActivity
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.R
 import timber.log.Timber
 

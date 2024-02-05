@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="androidx.lifecycle.MutableLiveData" />
+        <import type="androidx.lifecycle.LiveData" />
 
         <import type="com.octagon_technologies.sky_weather.utils.Theme" />
 
@@ -17,19 +17,19 @@
 
         <variable
             name="theme"
-            type="MutableLiveData&lt;Theme&gt;" />
+            type="LiveData&lt;Theme&gt;" />
 
         <variable
             name="timeFormat"
-            type="MutableLiveData&lt;TimeFormat&gt;" />
+            type="LiveData&lt;TimeFormat&gt;" />
 
         <variable
             name="units"
-            type="MutableLiveData&lt;Units&gt;" />
+            type="LiveData&lt;Units&gt;" />
 
         <variable
             name="windDirectionUnits"
-            type="MutableLiveData&lt;WindDirectionUnits&gt;" />
+            type="LiveData&lt;WindDirectionUnits&gt;" />
 
     </data>
 
@@ -140,14 +140,14 @@
                         app:layout_constraintTop_toBottomOf="@+id/units_settings_type_name">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/units_left_layout"
+                            android:id="@+id/units_imperial_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ units == Units.IMPERIAL ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/units_right_layout"
+                            app:layout_constraintEnd_toStartOf="@+id/units_metric_layout"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -179,7 +179,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/units_right_layout"
+                            android:id="@+id/units_metric_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ units == Units.METRIC ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
@@ -187,7 +187,7 @@
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/units_left_layout"
+                            app:layout_constraintStart_toEndOf="@+id/units_imperial_layout"
                             tools:background="@drawable/right_selected_each_settings_item_background">
 
                             <TextView
@@ -250,7 +250,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginEnd="@dimen/_14sdp"
-                        android:layout_marginRight="@dimen/_14sdp"
                         android:background="@android:color/transparent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -258,14 +257,14 @@
                         app:layout_constraintTop_toBottomOf="@+id/wind_settings_type_name">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/wind_left_layout"
+                            android:id="@+id/wind_cardinal_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ windDirectionUnits == WindDirectionUnits.CARDINAL ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/wind_right_layout"
+                            app:layout_constraintEnd_toStartOf="@+id/wind_degrees_layout"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -295,7 +294,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/wind_right_layout"
+                            android:id="@+id/wind_degrees_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ windDirectionUnits == WindDirectionUnits.DEGREES ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
@@ -303,7 +302,7 @@
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/wind_left_layout"
+                            app:layout_constraintStart_toEndOf="@+id/wind_cardinal_layout"
                             tools:background="@drawable/right_selected_each_settings_item_background">
 
                             <TextView
@@ -375,14 +374,14 @@
                         app:layout_constraintTop_toBottomOf="@+id/time_settings_type_name">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/time_left_layout"
+                            android:id="@+id/time_12hour_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ timeFormat == TimeFormat.HALF_DAY ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/time_right_layout"
+                            app:layout_constraintEnd_toStartOf="@+id/time_24hour_layout"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -412,7 +411,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/time_right_layout"
+                            android:id="@+id/time_24hour_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ timeFormat == TimeFormat.FULL_DAY ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
@@ -420,7 +419,7 @@
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/time_left_layout"
+                            app:layout_constraintStart_toEndOf="@+id/time_12hour_layout"
                             tools:background="@drawable/right_selected_each_settings_item_background">
 
                             <TextView
@@ -491,14 +490,14 @@
                         app:layout_constraintTop_toBottomOf="@+id/display_settings_type_name">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/display_left_layout"
+                            android:id="@+id/display_light_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ theme == Theme.LIGHT ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
                             android:paddingTop="@dimen/_15sdp"
                             android:paddingBottom="@dimen/_15sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/display_right_layout"
+                            app:layout_constraintEnd_toStartOf="@+id/display_dark_layout"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -518,7 +517,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/display_right_layout"
+                            android:id="@+id/display_dark_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:background="@{ theme == Theme.DARK ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
@@ -526,7 +525,7 @@
                             android:paddingBottom="@dimen/_15sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toEndOf="@+id/display_left_layout"
+                            app:layout_constraintStart_toEndOf="@+id/display_light_layout"
                             tools:background="@drawable/right_selected_each_settings_item_background">
 
                             <TextView
@@ -552,7 +551,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_marginTop="@dimen/_28sdp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/enable_notifications_plain_text"
@@ -567,7 +565,6 @@
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_6sdp"
-                    android:layout_marginRight="@dimen/_6sdp"
                     app:kswBackColor="@color/default_navbar_color"
                     app:kswThumbColor="@android:color/white"
                     app:layout_constraintBottom_toBottomOf="@+id/enable_notification_plain_text"

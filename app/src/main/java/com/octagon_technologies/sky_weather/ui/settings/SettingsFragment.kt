@@ -8,20 +8,25 @@ import android.view.ViewGroup
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SettingsFragmentBinding
-import com.octagon_technologies.sky_weather.repository.SettingsRepo
-import com.octagon_technologies.sky_weather.utils.*
-import timber.log.Timber
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
+import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
-    private lateinit var binding: SettingsFragmentBinding
 
-    private val mainSettings by lazy { SettingsRepo(requireContext()) }
-    private val mainActivity by lazy { activity as MainActivity }
-    private val notificationManagerCompat by lazy { NotificationManagerCompat.from(requireContext()) }
+    private lateinit var binding: SettingsFragmentBinding
+    private val viewModel by viewModels<SettingsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,80 +34,61 @@ class SettingsFragment : Fragment() {
     ): View {
         binding = SettingsFragmentBinding.inflate(inflater)
 
+
+        setUpSwitchButton()
+
         binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            units = viewModel.units
+            windDirectionUnits = viewModel.windDirectionUnits
+            theme = viewModel.theme
+            timeFormat = viewModel.timeFormat
+
             backBtn.setOnClickListener { findNavController().popBackStack() }
 
-            lifecycleOwner = viewLifecycleOwner
-            mainActivity.let {
-                units = it.liveUnits
-                windDirectionUnits = it.liveWindDirectionUnits
-                theme = it.liveTheme
-                timeFormat = it.liveTimeFormat
+            unitsMetricLayout.setOnClickListener { viewModel.changeUnits(Units.METRIC) }
+            unitsImperialLayout.setOnClickListener { viewModel.changeUnits(Units.IMPERIAL) }
+
+            windCardinalLayout.setOnClickListener {
+                viewModel.changeWindDirections(WindDirectionUnits.CARDINAL)
             }
+            windDegreesLayout.setOnClickListener { viewModel.changeWindDirections(WindDirectionUnits.DEGREES) }
 
-            enableNotificationSwitch.apply {
-                setCheckedImmediately(mainActivity.liveNotificationAllowed.value == true)
-                backColor = ColorStateList.valueOf(
-                    ContextCompat.getColor(
-                        context,
-                        if (isChecked) R.color.colorAccent else R.color.color_black
-                    )
-                )
+            time12hourLayout.setOnClickListener { viewModel.changeTimeFormat(TimeFormat.HALF_DAY) }
+            time24hourLayout.setOnClickListener { viewModel.changeTimeFormat(TimeFormat.FULL_DAY) }
 
-                setOnCheckedChangeListener { _, isChecked ->
-                    addCustomClickListener(isChecked)
-                    if (isChecked) {
-                        backColor = ColorStateList.valueOf(
-                            ContextCompat.getColor(context, R.color.colorAccent)
-                        ).withAlpha(190)
-                    } else {
-                        backColor = ColorStateList.valueOf(
-                            ContextCompat.getColor(context, R.color.color_black)
-                        ).withAlpha(190)
-
-                        notificationManagerCompat.cancelAll()
-                    }
-                }
-            }
-
-            unitsLeftLayout.addCustomClickListener(Units.IMPERIAL)
-            unitsRightLayout.addCustomClickListener(Units.METRIC)
-
-            windLeftLayout.addCustomClickListener(WindDirectionUnits.CARDINAL)
-            windRightLayout.addCustomClickListener(WindDirectionUnits.DEGREES)
-
-            timeLeftLayout.addCustomClickListener(TimeFormat.HALF_DAY)
-            timeRightLayout.addCustomClickListener(TimeFormat.FULL_DAY)
-
-            displayLeftLayout.addCustomClickListener(Theme.LIGHT)
-            displayRightLayout.addCustomClickListener(Theme.DARK)
+            displayLightLayout.setOnClickListener { viewModel.changeTheme(Theme.LIGHT) }
+            displayDarkLayout.setOnClickListener { viewModel.changeTheme(Theme.DARK) }
         }
 
         return binding.root
     }
 
-    private fun View.addCustomClickListener(input: Any) {
-        setOnClickListener {
-            mainActivity.apply {
-                mainSettings.editDataStore(input)
-                hasNotificationChanged = false
+    private fun setUpSwitchButton() {
+        val notificationManagerCompat = NotificationManagerCompat.from(requireContext())
 
-                when (input) {
-                    is Units -> liveUnits.value = input
-                    is WindDirectionUnits -> liveWindDirectionUnits.value = input
-                    is Theme -> liveTheme.value = input
-                    is TimeFormat -> liveTimeFormat.value = input
-                    is Boolean -> liveNotificationAllowed.value = input
-                    else -> Timber.i("Unexpected input of $input")
-                }
-            }
+        binding.enableNotificationSwitch.setCheckedImmediatelyNoEvent(viewModel.isNotificationAllowed.value == true)
+        binding.enableNotificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.toggleNotificationAllowed(isChecked)
+        }
+
+        viewModel.isNotificationAllowed.observe(viewLifecycleOwner) { isNotificationAllowed ->
+            binding.enableNotificationSwitch.backColor = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    if (isNotificationAllowed == true) R.color.colorAccent else R.color.color_black
+                )
+            )
+
+            // Remove all notifications if user disabled them
+            if (!isNotificationAllowed)
+                notificationManagerCompat.cancelAll()
         }
     }
 
-
     override fun onStart() {
         super.onStart()
-        mainActivity.liveTheme.observe(viewLifecycleOwner) {
+        viewModel.theme.observe(viewLifecycleOwner) {
             if (it == Theme.LIGHT) {
                 removeToolbarAndBottomNav(android.R.color.white, false)
             } else {

@@ -4,15 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.octagon_technologies.sky_weather.*
+import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
+import com.octagon_technologies.sky_weather.domain.SingleForecast
+import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
+import com.octagon_technologies.sky_weather.domain.getFormattedTemp
 import com.octagon_technologies.sky_weather.lazy.adHelpers
-import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
-import com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastViewModel
-import com.octagon_technologies.sky_weather.utils.*
+import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
+import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
+import com.octagon_technologies.sky_weather.utils.getStringResource
+import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.utils.showLongToast
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -21,10 +31,7 @@ class CurrentForecastFragment : Fragment() {
 
     private lateinit var binding: CurrentForecastFragmentBinding
     private val viewModel by viewModels<CurrentForecastViewModel>()
-    private val hourlyForecastViewModel by viewModels<HourlyForecastViewModel>()
-    private val mainActivity by lazy { (activity as MainActivity) }
     private val adHelper by adHelpers()
-    private val customNotificationCompat by lazy { CustomNotificationCompat(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,23 +41,74 @@ class CurrentForecastFragment : Fragment() {
         binding = CurrentForecastFragmentBinding.inflate(layoutInflater).also {
             it.lifecycleOwner = viewLifecycleOwner
             it.viewModel = viewModel
-            it.units = mainActivity.liveUnits
-            it.windDirectionUnits = mainActivity.liveWindDirectionUnits
-            it.timeFormat = mainActivity.liveTimeFormat
-            it.hourlyForecastViewModel = hourlyForecastViewModel
         }
+        return binding.root
+    }
 
-        viewModel.singleForecast.observe(viewLifecycleOwner) {
-            if (!mainActivity.hasNotificationChanged && mainActivity.liveNotificationAllowed.value!!) {
-                customNotificationCompat.createNotification(
-                    it,
-                    mainActivity.liveLocation.value,
-                    mainActivity.liveTimeFormat.value
-                )
-                mainActivity.hasNotificationChanged = true
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setUpStatusCode()
+        setUpSwipeToRefresh()
+        setUpHourlyForecastPreview()
+        setUpSeeMoreButton()
+        setUpLiveData()
+        setUpAd()
+    }
+
+    private fun setUpLiveData() {
+        viewModel.currentForecast.observe(viewLifecycleOwner) { currentForecast ->
+            if (currentForecast != null) {
+                binding.mainTemp.text = currentForecast.getFormattedTemp()
+                binding.mainRealfeelDisplayText.text = currentForecast.getFormattedFeelsLike()
             }
         }
+    }
 
+    private fun setUpSeeMoreButton() {
+        binding.seeMoreBtn.setOnClickListener {
+            val currentForecast = viewModel.currentForecast.value
+            if (currentForecast == null) {
+                Toast.makeText(requireContext(), "No weather data available", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                findNavController()
+                    .navigate(
+                        CurrentForecastFragmentDirections
+                            .actionCurrentForecastFragmentToSeeMoreFragment()
+                    )
+            }
+        }
+    }
+
+    private fun setUpSwipeToRefresh() {
+        binding.swipeToRefreshLayout.setOnRefreshListener { viewModel.refreshWeatherForecast() }
+
+        viewModel.isRefreshing.observe(viewLifecycleOwner) { isRefreshing ->
+            binding.swipeToRefreshLayout.isRefreshing = isRefreshing == true
+        }
+    }
+
+    private fun setUpHourlyForecastPreview() {
+        viewModel.oneHourForecast.observe(viewLifecycleOwner) { oneHourForecast ->
+            binding.oneHourTempText.text = oneHourForecast.getFormattedTemp()
+            binding.oneHourFeelslikeDisplayText.text = oneHourForecast.getFormattedFeelsLike()
+            binding.oneHourWeatherImage.getWeatherIconFrom(oneHourForecast?.weatherCode)
+        }
+        viewModel.sixHourForecast.observe(viewLifecycleOwner) { sixHourForecast ->
+            binding.sixHourTempText.text = sixHourForecast.getFormattedTemp()
+            binding.sixHourFeelslikeDisplayText.text = sixHourForecast.getFormattedFeelsLike()
+            binding.sixHourWeatherImage.getWeatherIconFrom(sixHourForecast?.weatherCode)
+        }
+        viewModel.twentyFourHourForecast.observe(viewLifecycleOwner) { twentyFourHourForecast ->
+            binding.twentyFourTempText.text = twentyFourHourForecast.getFormattedTemp()
+            binding.twentyFourFeelslikeDisplayText.text =
+                twentyFourHourForecast.getFormattedFeelsLike()
+            binding.twentyFourWeatherImage.getWeatherIconFrom(twentyFourHourForecast?.weatherCode)
+        }
+    }
+
+    private fun setUpStatusCode() {
         viewModel.statusCode.observe(viewLifecycleOwner) {
             val message = when (it ?: return@observe) {
                 StatusCode.Success -> return@observe
@@ -60,43 +118,9 @@ class CurrentForecastFragment : Fragment() {
 
             showLongToast(message)
         }
+    }
 
-        binding.swipeToRefreshLayout.setOnRefreshListener {
-            viewModel.getLocalLocation(
-                mainActivity.liveUnits.value,
-                mainActivity.liveLocation.value
-            )
-            hourlyForecastViewModel.getHourlyForecastAsync(
-                mainActivity.liveLocation.value,
-                mainActivity.liveUnits.value,
-                false
-            )
-        }
-
-        hourlyForecastViewModel.hourlyForecast.observe(viewLifecycleOwner, {
-            binding.swipeToRefreshLayout.isRefreshing = false
-        })
-
-        mainActivity.liveLocation.observe(viewLifecycleOwner, {
-            it?.also {
-                viewModel.getLocalLocation(mainActivity.liveUnits.value, it)
-                hourlyForecastViewModel.getHourlyForecastAsync(
-                    it,
-                    mainActivity.liveUnits.value,
-                    false
-                )
-            }
-        })
-
-        binding.seeMoreBtn.setOnClickListener {
-            findNavController().navigate(
-                CurrentForecastFragmentDirections.actionCurrentForecastFragmentToSeeMoreFragment(
-                    mainActivity.singleForecastJsonAdapter
-                        .toJson(viewModel.singleForecast.value) ?: return@setOnClickListener
-                )
-            )
-        }
-
+    private fun setUpAd() {
         adHelper.loadAd(binding.adView) {
             Timber.d("Load ad listener return $it")
             // If it failed in onAdFailedToLoad(), hide the ad view
@@ -104,13 +128,11 @@ class CurrentForecastFragment : Fragment() {
                 binding.adView.root.visibility = View.GONE
             }
         }
-
-        return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        mainActivity.liveTheme.observe(viewLifecycleOwner) {
+        viewModel.theme.observe(viewLifecycleOwner) {
             addToolbarAndBottomNav(it)
             changeSystemNavigationBarColor(
                 if (it == Theme.LIGHT) R.color.light_theme_blue
