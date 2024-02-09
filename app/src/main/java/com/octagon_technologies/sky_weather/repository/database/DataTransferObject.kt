@@ -65,7 +65,7 @@ fun Hourly.toHourlyForecast() =
             timeInMillis = Instant.parse(time).millis,
             humidity = humidity,
             cloudCeiling = cloudCeiling,
-            visibility = visibility.toInt(),
+            visibility = visibility,
             dewPoint = dewPoint,
             pressure = pressureSurfaceLevel
         )
@@ -104,7 +104,7 @@ fun Daily.toDailyForecast(): DailyForecast {
             TimePeriod(
                 temp = temperatureMax,
                 feelsLike = temperatureApparentMax,
-                weatherCode = WeatherCode(weatherCodeMax, precipitationProbabilityAvg.toInt()),
+                weatherCode = WeatherCode(weatherCodeMax, precipitationProbabilityAvg),
                 uvIndex = UVIndex.getUVIndexFromNum(uvIndexAvg),
                 wind = Wind(windSpeedMin, windGustMin, windDirectionAvg),
                 cloudCover = cloudCoverAvg,
@@ -120,7 +120,7 @@ fun Daily.toDailyForecast(): DailyForecast {
             TimePeriod(
                 temp = temperatureMin,
                 feelsLike = temperatureApparentMin,
-                weatherCode = WeatherCode(weatherCodeMin, precipitationProbabilityAvg.toInt()),
+                weatherCode = WeatherCode(weatherCodeMin, precipitationProbabilityAvg),
                 uvIndex = UVIndex.getUVIndexFromNum(uvIndexMin),
                 wind = Wind(windSpeedMax, windGustMax, windDirectionAvg),
                 cloudCover = cloudCoverAvg,

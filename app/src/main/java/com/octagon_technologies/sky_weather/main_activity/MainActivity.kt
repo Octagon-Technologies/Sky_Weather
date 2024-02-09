@@ -8,15 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.ActivityMainBinding
-import com.octagon_technologies.sky_weather.repository.database.WeatherDataBase
 import com.octagon_technologies.sky_weather.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -51,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             if (location == null)
                 navController.navigate(R.id.findLocationFragment)
             else
-                binding.locationName.text = location.displayName
+                binding.locationName.text = location.displayNameWithoutCountryCode
         }
     }
 

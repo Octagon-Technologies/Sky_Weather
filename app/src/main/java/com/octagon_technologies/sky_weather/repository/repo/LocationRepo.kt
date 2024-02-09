@@ -24,7 +24,7 @@ class LocationRepo @Inject constructor(
     private val locationApi: LocationApi
 ) {
 
-    val location = locationDao.getLocalLocation().map { it.location }
+    val location = locationDao.getLocalLocation().map { it?.location }
 
     private val _searchLocationSuggestions = MutableLiveData<List<Location>>()
     val searchLocationSuggestions: LiveData<List<Location>> = _searchLocationSuggestions
@@ -51,7 +51,7 @@ class LocationRepo @Inject constructor(
     }
 
     suspend fun insertLocalLocation(location: Location) {
-        locationDao.insertLocalLocation(LocalLocation(location = location))
+        locationDao.insertData(LocalLocation(location = location))
     }
 
     suspend fun getLocationSuggestionsFromQuery(query: String) {
@@ -66,6 +66,6 @@ class LocationRepo @Inject constructor(
         val location =
             locationApi.getLocationFromCoordinates(lat = lat, lon = lon)
                 .toLocation()
-        locationDao.insertLocalLocation(location.toLocalLocation())
+        locationDao.insertData(location.toLocalLocation())
     }
 }

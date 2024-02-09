@@ -1,16 +1,13 @@
 package com.octagon_technologies.sky_weather.ui.see_more_current
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SeeMoreFragmentBinding
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
-import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.repository.repo.CurrentForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
@@ -22,8 +19,10 @@ import com.octagon_technologies.sky_weather.utils.isLastIndex
 import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
 
     @Inject
@@ -32,8 +31,8 @@ class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
     lateinit var settingsRepo: SettingsRepo
     private lateinit var binding: SeeMoreFragmentBinding
 
-//    private val navArgs: SeeMoreFragmentArgs by navArgs()
-    private val currentForecast by lazy { currentRepo.currentForecast.value!! }
+    private val navArgs: SeeMoreFragmentArgs by navArgs()
+    private val currentForecast by lazy { navArgs.currentForecast }
 
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 

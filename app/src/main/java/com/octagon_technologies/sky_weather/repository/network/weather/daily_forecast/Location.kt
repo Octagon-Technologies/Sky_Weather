@@ -5,11 +5,11 @@ import com.squareup.moshi.Json
 
 data class Location(
     @Json(name = "lat")
-    val lat: Double,
+    val lat: Double?,
     @Json(name = "lon")
-    val lon: Double,
+    val lon: Double?,
     @Json(name = "name")
-    val name: String,
+    val name: String?,
     @Json(name = "type")
-    val type: String
+    val type: String?
 )

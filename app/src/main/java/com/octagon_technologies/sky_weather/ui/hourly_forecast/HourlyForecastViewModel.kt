@@ -3,6 +3,7 @@ package com.octagon_technologies.sky_weather.ui.hourly_forecast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.repository.repo.HourlyForecastRepo
@@ -10,7 +11,9 @@ import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,16 +37,17 @@ class HourlyForecastViewModel @Inject constructor(
     private var _statusCode = MutableLiveData<StatusCode>()
     val statusCode: LiveData<StatusCode> = _statusCode
 
-    var isDay = MutableLiveData<Boolean>()
-
     init {
-        refreshHourlyForecast()
-    }
+        viewModelScope.launch {
+            listOfHourlyForecast.asFlow().collectLatest { listOfHourlyForecast ->
+                Timber.d("listOfHourlyForecast.asFlow().collectLatest is ${listOfHourlyForecast?.firstOrNull()}")
+                if (listOfHourlyForecast != null)
+                    selectHourlyForecast(listOfHourlyForecast.first())
+            }
 
-    private fun refreshHourlyForecast() {
-        location.value?.let { location ->
-            viewModelScope.launch {
-                hourlyForecastRepo.refreshHourlyForecast(location, settingsRepo.units.value)
+            location.asFlow().collectLatest { location ->
+                if (location != null)
+                    hourlyForecastRepo.refreshHourlyForecast(location, units.value)
             }
         }
     }

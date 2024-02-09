@@ -14,7 +14,7 @@ data class DailyForecast(
 
 fun TimePeriod?.getFormattedTemp(): String = (this?.temp?.toInt()?.toString() ?: "--") + "°"
 fun TimePeriod?.getFormattedFeelsLike(): String =
-    "FeelsLike" + (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
+    "FeelsLike " + (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
 
 fun TimePeriod?.getFormattedHumidity(): String = (this?.humidity?.toInt()?.toString() ?: "--") + "%"
 fun TimePeriod?.getFormattedCloudCover(): String =
@@ -24,16 +24,16 @@ fun TimePeriod?.getFormattedCloudCeiling(): String =
     if (this?.cloudCeiling != null && cloudCeiling.toInt() != 0) "${cloudCeiling.toInt()}" else "-- m"
 
 data class TimePeriod(
-    val temp: Double,
-    val feelsLike: Double,
+    val temp: Double?,
+    val feelsLike: Double?,
     val weatherCode: WeatherCode,
     val uvIndex: UVIndex,
     val wind: Wind,
     val cloudCover: Double?,
     val cloudCeiling: Double?,
-    val dewPoint: Double,
-    val pressure: Double,
-    val humidity: Double,
+    val dewPoint: Double?,
+    val pressure: Double?,
+    val humidity: Double?,
     val isDay: Boolean,
     /*
     I've added this here instead of the main DailyForecast so that the selected Daily Forecast (day and night tabs)

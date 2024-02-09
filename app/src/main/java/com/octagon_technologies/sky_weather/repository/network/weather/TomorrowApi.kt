@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 // https://api.tomorrow.io/v4/weather/realtime?location=nairobi&units=metric&apikey=vMWmIOL72NA4yWspZWrr8et2baXoLlM8
-const val TomorrowBaseUrl = "https://api.tomorrow.io/v4/weather"
+const val TomorrowBaseUrl = "https://api.tomorrow.io/v4/weather/"
 const val TomorrowApiKey = "vMWmIOL72NA4yWspZWrr8et2baXoLlM8"
 
 

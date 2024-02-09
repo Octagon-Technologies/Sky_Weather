@@ -11,6 +11,7 @@ import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.getHoursAndMins
 import com.octagon_technologies.sky_weather.utils.getHoursOfDay
 import com.xwray.groupie.databinding.BindableItem
+import timber.log.Timber
 
 class MiniHourlyForecast(
     val hourlyForecast: SingleForecast,
@@ -21,7 +22,10 @@ class MiniHourlyForecast(
         binding.root.setOnClickListener { openSelectedHourlyForecast() }
 
         binding.humidityLevel.text = hourlyForecast.getFormattedHumidity()
-        binding.timeDisplayText.text = hourlyForecast.timeInMillis.getHoursAndMins(timeFormat)
+
+        val time = hourlyForecast.timeInMillis.getHoursAndMins(timeFormat)
+        Timber.d("Formatted Time is $time")
+        binding.timeDisplayText.text = time
 
         binding.tempText.text = hourlyForecast.getFormattedTemp()
         binding.feelsLikeText.text = hourlyForecast.getFormattedFeelsLike()

@@ -11,15 +11,17 @@ import com.octagon_technologies.sky_weather.repository.database.toLunar
 import com.octagon_technologies.sky_weather.repository.network.lunar.LunarForecastApi
 import com.octagon_technologies.sky_weather.utils.toLunarDateFormat
 import com.octagon_technologies.sky_weather.utils.toLunarTimeZone
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class LunarRepo @Inject constructor(
     private val lunarApi: LunarForecastApi,
+    private val locationRepo: LocationRepo,
     private val lunarDao: LunarDao
 ) {
 
-    val currentLunar = lunarDao.getLocalLunar().map { it.lunarForecast }
+    val currentLunar = lunarDao.getLocalLunar().map { it?.lunarForecast }
 
     /*
     Whenever a daily forecast is selected, the DailyForecastViewModel will push an online request for lunar info
@@ -29,9 +31,17 @@ class LunarRepo @Inject constructor(
     private val _selectedLunar = MutableLiveData<Lunar>()
     val selectedLunar: LiveData<Lunar> = _selectedLunar
 
+
+//    suspend fun setUpRefresh() {
+//        locationRepo.location.asFlow().collectLatest { location ->
+//            if (location != null)
+//                refreshCurrentLunarForecast(location)
+//        }
+//    }
+
     suspend fun refreshCurrentLunarForecast(
         location: Location
-    ) {
+    ) = try {
         val dateInMillis: Long = System.currentTimeMillis()
         val lunarForecastResponse =
             lunarApi.getLunarForecast(
@@ -41,7 +51,9 @@ class LunarRepo @Inject constructor(
                 timezone = dateInMillis.toLunarTimeZone()
             )
 
-        lunarDao.insertLocalLunar(lunarForecastResponse.toLocalLunar())
+        lunarDao.insertData(lunarForecastResponse.toLocalLunar())
+    }  catch(e: Exception) {
+        Timber.e(e)
     }
 
     suspend fun getSelectedLunarForecast(

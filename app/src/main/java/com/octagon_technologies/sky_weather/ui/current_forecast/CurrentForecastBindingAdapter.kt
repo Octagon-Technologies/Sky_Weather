@@ -86,7 +86,7 @@ fun RecyclerView.setUpCurrentConditions(
             MiniForecastDescription(
                 isLastItem = arrayOfWeatherDescriptions.indexOf(eachWeatherDescription) == lastIndex,
                 eachWeatherDescription = eachWeatherDescription,
-                theme = theme
+                theme = null
             )
         }
     )

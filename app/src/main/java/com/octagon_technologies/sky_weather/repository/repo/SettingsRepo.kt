@@ -8,15 +8,18 @@ import androidx.datastore.preferences.edit
 import androidx.datastore.preferences.preferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import com.octagon_technologies.sky_weather.utils.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import javax.inject.Inject
 
-class SettingsRepo (private val context: Context) {
+class SettingsRepo @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     private val dataStore: DataStore<Preferences> by lazy {
         context.createDataStore(
@@ -40,28 +43,11 @@ class SettingsRepo (private val context: Context) {
     suspend fun changeIsNotificationAllowed(isNotificationAllowed: Boolean) {
         dataStore.edit { it[notificationAllowedKey] = isNotificationAllowed }
     }
-    suspend fun changeUnits(units: Units) { dataStore.edit { it[unitsKey] = units.value } }
+    suspend fun changeUnits(units: Units) { dataStore.edit { it[unitsKey] = units.toString() } }
     suspend fun changeWindDirectionUnits(windDirectionUnits: WindDirectionUnits)
-    { dataStore.edit { it[windDirectionKey] = windDirectionUnits.name } }
-    suspend fun changeTimeFormat(timeFormat: TimeFormat) { dataStore.edit { it[timeFormatKey] = timeFormat.name } }
-    suspend fun changeTheme(theme: Theme) { dataStore.edit { it[themeKey] = theme.name } }
-
-    private fun editDataStoreSettings(eachDataStoreItem: EachDataStoreItem) {
-        val newValue = eachDataStoreItem.newValue
-        CoroutineScope(Dispatchers.Main).launch {
-            dataStore.edit {
-                when (eachDataStoreItem.preferencesName) {
-                    unitsName -> it[unitsKey] = newValue.toString()
-                    windDirectionName -> it[windDirectionKey] = newValue.toString()
-                    timeFormatName -> it[timeFormatKey] = newValue.toString()
-                    themeName -> it[themeKey] = newValue.toString()
-                    notificationAllowedName -> it[notificationAllowedKey] = newValue as Boolean
-                    else -> throw RuntimeException("Unexpected parameter. eachDataStoreItem is $eachDataStoreItem")
-                }
-                Timber.d("Success. DataStore edited")
-            }
-        }
-    }
+    { dataStore.edit { it[windDirectionKey] = windDirectionUnits.toString() } }
+    suspend fun changeTimeFormat(timeFormat: TimeFormat) { dataStore.edit { it[timeFormatKey] = timeFormat.toString() } }
+    suspend fun changeTheme(theme: Theme) { dataStore.edit { it[themeKey] = theme.toString() } }
 
     private fun getDataStoreData(preferencesName: String): Flow<String> {
         return dataStore.data.map {

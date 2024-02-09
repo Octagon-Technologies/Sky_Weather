@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 
 const val AllergyBaseUrl = "https://api.ambeedata.com/"
-const val AllergyApiKey = "oWJChLwX5MM5MqUopRh1Qr3QLpEkQw6gExN5QQa0"
+const val AllergyApiKey = "c33399e38f0ef34bf95530b31071e4405a95ee3102d5b609895d6b0995e3f078"
 
 interface AllergyApi {
     @Headers(

@@ -12,10 +12,10 @@ class RecentLocationsRepo @Inject constructor(
 
     val listOfRecentLocation =
         recentLocationDao.getAllLocalRecentLocations()
-            .map { list -> list.map { it.location }.sortedBy { it.displayName } }
+            .map { list -> list?.map { it.location }?.sortedBy { it.displayName } ?: listOf() }
 
     suspend fun insertLocalRecentLocation(location: Location) {
-        recentLocationDao.insertLocalRecentLocation(
+        recentLocationDao.insertData(
             LocalRecentLocation(location.key, location)
         )
     }

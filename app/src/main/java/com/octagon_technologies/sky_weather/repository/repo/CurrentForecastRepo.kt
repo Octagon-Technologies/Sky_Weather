@@ -6,6 +6,7 @@ import com.octagon_technologies.sky_weather.repository.database.toLocalCurrentFo
 import com.octagon_technologies.sky_weather.repository.database.weather.current.CurrentForecastDao
 import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowApi
 import com.octagon_technologies.sky_weather.utils.Units
+import timber.log.Timber
 import javax.inject.Inject
 
 class CurrentForecastRepo @Inject constructor(
@@ -13,17 +14,27 @@ class CurrentForecastRepo @Inject constructor(
     private val currentForecastDao: CurrentForecastDao
 ) {
 
-    val currentForecast = currentForecastDao.getLocalCurrentForecast().map { it.currentForecast }
+    val currentForecast = currentForecastDao.getLocalCurrentForecast().map { it?.currentForecast }
+
+//    suspend fun setUpRefresh() {
+//        locationRepo.location.asFlow().collectLatest { location ->
+//            location?.let {
+//                refreshCurrentForecast(location, settingsRepo.units.value)
+//            }
+//        }
+//    }
 
     suspend fun refreshCurrentForecast(
         location: Location,
         units: Units?
-    ) {
+    ) = try {
         val currentForecastResponse = weatherApi.getCurrentForecast(
             location = location.getCoordinates(),
-            units = units?.value ?: Units.METRIC.value
+            units = units?.getUrlParameter() ?: Units.METRIC.getUrlParameter()
         )
-        currentForecastDao.insertLocalCurrentForecast(currentForecastResponse.toLocalCurrentForecast())
+        currentForecastDao.insertData(currentForecastResponse.toLocalCurrentForecast())
+    } catch (e: Exception) {
+        Timber.e(e)
     }
 
 }

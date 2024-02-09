@@ -17,7 +17,6 @@ import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.utils.*
-import com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +27,7 @@ class FindLocationFragment : Fragment() {
     private lateinit var binding: FindLocationFragmentBinding
     private val viewModel by viewModels<FindLocationViewModel>()
     private val mainActivity by lazy { activity as? MainActivity }
-    private val widgetConfigureActivity by lazy { activity as? WidgetConfigureActivity }
+//    private val widgetConfigureActivity by lazy { activity as? WidgetConfigureActivity }
 //    private val liveLocation by lazy {
 //        mainActivity?.liveLocation ?: widgetConfigureActivity?.viewModel?.reverseGeoCodingLocation
 //    }
@@ -172,7 +171,7 @@ class FindLocationFragment : Fragment() {
                     mainActivity?.finish()
                 }
             } ?: run {
-                widgetConfigureActivity?.viewModel?.navigateToLocationFragment?.value = false
+//                widgetConfigureActivity?.viewModel?.navigateToLocationFragment?.value = false
             }
         }
         binding.searchQuery.setOnClickListener {
@@ -197,7 +196,7 @@ class FindLocationFragment : Fragment() {
         if (!mainActivity.isNull()) {
             findNavController().popBackStack(R.id.currentForecastFragment, false)
         } else {
-            widgetConfigureActivity?.viewModel?.navigateToLocationFragment?.value = false
+//            widgetConfigureActivity?.viewModel?.navigateToLocationFragment?.value = false
         }
     }
 

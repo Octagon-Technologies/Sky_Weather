@@ -8,14 +8,10 @@ import com.octagon_technologies.sky_weather.databinding.EachDailyForecastItemBin
 import com.octagon_technologies.sky_weather.domain.daily.DailyForecast
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedHumidity
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedTemp
-import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.getDayOfMonth
 import com.octagon_technologies.sky_weather.utils.getFirstLetterOfDay
 import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
 import com.xwray.groupie.databinding.BindableItem
-import org.joda.time.DateTime
-import org.joda.time.Instant
-import java.text.SimpleDateFormat
 import java.util.*
 
 class EachDailyForecastItem(private val dailyForecast: DailyForecast, private val selectDailyForecast: (DailyForecast) -> Unit) :
@@ -28,8 +24,11 @@ class EachDailyForecastItem(private val dailyForecast: DailyForecast, private va
         binding.minTempOfTheDay.text = dailyForecast.nightTime.getFormattedTemp()
         binding.maxTempOfTheDay.text = dailyForecast.dayTime.getFormattedTemp()
 
-        val tempDiff = (dailyForecast.dayTime.temp - dailyForecast.nightTime.temp).toInt().coerceAtLeast(1)
-        binding.tempBar.getBarHeightFromTempRange(tempDiff)
+        if (dailyForecast.dayTime.temp != null && dailyForecast.nightTime.temp != null) {
+            val tempDiff = (dailyForecast.dayTime.temp -dailyForecast.nightTime.temp).toInt()
+                .coerceAtLeast(1)
+            binding.tempBar.getBarHeightFromTempRange(tempDiff)
+        }
 
         binding.humidityDisplayText.text = dailyForecast.dayTime.getFormattedHumidity()
         binding.weatherImage.getWeatherIconFrom(dailyForecast.dayTime.weatherCode)

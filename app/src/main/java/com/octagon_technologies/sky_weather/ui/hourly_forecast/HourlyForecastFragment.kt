@@ -1,9 +1,7 @@
 package com.octagon_technologies.sky_weather.ui.hourly_forecast
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -40,6 +38,8 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
     private lateinit var selectedHourlyForecastBinding: SelectedHourlyForecastLayoutBinding
     private lateinit var bottomSheet: BottomSheetBehavior<View>
 
+    private val mainActivity by lazy { requireActivity() as MainActivity }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = HourlyForecastFragmentBinding.bind(view)
@@ -75,7 +75,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
                 weatherImage.getWeatherIconFrom(selectedSingleForecast.weatherCode)
 
                 tempText.text = selectedSingleForecast.getFormattedTemp()
-                selectedHourlyHumidity.text = selectedSingleForecast.getFormattedHumidity()
+                selectedHourlyHumidity.text = "Humidity: ${selectedSingleForecast.getFormattedHumidity()}"
                 selectedHourlyDateText.text = selectedSingleForecast.timeInMillis.getHoursAndMinsWithDay(viewModel.timeFormat.value)
             }
         }
@@ -87,7 +87,6 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
             selectedForecastGroupAdapter
 
         viewModel.selectedSingleForecast.observe(viewLifecycleOwner) { selectedSingleForecast ->
-
             val listOfForecastDescription =
                 getAdvancedForecastDescription(
                     selectedSingleForecast,
@@ -96,6 +95,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
                 )
 
             selectedForecastGroupAdapter.clear()
+            Timber.d("SelectedSingleForecast is $selectedSingleForecast")
 
             listOfForecastDescription.forEach {
                 selectedForecastGroupAdapter.add(
@@ -150,14 +150,14 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
         bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-//                    mainActivity.binding.navView.visibility = View.GONE
+                    mainActivity.binding.navView.visibility = View.GONE
                     changeSystemNavigationBarColor(
                         if (viewModel.theme.value == Theme.LIGHT) android.R.color.white
                         else R.color.dark_black
                     )
                     Timber.d("State changed to $newState")
                 } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-//                    mainActivity.binding.navView.visibility = View.VISIBLE
+                    mainActivity.binding.navView.visibility = View.VISIBLE
                     changeSystemNavigationBarColor(
                         if (viewModel.theme.value == Theme.LIGHT) R.color.light_theme_blue
                         else R.color.dark_theme_blue
@@ -179,6 +179,11 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
 
             showLongToast(message)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mainActivity.binding.navView.visibility = View.VISIBLE
     }
 
     override fun onStart() {

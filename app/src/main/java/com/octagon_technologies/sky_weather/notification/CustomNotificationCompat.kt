@@ -5,28 +5,28 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
-import com.karumi.dexter.listener.single.PermissionListener
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.Units
-import com.octagon_technologies.sky_weather.utils.checkBuildVersion
+import com.octagon_technologies.sky_weather.utils.checkBuildVersionFrom
 import com.octagon_technologies.sky_weather.utils.isNull
+import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
+import javax.inject.Inject
 
 
-class CustomNotificationCompat(private val context: Context) {
-
+class CustomNotificationCompat @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "1234"
         const val NOTIFICATION_CHANNEL_NAME = "Weather Forecast Notifications"
@@ -44,7 +44,7 @@ class CustomNotificationCompat(private val context: Context) {
 
     @SuppressLint("NewApi")
     fun createNotificationChannel() {
-        if ((Build.VERSION_CODES.O).checkBuildVersion()) {
+        if (checkBuildVersionFrom(Build.VERSION_CODES.O)) {
             val notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 NOTIFICATION_CHANNEL_NAME,

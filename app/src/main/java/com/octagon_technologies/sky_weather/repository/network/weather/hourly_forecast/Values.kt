@@ -9,41 +9,41 @@ data class Values(
     @Json(name = "cloudCeiling")
     val cloudCeiling: Double?,
     @Json(name = "cloudCover")
-    val cloudCover: Double,
+    val cloudCover: Double?,
     @Json(name = "dewPoint")
-    val dewPoint: Double,
+    val dewPoint: Double?,
     @Json(name = "evapotranspiration")
-    val evapotranspiration: Double,
+    val evapotranspiration: Double?,
     @Json(name = "freezingRainIntensity")
-    val freezingRainIntensity: Int,
+    val freezingRainIntensity: Double?,
     @Json(name = "humidity")
-    val humidity: Double,
+    val humidity: Double?,
     @Json(name = "iceAccumulation")
-    val iceAccumulation: Int,
+    val iceAccumulation: Double?,
     @Json(name = "iceAccumulationLwe")
-    val iceAccumulationLwe: Int?,
+    val iceAccumulationLwe: Double?,
     @Json(name = "precipitationProbability")
-    val precipitationProbability: Int,
+    val precipitationProbability: Double?,
     @Json(name = "pressureSurfaceLevel")
-    val pressureSurfaceLevel: Double,
+    val pressureSurfaceLevel: Double?,
     @Json(name = "rainAccumulation")
-    val rainAccumulation: Double,
+    val rainAccumulation: Double?,
     @Json(name = "rainAccumulationLwe")
     val rainAccumulationLwe: Double?,
     @Json(name = "rainIntensity")
-    val rainIntensity: Double,
+    val rainIntensity: Double?,
     @Json(name = "sleetAccumulation")
-    val sleetAccumulation: Int,
+    val sleetAccumulation: Double?,
     @Json(name = "sleetAccumulationLwe")
-    val sleetAccumulationLwe: Int?,
+    val sleetAccumulationLwe: Double?,
     @Json(name = "sleetIntensity")
-    val sleetIntensity: Int,
+    val sleetIntensity: Double?,
     @Json(name = "snowAccumulation")
-    val snowAccumulation: Int,
+    val snowAccumulation: Double?,
     @Json(name = "snowAccumulationLwe")
-    val snowAccumulationLwe: Int?,
+    val snowAccumulationLwe: Double?,
     @Json(name = "snowIntensity")
-    val snowIntensity: Int,
+    val snowIntensity: Double?,
     @Json(name = "temperature")
     val temperature: Double,
     @Json(name = "temperatureApparent")
@@ -53,13 +53,13 @@ data class Values(
     @Json(name = "uvIndex")
     val uvIndex: Int?,
     @Json(name = "visibility")
-    val visibility: Double,
+    val visibility: Double?,
     @Json(name = "weatherCode")
     val weatherCode: Int,
     @Json(name = "windDirection")
-    val windDirection: Double,
+    val windDirection: Double?,
     @Json(name = "windGust")
-    val windGust: Double,
+    val windGust: Double?,
     @Json(name = "windSpeed")
     val windSpeed: Double
 )

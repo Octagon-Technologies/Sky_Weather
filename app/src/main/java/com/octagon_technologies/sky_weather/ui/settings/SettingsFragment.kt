@@ -12,8 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SettingsFragmentBinding
-import com.octagon_technologies.sky_weather.main_activity.MainActivity
-import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.Units
@@ -33,8 +31,6 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = SettingsFragmentBinding.inflate(inflater)
-
-
         setUpSwitchButton()
 
         binding.apply {

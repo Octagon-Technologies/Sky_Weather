@@ -1,19 +1,19 @@
 package com.octagon_technologies.sky_weather.di
 
-import com.octagon_technologies.sky_weather.repository.network.location.LocationApi
-import com.octagon_technologies.sky_weather.repository.network.location.LocationBaseUrl
-import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowApi
-import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowBaseUrl
 import com.octagon_technologies.sky_weather.repository.network.allergy.AllergyApi
 import com.octagon_technologies.sky_weather.repository.network.allergy.AllergyBaseUrl
+import com.octagon_technologies.sky_weather.repository.network.location.LocationApi
+import com.octagon_technologies.sky_weather.repository.network.location.LocationBaseUrl
 import com.octagon_technologies.sky_weather.repository.network.lunar.LunarBaseUrl
 import com.octagon_technologies.sky_weather.repository.network.lunar.LunarForecastApi
+import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowApi
+import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowBaseUrl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit.Builder
@@ -21,7 +21,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import java.util.concurrent.TimeUnit
 
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
 
@@ -39,7 +39,7 @@ object NetworkModule {
         .build()
 
     @Provides
-    fun providesRetrofitBuilder(moshi: Moshi, okHttpClient: OkHttpClient) = Builder()
+    fun providesRetrofitBuilder(moshi: Moshi, okHttpClient: OkHttpClient): Builder = Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .client(okHttpClient)
 

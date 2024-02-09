@@ -37,7 +37,8 @@
     <string name="c_plain_text">C</string>
     <string name="f_plain_text">F</string>
     <string name="see_weekly_outlook_plain_text">See Weekly Outlook→</string>
-    <string name="see_more_plain_text">See More →</string>
+<!--    <string name="see_more_plain_text">See More →</string>-->
+    <string name="see_more_plain_text">See More</string>
     <string name="current_conditions_plain_text">Current Conditions</string>
     <string name="set_plain_text">Set</string>
     <string name="rise_plain_text">Rise</string>

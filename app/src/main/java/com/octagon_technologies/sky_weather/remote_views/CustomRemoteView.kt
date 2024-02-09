@@ -41,7 +41,7 @@ class CustomRemoteView(private val context: Context) {
             )
             setTextViewText(
                 R.id.expanded_notification_unit_system,
-                units?.value ?: "C"
+                if (units == Units.IMPERIAL) "F" else "C"
             )
             setTextViewText(
                 R.id.expanded_notification_weather_code,
@@ -71,7 +71,7 @@ class CustomRemoteView(private val context: Context) {
             )
 
 
-            if ((Build.VERSION_CODES.M).checkBuildVersion()) {
+            if (checkBuildVersionFrom(Build.VERSION_CODES.M)) {
                 setImageViewIcon(
                     R.id.expanded_notification_weather_icon,
                     Icon.createWithResource(context, drawable)

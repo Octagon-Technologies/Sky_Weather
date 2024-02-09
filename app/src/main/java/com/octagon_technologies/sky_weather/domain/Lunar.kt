@@ -2,6 +2,8 @@ package com.octagon_technologies.sky_weather.domain
 
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.getHoursAndMins
+import org.joda.time.Instant
+import org.joda.time.Interval
 import timber.log.Timber
 
 data class Lunar(
@@ -11,43 +13,52 @@ data class Lunar(
     val moonSet: String?
 ) {
 
-    val sunHrsOnly = getFinalHours(sunRise, sunSet)
-    val sunMinsOnly = getFinalMinutes(sunRise, sunSet)
-
-    val moonHrsOnly = getFinalHours(moonRise, moonSet)
-    val moonMinsOnly = getFinalMinutes(moonRise, moonSet)
-
     fun getSunRiseDisplay(timeFormat: TimeFormat?) = sunRise?.getHoursAndMins(timeFormat)
     fun getSunSetDisplay(timeFormat: TimeFormat?) = sunSet?.getHoursAndMins(timeFormat)
 
     fun getMoonRiseDisplay(timeFormat: TimeFormat?) = moonRise?.getHoursAndMins(timeFormat)
     fun getMoonSetDisplay(timeFormat: TimeFormat?) = moonSet?.getHoursAndMins(timeFormat)
 
+
+    private fun String?.getHoursAndMins(timeFormat: TimeFormat?): String {
+        if (this == null)
+            return "--:--"
+
+        val instant = Instant.parse(this).toDateTime()
+        val time = instant.toString(
+            if (timeFormat == TimeFormat.FULL_DAY) "HH:mm"
+            else "hh:mm a"
+        )
+        Timber.d("time in getHoursAndMins is $time")
+        return time
+    }
+
+    fun getSunHoursFull() = getHoursForFullTimeFormat(sunRise, sunSet)
+    fun getSunMinutesFull() = getMinutesForFullTimeFormat(sunRise, sunSet)
+    fun getMoonHoursFull() = getHoursForFullTimeFormat(moonRise, moonSet)
+    fun getMoonMinutesFull() = getMinutesForFullTimeFormat(moonRise, moonSet)
+
+    // In the selected daily tab, we are getting the time in a string format e.g 18-01-20240300 instead of
+    // the 6:43 we are used to
+    private fun getHoursForFullTimeFormat(rise: String?, set: String?): String {
+        if (rise == null || set == null)
+            return "-- hrs"
+        val hours =
+            Interval(Instant.parse(rise), Instant.parse(set)).toDuration().standardHours
+        Timber.d("Hours is $hours")
+        return "$hours hrs"
+    }
+
+    private fun getMinutesForFullTimeFormat(rise: String?, set: String?): String {
+        if (rise == null || set == null)
+            return "-- mins"
+        val minutes =
+            Interval(Instant.parse(rise), Instant.parse(set)).toDuration().standardMinutes % 60
+        Timber.d("Minutes is $minutes")
+        return "$minutes mins"
+    }
+
     /*
 TODO: Test these function extensively to eliminate odd numbers e.g 36 hours of sunlight
  */
-    fun getFinalHours(rise: String?, set: String?): String {
-        if (rise == null || set == null) return "--"
-        val riseList = rise.split(":").map { it.toInt() }
-        val setList = set.split(":").map { it.toInt() }
-
-        return (setList[0] - riseList[0]).let {
-            if (it >= 0) it.toString() else (it + 24).toString()
-        }
-    }
-
-    fun getFinalMinutes(rise: String?, set: String?): String {
-        if (rise == null || set == null) return "--"
-        val riseList = rise.split(":").map { it.toInt() }
-        val setList = set.split(":").map { it.toInt() }
-
-        val diff =
-            (setList[0].toMinutesFromHours() + setList[1]) - (riseList[0].toMinutesFromHours() + riseList[1])
-        Timber.d("Minutes diff is $diff with rise as $rise and set as $set")
-        return (if (diff >= 0) diff else (diff + 2400)).toHoursAndMinutes().second.toString()
-    }
-
-    fun Int.toMinutesFromHours() = (this * 60)
-    // Returns minutes and seconds respectively
-    fun Int.toHoursAndMinutes(): Pair<Int, Int> = Pair((this / 60), (this % 60))
 }

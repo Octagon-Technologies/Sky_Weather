@@ -1,9 +1,12 @@
 package com.octagon_technologies.sky_weather
 
 import android.app.Application
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.gms.ads.MobileAds
-import com.octagon_technologies.sky_weather.widgets.WidgetRepo
 import com.octagon_technologies.sky_weather.work.RefreshDataWork
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -11,14 +14,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 @HiltAndroidApp
 class App : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
-    @Inject
-    lateinit var widgetRepo: WidgetRepo
 
     override fun onCreate() {
         super.onCreate()
@@ -40,7 +40,7 @@ class App : Application() {
             .build()
 
         try {
-            WorkManager.getInstance().enqueueUniquePeriodicWork(
+            WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
                 RefreshDataWork.WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
                 repeatingRequest
@@ -49,8 +49,8 @@ class App : Application() {
             Timber.e(e, "Work manager wasn't initialized")
         }
 
-        widgetRepo.updateAllWidgets {
-            Timber.d("In App, updateAllWidgets.isSuccess is ${it.isSuccess}")
-        }
+//        widgetRepo.updateAllWidgets {
+//            Timber.d("In App, updateAllWidgets.isSuccess is ${it.isSuccess}")
+//        }
     }
 }

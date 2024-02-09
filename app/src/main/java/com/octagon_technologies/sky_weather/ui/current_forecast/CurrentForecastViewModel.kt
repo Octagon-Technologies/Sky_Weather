@@ -3,8 +3,10 @@ package com.octagon_technologies.sky_weather.ui.current_forecast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.repository.repo.AllergyRepo
 import com.octagon_technologies.sky_weather.repository.repo.CurrentForecastRepo
@@ -14,6 +16,7 @@ import com.octagon_technologies.sky_weather.repository.repo.LunarRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.net.UnknownHostException
@@ -37,12 +40,12 @@ class CurrentForecastViewModel @Inject constructor(
 
     val location = locationRepo.location
     val currentForecast = currentForecastRepo.currentForecast
-    val allergyForecast = allergyRepo.allergy
+//    val allergyForecast = allergyRepo.allergy
     val lunarForecast = lunarRepo.currentLunar
 
-    val oneHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it.getOrNull(0) }
-    val sixHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it.getOrNull(5) }
-    val twentyFourHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it.getOrNull(23) }
+    val oneHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it?.getOrNull(0) }
+    val sixHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it?.getOrNull(5) }
+    val twentyFourHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it?.getOrNull(23) }
 
     private var _statusCode = MutableLiveData<StatusCode>()
     val statusCode: LiveData<StatusCode> = _statusCode
@@ -51,7 +54,19 @@ class CurrentForecastViewModel @Inject constructor(
     val isRefreshing: LiveData<Boolean> = _isRefreshing
 
     init {
-        refreshWeatherForecast()
+        viewModelScope.launch {
+            location.asFlow().collectLatest { location ->
+                if (location != null) {
+                    currentForecastRepo.refreshCurrentForecast(location, units.value)
+                    hourlyForecastRepo.refreshHourlyForecast(location, units.value)
+                    lunarRepo.refreshCurrentLunarForecast(location)
+//                    allergyRepo.refreshAllergyForecast(location)
+
+                    updateNotification(location)
+                }
+            }
+//            refreshWeatherForecast()
+        }
     }
 
     fun refreshWeatherForecast() {
@@ -61,18 +76,12 @@ class CurrentForecastViewModel @Inject constructor(
             location.value?.let {
                 _isRefreshing.value = true
                 try {
-                    currentForecastRepo.refreshCurrentForecast(it, settingsRepo.units.value)
-                    hourlyForecastRepo.refreshHourlyForecast(it, settingsRepo.units.value)
-                    allergyRepo.refreshAllergyForecast(it)
-                    lunarRepo.refreshCurrentLunarForecast(it)
+//                    currentForecastRepo.refreshCurrentForecast(it, settingsRepo.units.value)
+//                    hourlyForecastRepo.refreshHourlyForecast(it, settingsRepo.units.value)
+//                    allergyRepo.refreshAllergyForecast(it)
+//                    lunarRepo.refreshCurrentLunarForecast(it)
 
-                    if (settingsRepo.isNotificationAllowed.value == true)
-                        customNotificationCompat.createNotification(
-                            singleForecast = currentForecast.value,
-                            location = it,
-                            timeFormat = timeFormat.value,
-                            units = units.value
-                        )
+                    updateNotification(it)
                 } catch (http: HttpException) {
                     _statusCode.value = StatusCode.ApiLimitExceeded
                 } catch (unknown: UnknownHostException) {
@@ -82,5 +91,15 @@ class CurrentForecastViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun updateNotification(it: Location) {
+        if (settingsRepo.isNotificationAllowed.value == true)
+            customNotificationCompat.createNotification(
+                singleForecast = currentForecast.value,
+                location = it,
+                timeFormat = timeFormat.value,
+                units = units.value
+            )
     }
 }

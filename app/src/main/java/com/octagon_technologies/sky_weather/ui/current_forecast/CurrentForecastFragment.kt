@@ -10,10 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
-import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
-import com.octagon_technologies.sky_weather.lazy.adHelpers
 import com.octagon_technologies.sky_weather.utils.StatusCode
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
@@ -21,17 +19,14 @@ import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.utils.getStringResource
 import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
 import com.octagon_technologies.sky_weather.utils.showLongToast
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class CurrentForecastFragment : Fragment() {
 
     private lateinit var binding: CurrentForecastFragmentBinding
     private val viewModel by viewModels<CurrentForecastViewModel>()
-    private val adHelper by adHelpers()
+//    private val adHelper by adHelpers()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +48,7 @@ class CurrentForecastFragment : Fragment() {
         setUpHourlyForecastPreview()
         setUpSeeMoreButton()
         setUpLiveData()
-        setUpAd()
+//        setUpAd()
     }
 
     private fun setUpLiveData() {
@@ -75,7 +70,7 @@ class CurrentForecastFragment : Fragment() {
                 findNavController()
                     .navigate(
                         CurrentForecastFragmentDirections
-                            .actionCurrentForecastFragmentToSeeMoreFragment()
+                            .actionCurrentForecastFragmentToSeeMoreFragment(currentForecast)
                     )
             }
         }
@@ -120,15 +115,15 @@ class CurrentForecastFragment : Fragment() {
         }
     }
 
-    private fun setUpAd() {
-        adHelper.loadAd(binding.adView) {
-            Timber.d("Load ad listener return $it")
-            // If it failed in onAdFailedToLoad(), hide the ad view
-            if (!it) {
-                binding.adView.root.visibility = View.GONE
-            }
-        }
-    }
+//    private fun setUpAd() {
+//        adHelper.loadAd(binding.adView) {
+//            Timber.d("Load ad listener return $it")
+//            // If it failed in onAdFailedToLoad(), hide the ad view
+//            if (!it) {
+//                binding.adView.root.visibility = View.GONE
+//            }
+//        }
+//    }
 
     override fun onStart() {
         super.onStart()

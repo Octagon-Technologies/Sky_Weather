@@ -1,5 +1,7 @@
 package com.octagon_technologies.sky_weather.domain
 
+import com.octagon_technologies.sky_weather.utils.capitalize
+
 data class Location(
     val displayNameWithoutCountryCode: String,
     val lat: String,
@@ -10,6 +12,7 @@ data class Location(
 ) {
     val key = "$lat$lon"
     val displayName = displayNameWithoutCountryCode + "," + countryCode.uppercase()
+    val displayNameWithCountry = "$displayNameWithoutCountryCode, ${country.capitalize()}"
 
     fun getCoordinates() = "$lat,$lon"
 

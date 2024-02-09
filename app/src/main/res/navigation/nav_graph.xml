@@ -39,6 +39,9 @@
         android:label="SeeMoreFragment"
         tools:layout="@layout/see_more_fragment">
 
+        <argument
+            android:name="currentForecast"
+            app:argType="com.octagon_technologies.sky_weather.domain.SingleForecast" />
     </fragment>
     <fragment
         android:id="@+id/hourlyForecastFragment"

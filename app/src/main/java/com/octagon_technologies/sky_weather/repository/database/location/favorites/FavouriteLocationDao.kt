@@ -2,22 +2,17 @@ package com.octagon_technologies.sky_weather.repository.database.location.favori
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.octagon_technologies.sky_weather.repository.database.LocalFavouriteLocation
+import com.octagon_technologies.sky_weather.repository.database.BaseDao
 
 @Dao
-interface FavouriteLocationDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocalFavouriteLocation(localFavouriteLocation: LocalFavouriteLocation)
-
+abstract class FavouriteLocationDao: BaseDao<LocalFavouriteLocation> {
     @Query("DELETE FROM localFavoriteLocation WHERE favouriteLocationKey = :favoriteLocationKey")
-    suspend fun deleteLocalFavouriteLocation(favoriteLocationKey: LocalFavouriteLocation)
+    abstract suspend fun deleteLocalFavouriteLocation(favoriteLocationKey: LocalFavouriteLocation)
 
     @Query("SELECT * FROM localFavoriteLocation")
-    fun getAllLocalFavouriteLocations(): LiveData<List<LocalFavouriteLocation>>
+    abstract fun getAllLocalFavouriteLocations(): LiveData<List<LocalFavouriteLocation>?>
 
     @Query("DELETE FROM localFavoriteLocation")
-    suspend fun deleteAllFavouriteLocations()
+    abstract suspend fun deleteAllFavouriteLocations()
 }

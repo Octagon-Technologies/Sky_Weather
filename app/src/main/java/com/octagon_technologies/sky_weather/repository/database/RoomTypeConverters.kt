@@ -1,12 +1,13 @@
 package com.octagon_technologies.sky_weather.repository.database
 
 import androidx.room.TypeConverter
+import com.octagon_technologies.sky_weather.domain.Allergy
+import com.octagon_technologies.sky_weather.domain.Location
+import com.octagon_technologies.sky_weather.domain.Lunar
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.domain.daily.DailyForecast
-import com.octagon_technologies.sky_weather.repository.network.allergy.models.AllergyResponse
-import com.octagon_technologies.sky_weather.repository.network.location.models.SearchLocationResponse
-import com.octagon_technologies.sky_weather.repository.network.lunar.models.LunarForecastResponse
-import com.octagon_technologies.sky_weather.repository.network.location.reverse_geocoding_location.ReverseGeoCodingLocation
+import com.octagon_technologies.sky_weather.repository.database.location.favorites.LocalFavouriteLocation
+import com.octagon_technologies.sky_weather.repository.database.location.recent.LocalRecentLocation
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
@@ -19,10 +20,12 @@ class RoomTypeConverters {
         .build()
 
     private val singleForecastJsonAdapter = moshi.adapter(SingleForecast::class.java)
-    private val allergyJsonAdapter = moshi.adapter(AllergyResponse::class.java)
-    private val lunarJsonAdapter = moshi.adapter(LunarForecastResponse::class.java)
-    private val searchLocationResponseJsonAdapter = moshi.adapter(SearchLocationResponse::class.java)
-    private val reversedLocationJsonAdapter = moshi.adapter(ReverseGeoCodingLocation::class.java)
+    private val allergyJsonAdapter = moshi.adapter(Allergy::class.java)
+    private val lunarJsonAdapter = moshi.adapter(Lunar::class.java)
+    private val locationJsonAdapter = moshi.adapter(Location::class.java)
+    private val favouriteLocationJsonAdapter = moshi.adapter(LocalFavouriteLocation::class.java)
+    private val recentLocationJsonAdapter = moshi.adapter(LocalRecentLocation::class.java)
+
 
     private val hourlyForecastType: ParameterizedType =
         Types.newParameterizedType(List::class.java, SingleForecast::class.java)
@@ -43,47 +46,52 @@ class RoomTypeConverters {
         singleForecastJsonAdapter.toJson(currentWeatherDataClass)
 
     @TypeConverter
-    fun stringToAllergy(data: String): AllergyResponse? = allergyJsonAdapter.fromJson(data)
+    fun stringToAllergy(data: String): Allergy? = allergyJsonAdapter.fromJson(data)
+    @TypeConverter
+    fun allergyToString(allergy: Allergy?): String = allergyJsonAdapter.toJson(allergy)
+
 
     @TypeConverter
-    fun allergyToString(allergy: AllergyResponse?): String = allergyJsonAdapter.toJson(allergy)
-
+    fun stringToLunarForecast(data: String): Lunar? = lunarJsonAdapter.fromJson(data)
     @TypeConverter
-    fun stringToLunarForecast(data: String): LunarForecastResponse? = lunarJsonAdapter.fromJson(data)
-
-    @TypeConverter
-    fun lunarForecastToString(lunarForecast: LunarForecastResponse?): String =
+    fun lunarForecastToString(lunarForecast: Lunar?): String =
         lunarJsonAdapter.toJson(lunarForecast)
 
-    @TypeConverter
-    fun stringToArrayOfEachHourlyForecast(data: String): List<SingleForecast>? =
-        hourlyForecastJsonAdapter.fromJson(data)
 
     @TypeConverter
-    fun arrayOfEachHourlyForecastToString(listOfSingleForecast: List<SingleForecast>?): String =
+    fun stringToLocation(data: String): Location? = locationJsonAdapter.fromJson(data)
+    @TypeConverter
+    fun locationToString(location: Location?): String =
+        locationJsonAdapter.toJson(location)
+
+    @TypeConverter
+    fun stringToRecentLocation(data: String): LocalRecentLocation? = recentLocationJsonAdapter.fromJson(data)
+    @TypeConverter
+    fun recentLocationToString(recentLocation: LocalRecentLocation?): String =
+        recentLocationJsonAdapter.toJson(recentLocation)
+
+    @TypeConverter
+    fun stringToFavouriteLocation(data: String): LocalFavouriteLocation? =
+        favouriteLocationJsonAdapter.fromJson(data)
+    @TypeConverter
+    fun favouriteLocationToString(favouriteLocation: LocalFavouriteLocation): String =
+        favouriteLocationJsonAdapter.toJson(favouriteLocation)
+
+
+    @TypeConverter
+    fun stringToListOfHourlyForecast(data: String): List<SingleForecast>? =
+        hourlyForecastJsonAdapter.fromJson(data)
+    @TypeConverter
+    fun listOfHourlyForecastToString(listOfSingleForecast: List<SingleForecast>?): String =
         hourlyForecastJsonAdapter.toJson(listOfSingleForecast?.toList())
 
-    @TypeConverter
-    fun stringToArrayOfEachDailyForecast(data: String): List<DailyForecast>? =
-        dailyForecastJsonAdapter.fromJson(data)
 
     @TypeConverter
-    fun arrayOfEachDailyForecastToString(listOfDailyForecast: List<DailyForecast>?): String =
+    fun stringToListOfEachDailyForecast(data: String): List<DailyForecast>? =
+        dailyForecastJsonAdapter.fromJson(data)
+    @TypeConverter
+    fun listOfDailyForecastToString(listOfDailyForecast: List<DailyForecast>?): String =
         dailyForecastJsonAdapter.toJson(listOfDailyForecast?.toList())
 
-    @TypeConverter
-    fun favouritesLocationToString(favouritesSearchLocationResponse: SearchLocationResponse?): String =
-        searchLocationResponseJsonAdapter.toJson(favouritesSearchLocationResponse)
-
-    @TypeConverter
-    fun stringToFavouritesLocation(data: String): SearchLocationResponse? = searchLocationResponseJsonAdapter.fromJson(data)
-
-    @TypeConverter
-    fun stringToReverseGeoCodingLocation(data: String): ReverseGeoCodingLocation? =
-        reversedLocationJsonAdapter.fromJson(data)
-
-    @TypeConverter
-    fun reverseGeoCodingLocationToString(reversedLocation: ReverseGeoCodingLocation?): String =
-        reversedLocationJsonAdapter.toJson(reversedLocation)
 }
 

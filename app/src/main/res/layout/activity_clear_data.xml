@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16sdp"
         android:background="@drawable/create_widget_background"
-        android:onClick="clearData"
         android:padding="@dimen/_10sdp"
         android:text="@string/clear_data_plain_text"
         android:textAllCaps="false"

@@ -12,8 +12,8 @@ import androidx.annotation.StringRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.R
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import timber.log.Timber
 
 fun LiveData<Theme>.getWhiteOrBlackTextColor(context: Context?) =
@@ -22,7 +22,7 @@ fun LiveData<Theme>.getWhiteOrBlackTextColor(context: Context?) =
         else android.R.color.white
     ) ?: Color.WHITE
 
-fun Int.checkBuildVersion() = Build.VERSION.SDK_INT >= this
+fun checkBuildVersionFrom(minimumSdkVersion: Int) = Build.VERSION.SDK_INT >= minimumSdkVersion
 
 fun Context.getResColor(@ColorRes colorRes: Int) =
     ResourcesCompat.getColor(resources, colorRes, null)

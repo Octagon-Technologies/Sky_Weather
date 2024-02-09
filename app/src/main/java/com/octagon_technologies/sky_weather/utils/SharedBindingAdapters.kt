@@ -45,7 +45,7 @@ fun String.changeLunarTime(timeFormat: TimeFormat?): String {
 
     return if (timeFormat == TimeFormat.HALF_DAY) {
         if (hourIn24System <= 11)
-            "$this:$minutes am"
+            "$hourIn24System:$minutes am"
         else
             "${hourIn24System - 12}:$minutes pm"
     } else this

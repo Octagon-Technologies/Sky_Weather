@@ -37,6 +37,7 @@ class DailyForecastFragment : Fragment() {
 
     private val viewModel by viewModels<DailyForecastViewModel>()
     private lateinit var binding: DailyForecastFragmentBinding
+    private val mainActivity by lazy { requireActivity() as MainActivity }
 
     private lateinit var bottomSheet: BottomSheetBehavior<View>
     private val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -68,8 +69,10 @@ class DailyForecastFragment : Fragment() {
 
     private fun setUpSelectedDailyForecast() {
         viewModel.selectedDailyForecast.observe(viewLifecycleOwner) { selectedDailyForecast ->
-            binding.selectedDailyForecastLayout.dailyDateText.text = selectedDailyForecast.timeInMillis.getDayWithMonth()
-            binding.selectedDailyForecastLayout.tempUnitText.text = if (viewModel.units.value == Units.METRIC) "°C" else "°F"
+            binding.selectedDailyForecastLayout.dailyDateText.text =
+                selectedDailyForecast.timeInMillis.getDayWithMonth()
+            binding.selectedDailyForecastLayout.tempUnitText.text =
+                if (viewModel.units.value == Units.METRIC) "°C" else "°F"
         }
     }
 
@@ -93,8 +96,8 @@ class DailyForecastFragment : Fragment() {
         }
 
         val viewPager2 = binding.selectedDailyForecastLayout.layoutViewPager
-        viewPager2.adapter = MyFragmentStateAdapter()
         viewPager2.isSaveEnabled = false
+        viewPager2.adapter = MyFragmentStateAdapter()
 
 
         val tabConfigurationStrategy =
@@ -116,26 +119,32 @@ class DailyForecastFragment : Fragment() {
         bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 Timber.d("newState is $newState in onStateChanged()")
-
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    Timber.d("State is expanded.")
-//                    mainActivity.binding.navView.visibility = View.GONE
-                    changeSystemNavigationBarColor(
-                        if (viewModel.theme.value == Theme.LIGHT) android.R.color.white
-                        else R.color.dark_black
-                    )
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    Timber.d("State is collapsed.")
-//                    mainActivity.binding.navView.visibility = View.VISIBLE
-                    changeSystemNavigationBarColor(
-                        if (viewModel.theme.value == Theme.LIGHT) R.color.light_theme_blue
-                        else R.color.dark_theme_blue
-                    )
-                }
+                adjustNavViewBasedOnBottomSheetState(newState)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+    }
+
+    private fun adjustNavViewBasedOnBottomSheetState(newState: Int) {
+        if (newState == BottomSheetBehavior.STATE_EXPANDED ||
+            newState == BottomSheetBehavior.STATE_HALF_EXPANDED ||
+            newState == BottomSheetBehavior.STATE_DRAGGING
+        ) {
+            Timber.d("State is expanded.")
+            mainActivity.binding.navView.visibility = View.GONE
+            changeSystemNavigationBarColor(
+                if (viewModel.theme.value == Theme.LIGHT) android.R.color.white
+                else R.color.dark_black
+            )
+        } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+            Timber.d("State is collapsed.")
+            mainActivity.binding.navView.visibility = View.VISIBLE
+            changeSystemNavigationBarColor(
+                if (viewModel.theme.value == Theme.LIGHT) R.color.light_theme_blue
+                else R.color.dark_theme_blue
+            )
+        }
     }
 
     private fun setUpStatusCode() {
@@ -157,18 +166,19 @@ class DailyForecastFragment : Fragment() {
 
         viewModel.listOfDailyForecast.observe(viewLifecycleOwner) { listOfDailyForecast ->
             groupAdapter.update(
-                listOfDailyForecast.map { dailyForecast ->
+                listOfDailyForecast?.map { dailyForecast ->
                     EachDailyForecastItem(dailyForecast) {
                         viewModel.selectDailyForecast(it)
                         bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
                     }
-                }
+                } ?: listOf()
             )
         }
     }
 
     override fun onStart() {
         super.onStart()
+        adjustNavViewBasedOnBottomSheetState(bottomSheet.state)
 
         viewModel.theme.observe(viewLifecycleOwner) {
             addToolbarAndBottomNav(it, true)
@@ -179,15 +189,29 @@ class DailyForecastFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mainActivity.binding.navView.visibility = View.VISIBLE
+    }
+
     inner class MyFragmentStateAdapter : FragmentStateAdapter(this) {
         override fun getItemCount() = 2
 
         override fun createFragment(position: Int): Fragment {
             Timber.d("MyFragmentStateAdapter.position is $position")
-            return DailyTabFragment.getInstance(
+            val dailyTabFragment = DailyTabFragment.getInstance(
                 selectedTimePeriod = viewModel.selectedDailyForecast.map { if (position == 0) it.dayTime else it.nightTime },
-                provideSettingsRepo = viewModel.settingsRepo
             )
+            Timber.d("dailyTabFragment.timePeriod in createFragment() is ${dailyTabFragment.timePeriod.value}")
+
+            return dailyTabFragment
         }
+
+        override fun getItemId(position: Int): Long {
+            Timber.d("getItemId called")
+            return super.getItemId(position)
+        }
+
+
     }
 }

@@ -2,15 +2,11 @@ package com.octagon_technologies.sky_weather.repository.database.weather.daily
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.octagon_technologies.sky_weather.repository.database.BaseDao
 
 @Dao
-interface DailyWeatherDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocalDailyForecast(localDailyForecast: LocalDailyForecast)
-
+abstract class DailyWeatherDao: BaseDao<LocalDailyForecast> {
     @Query("SELECT * FROM localDailyForecast")
-    fun getLocalDailyForecast(): LiveData<LocalDailyForecast>
+    abstract fun getLocalDailyForecast(): LiveData<LocalDailyForecast?>
 }

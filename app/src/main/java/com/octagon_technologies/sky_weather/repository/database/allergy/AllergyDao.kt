@@ -2,15 +2,12 @@ package com.octagon_technologies.sky_weather.repository.database.allergy
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.octagon_technologies.sky_weather.repository.database.BaseDao
 
 @Dao
-interface AllergyDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLocalAllergy(localAllergy: LocalAllergy)
-
+abstract class AllergyDao: BaseDao<LocalAllergy> {
     @Query("SELECT * FROM localAllergy")
-    fun getLocalAllergy(): LiveData<LocalAllergy>
+    abstract fun getLocalAllergy(): LiveData<LocalAllergy?>
+
 }

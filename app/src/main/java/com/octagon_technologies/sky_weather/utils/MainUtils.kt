@@ -24,14 +24,10 @@ const val darkStatusIcons = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 const val whiteStatusIcons = 0
 
 enum class Units {
-    IMPERIAL {
-        override var value = "imperial"
-    },
-    METRIC {
-        override var value = "metric"
-    };
+    IMPERIAL,
+    METRIC;
 
-    open lateinit var value: String
+    fun getUrlParameter(): String = if (this == IMPERIAL) "imperial" else "metric"
 }
 
 enum class WindDirectionUnits { CARDINAL, DEGREES }
@@ -138,6 +134,7 @@ fun getBasicForecastConditions(
     return arrayOfWeatherDescriptions
 }
 
+
 fun getAdvancedForecastDescription(
     singleForecast: SingleForecast?,
     units: Units?,
@@ -150,13 +147,13 @@ fun getAdvancedForecastDescription(
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Dew Point",
-                "${singleForecast.dewPoint.toInt()}°"
+                "${singleForecast.dewPoint?.toInt() ?: "--"}°"
             )
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Pressure",
-                "${singleForecast.pressure.toInt()} ${if (units == Units.METRIC) "mbar" else "inHg"}"
+                "${singleForecast.pressure?.toInt() ?: "-- "} ${if (units == Units.METRIC) "mbar" else "inHg"}"
             )
         )
         arrayOfWeatherDescriptions.add(
@@ -168,7 +165,7 @@ fun getAdvancedForecastDescription(
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Visibility",
-                "${singleForecast.visibility}%"
+                "${singleForecast.visibility?.toInt() ?: "-- "}%"
             )
         )
         arrayOfWeatherDescriptions.add(

@@ -7,7 +7,7 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class WeatherCode(private val code: Int, private val rainProbability: Int) : Parcelable {
+data class WeatherCode(private val code: Int, private val rainProbability: Double?) : Parcelable {
     @IgnoredOnParcel
     private val codeMap = mapOf(
         0 to "Unknown",

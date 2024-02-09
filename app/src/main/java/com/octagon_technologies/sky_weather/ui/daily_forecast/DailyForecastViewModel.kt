@@ -3,14 +3,16 @@ package com.octagon_technologies.sky_weather.ui.daily_forecast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.octagon_technologies.sky_weather.domain.daily.DailyForecast
-import com.octagon_technologies.sky_weather.repository.repo.DailyForecastRepo
-import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.repository.network.lunar.models.LunarForecastResponse
+import com.octagon_technologies.sky_weather.repository.repo.DailyForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,13 +39,15 @@ class DailyForecastViewModel @Inject constructor(
     val statusCode: LiveData<StatusCode> = _statusCode
 
     init {
-        refreshDailyForecast()
-    }
-
-    private fun refreshDailyForecast() {
         viewModelScope.launch {
-            location.value?.let { location ->
-                dailyForecastRepo.getDailyForecastAsync(location, units.value)
+            listOfDailyForecast.asFlow().collectLatest { listOfDailyForecast ->
+                if (listOfDailyForecast != null)
+                    _selectedDailyForecast.value = listOfDailyForecast.first()
+            }
+
+            location.asFlow().collectLatest { location ->
+                if (location != null)
+                    dailyForecastRepo.refreshDailyForecast(location, units.value)
             }
         }
     }

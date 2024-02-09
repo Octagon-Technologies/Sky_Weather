@@ -24,7 +24,7 @@ class EachSearchResultItem(
 //        actualPosition = position
 
         binding.theme = theme
-        binding.searchCityName.text = location.displayName
+        binding.searchCityName.text = location.displayNameWithCountry
 
 
         binding.addToFavouritesBtn.setImageResource(

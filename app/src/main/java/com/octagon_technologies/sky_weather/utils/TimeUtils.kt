@@ -1,13 +1,14 @@
 package com.octagon_technologies.sky_weather.utils
 
+import org.joda.time.DateTimeFieldType
 import org.joda.time.Instant
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 fun getFirstLetterOfDay(stringTime: String?) =
     if (stringTime != null)
-        SimpleDateFormat("EEEE", Locale.getDefault()).format(Instant.parse(stringTime))
-            .first().toString()
+        Instant.parse(stringTime).toDateTime().dayOfWeek().asShortText.first().toString()
     else "-"
 
 fun String?.getDayOfWeek() =
@@ -18,16 +19,16 @@ fun String?.getDayOfWeek() =
 
 fun getDayOfMonth(stringTime: String?) =
     if (stringTime != null)
-        SimpleDateFormat("dd", Locale.getDefault()).format(Instant.parse(stringTime))
-            .toString()
+        Instant.parse(stringTime).toDateTime().dayOfMonth.toString()
     else "--"
 
-fun getFullMonth(stringTime: String?) =
-    if (stringTime != null)
-        SimpleDateFormat("MMMM", Locale.getDefault()).format(Instant.parse(stringTime))
-            .first().toString()
+fun getFullMonth(stringTime: String?): String {
+    Timber.d("stringTime in getFullMonth() is $stringTime")
+    return if (stringTime != null)
+        Instant.parse(stringTime).toDateTime().monthOfYear().asText
     else
         "-----"
+}
 
 fun Long.getHoursOfDay() =
     Instant.ofEpochMilli(this).toDateTime().hourOfDay
@@ -46,8 +47,8 @@ fun Long?.getHoursAndMinsWithDay(timeFormat: TimeFormat?): String =
             "${if (timeFormat == TimeFormat.FULL_DAY) "HH" else "hh"}:mm, EEEE",
             Locale.getDefault()
         ).format(Date(this))
-else
-    "--:--, ------"
+    else
+        "--:--, ------"
 
 /*
 Returns time in AM/PM or 24-hour format e.g 4:00 pm or 16:00 based on TimeFormat
@@ -65,17 +66,18 @@ fun String.getHoursAndMins(timeFormat: TimeFormat?): String {
 }
 
 fun Long.getHoursAndMins(timeFormat: TimeFormat?): String {
-    val date = Instant.ofEpochSecond(this).toDateTime()
-    val hoursOfDay = date.hourOfDay
-    val minuteOfHour = date.minuteOfHour()
+    val hourOfDay = with(Calendar.getInstance()) {
+        timeInMillis = this@getHoursAndMins
+        get(Calendar.HOUR_OF_DAY)
+    }
 
-    return if (timeFormat == TimeFormat.HALF_DAY) {
-        if (hoursOfDay <= 11)
-            "$hoursOfDay:$minuteOfHour am"
-        else
-            "${hoursOfDay - 12}:$minuteOfHour pm"
-    } else
-        "$hoursOfDay:$minuteOfHour"
+    val rawTime = SimpleDateFormat(
+        "${if (timeFormat == TimeFormat.FULL_DAY) "HH" else "hh"}:mm",
+        Locale.getDefault()
+    ).format(Date(this))
+
+    return if (timeFormat == TimeFormat.HALF_DAY) "$rawTime ${if (hourOfDay < 12) " am" else " pm"}"
+    else rawTime
 }
 
 fun Long.toLunarDateFormat(): String =
