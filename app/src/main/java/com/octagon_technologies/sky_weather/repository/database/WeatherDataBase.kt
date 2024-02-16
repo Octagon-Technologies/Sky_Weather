@@ -9,6 +9,8 @@ import com.octagon_technologies.sky_weather.repository.database.allergy.AllergyD
 import com.octagon_technologies.sky_weather.repository.database.allergy.LocalAllergy
 import com.octagon_technologies.sky_weather.repository.database.location.LocalLocation
 import com.octagon_technologies.sky_weather.repository.database.location.LocationDao
+import com.octagon_technologies.sky_weather.repository.database.location.current.CurrentLocationDao
+import com.octagon_technologies.sky_weather.repository.database.location.current.LocalCurrentLocation
 import com.octagon_technologies.sky_weather.repository.database.location.favorites.FavouriteLocationDao
 import com.octagon_technologies.sky_weather.repository.database.location.favorites.LocalFavouriteLocation
 import com.octagon_technologies.sky_weather.repository.database.location.recent.LocalRecentLocation
@@ -28,11 +30,12 @@ import com.octagon_technologies.sky_weather.repository.database.weather.hourly.L
         LocalDailyForecast::class,
         LocalRecentLocation::class,
         LocalLocation::class,
+        LocalCurrentLocation::class,
         LocalFavouriteLocation::class,
         LocalLunar::class,
         LocalAllergy::class,
         LocalHourlyForecast::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(value = [(RoomTypeConverters::class)])
@@ -46,6 +49,7 @@ abstract class WeatherDataBase : RoomDatabase() {
     abstract val dailyDao: DailyWeatherDao
 
     abstract val locationDao: LocationDao
+    abstract val currentLocationDao: CurrentLocationDao
     abstract val favouriteLocationDao: FavouriteLocationDao
     abstract val recentLocationDao: RecentLocationDao
 

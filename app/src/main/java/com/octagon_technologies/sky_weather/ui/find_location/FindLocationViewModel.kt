@@ -1,21 +1,25 @@
 package com.octagon_technologies.sky_weather.ui.find_location
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.single.BasePermissionListener
 import com.octagon_technologies.sky_weather.domain.Location
-import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.repository.repo.FavouriteLocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.RecentLocationsRepo
+import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,7 +29,8 @@ class FindLocationViewModel @Inject constructor(
     private val locationRepo: LocationRepo,
     private val favouriteLocationRepo: FavouriteLocationRepo,
     private val recentLocationsRepo: RecentLocationsRepo,
-    private val settingsRepo: SettingsRepo
+    private val settingsRepo: SettingsRepo,
+    @SuppressLint("StaticFieldLeak") @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     val theme = settingsRepo.theme
@@ -42,6 +47,32 @@ class FindLocationViewModel @Inject constructor(
     val favouriteLocationsList: LiveData<List<Location>> =
         favouriteLocationRepo.listOfFavouriteLocation
     val recentLocationsList: LiveData<List<Location>> = recentLocationsRepo.listOfRecentLocation
+
+    private val _navigateHome = MutableLiveData<Boolean?>()
+    val navigateHome: LiveData<Boolean?> = _navigateHome
+
+    init {
+        /*
+        We want to check if the user is currently using his/her location or choose a location in the search.
+        map. If he choose current location, fetch his current location
+         */
+        viewModelScope.launch {
+            location.asFlow().first { location ->
+                try {
+                    val saveLocationToDatabase = location?.isGps == true
+                    val isGpsOn = settingsRepo.isGpsOn.first()
+                    Timber.d("settingsRepo.isGpsOn.value is $isGpsOn and saveLocationToDatabase is $saveLocationToDatabase")
+
+                    if (isGpsOn)
+                        locationRepo.useGPSLocation(context, saveLocationToDatabase)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+
+                true
+            }
+        }
+    }
 
     fun setIsLoadingAsFalse() {
         if (isLoading.value == true) {
@@ -72,13 +103,15 @@ class FindLocationViewModel @Inject constructor(
      */
     fun setNewLocation(location: Location) {
         viewModelScope.launch {
-//            (activity as? MainActivity)?.hasNotificationChanged = false
-            locationRepo.insertLocalLocation(location)
+            launch { recentLocationsRepo.insertLocalRecentLocation(location) }
+            launch { locationRepo.insertLocalLocation(location) }
+
+            _navigateHome.value = true
         }
     }
 
-    fun useGPSLocation(context: Context) {
-        locationRepo.useGPSLocation(context)
+    fun useAndSaveGPSLocation(context: Context) {
+        locationRepo.useGPSLocation(context, true)
     }
 
     fun checkIfPermissionIsGranted(context: Context) {
@@ -90,7 +123,10 @@ class FindLocationViewModel @Inject constructor(
             .withListener(object : BasePermissionListener() {
                 override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
                     Timber.d("onPermissionGranted called")
-                    useGPSLocation(context)
+                    viewModelScope.launch {
+                        useAndSaveGPSLocation(context)
+                        settingsRepo.changeIsGpsOn(true)
+                    }
                 }
 
                 override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
@@ -102,5 +138,9 @@ class FindLocationViewModel @Inject constructor(
                 Timber.e(it.toString())
             }
             .check()
+    }
+
+    fun onNavigateHomeDone() {
+        _navigateHome.value = null
     }
 }

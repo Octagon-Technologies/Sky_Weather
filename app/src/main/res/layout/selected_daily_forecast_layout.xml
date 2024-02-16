@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         app:elevation="8dp"
         android:layout_height="match_parent"
-        android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
-        tools:background="#FFFFFF">
+        android:theme="@style/AppTheme.SelectedLayout"
+        android:background="?attr/colorSecondary">
 
         <View
             android:id="@+id/top_bar_line"
@@ -38,13 +38,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_14sdp"
             android:fontFamily="@font/roboto_medium"
-            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_bar_line"
-            tools:text="Monday, October 12"
-            tools:textColor="@color/dark_black" />
+            tools:text="Monday, October 12"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/layout_view_pager"
@@ -70,7 +68,9 @@
             app:tabPaddingEnd="@dimen/_50sdp"
             app:tabPaddingStart="@dimen/_50sdp"
             app:tabTextAppearance="@style/CustomTabItem"
-            tools:tabTextColor="@color/dark_black">
+            app:tabIndicatorColor="@color/dark_theme_blue"
+            app:tabTextColor="?attr/colorOnSecondary"
+            app:tabIndicatorFullWidth="true">
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/day_tab_item"
@@ -92,13 +92,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/coda"
-            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toBottomOf="@+id/daily_date_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/daily_date_text"
-            tools:text="@string/hourly_forecast_temp_unit_C"
-            tools:textColor="@color/dark_black" />
+            tools:text="@string/hourly_forecast_temp_unit_C" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

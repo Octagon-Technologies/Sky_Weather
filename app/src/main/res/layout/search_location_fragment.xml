@@ -45,6 +45,7 @@
                 android:drawablePadding="@dimen/_10sdp"
                 android:importantForAutofill="no"
                 android:inputType="text"
+                android:textCursorDrawable="@drawable/color_drawable"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/dark_black"
                 android:textColorHint="@color/dark_black"

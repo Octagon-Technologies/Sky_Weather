@@ -156,6 +156,7 @@ class DailyForecastFragment : Fragment() {
             }
 
             showLongToast(message)
+            viewModel.onStatusCodeDisplayed()
         }
     }
 
@@ -187,11 +188,6 @@ class DailyForecastFragment : Fragment() {
                 else R.color.dark_theme_blue
             )
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mainActivity.binding.navView.visibility = View.VISIBLE
     }
 
     inner class MyFragmentStateAdapter : FragmentStateAdapter(this) {

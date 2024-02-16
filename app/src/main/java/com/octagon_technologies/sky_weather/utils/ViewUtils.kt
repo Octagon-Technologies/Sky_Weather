@@ -16,12 +16,6 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import timber.log.Timber
 
-fun LiveData<Theme>.getWhiteOrBlackTextColor(context: Context?) =
-    context?.getResColor(
-        if (value == Theme.LIGHT) R.color.dark_black
-        else android.R.color.white
-    ) ?: Color.WHITE
-
 fun checkBuildVersionFrom(minimumSdkVersion: Int) = Build.VERSION.SDK_INT >= minimumSdkVersion
 
 fun Context.getResColor(@ColorRes colorRes: Int) =
@@ -81,15 +75,11 @@ fun Activity.changeStatusBarIcons(isWhite: Boolean) {
 }
 
 fun Activity.changeStatusBarColor(@ColorRes colorRes: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        window?.statusBarColor = getResColor(colorRes)
-    }
+    window?.statusBarColor = getResColor(colorRes)
 }
 
 fun Activity.changeSystemNavigationBarColor(@ColorRes colorRes: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        window?.navigationBarColor = getResColor(colorRes)
-    }
+    window?.navigationBarColor = getResColor(colorRes)
 }
 
 fun Fragment.changeSystemNavigationBarColor(@ColorRes colorRes: Int) {

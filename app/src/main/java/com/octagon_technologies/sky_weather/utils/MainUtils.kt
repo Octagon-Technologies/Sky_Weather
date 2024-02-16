@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.RequiresApi
 import com.octagon_technologies.sky_weather.domain.SingleForecast
+import com.octagon_technologies.sky_weather.domain.getBasicFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedCloudCeiling
 import com.octagon_technologies.sky_weather.domain.getFormattedCloudCover
 import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
@@ -28,6 +29,7 @@ enum class Units {
     METRIC;
 
     fun getUrlParameter(): String = if (this == IMPERIAL) "imperial" else "metric"
+    fun getUnitSymbol(): String = if (this == IMPERIAL) "F" else "C"
 }
 
 enum class WindDirectionUnits { CARDINAL, DEGREES }
@@ -55,39 +57,6 @@ interface CustomTextWatcher : TextWatcher {
     override fun afterTextChanged(s: Editable?) {}
 }
 
-fun String.capitalizeWordsWithUnderscore(): String {
-    return this.split("_").joinToString(" ") { it.capitalize(Locale.getDefault()) }
-}
-
-fun ReverseGeoCodingLocation?.getDisplayLocation(): String {
-    if (this.isNull()) return "--"
-    return if (
-        this?.reverseGeoCodingAddress?.suburb.isNull() ||
-        this?.reverseGeoCodingAddress?.city.isNull()
-    ) "${
-        this?.reverseGeoCodingAddress?.let {
-            when {
-                it.suburb != null -> it.suburb
-                it.city != null -> it.city
-                displayName != null -> displayName.split(",")[0].capitalize(Locale.getDefault())
-                else -> "--"
-            }
-        } ?: "--"
-    }, ${this?.reverseGeoCodingAddress?.countryCode?.toUpperCase(Locale.getDefault()) ?: "--"}"
-    else "${this?.reverseGeoCodingAddress?.suburb}, ${this?.reverseGeoCodingAddress?.city}"
-}
-
-fun ReverseGeoCodingLocation?.getCoordinates(): Coordinates? =
-    try {
-        Coordinates(
-            this?.lon?.toDouble()!!,
-            this.lat?.toDouble()!!
-        )
-    } catch (npe: NullPointerException) {
-        null
-    }
-
-
 fun getBasicForecastConditions(
     singleForecast: SingleForecast?,
     units: Units?,
@@ -103,7 +72,13 @@ fun getBasicForecastConditions(
     arrayOfWeatherDescriptions.add(
         EachWeatherDescription(
             "FeelsLike Temperature",
-            singleForecast.getFormattedFeelsLike()
+            singleForecast.getBasicFeelsLike()
+        )
+    )
+    arrayOfWeatherDescriptions.add(
+        EachWeatherDescription(
+            "Rain Probability",
+            "${(singleForecast?.weatherCode?.rainProbability?.toInt() ?: 0)}%"
         )
     )
     arrayOfWeatherDescriptions.add(

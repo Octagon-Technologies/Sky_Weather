@@ -12,12 +12,13 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
 import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.utils.StatusCode
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
 import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.utils.getStringResource
-import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.octagon_technologies.sky_weather.utils.showLongToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +27,8 @@ class CurrentForecastFragment : Fragment() {
 
     private lateinit var binding: CurrentForecastFragmentBinding
     private val viewModel by viewModels<CurrentForecastViewModel>()
+
+    private val mainActivity by lazy { requireActivity() as MainActivity }
 //    private val adHelper by adHelpers()
 
     override fun onCreateView(
@@ -56,6 +59,7 @@ class CurrentForecastFragment : Fragment() {
             if (currentForecast != null) {
                 binding.mainTemp.text = currentForecast.getFormattedTemp()
                 binding.mainRealfeelDisplayText.text = currentForecast.getFormattedFeelsLike()
+                binding.mainWeatherImage.loadWeatherIcon(currentForecast.timeInMillis, currentForecast.weatherCode)
             }
         }
     }
@@ -88,18 +92,18 @@ class CurrentForecastFragment : Fragment() {
         viewModel.oneHourForecast.observe(viewLifecycleOwner) { oneHourForecast ->
             binding.oneHourTempText.text = oneHourForecast.getFormattedTemp()
             binding.oneHourFeelslikeDisplayText.text = oneHourForecast.getFormattedFeelsLike()
-            binding.oneHourWeatherImage.getWeatherIconFrom(oneHourForecast?.weatherCode)
+            binding.oneHourWeatherImage.loadWeatherIcon(oneHourForecast?.timeInMillis, oneHourForecast?.weatherCode)
         }
         viewModel.sixHourForecast.observe(viewLifecycleOwner) { sixHourForecast ->
             binding.sixHourTempText.text = sixHourForecast.getFormattedTemp()
             binding.sixHourFeelslikeDisplayText.text = sixHourForecast.getFormattedFeelsLike()
-            binding.sixHourWeatherImage.getWeatherIconFrom(sixHourForecast?.weatherCode)
+            binding.sixHourWeatherImage.loadWeatherIcon(sixHourForecast?.timeInMillis, sixHourForecast?.weatherCode)
         }
         viewModel.twentyFourHourForecast.observe(viewLifecycleOwner) { twentyFourHourForecast ->
             binding.twentyFourTempText.text = twentyFourHourForecast.getFormattedTemp()
             binding.twentyFourFeelslikeDisplayText.text =
                 twentyFourHourForecast.getFormattedFeelsLike()
-            binding.twentyFourWeatherImage.getWeatherIconFrom(twentyFourHourForecast?.weatherCode)
+            binding.twentyFourWeatherImage.loadWeatherIcon(twentyFourHourForecast?.timeInMillis, twentyFourHourForecast?.weatherCode)
         }
     }
 
@@ -112,23 +116,18 @@ class CurrentForecastFragment : Fragment() {
             }
 
             showLongToast(message)
+            viewModel.onStatusCodeDisplayed()
         }
     }
-
-//    private fun setUpAd() {
-//        adHelper.loadAd(binding.adView) {
-//            Timber.d("Load ad listener return $it")
-//            // If it failed in onAdFailedToLoad(), hide the ad view
-//            if (!it) {
-//                binding.adView.root.visibility = View.GONE
-//            }
-//        }
-//    }
 
     override fun onStart() {
         super.onStart()
         viewModel.theme.observe(viewLifecycleOwner) {
             addToolbarAndBottomNav(it)
+
+            // In Selected Hourly and Daily forecast, the navView is usually removed
+            mainActivity.binding.navView.visibility = View.VISIBLE
+
             changeSystemNavigationBarColor(
                 if (it == Theme.LIGHT) R.color.light_theme_blue
                 else R.color.dark_theme_blue

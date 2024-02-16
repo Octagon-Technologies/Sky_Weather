@@ -15,10 +15,18 @@ import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.LunarRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.catchNetworkErrors
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import timber.log.Timber
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -40,32 +48,50 @@ class CurrentForecastViewModel @Inject constructor(
 
     val location = locationRepo.location
     val currentForecast = currentForecastRepo.currentForecast
-//    val allergyForecast = allergyRepo.allergy
+
+    //    val allergyForecast = allergyRepo.allergy
     val lunarForecast = lunarRepo.currentLunar
 
     val oneHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it?.getOrNull(0) }
     val sixHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it?.getOrNull(5) }
     val twentyFourHourForecast = hourlyForecastRepo.listOfHourlyForecast.map { it?.getOrNull(23) }
 
-    private var _statusCode = MutableLiveData<StatusCode>()
-    val statusCode: LiveData<StatusCode> = _statusCode
+    private var _statusCode = MutableLiveData<StatusCode?>()
+    val statusCode: LiveData<StatusCode?> = _statusCode
 
     private val _isRefreshing = MutableLiveData(false)
     val isRefreshing: LiveData<Boolean> = _isRefreshing
 
     init {
         viewModelScope.launch {
-            location.asFlow().collectLatest { location ->
-                if (location != null) {
-                    currentForecastRepo.refreshCurrentForecast(location, units.value)
-                    hourlyForecastRepo.refreshHourlyForecast(location, units.value)
-                    lunarRepo.refreshCurrentLunarForecast(location)
+            launch {
+                location.asFlow().collectLatest { location ->
+                    try {
+                        _statusCode.catchNetworkErrors {
+                            if (location != null) {
+                                currentForecastRepo.refreshCurrentForecast(location, units.value)
+                                hourlyForecastRepo.refreshHourlyForecast(location, units.value)
+                                lunarRepo.refreshCurrentLunarForecast(location)
 //                    allergyRepo.refreshAllergyForecast(location)
 
-                    updateNotification(location)
+//                        updateNotification(location)
+                            }
+                        }
+                    }  finally {
+                        _isRefreshing.value = false
+                    }
+//            refreshWeatherForecast()
                 }
             }
-//            refreshWeatherForecast()
+
+            launch {
+                currentForecast.asFlow().collectLatest { currentForecast ->
+                    currentForecast?.let {
+                        // If a forecast was fetched, it means we definitely have the location
+                        updateNotification(location.value!!)
+                    }
+                }
+            }
         }
     }
 
@@ -76,12 +102,12 @@ class CurrentForecastViewModel @Inject constructor(
             location.value?.let {
                 _isRefreshing.value = true
                 try {
-//                    currentForecastRepo.refreshCurrentForecast(it, settingsRepo.units.value)
-//                    hourlyForecastRepo.refreshHourlyForecast(it, settingsRepo.units.value)
-//                    allergyRepo.refreshAllergyForecast(it)
-//                    lunarRepo.refreshCurrentLunarForecast(it)
+                    currentForecastRepo.refreshCurrentForecast(it, settingsRepo.units.value)
+                    hourlyForecastRepo.refreshHourlyForecast(it, settingsRepo.units.value)
+                    allergyRepo.refreshAllergyForecast(it)
+                    lunarRepo.refreshCurrentLunarForecast(it)
 
-                    updateNotification(it)
+//                    updateNotification(it)
                 } catch (http: HttpException) {
                     _statusCode.value = StatusCode.ApiLimitExceeded
                 } catch (unknown: UnknownHostException) {
@@ -93,13 +119,23 @@ class CurrentForecastViewModel @Inject constructor(
         }
     }
 
-    private fun updateNotification(it: Location) {
-        if (settingsRepo.isNotificationAllowed.value == true)
+    private suspend fun updateNotification(it: Location) {
+        Timber.d("updateNotification called")
+        Timber.d("with settingsRepo.isNotificationAllowed.value as ${settingsRepo.isNotificationAllowedFlow.first()}")
+
+        if (settingsRepo.isNotificationAllowedFlow.first()) {
+            Timber.d("updateNotification called in if statement")
+
             customNotificationCompat.createNotification(
                 singleForecast = currentForecast.value,
                 location = it,
                 timeFormat = timeFormat.value,
                 units = units.value
             )
+        }
+    }
+
+    fun onStatusCodeDisplayed() {
+        _statusCode.value = null
     }
 }

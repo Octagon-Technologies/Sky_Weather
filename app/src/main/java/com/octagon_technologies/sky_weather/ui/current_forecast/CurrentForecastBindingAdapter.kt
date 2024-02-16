@@ -9,7 +9,6 @@ import com.octagon_technologies.sky_weather.domain.Lunar
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.EachCurrentForecastAllergyItem
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
-import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import com.octagon_technologies.sky_weather.utils.getBasicForecastConditions
@@ -65,14 +64,12 @@ fun RecyclerView.getCurrentAllergyForecast(allergy: Allergy?) {
 @BindingAdapter(
     "setUpCurrentConditions",
     "addWindDirectionForCurrentConditions",
-    "addUnitsForCurrentConditions",
-    "addThemeForCurrentConditions"
+    "addUnitsForCurrentConditions"
 )
 fun RecyclerView.setUpCurrentConditions(
     singleForecast: SingleForecast?,
     windDirectionUnits: WindDirectionUnits?,
-    units: Units?,
-    theme: Theme?
+    units: Units?
 ) {
     val groupAdapter = GroupAdapter<GroupieViewHolder>()
     adapter = groupAdapter
@@ -85,8 +82,7 @@ fun RecyclerView.setUpCurrentConditions(
         arrayOfWeatherDescriptions.map { eachWeatherDescription ->
             MiniForecastDescription(
                 isLastItem = arrayOfWeatherDescriptions.indexOf(eachWeatherDescription) == lastIndex,
-                eachWeatherDescription = eachWeatherDescription,
-                theme = null
+                eachWeatherDescription = eachWeatherDescription
             )
         }
     )

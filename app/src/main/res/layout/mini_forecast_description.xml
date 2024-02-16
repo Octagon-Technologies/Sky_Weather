@@ -12,17 +12,13 @@
         <variable
             name="eachWeatherDescription"
             type="com.octagon_technologies.sky_weather.models.EachWeatherDescription" />
-
-        <variable
-            name="theme"
-            type="com.octagon_technologies.sky_weather.utils.Theme" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/AppTheme.SelectedLayout"
         android:background="@android:color/transparent"
-        tools:background="@color/dark_theme_blue"
         android:paddingTop="@dimen/_12sdp">
 
         <View
@@ -31,7 +27,7 @@
             android:layout_height="@dimen/_1sdp"
             android:layout_marginTop="@dimen/_12sdp"
             tools:background="@color/light_white"
-            android:background="@{theme == Theme.DARK ? @color/default_navbar_color : @color/light_white }"
+            android:background="?attr/colorPrimaryVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description_name" />
@@ -40,26 +36,22 @@
             android:id="@+id/description_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/advent_pro_semibold"
             android:text="@{eachWeatherDescription.descriptionName ?? `--`}"
-            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
-            android:textSize="@dimen/_14ssp"
+            android:textSize="@dimen/_16ssp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Temperature"
-            tools:textColor="@android:color/white" />
+            tools:text="Temperature" />
 
         <TextView
             android:id="@+id/description_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="@font/cabin_medium"
             android:text="@{eachWeatherDescription.descriptionData}"
-            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="23°"
-            tools:textColor="@android:color/white" />
+            tools:text="23°" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

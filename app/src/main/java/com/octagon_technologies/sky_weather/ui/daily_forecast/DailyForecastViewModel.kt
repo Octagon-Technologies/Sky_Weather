@@ -35,19 +35,23 @@ class DailyForecastViewModel @Inject constructor(
     val lunarForecast: LiveData<LunarForecastResponse>
         get() = _lunarForecast
 
-    private var _statusCode = MutableLiveData<StatusCode>()
-    val statusCode: LiveData<StatusCode> = _statusCode
+    private var _statusCode = MutableLiveData<StatusCode?>()
+    val statusCode: LiveData<StatusCode?> = _statusCode
 
     init {
         viewModelScope.launch {
-            listOfDailyForecast.asFlow().collectLatest { listOfDailyForecast ->
-                if (listOfDailyForecast != null)
-                    _selectedDailyForecast.value = listOfDailyForecast.first()
+            launch {
+                listOfDailyForecast.asFlow().collectLatest { listOfDailyForecast ->
+                    if (listOfDailyForecast != null)
+                        _selectedDailyForecast.value = listOfDailyForecast.first()
+                }
             }
 
-            location.asFlow().collectLatest { location ->
-                if (location != null)
-                    dailyForecastRepo.refreshDailyForecast(location, units.value)
+            launch {
+                location.asFlow().collectLatest { location ->
+                    if (location != null)
+                        dailyForecastRepo.refreshDailyForecast(location, units.value)
+                }
             }
         }
     }
@@ -56,6 +60,9 @@ class DailyForecastViewModel @Inject constructor(
         _selectedDailyForecast.value = dailyForecast
     }
 
+    fun onStatusCodeDisplayed() {
+        _statusCode.value = null
+    }
 //    fun getSelectedDailyForecast(
 //        coordinates: Coordinates,
 //        eachDailyForecast: EachDailyForecast,

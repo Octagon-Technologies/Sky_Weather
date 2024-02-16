@@ -20,6 +20,8 @@ data class SingleForecast(
 ) : Parcelable
 
 fun SingleForecast?.getFormattedTemp(): String = (this?.temp?.toInt()?.toString() ?: "--") + "°"
+
+fun SingleForecast?.getBasicFeelsLike(): String = (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
 fun SingleForecast?.getFormattedFeelsLike(): String = "FeelsLike " +  (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
 fun SingleForecast?.getFormattedHumidity(): String =  (this?.humidity?.toInt()?.toString() ?: "--") + "%"
 fun SingleForecast?.getFormattedCloudCover(): String =  (this?.cloudCover?.toInt()?.toString() ?: "--") + "%"

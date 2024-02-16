@@ -12,12 +12,13 @@ import com.octagon_technologies.sky_weather.domain.daily.getFormattedCloudCover
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedHumidity
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedTemp
+import com.octagon_technologies.sky_weather.domain.getWeatherTitle
 import com.octagon_technologies.sky_weather.models.EachWeatherDescription
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
 import com.octagon_technologies.sky_weather.utils.Units
-import com.octagon_technologies.sky_weather.utils.changeWeatherIconTint
 import com.octagon_technologies.sky_weather.utils.isLastIndex
+import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,10 +73,7 @@ class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
             Timber.d("timePeriod.observe called with $timePeriod")
             binding.selectedDayTemp.text = timePeriod.getFormattedTemp()
             binding.selectedDayHumidityText.text = "Humidity: ${timePeriod.getFormattedHumidity()}"
-            binding.selectedDayWeatherIcon.changeWeatherIconTint(
-                settingsRepo.theme.value,
-                timePeriod.isDay
-            )
+            binding.selectedDayWeatherIcon.loadWeatherIcon(timePeriod.isDay, timePeriod.weatherCode)
             binding.selectedDayWeatherStatus.text = timePeriod.weatherCode.getWeatherTitle()
 
             binding.selectedSunHours.text = timePeriod.lunar.getSunHoursFull()
@@ -128,8 +126,7 @@ class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
                 dailyConditions.map {
                     MiniForecastDescription(
                         dailyConditions.isLastIndex(it),
-                        it,
-                        settingsRepo.theme.value
+                        it
                     )
                 }
             )

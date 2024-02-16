@@ -2,6 +2,7 @@ package com.octagon_technologies.sky_weather.ui.hourly_forecast
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -10,6 +11,7 @@ import com.octagon_technologies.sky_weather.databinding.HourlyForecastFragmentBi
 import com.octagon_technologies.sky_weather.databinding.SelectedHourlyForecastLayoutBinding
 import com.octagon_technologies.sky_weather.domain.getFormattedHumidity
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
+import com.octagon_technologies.sky_weather.domain.getWeatherTitle
 import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.HeaderMiniHourlyForecast
@@ -22,8 +24,9 @@ import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.utils.getAdvancedForecastDescription
 import com.octagon_technologies.sky_weather.utils.getHoursAndMinsWithDay
 import com.octagon_technologies.sky_weather.utils.getStringResource
-import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.octagon_technologies.sky_weather.utils.isLastIndex
+import com.octagon_technologies.sky_weather.utils.setUpToastMessage
 import com.octagon_technologies.sky_weather.utils.showLongToast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -59,11 +62,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
     }
 
     private fun setUpSelectedLayout() {
-        selectedHourlyForecastBinding = binding.selectedHourlyForecastLayout.also {
-            it.lifecycleOwner = viewLifecycleOwner
-            it.theme = viewModel.theme
-        }
-
+        selectedHourlyForecastBinding = binding.selectedHourlyForecastLayout
         setUpSelectedHourlyRecyclerView()
 
         selectedHourlyForecastBinding.hourlyTempUnit.text =
@@ -72,10 +71,10 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
         viewModel.selectedSingleForecast.observe(viewLifecycleOwner) { selectedSingleForecast ->
             selectedHourlyForecastBinding.apply {
                 weatherStatus.text = selectedSingleForecast.weatherCode.getWeatherTitle()
-                weatherImage.getWeatherIconFrom(selectedSingleForecast.weatherCode)
+                weatherImage.loadWeatherIcon(selectedSingleForecast?.timeInMillis, selectedSingleForecast?.weatherCode)
 
                 tempText.text = selectedSingleForecast.getFormattedTemp()
-                selectedHourlyHumidity.text = "Humidity: ${selectedSingleForecast.getFormattedHumidity()}"
+                selectedHourlyHumidity.text = resources.getString(R.string.humidity_format, selectedSingleForecast.getFormattedHumidity())
                 selectedHourlyDateText.text = selectedSingleForecast.timeInMillis.getHoursAndMinsWithDay(viewModel.timeFormat.value)
             }
         }
@@ -101,8 +100,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
                 selectedForecastGroupAdapter.add(
                     MiniForecastDescription(
                         isLastItem = listOfForecastDescription.isLastIndex(it),
-                        eachWeatherDescription = it,
-                        theme = viewModel.theme.value
+                        eachWeatherDescription = it
                     )
                 )
             }
@@ -170,20 +168,9 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
     }
 
     private fun setUpStatusCode() {
-        viewModel.statusCode.observe(viewLifecycleOwner) {
-            val message = when (it ?: return@observe) {
-                StatusCode.Success -> return@observe
-                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
-                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
-            }
-
-            showLongToast(message)
+        viewModel.statusCode.setUpToastMessage(this) {
+            viewModel.onStatusCodeDisplayed()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mainActivity.binding.navView.visibility = View.VISIBLE
     }
 
     override fun onStart() {

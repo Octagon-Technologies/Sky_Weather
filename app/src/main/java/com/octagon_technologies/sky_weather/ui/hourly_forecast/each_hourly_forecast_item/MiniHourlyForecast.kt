@@ -10,6 +10,7 @@ import com.octagon_technologies.sky_weather.domain.getFormattedTemp
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.getHoursAndMins
 import com.octagon_technologies.sky_weather.utils.getHoursOfDay
+import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.xwray.groupie.databinding.BindableItem
 import timber.log.Timber
 
@@ -29,13 +30,7 @@ class MiniHourlyForecast(
 
         binding.tempText.text = hourlyForecast.getFormattedTemp()
         binding.feelsLikeText.text = hourlyForecast.getFormattedFeelsLike()
-
-        val hrs = hourlyForecast.timeInMillis.getHoursOfDay()
-        val isDay = hrs in 6..19
-        binding.weatherIcon.setImageResource(
-            if (isDay) R.drawable.yellow_sun
-            else R.drawable.moon
-        )
+        binding.weatherIcon.loadWeatherIcon(hourlyForecast.timeInMillis, hourlyForecast.weatherCode )
     }
 
     override fun getLayout(): Int = R.layout.each_hourly_forecast_item

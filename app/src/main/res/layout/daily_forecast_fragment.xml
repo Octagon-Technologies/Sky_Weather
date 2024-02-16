@@ -10,9 +10,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:theme="@style/AppTheme.WhiteTextColor"
-            tools:background="@color/dark_theme_blue"
+            android:theme="@style/AppTheme"
             tools:context=".ui.daily_forecast.DailyForecastFragment">
 
 

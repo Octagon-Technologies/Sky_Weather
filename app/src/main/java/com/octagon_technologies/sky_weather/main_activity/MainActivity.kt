@@ -1,10 +1,14 @@
 package com.octagon_technologies.sky_weather.main_activity
 
 import android.annotation.SuppressLint
+import android.app.UiModeManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
@@ -27,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        setUpDarkMode()
         setUpStatusBarAndNavigationBar()
 
         ActivityOptionsCompat.makeCustomAnimation(
@@ -36,8 +41,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.lifecycleOwner = this
-        binding.theme = viewModel.theme
 
         binding.locationName.setOnClickListener { navController.navigate(R.id.findLocationFragment) }
         binding.menuBtn.setOnClickListener { navController.navigate(R.id.settingsFragment) }
@@ -48,9 +51,46 @@ class MainActivity : AppCompatActivity() {
             if (location == null)
                 navController.navigate(R.id.findLocationFragment)
             else
-                binding.locationName.text = location.displayNameWithoutCountryCode
+                binding.locationName.text = location.displayName
         }
     }
+
+
+    private fun setUpDarkMode() {
+        viewModel.theme.observe(this@MainActivity) { theme ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                setUpDarkModeForAndroidS(theme)
+            } else {
+                setUpDarkModeCompat(theme)
+            }
+        }
+    }
+
+    private fun setUpDarkModeCompat(theme: Theme) {
+        val appCompatDelegate = AppCompatDelegate.create(this@MainActivity, null)
+        appCompatDelegate.localNightMode = when (theme) {
+            Theme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+            Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+//            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun setUpDarkModeForAndroidS(uiMode: Theme) {
+        val uiModeManager =
+            baseContext.getSystemService(UI_MODE_SERVICE) as UiModeManager
+
+        when (uiMode) {
+            Theme.LIGHT ->
+                uiModeManager.setApplicationNightMode(UiModeManager.MODE_NIGHT_NO)
+
+            Theme.DARK ->
+                uiModeManager.setApplicationNightMode(UiModeManager.MODE_NIGHT_YES)
+//            else ->
+//                uiModeManager.setApplicationNightMode(UiModeManager.MODE_NIGHT_AUTO)
+        }
+    }
+
 
     override fun onSupportNavigateUp() = navController.navigateUp()
 

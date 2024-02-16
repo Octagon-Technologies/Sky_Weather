@@ -3,25 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <import type="androidx.lifecycle.LiveData" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
-
-        <variable
-            name="theme"
-            type="LiveData&lt;Theme&gt;" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:elevation="8dp"
-        android:background="@{theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
-        android:theme="@style/AppTheme.BlackTextColor"
-        tools:background="@color/dark_black"
-        tools:theme="@style/AppTheme.WhiteTextColor">
+        android:theme="@style/AppTheme.SelectedLayout"
+        android:background="?attr/colorSecondary">
 
         <View
             android:id="@+id/top_bar_line"
@@ -39,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/roboto_medium"
-            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             android:textSize="@dimen/_14ssp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +64,7 @@
                     app:layout_constraintHorizontal_bias="0.4"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@drawable/yellow_sun" />
+                    tools:srcCompat="@drawable/_10000_clear_large" />
 
                 <TextView
                     android:id="@+id/temp_text"
@@ -86,7 +72,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:fontFamily="@font/coda"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_36ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/weather_image"
                     app:layout_constraintStart_toEndOf="@+id/weather_image"
@@ -95,14 +80,13 @@
 
                 <ImageView
                     android:id="@+id/rain_drop_image"
-                    changeIconTintFromTint="@{theme}"
                     android:layout_width="@dimen/_16sdp"
                     android:layout_height="@dimen/_16sdp"
                     android:layout_marginTop="@dimen/_14sdp"
                     app:layout_constraintStart_toStartOf="@+id/weather_image"
                     app:layout_constraintTop_toBottomOf="@+id/weather_image"
                     app:srcCompat="@drawable/drop"
-                    tools:tint="@android:color/white" />
+                    app:tint="?attr/colorOnPrimary"/>
 
                 <TextView
                     android:id="@+id/selected_hourly_humidity"
@@ -110,7 +94,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_6sdp"
                     android:fontFamily="@font/advent_pro_medium"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/rain_drop_image"
                     app:layout_constraintStart_toEndOf="@+id/rain_drop_image"
@@ -123,7 +106,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/coda"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
                     android:textSize="@dimen/_14ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -150,6 +132,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
+                    tools:listitem="@layout/mini_forecast_description"
                     android:paddingBottom="@dimen/_24sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -168,7 +151,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_14sdp"
-            android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
             app:layout_constraintBottom_toBottomOf="@+id/selected_hourly_date_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/selected_hourly_date_text"

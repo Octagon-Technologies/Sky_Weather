@@ -10,8 +10,8 @@ data class Location(
     val countryCode: String,
     val isGps: Boolean = false
 ) {
-    val key = "$lat$lon"
-    val displayName = displayNameWithoutCountryCode + "," + countryCode.uppercase()
+    val key = "_$lat$lon"
+    val displayName = displayNameWithoutCountryCode + ", " + countryCode.uppercase()
     val displayNameWithCountry = "$displayNameWithoutCountryCode, ${country.capitalize()}"
 
     fun getCoordinates() = "$lat,$lon"

@@ -10,6 +10,7 @@ import com.octagon_technologies.sky_weather.repository.repo.HourlyForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.catchNetworkErrors
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -34,8 +35,8 @@ class HourlyForecastViewModel @Inject constructor(
     private val _selectedSingleForecast = MutableLiveData<SingleForecast>()
     val selectedSingleForecast: LiveData<SingleForecast> = _selectedSingleForecast
 
-    private var _statusCode = MutableLiveData<StatusCode>()
-    val statusCode: LiveData<StatusCode> = _statusCode
+    private var _statusCode = MutableLiveData<StatusCode?>()
+    val statusCode: LiveData<StatusCode?> = _statusCode
 
     init {
         viewModelScope.launch {
@@ -47,7 +48,9 @@ class HourlyForecastViewModel @Inject constructor(
 
             location.asFlow().collectLatest { location ->
                 if (location != null)
-                    hourlyForecastRepo.refreshHourlyForecast(location, units.value)
+                    _statusCode.catchNetworkErrors {
+                        hourlyForecastRepo.refreshHourlyForecast(location, units.value)
+                    }
             }
         }
     }
@@ -56,4 +59,7 @@ class HourlyForecastViewModel @Inject constructor(
         _selectedSingleForecast.value = hourlyForecast
     }
 
+    fun onStatusCodeDisplayed() {
+        _statusCode.value = null
+    }
 }

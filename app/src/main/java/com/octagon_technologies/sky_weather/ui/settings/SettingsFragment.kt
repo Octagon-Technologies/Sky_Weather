@@ -19,6 +19,7 @@ import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
 import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -64,11 +65,14 @@ class SettingsFragment : Fragment() {
         val notificationManagerCompat = NotificationManagerCompat.from(requireContext())
 
         binding.enableNotificationSwitch.setCheckedImmediatelyNoEvent(viewModel.isNotificationAllowed.value == true)
-        binding.enableNotificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.toggleNotificationAllowed(isChecked)
+        binding.enableNotificationSwitch.setOnCheckedChangeListener { view, isChecked ->
+            viewModel.toggleNotificationAllowed(isChecked, view)
         }
 
         viewModel.isNotificationAllowed.observe(viewLifecycleOwner) { isNotificationAllowed ->
+            Timber.d("viewModel.isNotificationAllowed is $isNotificationAllowed")
+
+            binding.enableNotificationSwitch.setCheckedImmediatelyNoEvent(isNotificationAllowed == true)
             binding.enableNotificationSwitch.backColor = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),

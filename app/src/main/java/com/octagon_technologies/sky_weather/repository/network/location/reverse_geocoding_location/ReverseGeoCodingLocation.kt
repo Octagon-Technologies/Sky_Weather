@@ -29,28 +29,44 @@ data class ReverseGeoCodingLocation(
     val placeId: String?
 ) {
 
-
-    fun toLocation(): Location {
-        // Formatting the location to something small enough to fit but still adequately descriptive
-        val displayNameWithoutCountryCode =
+    private fun getDisplayNameWithoutCode() =
             if (reverseGeoCodingAddress != null)
                 with(reverseGeoCodingAddress) {
                     countryCode = countryCode?.uppercase(Locale.getDefault())
 
-                    if (suburb != null && countryCode != null) "$suburb, $countryCode"
-                    else if (displayName?.length != null && displayName.length <= 18)
-                        displayName.split(",")[0].capitalize()
-                    else if (city != null) "$city, $countryCode"
-                    else country?.capitalize()
-                } ?: "Unknown Location"
-            else "Unknown Location"
+                    if (suburb != null && city != null)
+                        "$suburb, $city"
+                    else if (state != null)
+                        "$state"
+                    else if (displayName?.length != null && displayName.length <= 16) {
+                        try {
+                            val miniList = displayName.split(",").subList(0, 1)
+                            miniList.joinToString(", ") { it.capitalize() }
+                        } catch (e: Exception) {
+                            displayName
+                        }
+                    }
+                    else if (city != null)
+                        "$city"
+                    else
+                        country?.capitalize()
+                }
+                    ?: "Unknown Location"
+            else
+                "Unknown Location"
+
+
+    fun toLocation(): Location {
+        // Formatting the location to something small enough to fit but still adequately descriptive
+        val displayNameWithoutCountryCode = getDisplayNameWithoutCode()
 
         return Location(
-            displayNameWithoutCountryCode,
-            lat!!,
-            lon!!,
-            reverseGeoCodingAddress?.country ?: "",
-            reverseGeoCodingAddress?.countryCode ?: "--"
+            displayNameWithoutCountryCode = displayNameWithoutCountryCode,
+            lat = lat!!,
+            lon = lon!!,
+            country = reverseGeoCodingAddress?.country ?: "",
+            countryCode = reverseGeoCodingAddress?.countryCode ?: "--",
+            isGps = true
         )
     }
 }

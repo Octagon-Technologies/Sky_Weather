@@ -11,28 +11,25 @@ import com.bumptech.glide.Glide
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.domain.WeatherCode
+import com.octagon_technologies.sky_weather.domain.getWeatherIcon
+import com.octagon_technologies.sky_weather.domain.getWeatherTitle
+import org.joda.time.Instant
 import java.util.*
 
-@BindingAdapter("getWeatherIconFrom")
-fun ImageView.getWeatherIconFrom(weatherCode: WeatherCode?) {
-    contentDescription = weatherCode?.getWeatherTitle()
 
-    // TODO: Change this
+fun ImageView.loadWeatherIcon(isDay: Boolean, weatherCode: WeatherCode?) {
+    contentDescription = weatherCode.getWeatherTitle()
+
     Glide.with(context)
-        .load(weatherCode?.getWeatherIcon(12))
+        .load(weatherCode.getWeatherIcon(isDay))
         .centerCrop()
         .into(this)
 }
 
-//fun WeatherCode?.getDrawableFromWeatherCode(hourIn24HourSystem: Int) = this?.value?.let {
-//    when {
-//        it.contains("rain") -> R.drawable.raining_clouds
-//        it.contains("cloudy") -> if (hourIn24HourSystem in 4..18) R.drawable.cloudy else R.drawable.cloudy_night
-//        it.contains("clear") -> if (hourIn24HourSystem in 4..18) R.drawable.sun else R.drawable.moon
-//        it.contains("storm") -> if (hourIn24HourSystem in 4..18) R.drawable.storm else R.drawable.stormy_night
-//        else -> R.drawable.cloudy_windy
-//    }
-//} ?: -1
+fun ImageView.loadWeatherIcon(timeInMillis: Long?, weatherCode: WeatherCode?) {
+    val hourOfDay = timeInMillis?.let { Instant.ofEpochMilli(it).toDateTime().hourOfDay } ?: 12
+    loadWeatherIcon(hourOfDay in 6..19, weatherCode)
+}
 
 @BindingAdapter("changeLunarTime", "addTimeFormatToLunarTime")
 fun TextView.changeLunarTime(lunarTime: String?, timeFormat: TimeFormat?) {
@@ -43,27 +40,19 @@ fun String.changeLunarTime(timeFormat: TimeFormat?): String {
     val hourIn24System = split(":")[0].toInt()
     val minutes = split(":")[1]
 
+    /*
+     I realized that moonSet is always 8pm and moonRise is 6am... which kinda doesn't make sense so I've interchanged
+     the am/pm logic coz typically, the moon should rise at night and set in the morning
+
+     BUT, we stick to factual data... Plus I've done a bit of research; It works well with Reno, Nevada and
+     kina Europe
+     */
     return if (timeFormat == TimeFormat.HALF_DAY) {
         if (hourIn24System <= 11)
             "$hourIn24System:$minutes am"
         else
             "${hourIn24System - 12}:$minutes pm"
     } else this
-}
-
-@BindingAdapter("changeWeatherIconTint", "isDayForWeatherIcon")
-fun ImageView.changeWeatherIconTint(theme: Theme?, isDayForWeatherIcon: Boolean) {
-    when (isDayForWeatherIcon) {
-        true -> {
-            setImageResource(R.drawable.yellow_sun)
-            doImageTintChange(R.color.dark_orange)
-        }
-
-        false -> {
-            setImageResource(R.drawable.moon)
-            doImageTintChange(if (theme == Theme.LIGHT) R.color.color_black else android.R.color.white)
-        }
-    }
 }
 
 @BindingAdapter("changeIconTintFromTint")
@@ -83,37 +72,3 @@ fun ImageView.doImageTintChange(@ColorRes colorInt: Int) {
     )
 }
 
-@BindingAdapter("doTextViewThemeChange", "addDarkColor", "isSelected", requireAll = false)
-fun TextView.doTextViewThemeChange(
-    theme: Theme?,
-    darkColor: Int? = android.R.color.black,
-    isSelected: Boolean?
-) {
-
-    val contextColorBlack = ContextCompat.getColor(context, R.color.color_black)
-    val contextLightGrey = ContextCompat.getColor(context, R.color.light_grey)
-    val contextAndroidWhite = ContextCompat.getColor(context, android.R.color.white)
-
-    if (isSelected == true) {
-        setTextColor(
-            ContextCompat.getColor(
-                context,
-                if (darkColor == contextColorBlack) R.color.light_grey else android.R.color.white
-            )
-        )
-        return
-    }
-
-    when (theme) {
-        Theme.LIGHT -> darkColor
-        else -> if (darkColor == contextColorBlack) contextLightGrey else contextAndroidWhite
-    }?.let {
-        setTextColor(it)
-    }
-
-}
-
-@BindingAdapter("getWeatherStatus")
-fun TextView.getWeatherStatus(singleForecast: SingleForecast?) {
-    text = singleForecast?.weatherCode?.getWeatherTitle() ?: "--"
-}

@@ -11,7 +11,7 @@ data class Address(
     @Json(name = "country")
     val country: String?,
     @Json(name = "country_code")
-    val countryCode: String?,
+    var countryCode: String?,
     @Json(name = "name")
     val name: String?,
     @Json(name = "postcode")

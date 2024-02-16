@@ -8,8 +8,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:paddingBottom="@dimen/_24sdp"
-        android:theme="@style/AppTheme.WhiteTextColor"
-        tools:background="@color/dark_theme_blue"
+        android:theme="@style/AppTheme"
         tools:context=".ui.see_more_current.SeeMoreFragment">
 
 
@@ -30,7 +29,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_10sdp"
-            android:layout_marginLeft="@dimen/_10sdp"
             android:fontFamily="@font/coda"
             android:textSize="@dimen/_40ssp"
             app:layout_constraintBottom_toBottomOf="@+id/see_more_weather_image"
@@ -50,24 +48,41 @@
             tools:text="@string/temp_unit_C" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/see_more_description_recyclerview"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/_14sdp"
             android:layout_marginTop="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_14sdp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:cardBackgroundColor="?attr/colorTertiaryContainer"
+            app:cardCornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/see_more_highlight" />
+            app:layout_constraintTop_toBottomOf="@+id/see_more_highlight"
+            app:strokeWidth="0dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/see_more_description_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/see_more_highlight"
+                tools:itemCount="12"
+                tools:listitem="@layout/mini_forecast_description" />
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/see_more_highlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_28sdp"
+            android:layout_marginTop="@dimen/_24sdp"
             android:fontFamily="@font/roboto_medium"
             android:textSize="@dimen/_16ssp"
             app:layout_constraintEnd_toEndOf="parent"

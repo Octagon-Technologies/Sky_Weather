@@ -5,15 +5,15 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.single.BasePermissionListener
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.domain.SingleForecast
+import com.octagon_technologies.sky_weather.domain.getFormattedTemp
 import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.Units
@@ -51,6 +51,11 @@ class CustomNotificationCompat @Inject constructor(
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "Allows weather updates in notifications."
+                vibrationPattern = null
+
+                setShowBadge(false)
+                setSound(null, null)
+                importance = NotificationManager.IMPORTANCE_DEFAULT
             }
 
             notificationManagerCompat.createNotificationChannel(notificationChannel)
@@ -63,45 +68,67 @@ class CustomNotificationCompat @Inject constructor(
         timeFormat: TimeFormat?,
         units: Units?
     ) {
+        Timber.d("createNotification called")
+
         if (singleForecast.isNull() || location.isNull() || timeFormat.isNull() || units.isNull()) {
-            Timber.d("createNotification failed because singleForecast is ${singleForecast.isNull()}, reverseLocation is ${location.isNull()}, units is ${units.isNull()} and timeFormat is ${timeFormat.isNull()}")
+            Timber.d("createNotification failed because singleForecast is ${singleForecast.isNull()}, location is ${location.isNull()}, units is ${units.isNull()} and timeFormat is ${timeFormat.isNull()}")
             return
         }
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
             setSilent(true)
-            priority = NotificationCompat.PRIORITY_HIGH
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-            setContent(customRemoteView.getCustomRemoteView(singleForecast, location, timeFormat, units))
+//            setContent(
+//                customRemoteView.getCustomRemoteView(
+//                    singleForecast,
+//                    location,
+//                    timeFormat,
+//                    units
+//                )
+//            )
             setSmallIcon(R.drawable.cloudy_night)
             setShowWhen(false)
             setSound(null)
-            setCustomContentView(
-                customRemoteView
-                    .getCustomRemoteView(singleForecast, location, timeFormat, units)
-            )
-            setCustomBigContentView(
-                customRemoteView
-                    .getCustomRemoteView(singleForecast, location, timeFormat, units)
-            )
-            setCustomHeadsUpContentView(null)
+
             setOngoing(true)
+            setAutoCancel(false)
+
+            setContentTitle(location?.displayName ?: "-----")
+            setContentText(singleForecast?.getFormattedTemp() + units?.getUnitSymbol())
+//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+//                setStyle(NotificationCompat.DecoratedCustomViewStyle())
+//                setCustomContentView(
+//                    customRemoteView
+//                        .getCustomRemoteView(singleForecast, location, timeFormat, units)
+//                )
+//                setCustomBigContentView(
+//                    customRemoteView
+//                        .getCustomRemoteView(singleForecast, location, timeFormat, units)
+//                )
+//            }
+//            else {
+//                setContentTitle(location?.displayName ?: "-----")
+//                setContentText(singleForecast?.getFormattedTemp() + units?.getUnitSymbol())
+
+//                setCustomBigContentView(
+//                    customRemoteView
+//                        .getCustomRemoteView(singleForecast, location, timeFormat, units))
+//            }
+            setCustomHeadsUpContentView(null)
         }.build()
 
         Timber.d("createNotification called with notification as $notification")
         notificationManagerCompat.cancelAll()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Dexter.withContext(context).withPermission(Manifest.permission.POST_NOTIFICATIONS)
-                .withListener(object : BasePermissionListener() {
-                    @SuppressLint("MissingPermission")
-                    override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                        super.onPermissionGranted(p0)
-                        notificationManagerCompat.notify(NOTIFICATION_ID, notification)
-                    }
-                })
-        }
-    }
 
+        // This check is kinda unnecessary since we've adequately checked for permission in the ViewModel... but I'm going to add
+        // it just in case... Plus, why not? :)
+        if (ActivityCompat
+                .checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+        ) notificationManagerCompat.notify(NOTIFICATION_ID, notification)
+    }
 
 
 }

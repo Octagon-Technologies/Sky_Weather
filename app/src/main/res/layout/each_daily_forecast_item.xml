@@ -6,11 +6,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
         android:paddingStart="@dimen/_10sdp"
         android:paddingEnd="@dimen/_10sdp"
-        android:theme="@style/AppTheme.WhiteTextColor"
-        tools:background="@color/dark_theme_blue">
+        android:theme="@style/AppTheme">
 
         <TextView
             android:id="@+id/day_text"

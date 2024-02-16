@@ -14,6 +14,7 @@ class EachSearchResultItem(
     val theme: LiveData<Theme>,
     var isLikedByUser: Boolean = false,
     val location: Location,
+    val onLocationSelected: () -> Unit,
     val onChangeFavoriteStatus: (Boolean) -> Unit
 ) : BindableItem<EachSearchResultItemBinding>() {
 
@@ -26,11 +27,13 @@ class EachSearchResultItem(
         binding.theme = theme
         binding.searchCityName.text = location.displayNameWithCountry
 
+        binding.root.setOnClickListener { onLocationSelected() }
 
         binding.addToFavouritesBtn.setImageResource(
             if (isLikedByUser) R.drawable.ic_check_circle_black
             else R.drawable.ic_add_circle_outline_black
         )
+
         binding.addToFavouritesBtn.setOnClickListener {
             onChangeFavoriteStatus(isLikedByUser)
             isLikedByUser = !isLikedByUser

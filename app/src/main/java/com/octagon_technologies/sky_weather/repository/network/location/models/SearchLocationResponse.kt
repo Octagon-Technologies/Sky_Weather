@@ -2,8 +2,10 @@ package com.octagon_technologies.sky_weather.repository.network.location.models
 
 
 import com.octagon_technologies.sky_weather.domain.Location
+import com.octagon_technologies.sky_weather.utils.capitalize
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.util.*
 
 @JsonClass(generateAdapter = true)
 data class SearchLocationResponse(
@@ -35,24 +37,36 @@ data class SearchLocationResponse(
     val type: String?
 ) {
 
-    fun toLocation(): Location {
-        val displayNameWithoutCountryCode = "$displayPlace, ${address?.city}"
-//            if (address != null)
-//                with(address) {
-//                    if (suburb != null && countryCode != null) "$suburb, $countryCode"
-//                    else if(displayName?.length != null && displayName.length <= 18)
-//                        displayName.split(",")[0].capitalize()
-//                    else if(city != null) "$city, $countryCode"
-//                    else country?.capitalize()
-//                } ?: "Unknown Location"
-//            else "Unknown Location"
+    private fun getDisplayNameWithoutCode() =
+        if (address != null)
+            with(address) {
+                countryCode = countryCode?.uppercase(Locale.getDefault())
 
-        return Location(
-            displayNameWithoutCountryCode,
-            lat!!,
-            lon!!,
-            address?.country ?: "",
-            address?.countryCode ?: "--"
-        )
-    }
+                if (suburb != null && city != null)
+                    "$suburb, $city"
+                else if (state != null)
+                    "$state"
+                else if (displayName?.length != null && displayName.length <= 16) {
+                    try {
+                        val miniList = displayName.split(",").subList(0, 1)
+                        miniList.joinToString(", ") { it.capitalize() }
+                    } catch (e: Exception) {
+                        displayName
+                    }
+                } else if (city != null)
+                    "$city"
+                else
+                    country?.capitalize()
+            }
+                ?: "Unknown Location"
+        else
+            "Unknown Location"
+
+    fun toLocation() = Location(
+        getDisplayNameWithoutCode(),
+        lat!!,
+        lon!!,
+        address?.country ?: "",
+        address?.countryCode ?: "--"
+    )
 }
