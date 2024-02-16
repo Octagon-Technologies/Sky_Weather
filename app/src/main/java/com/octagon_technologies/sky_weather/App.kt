@@ -15,6 +15,15 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
+/*
+TODO:
+1) Add widgets
+2) Fix notification
+3) Save isGpsAllowed on DataStore to auto-update current location       -------- DONE
+4) Add try catch in search location and display a No Internet toast/snackbar   ------ DONE
+5) Look for the perfect grey blue to re-design Current Forecast, Hourly Forecast and ------- DONE
+6) Change Humidity text to Precipitation ------ DONE
+ */
 @HiltAndroidApp
 class App : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
@@ -22,8 +31,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        MobileAds.initialize(applicationContext)
+//        MobileAds.initialize(applicationContext)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+
         applicationScope.launch {
             setRecurringWork()
         }
@@ -35,7 +45,7 @@ class App : Application() {
             .setRequiresBatteryNotLow(false)
             .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(1, TimeUnit.HOURS)
+        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(2, TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 

@@ -19,7 +19,7 @@ class FavouriteLocationRepo @Inject constructor(
     ) {
         favouriteLocationDao.insertData(
             LocalFavouriteLocation(
-                favouriteLocationKey = "${location.lat}${location.lon}",
+                favouriteLocationKey = location.key,
                 location = location
             )
         )
@@ -30,8 +30,8 @@ class FavouriteLocationRepo @Inject constructor(
     ) {
         favouriteLocationDao.deleteLocalFavouriteLocation(
             LocalFavouriteLocation(
-                favouriteLocationKey = "${location.lat}${location.lon}",
-                location = location
+                location.key,
+                location
             )
         )
     }

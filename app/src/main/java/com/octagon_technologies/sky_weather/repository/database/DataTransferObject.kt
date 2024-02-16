@@ -104,11 +104,11 @@ fun Daily.toDailyForecast(): DailyForecast {
             TimePeriod(
                 temp = temperatureMax,
                 feelsLike = temperatureApparentMax,
-                weatherCode = WeatherCode(weatherCodeMax, precipitationProbabilityAvg),
+                weatherCode = WeatherCode(weatherCodeMax ?: 0, precipitationProbabilityAvg),
                 uvIndex = UVIndex.getUVIndexFromNum(uvIndexAvg),
                 wind = Wind(windSpeedMin, windGustMin, windDirectionAvg),
                 cloudCover = cloudCoverAvg,
-                cloudCeiling = cloudCeilingMin.toDouble(),
+                cloudCeiling = cloudCeilingMin,
                 dewPoint = dewPointMin,
                 pressure = pressureSurfaceLevelMin,
                 humidity = humidityMax,
@@ -120,7 +120,7 @@ fun Daily.toDailyForecast(): DailyForecast {
             TimePeriod(
                 temp = temperatureMin,
                 feelsLike = temperatureApparentMin,
-                weatherCode = WeatherCode(weatherCodeMin, precipitationProbabilityAvg),
+                weatherCode = WeatherCode(weatherCodeMin ?: 0, precipitationProbabilityAvg),
                 uvIndex = UVIndex.getUVIndexFromNum(uvIndexMin),
                 wind = Wind(windSpeedMax, windGustMax, windDirectionAvg),
                 cloudCover = cloudCoverAvg,

@@ -11,12 +11,14 @@ import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SearchLocationFragmentBinding
+import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.utils.CustomTextWatcher
-import com.octagon_technologies.sky_weather.utils.Theme
+import com.octagon_technologies.sky_weather.utils.setUpToastMessage
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
@@ -33,7 +35,17 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
+        setUpStatusCode()
         setUpLocationSuggestionsRecyclerView()
+
+        viewModel.navigateHome.observe(viewLifecycleOwner) { navigateHome ->
+            if (navigateHome == true) {
+                findNavController().navigate(
+                    SearchLocationFragmentDirections.actionSearchLocationFragmentToCurrentForecastFragment()
+                )
+                viewModel.onNavigateHomeDone()
+            }
+        }
 
         binding.cancelBtn.setOnClickListener { findNavController().popBackStack() }
         binding.searchQuery.addTextChangedListener(object : CustomTextWatcher {
@@ -42,21 +54,6 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
                 handler.start()
             }
         })
-
-
-        groupAdapter.setOnItemClickListener { item, _ ->
-            val location = (item as EachSearchResultItem).location
-
-            // Change the current database location if it was set in the MainActivity; this prevents widget creation
-            // from being mistaken as user location setting
-            val mainActivity = (activity as? MainActivity)
-
-            if (mainActivity != null) {
-                viewModel.selectLocation(location)
-//                mainActivity.hasNotificationChanged = false
-
-                findNavController().popBackStack(R.id.currentForecastFragment, true)
-            }
 
 //            val widgetConfigureActivity = (activity as? WidgetConfigureActivity)
 //            else if (widgetConfigureActivity != null) {
@@ -68,9 +65,19 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
 //                        widgetConfigureViewModel?.navigateToLocationFragment?.value = false
 //                    }
 //                }
+    }
 
+    // TODO: Removed widget code, but we'll need this in future if we aere to implement it
+    // Change the current database location if it was set in the MainActivity; this prevents widget creation
+    // from being mistaken as user location setting
+    private fun Location.onLocationSelected() {
+        val mainActivity = (activity as? MainActivity)
+
+        if (mainActivity != null) {
+            viewModel.selectLocation(this)
         }
     }
+
 
     private fun setUpLocationSuggestionsRecyclerView() {
         binding.searchLocationRecyclerview.adapter = groupAdapter
@@ -82,6 +89,7 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
                         theme = viewModel.theme,
                         isLikedByUser = viewModel.listOfFavouriteLocation.value?.contains(location) == true,
                         location = location,
+                        onLocationSelected = { location.onLocationSelected() },
                         onChangeFavoriteStatus = { isLikedByUser -> viewModel.changeFavoriteStatus(isLikedByUser, location) }
                     )
                 }
@@ -98,13 +106,22 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        imm.showSoftInput(binding.searchQuery, InputMethodManager.SHOW_IMPLICIT)
+    private fun setUpStatusCode() {
+        viewModel.statusCode.setUpToastMessage(this) {
+            viewModel.onStatusCodeDisplayed()
+        }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStart() {
+        super.onStart()
+        binding.searchQuery.requestFocus()
+
+        val isShowInput = imm.showSoftInput(binding.searchQuery, InputMethodManager.SHOW_IMPLICIT)
+        Timber.d("isShowInput is $isShowInput")
+    }
+
+    override fun onStop() {
+        super.onStop()
         imm.hideSoftInputFromWindow(binding.searchQuery.windowToken, 0)
     }
 }

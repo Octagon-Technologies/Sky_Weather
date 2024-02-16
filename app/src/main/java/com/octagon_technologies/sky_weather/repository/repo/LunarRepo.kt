@@ -41,7 +41,7 @@ class LunarRepo @Inject constructor(
 
     suspend fun refreshCurrentLunarForecast(
         location: Location
-    ) = try {
+    ) {
         val dateInMillis: Long = System.currentTimeMillis()
         val lunarForecastResponse =
             lunarApi.getLunarForecast(
@@ -52,8 +52,6 @@ class LunarRepo @Inject constructor(
             )
 
         lunarDao.insertData(lunarForecastResponse.toLocalLunar())
-    }  catch(e: Exception) {
-        Timber.e(e)
     }
 
     suspend fun getSelectedLunarForecast(

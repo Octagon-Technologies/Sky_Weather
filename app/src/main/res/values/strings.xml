@@ -31,6 +31,7 @@
 
     <string name="temp_format">%s°</string>
     <string name="feelslike_format">FeelsLike %s°</string>
+    <string name="humidity_format">Humidity: %s</string>
 
     <string name="hrs_format">%s hrs</string>
     <string name="mins_format">%s mins</string>
@@ -46,9 +47,9 @@
     <string name="looking_ahead_plain_text">Looking Ahead →</string>
     <string name="allergy_outlook_plain_text">Allergy Outlook</string>
     <string name="open_menu_plain_text">Open Menu</string>
-    <string name="in_24_hours_plain_text">In 24 hours:</string>
-    <string name="in_6_hours_plain_text">In 6 hours:</string>
-    <string name="in_1_hour_plain_text">In 1 hour:</string>
+    <string name="in_24_hours_plain_text">In 24 hours</string>
+    <string name="in_6_hours_plain_text">In 6 hours</string>
+    <string name="in_1_hour_plain_text">In 1 hour</string>
     <string name="day_plain_text">Day</string>
     <string name="night_plain_text">Night</string>
     <!-- TODO: Remove or change this placeholder text -->

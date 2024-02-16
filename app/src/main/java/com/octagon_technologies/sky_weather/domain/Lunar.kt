@@ -43,19 +43,28 @@ data class Lunar(
     private fun getHoursForFullTimeFormat(rise: String?, set: String?): String {
         if (rise == null || set == null)
             return "-- hrs"
-        val hours =
-            Interval(Instant.parse(rise), Instant.parse(set)).toDuration().standardHours
-        Timber.d("Hours is $hours")
-        return "$hours hrs"
+
+        return try {
+            val hours =
+                Interval(Instant.parse(rise), Instant.parse(set)).toDuration().standardHours
+            Timber.d("Hours is $hours")
+            "$hours hrs"
+        } catch (e: IllegalArgumentException) {
+            "-- hrs"
+        }
     }
 
     private fun getMinutesForFullTimeFormat(rise: String?, set: String?): String {
         if (rise == null || set == null)
             return "-- mins"
-        val minutes =
-            Interval(Instant.parse(rise), Instant.parse(set)).toDuration().standardMinutes % 60
-        Timber.d("Minutes is $minutes")
-        return "$minutes mins"
+        return try {
+            val minutes =
+                Interval(Instant.parse(rise), Instant.parse(set)).toDuration().standardMinutes % 60
+            Timber.d("Minutes is $minutes")
+            "$minutes mins"
+        } catch (e: Exception) {
+            "-- mins"
+        }
     }
 
     /*

@@ -36,8 +36,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@{ theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
-        tools:background="@color/dark_black">
+        android:theme="@style/AppTheme.SettingsLayout"
+        android:background="?attr/colorPrimary">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbar_layout"
@@ -49,7 +49,6 @@
 
             <ImageView
                 android:id="@+id/back_btn"
-                changeIconTintFromTint="@{theme}"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
                 android:contentDescription="@string/back_button"
@@ -58,7 +57,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_keyboard_backspace_black"
-                tools:tint="@android:color/white" />
+                app:tint="?attr/colorOnPrimary" />
 
             <TextView
                 android:id="@+id/current_conditions_plain_text"
@@ -66,13 +65,11 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:text="@string/settings_plain_text"
-                android:textColor="@{theme == Theme.LIGHT ? @android:color/black : @android:color/white }"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:textColor="@android:color/white" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:id="@+id/top_line_divider"
@@ -107,6 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
+                    style="@style/AppTheme.SettingsLayout"
                     android:paddingBottom="@dimen/_5sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -117,14 +115,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_14sdp"
-                        android:layout_marginLeft="@dimen/_14sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         android:fontFamily="sans-serif-condensed"
                         android:text="@string/units_plain_text"
-                        android:textColor="@{theme == Theme.LIGHT ? @android:color/black : @android:color/white }"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:textColor="@android:color/white" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/units_main_constraint_layout"
@@ -132,7 +127,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginEnd="@dimen/_14sdp"
-                        android:layout_marginRight="@dimen/_14sdp"
                         android:background="@android:color/transparent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -143,7 +137,7 @@
                             android:id="@+id/units_imperial_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ units == Units.IMPERIAL ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
+                            toggleLeftSettingsBackground="@{ units == Units.IMPERIAL }"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -156,33 +150,27 @@
                             <TextView
                                 android:id="@+id/units_left_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{units == Units.IMPERIAL}"
+                                toggleSettingsTextColor="@{units == Units.IMPERIAL}"
                                 android:text="@string/imperial_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:textColor="@android:color/white" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/units_left_each_item_description"
                                 style="@style/settings_each_item_description"
-                                addDarkColor="@{@color/color_black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{units == Units.IMPERIAL}"
+                                toggleSettingsMiniTextColor="@{units == Units.IMPERIAL}"
                                 android:text="@string/f_mph_in_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/units_left_each_item_name"
-                                tools:textColor="@color/light_grey" />
+                                app:layout_constraintTop_toBottomOf="@+id/units_left_each_item_name" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/units_metric_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ units == Units.METRIC ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
+                            toggleRightSettingsBackground="@{ units == Units.METRIC }"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -193,11 +181,9 @@
                             <TextView
                                 android:id="@+id/units_right_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{units == Units.METRIC}"
+                                toggleSettingsTextColor="@{units == Units.METRIC}"
                                 android:text="@string/metric_plain_text"
-                                android:textColor="@android:color/white"
+                                tools:textColor="@android:color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -205,11 +191,9 @@
                             <TextView
                                 android:id="@+id/units_right_each_item_description"
                                 style="@style/settings_each_item_description"
-                                addDarkColor="@{@color/color_black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{units == Units.METRIC}"
+                                toggleSettingsMiniTextColor="@{units == Units.METRIC}"
                                 android:text="@string/c_kph_mm_plain_text"
-                                android:textColor="@color/light_grey"
+                                tools:textColor="@color/light_grey"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/units_right_each_item_name" />
@@ -239,10 +223,8 @@
                         android:layout_marginTop="@dimen/_20sdp"
                         android:fontFamily="sans-serif-condensed"
                         android:text="@string/wind_direction_plain_text"
-                        android:textColor="@{theme == Theme.LIGHT ? @android:color/black : @android:color/white }"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:textColor="@android:color/white" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/wind_main_constraint_layout"
@@ -260,7 +242,7 @@
                             android:id="@+id/wind_cardinal_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ windDirectionUnits == WindDirectionUnits.CARDINAL ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
+                            toggleLeftSettingsBackground="@{ windDirectionUnits == WindDirectionUnits.CARDINAL}"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -273,9 +255,7 @@
                             <TextView
                                 android:id="@+id/wind_left_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{windDirectionUnits == WindDirectionUnits.CARDINAL}"
+                                toggleSettingsTextColor="@{windDirectionUnits == WindDirectionUnits.CARDINAL}"
                                 android:text="@string/cardinal_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -284,9 +264,7 @@
                             <TextView
                                 android:id="@+id/wind_left_each_item_description"
                                 style="@style/settings_each_item_description"
-                                addDarkColor="@{@color/color_black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{windDirectionUnits == WindDirectionUnits.CARDINAL}"
+                                toggleSettingsMiniTextColor="@{windDirectionUnits == WindDirectionUnits.CARDINAL}"
                                 android:text="@string/n_e_s_w_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -297,7 +275,7 @@
                             android:id="@+id/wind_degrees_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ windDirectionUnits == WindDirectionUnits.DEGREES ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
+                            toggleRightSettingsBackground="@{ windDirectionUnits == WindDirectionUnits.DEGREES }"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -308,23 +286,19 @@
                             <TextView
                                 android:id="@+id/wind_right_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{windDirectionUnits == WindDirectionUnits.DEGREES}"
+                                toggleSettingsTextColor="@{windDirectionUnits == WindDirectionUnits.DEGREES}"
                                 android:text="@string/degrees_plain_text"
+                                tools:textColor="@android:color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:textColor="@android:color/white" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
                                 android:id="@+id/wind_right_each_item_description"
                                 style="@style/settings_each_item_description"
-                                addDarkColor="@{@color/color_black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{windDirectionUnits == WindDirectionUnits.DEGREES}"
+                                toggleSettingsMiniTextColor="@{windDirectionUnits == WindDirectionUnits.DEGREES}"
                                 android:text="@string/_0_360_plain_text"
-                                android:textColor="@color/light_grey"
+                                tools:textColor="@color/light_grey"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/wind_right_each_item_name" />
@@ -351,14 +325,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_14sdp"
-                        android:layout_marginLeft="@dimen/_14sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         android:fontFamily="sans-serif-condensed"
                         android:text="@string/time_format_plain_text"
-                        android:textColor="@{theme == Theme.LIGHT ? @android:color/black : @android:color/white }"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:textColor="@android:color/white" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/time_main_constraint_layout"
@@ -366,7 +337,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_6sdp"
                         android:layout_marginEnd="@dimen/_14sdp"
-                        android:layout_marginRight="@dimen/_14sdp"
                         android:background="@android:color/transparent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -377,7 +347,7 @@
                             android:id="@+id/time_12hour_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ timeFormat == TimeFormat.HALF_DAY ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
+                            toggleLeftSettingsBackground="@{ timeFormat == TimeFormat.HALF_DAY }"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -390,9 +360,7 @@
                             <TextView
                                 android:id="@+id/time_left_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{timeFormat == TimeFormat.HALF_DAY}"
+                                toggleSettingsTextColor="@{timeFormat == TimeFormat.HALF_DAY}"
                                 android:text="@string/_12_hour_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -401,9 +369,7 @@
                             <TextView
                                 android:id="@+id/time_left_each_item_description"
                                 style="@style/settings_each_item_description"
-                                addDarkColor="@{@color/color_black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{timeFormat == TimeFormat.HALF_DAY}"
+                                toggleSettingsMiniTextColor="@{timeFormat == TimeFormat.HALF_DAY}"
                                 android:text="@string/_2_pm_3_pm_etc_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -414,7 +380,7 @@
                             android:id="@+id/time_24hour_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ timeFormat == TimeFormat.FULL_DAY ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
+                            toggleRightSettingsBackground="@{ timeFormat == TimeFormat.FULL_DAY }"
                             android:paddingTop="@dimen/_10sdp"
                             android:paddingBottom="@dimen/_10sdp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -425,11 +391,9 @@
                             <TextView
                                 android:id="@+id/time_right_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{timeFormat == TimeFormat.FULL_DAY}"
+                                toggleSettingsTextColor="@{timeFormat == TimeFormat.FULL_DAY}"
                                 android:text="@string/_24_hour_plain_text"
-                                android:textColor="@android:color/white"
+                                tools:textColor="@android:color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -437,11 +401,9 @@
                             <TextView
                                 android:id="@+id/time_right_each_item_description"
                                 style="@style/settings_each_item_description"
-                                addDarkColor="@{@color/color_black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{timeFormat == TimeFormat.FULL_DAY}"
+                                toggleSettingsMiniTextColor="@{timeFormat == TimeFormat.FULL_DAY}"
                                 android:text="@string/_12_00_13_00_etc_plain_text"
-                                android:textColor="@color/light_grey"
+                                tools:textColor="@color/light_grey"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/time_right_each_item_name" />
@@ -471,10 +433,8 @@
                         android:layout_marginTop="@dimen/_20sdp"
                         android:fontFamily="sans-serif-condensed"
                         android:text="@string/display_mode_plain_text"
-                        android:textColor="@{theme == Theme.LIGHT ? @android:color/black : @android:color/white }"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:textColor="@android:color/white" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/display_main_constraint_layout"
@@ -493,7 +453,7 @@
                             android:id="@+id/display_light_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ theme == Theme.LIGHT ? @drawable/left_selected_each_settings_item_background : @drawable/left_each_settings_item_background}"
+                            toggleLeftSettingsBackground="@{ theme == Theme.LIGHT }"
                             android:paddingTop="@dimen/_15sdp"
                             android:paddingBottom="@dimen/_15sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -506,9 +466,7 @@
                             <TextView
                                 android:id="@+id/display_left_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{theme == Theme.LIGHT}"
+                                toggleSettingsTextColor="@{theme == Theme.LIGHT}"
                                 android:text="@string/light_plain_text"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -520,7 +478,7 @@
                             android:id="@+id/display_dark_layout"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:background="@{ theme == Theme.DARK ? @drawable/right_selected_each_settings_item_background : @drawable/right_each_settings_item_background}"
+                            toggleRightSettingsBackground="@{ theme == Theme.DARK}"
                             android:paddingTop="@dimen/_15sdp"
                             android:paddingBottom="@dimen/_15sdp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -531,11 +489,9 @@
                             <TextView
                                 android:id="@+id/display_right_each_item_name"
                                 style="@style/settings_each_item_title"
-                                addDarkColor="@{@android:color/black}"
-                                doTextViewThemeChange="@{theme}"
-                                isSelected="@{theme == Theme.DARK}"
+                                toggleSettingsTextColor="@{theme == Theme.DARK}"
                                 android:text="@string/dark_plain_text"
-                                android:textColor="@android:color/white"
+                                tools:textColor="@android:color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -554,11 +510,9 @@
                     android:layout_marginTop="@dimen/_28sdp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/enable_notifications_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @android:color/black : @android:color/white }"
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider"
-                    tools:textColor="@android:color/white" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider" />
 
                 <com.kyleduo.switchbutton.SwitchButton
                     android:id="@+id/enable_notification_switch"

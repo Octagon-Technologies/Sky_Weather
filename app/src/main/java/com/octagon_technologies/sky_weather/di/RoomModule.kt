@@ -34,6 +34,9 @@ object RoomModule {
     fun providesLocationDao(weatherDataBase: WeatherDataBase) =
         weatherDataBase.locationDao
     @Provides
+    fun providesCurrentLocationDao(weatherDataBase: WeatherDataBase) =
+        weatherDataBase.currentLocationDao
+    @Provides
     fun providesFavoriteLocationDao(weatherDataBase: WeatherDataBase) =
         weatherDataBase.favouriteLocationDao
     @Provides

@@ -12,7 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/_50sdp"
-            android:theme="@style/AppTheme.WhiteTextColor"
+            style="@style/AppTheme"
             tools:context=".ui.hourly_forecast.HourlyForecastFragment">
 
 
@@ -34,6 +34,8 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
                 tools:listitem="@layout/each_hourly_forecast_item"
                 tools:itemCount="12"
                 android:layout_marginTop="@dimen/_14sdp"

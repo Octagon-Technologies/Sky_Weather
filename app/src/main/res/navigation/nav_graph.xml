@@ -31,7 +31,13 @@
         android:id="@+id/searchLocationFragment"
         android:name="com.octagon_technologies.sky_weather.ui.search_location.SearchLocationFragment"
         android:label="SearchLocationFragment"
-        tools:layout="@layout/search_location_fragment"/>
+        tools:layout="@layout/search_location_fragment">
+        <action
+            android:id="@+id/action_searchLocationFragment_to_currentForecastFragment"
+            app:destination="@id/currentForecastFragment"
+            app:popUpTo="@id/currentForecastFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/seeMoreFragment"

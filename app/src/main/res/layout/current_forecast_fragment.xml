@@ -21,20 +21,19 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_to_refresh_layout"
+        style="@style/AppTheme"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:background="?attr/colorPrimary">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            tools:background="@color/dark_theme_blue">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/_12sdp"
-                android:theme="@style/AppTheme.WhiteTextColor"
                 tools:context=".ui.current_forecast.CurrentForecastFragment">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -59,200 +58,236 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/main_circle_image" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout"
-                    android:layout_width="@dimen/_84sdp"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/in_one_hour_layout"
+                    android:layout_width="@dimen/_94sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
-                    android:layout_marginEnd="@dimen/_14sdp"
-                    android:layout_marginRight="@dimen/_14sdp"
-                    app:layout_constraintEnd_toStartOf="@+id/constraintLayout1"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    app:cardBackgroundColor="?attr/colorTertiaryContainer"
+                    app:cardCornerRadius="8dp"
+                    app:layout_constraintEnd_toStartOf="@+id/in_six_hour_layout"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+                    app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider"
+                    app:strokeWidth="0dp">
 
-                    <TextView
-                        android:id="@+id/one_hour_plain_text"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="@dimen/_90sdp"
                         android:layout_height="wrap_content"
-                        android:text="@string/in_1_hour_plain_text"
-                        android:textColor="@color/light_grey"
-                        android:textSize="@dimen/_13ssp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:padding="@dimen/_12sdp">
 
-                    <ImageView
-                        android:id="@+id/one_hour_weather_image"
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/one_hour_temp_text"
-                        tools:srcCompat="@drawable/cloudy_windy" />
+                        <TextView
+                            android:id="@+id/one_hour_plain_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/in_1_hour_plain_text"
+                            android:textColor="@color/light_grey"
+                            android:textSize="@dimen/_13ssp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/one_hour_temp_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginEnd="@dimen/_6sdp"
-                        android:layout_marginRight="@dimen/_6sdp"
-                        android:fontFamily="sans-serif-condensed-medium"
-                        android:textSize="@dimen/_20ssp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/one_hour_plain_text"
-                        tools:text="27°" />
+                        <ImageView
+                            android:id="@+id/one_hour_weather_image"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/one_hour_temp_text"
+                            tools:srcCompat="@drawable/cloudy_windy" />
 
-                    <TextView
-                        android:id="@+id/one_hour_feelslike_display_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:textSize="@dimen/_13ssp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/one_hour_temp_text"
-                        tools:text="FeelsLike 29°" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/one_hour_temp_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_6sdp"
+                            android:layout_marginRight="@dimen/_6sdp"
+                            android:fontFamily="sans-serif-condensed-medium"
+                            android:textSize="@dimen/_20ssp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/one_hour_plain_text"
+                            tools:text="27°" />
+
+                        <TextView
+                            android:id="@+id/one_hour_feelslike_display_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:fontFamily="sans-serif-condensed-light"
+                            android:textSize="@dimen/_13ssp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/one_hour_temp_text"
+                            tools:text="FeelsLike 29°" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <View
                     android:id="@+id/first_trio_divder"
                     android:layout_width="1dp"
                     android:layout_height="0dp"
-                    android:background="@color/line_grey"
-                    app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-                    app:layout_constraintEnd_toStartOf="@+id/constraintLayout1"
-                    app:layout_constraintStart_toEndOf="@+id/constraintLayout"
-                    app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
+                    android:background="@android:color/transparent"
+                    app:layout_constraintBottom_toBottomOf="@+id/in_one_hour_layout"
+                    app:layout_constraintEnd_toStartOf="@+id/in_six_hour_layout"
+                    app:layout_constraintStart_toEndOf="@+id/in_one_hour_layout"
+                    app:layout_constraintTop_toTopOf="@+id/in_one_hour_layout" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout1"
-                    android:layout_width="@dimen/_84sdp"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/in_six_hour_layout"
+                    android:layout_width="@dimen/_94sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
+                    app:cardBackgroundColor="?attr/colorTertiaryContainer"
+                    app:cardCornerRadius="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+                    app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider"
+                    app:strokeWidth="0dp">
 
-                    <TextView
-                        android:id="@+id/six_hour_plain_text"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="@dimen/_84sdp"
                         android:layout_height="wrap_content"
-                        android:text="@string/in_6_hours_plain_text"
-                        android:textColor="@color/light_grey"
-                        android:textSize="@dimen/_13ssp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/six_hour_weather_image"
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/six_hour_temp_text"
-                        tools:srcCompat="@drawable/cloudy_windy" />
-
-                    <TextView
-                        android:id="@+id/six_hour_temp_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginEnd="@dimen/_6sdp"
-                        android:layout_marginRight="@dimen/_6sdp"
-                        android:fontFamily="sans-serif-condensed-medium"
-                        android:textSize="@dimen/_20ssp"
+                        android:padding="@dimen/_12sdp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/six_hour_plain_text"
-                        tools:text="27°" />
-
-                    <TextView
-                        android:id="@+id/six_hour_feelslike_display_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:textSize="@dimen/_13ssp"
+                        app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/six_hour_temp_text"
-                        tools:text="FeelsLike 29°" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+
+                        <TextView
+                            android:id="@+id/six_hour_plain_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/in_6_hours_plain_text"
+                            android:textColor="@color/light_grey"
+                            android:textSize="@dimen/_13ssp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/six_hour_weather_image"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/six_hour_temp_text"
+                            tools:srcCompat="@drawable/cloudy_windy" />
+
+                        <TextView
+                            android:id="@+id/six_hour_temp_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_6sdp"
+                            android:layout_marginRight="@dimen/_6sdp"
+                            android:fontFamily="sans-serif-condensed-medium"
+                            android:textSize="@dimen/_20ssp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/six_hour_plain_text"
+                            tools:text="27°" />
+
+                        <TextView
+                            android:id="@+id/six_hour_feelslike_display_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:fontFamily="sans-serif-condensed-light"
+                            android:textSize="@dimen/_13ssp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/six_hour_temp_text"
+                            tools:text="FeelsLike 29°" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <View
                     android:id="@+id/second_trio_divider"
                     android:layout_width="1dp"
                     android:layout_height="0dp"
-                    android:background="@color/line_grey"
-                    app:layout_constraintBottom_toBottomOf="@+id/constraintLayout1"
-                    app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
-                    app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
-                    app:layout_constraintTop_toTopOf="@+id/constraintLayout1" />
+                    android:background="@android:color/transparent"
+                    app:layout_constraintBottom_toBottomOf="@+id/in_six_hour_layout"
+                    app:layout_constraintEnd_toStartOf="@+id/in_twenty_hours_layout"
+                    app:layout_constraintStart_toEndOf="@+id/in_six_hour_layout"
+                    app:layout_constraintTop_toTopOf="@+id/in_six_hour_layout" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout3"
-                    android:layout_width="@dimen/_84sdp"
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/in_twenty_hours_layout"
+                    android:layout_width="@dimen/_94sdp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_14sdp"
-                    android:layout_marginLeft="@dimen/_14sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
                     android:layout_marginTop="@dimen/_6sdp"
+                    app:cardBackgroundColor="?attr/colorTertiaryContainer"
+                    app:cardCornerRadius="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
-                    app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
+                    app:layout_constraintStart_toEndOf="@+id/in_six_hour_layout"
+                    app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider"
+                    app:strokeWidth="0dp">
 
-                    <TextView
-                        android:id="@+id/twenty_four_hour_plain_text"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="@dimen/_84sdp"
                         android:layout_height="wrap_content"
-                        android:text="@string/in_24_hours_plain_text"
-                        android:textColor="@color/light_grey"
-                        android:textSize="@dimen/_13ssp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/twenty_four_weather_image"
-                        android:layout_width="@dimen/_24sdp"
-                        android:layout_height="@dimen/_24sdp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/twenty_four_temp_text"
-                        tools:srcCompat="@drawable/cloudy_windy" />
-
-                    <TextView
-                        android:id="@+id/twenty_four_temp_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginEnd="@dimen/_6sdp"
-                        android:layout_marginRight="@dimen/_6sdp"
-                        android:fontFamily="sans-serif-condensed-medium"
-                        android:textSize="@dimen/_20ssp"
+                        android:padding="@dimen/_12sdp"
+                        android:paddingStart="@dimen/_8sdp"
+                        android:paddingEnd="@dimen/_10sdp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/twenty_four_hour_plain_text"
-                        tools:text="27°" />
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/in_six_hour_layout"
+                        app:layout_constraintTop_toBottomOf="@+id/main_circle_image_divider">
 
-                    <TextView
-                        android:id="@+id/twenty_four_feelslike_display_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:textSize="@dimen/_13ssp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/twenty_four_temp_text"
-                        tools:text="FeelsLike 29°" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/twenty_four_hour_plain_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/in_24_hours_plain_text"
+                            android:textColor="@color/light_grey"
+                            android:textSize="@dimen/_13ssp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/twenty_four_weather_image"
+                            android:layout_width="@dimen/_24sdp"
+                            android:layout_height="@dimen/_24sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/twenty_four_temp_text"
+                            tools:srcCompat="@drawable/cloudy_windy" />
+
+                        <TextView
+                            android:id="@+id/twenty_four_temp_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10sdp"
+                            android:layout_marginEnd="@dimen/_6sdp"
+                            android:layout_marginRight="@dimen/_6sdp"
+                            android:fontFamily="sans-serif-condensed-medium"
+                            android:textSize="@dimen/_20ssp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/twenty_four_hour_plain_text"
+                            tools:text="27°" />
+
+                        <TextView
+                            android:id="@+id/twenty_four_feelslike_display_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:fontFamily="sans-serif-condensed-light"
+                            android:textSize="@dimen/_13ssp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/twenty_four_temp_text"
+                            tools:text="FeelsLike 29°" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/today_details_plain_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_36sdp"
                     android:fontFamily="@font/roboto_medium"
                     android:text="@string/today_s_details_plain_text"
-                    android:layout_marginTop="@dimen/_36sdp"
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/in_one_hour_layout" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/today_sun_constraint_layout"
@@ -510,97 +545,111 @@
                     app:layout_constraintStart_toEndOf="@+id/divider_left"
                     app:layout_constraintTop_toBottomOf="@+id/middle_divider" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/current_description_recyclerview"
-                    addWindDirectionForCurrentConditions="@{viewModel.windDirectionUnits}"
-                    addUnitsForCurrentConditions="@{viewModel.units}"
-                    setUpCurrentConditions="@{viewModel.currentForecast}"
-                    addThemeForCurrentConditions="@{viewModel.theme}"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/current_description_recyclerview_card"
                     android:layout_width="0dp"
-                    tools:listitem="@layout/mini_forecast_description"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_height="wrap_content"
-                    tools:itemCount="6"
                     android:layout_marginTop="@dimen/_10sdp"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="1dp"
                     app:layout_constraintEnd_toStartOf="@+id/divider_right"
                     app:layout_constraintStart_toEndOf="@+id/divider_left"
-                    app:layout_constraintTop_toBottomOf="@+id/current_conditions_plain_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/current_conditions_plain_text"
+                    app:strokeWidth="0dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/current_description_recyclerview"
+                        addUnitsForCurrentConditions="@{viewModel.units}"
+                        addWindDirectionForCurrentConditions="@{viewModel.windDirectionUnits}"
+                        setUpCurrentConditions="@{viewModel.currentForecast}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/_8sdp"
+                        android:paddingEnd="@dimen/_12sdp"
+                        android:paddingBottom="@dimen/_8sdp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toStartOf="@+id/divider_right"
+                        app:layout_constraintStart_toEndOf="@+id/divider_left"
+                        app:layout_constraintTop_toBottomOf="@+id/current_conditions_plain_text"
+                        tools:itemCount="6"
+                        tools:listitem="@layout/mini_forecast_description" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/see_more_btn"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/_42sdp"
                     android:layout_marginTop="@dimen/_28sdp"
+                    android:fontFamily="@font/advent_pro_semibold"
                     android:padding="@dimen/_8sdp"
-                    android:text="@string/see_more_plain_text"
-                    android:textAllCaps="false"
-                    app:cornerRadius="8dp"
-                    app:backgroundTint="@android:color/transparent"
-                    app:strokeWidth="2dp"
-                    android:textSize="@dimen/_14ssp"
                     android:paddingTop="@dimen/_12sdp"
                     android:paddingBottom="@dimen/_12sdp"
-                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/see_more_plain_text"
+                    android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    app:rippleColor="@android:color/white"
-                    app:strokeColor="@android:color/white"
+                    android:textSize="@dimen/_16ssp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:cornerRadius="8dp"
                     app:layout_constraintEnd_toStartOf="@+id/divider_right"
                     app:layout_constraintStart_toEndOf="@+id/divider_left"
-                    app:layout_constraintTop_toBottomOf="@+id/current_description_recyclerview" />
+                    app:layout_constraintTop_toBottomOf="@+id/current_description_recyclerview_card"
+                    app:rippleColor="@android:color/white"
+                    app:strokeColor="@android:color/white"
+                    app:strokeWidth="2dp" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/see_more_bottom_divider"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="1dp"-->
-<!--                    android:layout_marginTop="@dimen/_22sdp"-->
-<!--                    android:background="@color/line_grey"-->
-<!--                    android:visibility="@{viewModel.allergyForecast == null ? View.GONE : View.VISIBLE }"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/see_more_btn" />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/see_more_bottom_divider"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="1dp"-->
+                <!--                    android:layout_marginTop="@dimen/_22sdp"-->
+                <!--                    android:background="@color/line_grey"-->
+                <!--                    android:visibility="@{viewModel.allergyForecast == null ? View.GONE : View.VISIBLE }"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/see_more_btn" />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/allergy_outlook_plain_text"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/_22sdp"-->
-<!--                    android:fontFamily="sans-serif-condensed-medium"-->
-<!--                    android:text="@string/allergy_outlook_plain_text"-->
-<!--                    android:textSize="@dimen/_17ssp"-->
-<!--                    android:visibility="@{viewModel.allergyForecast == null ? View.GONE : View.VISIBLE }"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/see_more_bottom_divider" />-->
+                <!--                <TextView-->
+                <!--                    android:id="@+id/allergy_outlook_plain_text"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="@dimen/_22sdp"-->
+                <!--                    android:fontFamily="sans-serif-condensed-medium"-->
+                <!--                    android:text="@string/allergy_outlook_plain_text"-->
+                <!--                    android:textSize="@dimen/_17ssp"-->
+                <!--                    android:visibility="@{viewModel.allergyForecast == null ? View.GONE : View.VISIBLE }"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/see_more_bottom_divider" />-->
 
-<!--                <androidx.recyclerview.widget.RecyclerView-->
-<!--                    android:id="@+id/allergy_recyclerview"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/_20sdp"-->
-<!--                    android:visibility="@{viewModel.allergyForecast == null ? View.GONE : View.VISIBLE }"-->
-<!--                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
-<!--                    app:getCurrentAllergyForecast="@{viewModel.allergyForecast}"-->
-<!--                    app:layout_constraintEnd_toStartOf="@+id/divider_right"-->
-<!--                    app:layout_constraintStart_toEndOf="@+id/divider_left"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/allergy_outlook_plain_text" />-->
+                <!--                <androidx.recyclerview.widget.RecyclerView-->
+                <!--                    android:id="@+id/allergy_recyclerview"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginTop="@dimen/_20sdp"-->
+                <!--                    android:visibility="@{viewModel.allergyForecast == null ? View.GONE : View.VISIBLE }"-->
+                <!--                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+                <!--                    app:getCurrentAllergyForecast="@{viewModel.allergyForecast}"-->
+                <!--                    app:layout_constraintEnd_toStartOf="@+id/divider_right"-->
+                <!--                    app:layout_constraintStart_toEndOf="@+id/divider_left"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/allergy_outlook_plain_text" />-->
 
                 <ImageView
                     android:id="@+id/main_weather_image"
-                    getWeatherIconFrom="@{viewModel.currentForecast.weatherCode}"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_width="@dimen/_48sdp"
+                    android:layout_height="@dimen/_48sdp"
                     android:layout_marginTop="@dimen/_24sdp"
                     android:importantForAccessibility="no"
                     app:layout_constraintBottom_toTopOf="@+id/main_temp"
                     app:layout_constraintEnd_toEndOf="@+id/main_circle_image"
                     app:layout_constraintStart_toStartOf="@+id/main_circle_image"
                     app:layout_constraintTop_toTopOf="@+id/main_circle_image"
-                    app:srcCompat="@drawable/moon" />
+                    tools:srcCompat="@drawable/_10000_clear_large" />
 
                 <TextView
                     android:id="@+id/main_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
                     android:fontFamily="@font/coda"
                     android:textSize="@dimen/_34ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/main_circle_image"
@@ -639,7 +688,7 @@
                     android:layout_marginTop="@dimen/_30sdp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+                    app:layout_constraintTop_toBottomOf="@+id/in_six_hour_layout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

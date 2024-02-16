@@ -17,9 +17,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@{viewModel.theme == Theme.LIGHT ? @android:color/white : @color/dark_black}"
-        android:theme="@style/AppTheme.BlackTextColor"
-        tools:background="@color/dark_black"
+        android:theme="@style/AppTheme.SelectedLayout"
+        android:background="?attr/colorSecondary"
         tools:context=".ui.find_location.FindLocationFragment">
 
 
@@ -27,13 +26,12 @@
             android:id="@+id/top_grey_constraint_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@{viewModel.theme == Theme.LIGHT ? @color/line_grey : @color/color_black}"
+            android:background="?attr/colorSurface"
             android:paddingBottom="@dimen/_14sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/color_black">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/close_btn"
@@ -45,7 +43,7 @@
                 app:layout_constraintStart_toStartOf="@+id/search_query"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_close_black"
-                tools:tint="@android:color/white" />
+                app:tint="?attr/colorOnPrimary" />
 
             <TextView
                 android:id="@+id/location_plain_text"
@@ -53,31 +51,26 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/locations_plain_text"
-                android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/close_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/close_btn"
-                tools:textColor="@android:color/white" />
+                app:layout_constraintTop_toTopOf="@+id/close_btn" />
 
             <TextView
                 android:id="@+id/temp_unit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/_16sdp"
-                android:layout_marginRight="@dimen/_16sdp"
                 android:fontFamily="@font/coda"
                 android:text="@{viewModel.units == Units.METRIC ? @string/hourly_forecast_temp_unit_C : @string/hourly_forecast_temp_unit_F}"
-                android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_14ssp"
                 tools:text="@string/hourly_forecast_temp_unit_C"
                 app:layout_constraintBottom_toBottomOf="@+id/close_btn"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/close_btn"
-                tools:textColor="@android:color/white" />
+                app:layout_constraintTop_toTopOf="@+id/close_btn" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/search_query"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_40sdp"
@@ -86,45 +79,55 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:layout_marginEnd="@dimen/_15sdp"
                 android:layout_marginRight="@dimen/_15sdp"
-                android:background="@drawable/find_location_background"
+                app:cornerRadius="4dp"
+                app:backgroundTint="@android:color/white"
                 android:drawableStart="@drawable/ic_search_black"
-                android:drawableLeft="@drawable/ic_search_black"
                 android:drawablePadding="@dimen/_15sdp"
                 android:ems="10"
                 android:gravity="start|center_vertical"
                 android:padding="8dp"
                 android:text="@string/find_location_plain_text"
                 android:textAllCaps="false"
-                android:textColorHint="@color/dark_black"
+                android:textColorHint="?attr/colorOnPrimary"
                 android:textSize="@dimen/_12ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/close_btn" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/gps_location_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_22sdp"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
                 android:visibility="gone"
+                tools:visibility="visible"
+                app:cardCornerRadius="4dp"
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:strokeColor="?attr/colorPrimary"
+                android:layout_marginStart="@dimen/_15sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/search_query"
-                tools:visibility="visible">
+                app:layout_constraintTop_toBottomOf="@+id/search_query">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_8sdp">
 
                 <ImageView
                     android:id="@+id/gps_cardinal_direction_image"
                     android:layout_width="@dimen/_18sdp"
                     android:layout_height="@dimen/_18sdp"
-                    android:layout_marginStart="@dimen/_16sdp"
-                    android:layout_marginLeft="@dimen/_16sdp"
                     android:contentDescription="@string/drop_of_water_content_description"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_near_me"
-                    changeIconTintFromTint="@{viewModel.theme}"
-                    tools:tint="@android:color/white" />
+                    app:tint="?attr/colorOnPrimary" />
 
                 <TextView
                     android:id="@+id/gps_current_plain_text"
@@ -134,8 +137,6 @@
                     android:layout_marginLeft="@dimen/_7sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/current_plain_text"
-                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
-                    tools:textColor="@android:color/white"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/gps_cardinal_direction_image"
                     app:layout_constraintStart_toEndOf="@+id/gps_cardinal_direction_image"
@@ -148,8 +149,6 @@
                     android:layout_marginTop="@dimen/_12sdp"
                     android:fontFamily="@font/advent_pro_semibold"
                     android:textSize="@dimen/_16ssp"
-                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
-                    tools:textColor="@android:color/white"
                     app:layout_constraintStart_toStartOf="@+id/gps_cardinal_direction_image"
                     app:layout_constraintTop_toBottomOf="@+id/gps_current_plain_text"
                     tools:text="Upper Hill" />
@@ -160,12 +159,11 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
                     android:textSize="@dimen/_11ssp"
-                    android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
-                    tools:textColor="@android:color/white"
                     app:layout_constraintStart_toStartOf="@+id/gps_location_city"
                     app:layout_constraintTop_toBottomOf="@+id/gps_location_city"
                     tools:text="Kenya" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:id="@+id/enable_location_layout"
@@ -234,8 +232,7 @@
                     android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:textColor="@android:color/white" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/favourites_line"
@@ -276,15 +273,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_14sdp"
-                    android:layout_marginLeft="@dimen/_14sdp"
                     android:layout_marginTop="@dimen/_60sdp"
                     android:fontFamily="@font/coda"
                     android:text="@string/recent_plain_text"
                     android:textColor="@{viewModel.theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/favourite_recycler_view"
-                    tools:textColor="@android:color/white" />
+                    app:layout_constraintTop_toBottomOf="@+id/favourite_recycler_view" />
 
                 <View
                     android:id="@+id/recent_line"
@@ -324,7 +319,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_14sdp"
-                    android:layout_marginRight="@dimen/_14sdp"
                     android:onClick="@{() -> viewModel.deleteAllFavourite()}"
                     android:padding="@dimen/_4sdp"
                     android:text="@string/clear_all_plain_text"
@@ -332,8 +326,7 @@
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/favourites_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/favourites_plain_text"
-                    tools:textColor="@android:color/white" />
+                    app:layout_constraintTop_toTopOf="@+id/favourites_plain_text"/>
 
                 <TextView
                     android:id="@+id/clear_recent_history_btn"
@@ -348,8 +341,7 @@
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintBottom_toBottomOf="@+id/recent_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/recent_plain_text"
-                    tools:textColor="@android:color/white" />
+                    app:layout_constraintTop_toTopOf="@+id/recent_plain_text"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

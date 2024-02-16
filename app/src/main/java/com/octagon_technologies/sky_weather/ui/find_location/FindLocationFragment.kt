@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.FindLocationFragmentBinding
 import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.main_activity.MainActivity
+import com.octagon_technologies.sky_weather.ui.search_location.SearchLocationFragmentDirections
 import com.octagon_technologies.sky_weather.ui.search_location.each_search_result_item.EachSearchResultItem
 import com.octagon_technologies.sky_weather.utils.*
 import com.xwray.groupie.GroupAdapter
@@ -51,21 +53,23 @@ class FindLocationFragment : Fragment() {
         setUpTheme()
         setOnClickListeners()
 
-        checkPermissions()
+//        checkPermissions()
 
 
         listOf(favouriteGroupAdapter, recentGroupAdapter).forEach { adapter ->
             adapter.setOnItemClickListener { item, _ ->
                 (item as EachSearchResultItem).location.apply {
-                    val mainActivity = activity as? MainActivity
-                    if (mainActivity != null)
-                        viewModel.setNewLocation(this)
-
-                    popBackStack()
+                    onLocationSelected()
                 }
             }
         }
 
+        viewModel.navigateHome.observe(viewLifecycleOwner) { navigateHome ->
+            if (navigateHome == true) {
+                popBackStack()
+                viewModel.onNavigateHomeDone()
+            }
+        }
 
         viewModel.location.observe(viewLifecycleOwner) { location ->
             if (location?.isGps == true) {
@@ -82,28 +86,31 @@ class FindLocationFragment : Fragment() {
         return binding.root
     }
 
-    private fun checkPermissions() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            viewModel.useGPSLocation(requireContext())
-        }
+    private fun Location.onLocationSelected() {
+        val mainActivity = activity as? MainActivity
+        if (mainActivity != null)
+            viewModel.setNewLocation(this)
+
+        popBackStack()
     }
 
     private fun setUpRecentRecyclerView() {
         binding.recentRecyclerView.adapter = recentGroupAdapter
 
+
         viewModel.recentLocationsList.observe(viewLifecycleOwner) { recentLocationsList ->
             if (recentLocationsList != null) {
-                recentGroupAdapter.update(
+//                recentGroupAdapter.clear()
+
+                recentGroupAdapter.updateAsync(
                     recentLocationsList.map { location ->
                         EachSearchResultItem(
                             theme = viewModel.theme,
-                            location = location
-                        ) { removeFromRecent(location) }
-
+                            isLikedByUser = true,
+                            location = location,
+                            onLocationSelected =  { location.onLocationSelected() },
+                            onChangeFavoriteStatus = { removeFromRecent(location) }
+                        )
                     }
                 )
                 checkIfRecentListIsEmpty()
@@ -116,12 +123,15 @@ class FindLocationFragment : Fragment() {
 
         viewModel.favouriteLocationsList.observe(viewLifecycleOwner) { favouriteLocationsList ->
             if (favouriteLocationsList != null) {
-                favouriteGroupAdapter.update(
+                favouriteGroupAdapter.updateAsync(
                     favouriteLocationsList.map { location ->
                         EachSearchResultItem(
                             theme = viewModel.theme,
-                            location = location
-                        ) { removeFromFavourites(location) }
+                            isLikedByUser = true,
+                            location = location,
+                            onLocationSelected =  { location.onLocationSelected() },
+                            onChangeFavoriteStatus = { removeFromFavourites(location) }
+                        )
                     }
                 )
             }
@@ -185,7 +195,8 @@ class FindLocationFragment : Fragment() {
         }
 
         binding.gpsLocationLayout.setOnClickListener {
-            viewModel.useGPSLocation(requireContext())
+            viewModel.useAndSaveGPSLocation(requireContext())
+            showLongToast("Fetching current location")
 
             if (viewModel.location.value != null)
                 popBackStack()

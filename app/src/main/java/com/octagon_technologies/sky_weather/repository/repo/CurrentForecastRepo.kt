@@ -27,14 +27,12 @@ class CurrentForecastRepo @Inject constructor(
     suspend fun refreshCurrentForecast(
         location: Location,
         units: Units?
-    ) = try {
+    ) {
         val currentForecastResponse = weatherApi.getCurrentForecast(
             location = location.getCoordinates(),
             units = units?.getUrlParameter() ?: Units.METRIC.getUrlParameter()
         )
         currentForecastDao.insertData(currentForecastResponse.toLocalCurrentForecast())
-    } catch (e: Exception) {
-        Timber.e(e)
     }
 
 }

@@ -21,10 +21,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
             android:paddingBottom="@dimen/_20sdp"
-            tools:background="@android:color/white"
-            tools:theme="@style/AppTheme.BlackTextColor">
+            android:theme="@style/AppTheme.SelectedLayout"
+            android:background="?attr/colorSecondary">
 
             <ImageView
                 android:id="@+id/selected_day_weather_icon"
@@ -44,25 +43,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:fontFamily="sans-serif-condensed"
-                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_40ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/selected_day_weather_icon"
                 app:layout_constraintStart_toEndOf="@+id/selected_day_weather_icon"
                 app:layout_constraintTop_toTopOf="@+id/selected_day_weather_icon"
-                tools:text="27°"
-                tools:textColor="@color/dark_black" />
+                tools:text="27°"/>
 
             <ImageView
                 android:id="@+id/selected_day_water_plain_image_drop"
-                changeIconTintFromTint="@{theme}"
                 android:layout_width="@dimen/_16sdp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/_3sdp"
                 app:layout_constraintBottom_toBottomOf="@+id/selected_day_humidity_text"
                 app:layout_constraintEnd_toStartOf="@+id/selected_day_humidity_text"
                 app:layout_constraintTop_toTopOf="@+id/selected_day_humidity_text"
-                app:srcCompat="@drawable/drop"
-                tools:tint="@color/color_black" />
+                app:tint="?attr/colorOnSecondary" />
 
             <TextView
                 android:id="@+id/selected_day_humidity_text"
@@ -70,14 +65,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_14sdp"
                 android:fontFamily="@font/advent_pro_medium"
-                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.55"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selected_day_weather_icon"
-                tools:text="Humidity: 12%"
-                tools:textColor="@color/dark_black" />
+                tools:text="Humidity: 12%"/>
 
             <TextView
                 android:id="@+id/selected_day_weather_status"
@@ -85,13 +78,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:fontFamily="sans-serif-condensed"
-                android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
-                android:textSize="@dimen/_16ssp"
+               android:textSize="@dimen/_16ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selected_day_humidity_text"
-                tools:text="Cloudy"
-                tools:textColor="@color/dark_black" />
+                tools:text="Cloudy" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/selected_day_recyclerview"
@@ -132,23 +123,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="12 hrs"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="12 hrs" />
 
                 <TextView
                     android:id="@+id/selected_sun_minutes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/selected_sun_hours"
-                    tools:text="7 mins"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="7 mins" />
 
                 <View
                     android:id="@+id/selected_sun_top_line"
@@ -167,22 +154,19 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/rise"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    android:textColor="?attr/colorOnSecondaryFixedVariant"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_top_line"
-                    tools:textColor="@color/color_black" />
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_top_line" />
 
                 <TextView
                     android:id="@+id/selected_sun_rise_display_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintBottom_toBottomOf="@+id/selected_sun_rise_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/selected_sun_rise_plain_text"
-                    tools:text="6:19"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="6:19" />
 
                 <View
                     android:id="@+id/selected_sun_middle_line"
@@ -201,22 +185,19 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/set"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    android:textColor="?attr/colorOnSecondaryFixedVariant"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_middle_line"
-                    tools:textColor="@color/color_black" />
+                    app:layout_constraintTop_toBottomOf="@+id/selected_sun_middle_line" />
 
                 <TextView
                     android:id="@+id/selected_sun_set_display_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintBottom_toBottomOf="@+id/selected_sun_set_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/selected_sun_set_plain_text"
-                    tools:text="18:26"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="18:26" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -229,7 +210,6 @@
 
                 <ImageView
                     android:id="@+id/selected_moon_image"
-                    changeIconTintFromTint="@{theme}"
                     android:layout_width="@dimen/_28sdp"
                     android:layout_height="@dimen/_28sdp"
                     android:layout_marginStart="@dimen/_5sdp"
@@ -237,30 +217,26 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/selected_moon_hours"
                     app:srcCompat="@drawable/moon"
-                    tools:tint="@color/color_black" />
+                    app:tint="?attr/colorOnSecondary" />
 
                 <TextView
                     android:id="@+id/selected_moon_hours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_6sdp"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="12 hrs"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="12 hrs" />
 
                 <TextView
                     android:id="@+id/selected_moon_minutes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     android:textSize="@dimen/_11ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/selected_moon_hours"
-                    tools:text="7 mins"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="7 mins" />
 
                 <View
                     android:id="@+id/selected_moon_top_line"
@@ -279,22 +255,19 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/rise_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    android:textColor="?attr/colorOnSecondaryFixedVariant"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_top_line"
-                    tools:textColor="@color/color_black" />
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_top_line" />
 
                 <TextView
                     android:id="@+id/selected_moon_rise_display_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintBottom_toBottomOf="@+id/selected_moon_rise_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/selected_moon_rise_plain_text"
-                    tools:text="6:19"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="6:19" />
 
                 <View
                     android:id="@+id/selected_moon_middle_line"
@@ -313,22 +286,19 @@
                     android:layout_marginTop="8dp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="@string/set_plain_text"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/color_black : @android:color/white}"
+                    android:textColor="?attr/colorOnSecondaryFixedVariant"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_middle_line"
-                    tools:textColor="@color/color_black" />
+                    app:layout_constraintTop_toBottomOf="@+id/selected_moon_middle_line" />
 
                 <TextView
                     android:id="@+id/selected_moon_set_display_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
-                    android:textColor="@{theme == Theme.LIGHT ? @color/dark_black : @android:color/white}"
                     app:layout_constraintBottom_toBottomOf="@+id/selected_moon_set_plain_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/selected_moon_set_plain_text"
-                    tools:text="18:26"
-                    tools:textColor="@color/dark_black" />
+                    tools:text="18:26" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <include

@@ -8,13 +8,14 @@ import androidx.navigation.fragment.navArgs
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.SeeMoreFragmentBinding
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
+import com.octagon_technologies.sky_weather.domain.getWeatherTitle
 import com.octagon_technologies.sky_weather.repository.repo.CurrentForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.getAdvancedForecastDescription
-import com.octagon_technologies.sky_weather.utils.getWeatherIconFrom
+import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.octagon_technologies.sky_weather.utils.isLastIndex
 import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
 import com.xwray.groupie.GroupAdapter
@@ -43,7 +44,7 @@ class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
         binding.seeMoreHighlight.text = currentForecast.weatherCode.getWeatherTitle()
         binding.seeMoreTemp.text = currentForecast.getFormattedTemp()
         binding.seeMoreTempUnits.text = if (settingsRepo.units.value == Units.IMPERIAL) "F" else "C"
-        binding.seeMoreWeatherImage.getWeatherIconFrom(currentForecast.weatherCode)
+        binding.seeMoreWeatherImage.loadWeatherIcon(currentForecast.timeInMillis, currentForecast.weatherCode)
 
         setUpSeeMoreConditions()
 
@@ -63,8 +64,7 @@ class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
             listOfWeatherDescriptions.map {
                 MiniForecastDescription(
                     isLastItem = listOfWeatherDescriptions.isLastIndex(it),
-                    eachWeatherDescription = it,
-                    theme = settingsRepo.theme.value
+                    eachWeatherDescription = it
                 )
             }
         )
