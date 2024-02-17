@@ -19,6 +19,7 @@ import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
 import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.utils.getStringResource
 import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
+import com.octagon_technologies.sky_weather.utils.setUpToastMessage
 import com.octagon_technologies.sky_weather.utils.showLongToast
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -108,14 +109,7 @@ class CurrentForecastFragment : Fragment() {
     }
 
     private fun setUpStatusCode() {
-        viewModel.statusCode.observe(viewLifecycleOwner) {
-            val message = when (it ?: return@observe) {
-                StatusCode.Success -> return@observe
-                StatusCode.NoNetwork -> getStringResource(R.string.no_network_availble_plain_text)
-                StatusCode.ApiLimitExceeded -> getStringResource(R.string.api_limit_exceeded_plain_text)
-            }
-
-            showLongToast(message)
+        viewModel.statusCode.setUpToastMessage(this) {
             viewModel.onStatusCodeDisplayed()
         }
     }

@@ -3,6 +3,7 @@ package com.octagon_technologies.sky_weather.ui.find_location
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -64,7 +65,10 @@ class FindLocationViewModel @Inject constructor(
                     Timber.d("settingsRepo.isGpsOn.value is $isGpsOn and saveLocationToDatabase is $saveLocationToDatabase")
 
                     if (isGpsOn)
-                        locationRepo.useGPSLocation(context, saveLocationToDatabase)
+                        locationRepo.useGPSLocation(
+                            context = context,
+                            saveLocationToDatabase = saveLocationToDatabase,
+                            userShouldTurnLocationOn = {})
                 } catch (e: Exception) {
                     Timber.e(e)
                 }
@@ -111,7 +115,9 @@ class FindLocationViewModel @Inject constructor(
     }
 
     fun useAndSaveGPSLocation(context: Context) {
-        locationRepo.useGPSLocation(context, true)
+        locationRepo.useGPSLocation(context, true) {
+            Toast.makeText(context, "Turn on location in your settings", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun checkIfPermissionIsGranted(context: Context) {

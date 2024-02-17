@@ -72,7 +72,7 @@ class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
         timePeriod.observe(viewLifecycleOwner) { timePeriod ->
             Timber.d("timePeriod.observe called with $timePeriod")
             binding.selectedDayTemp.text = timePeriod.getFormattedTemp()
-            binding.selectedDayHumidityText.text = "Humidity: ${timePeriod.getFormattedHumidity()}"
+            binding.selectedDayHumidityText.text = requireContext().getString(R.string.humidity_format, timePeriod.getFormattedHumidity())
             binding.selectedDayWeatherIcon.loadWeatherIcon(timePeriod.isDay, timePeriod.weatherCode)
             binding.selectedDayWeatherStatus.text = timePeriod.weatherCode.getWeatherTitle()
 

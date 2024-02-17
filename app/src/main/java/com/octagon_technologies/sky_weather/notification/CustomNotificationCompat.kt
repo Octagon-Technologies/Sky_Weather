@@ -4,7 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
@@ -14,6 +16,7 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
+import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.Units
@@ -27,6 +30,10 @@ import javax.inject.Inject
 class CustomNotificationCompat @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    private val clickIntent = Intent(context, MainActivity::class.java)
+    private val clickPendingIntent: PendingIntent =
+        PendingIntent.getActivity(context, 1234, clickIntent, PendingIntent.FLAG_IMMUTABLE)
+
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "1234"
         const val NOTIFICATION_CHANNEL_NAME = "Weather Forecast Notifications"
@@ -35,7 +42,7 @@ class CustomNotificationCompat @Inject constructor(
     }
 
     private val notificationManagerCompat by lazy { NotificationManagerCompat.from(context) }
-    private val customRemoteView by lazy { CustomRemoteView(context) }
+//    private val customRemoteView by lazy { CustomRemoteView(context) }
 
 
     init {
@@ -114,6 +121,7 @@ class CustomNotificationCompat @Inject constructor(
 //                        .getCustomRemoteView(singleForecast, location, timeFormat, units))
 //            }
             setCustomHeadsUpContentView(null)
+            setContentIntent(clickPendingIntent)
         }.build()
 
         Timber.d("createNotification called with notification as $notification")
