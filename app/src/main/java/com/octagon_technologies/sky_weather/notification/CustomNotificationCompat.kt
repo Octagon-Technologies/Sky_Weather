@@ -92,7 +92,7 @@ class CustomNotificationCompat @Inject constructor(
 //                    units
 //                )
 //            )
-            setSmallIcon(R.drawable.cloudy_night)
+            setSmallIcon(R.drawable.sky_weather_icon)
             setShowWhen(false)
             setSound(null)
 

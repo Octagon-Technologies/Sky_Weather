@@ -93,7 +93,7 @@
                             android:layout_height="@dimen/_24sdp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/one_hour_temp_text"
-                            tools:srcCompat="@drawable/cloudy_windy" />
+                            tools:srcCompat="@drawable/_10001_clear_large" />
 
                         <TextView
                             android:id="@+id/one_hour_temp_text"
@@ -169,7 +169,7 @@
                             android:layout_height="@dimen/_24sdp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/six_hour_temp_text"
-                            tools:srcCompat="@drawable/cloudy_windy" />
+                            tools:srcCompat="@drawable/_10010_cloudy_large" />
 
                         <TextView
                             android:id="@+id/six_hour_temp_text"
@@ -249,7 +249,7 @@
                             android:layout_height="@dimen/_24sdp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/twenty_four_temp_text"
-                            tools:srcCompat="@drawable/cloudy_windy" />
+                            tools:srcCompat="@drawable/_20000_fog_large" />
 
                         <TextView
                             android:id="@+id/twenty_four_temp_text"
@@ -412,7 +412,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/today_moon_minutes"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/today_moon_hours"
-                        app:srcCompat="@drawable/moon" />
+                        app:srcCompat="@drawable/_10001_clear_large" />
 
                     <TextView
                         android:id="@+id/today_moon_hours"

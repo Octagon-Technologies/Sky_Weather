@@ -9,19 +9,12 @@
 <!--        android:gravity="center"-->
 <!--        tools:ignore="UnusedAttribute" />-->
 
-<!--    <item-->
-<!--        android:width="@dimen/_180sdp"-->
-<!--        android:height="@dimen/_60sdp"-->
-<!--        android:drawable="@drawable/text_icon_small"-->
-<!--        android:gravity="center"-->
-<!--        android:top="@dimen/_150sdp"-->
-<!--        tools:ignore="UnusedAttribute" />-->
-
     <item
         android:width="@dimen/splash_screen_icon_size"
         android:height="@dimen/splash_screen_icon_size"
-        android:drawable="@drawable/cloudy_night"
+        android:drawable="@drawable/sky_weather_icon"
         android:gravity="center"
         tools:ignore="UnusedAttribute" />
+
 
 </layer-list>

@@ -7,14 +7,14 @@ apply plugin: 'androidx.navigation.safeargs'
 
 android {
     def major_release = 1
-    def default_release = 1
-    def minor_release = 3
+    def default_release = 0
+    def minor_release = 0
 
     compileSdk(34)
     buildToolsVersion = "29.0.3"
 
     defaultConfig {
-        applicationId "com.octagon_technologies.sky_weather"
+        applicationId "com.octagontechnologies.sky_weather"
         minSdkVersion 21
         targetSdkVersion 34
         versionCode ((major_release * 100) + (default_release * 10) + minor_release)
@@ -62,8 +62,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.6'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.6'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.11.0'
 
@@ -161,8 +161,6 @@ dependencies {
     // Splash Screen
     implementation "androidx.core:core-splashscreen:1.1.0-alpha02"
 
-    // Ads
-    implementation 'com.google.android.gms:play-services-ads:22.6.0'
 }
 
 kapt {
