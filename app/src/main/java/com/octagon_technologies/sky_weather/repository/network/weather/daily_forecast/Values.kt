@@ -37,11 +37,11 @@ data class Values(
     @Json(name = "evapotranspirationSum")
     val evapotranspirationSum: Double?,
     @Json(name = "freezingRainIntensityAvg")
-    val freezingRainIntensityAvg: Int?,
+    val freezingRainIntensityAvg: Double?,
     @Json(name = "freezingRainIntensityMax")
-    val freezingRainIntensityMax: Int?,
+    val freezingRainIntensityMax: Double?,
     @Json(name = "freezingRainIntensityMin")
-    val freezingRainIntensityMin: Int?,
+    val freezingRainIntensityMin: Double?,
     @Json(name = "humidityAvg")
     val humidityAvg: Double?,
     @Json(name = "humidityMax")
@@ -49,21 +49,21 @@ data class Values(
     @Json(name = "humidityMin")
     val humidityMin: Double?,
     @Json(name = "iceAccumulationAvg")
-    val iceAccumulationAvg: Int?,
+    val iceAccumulationAvg: Double?,
     @Json(name = "iceAccumulationLweAvg")
-    val iceAccumulationLweAvg: Int?,
+    val iceAccumulationLweAvg: Double?,
     @Json(name = "iceAccumulationLweMax")
-    val iceAccumulationLweMax: Int?,
+    val iceAccumulationLweMax: Double?,
     @Json(name = "iceAccumulationLweMin")
-    val iceAccumulationLweMin: Int?,
+    val iceAccumulationLweMin: Double?,
     @Json(name = "iceAccumulationLweSum")
-    val iceAccumulationLweSum: Int?,
+    val iceAccumulationLweSum: Double?,
     @Json(name = "iceAccumulationMax")
-    val iceAccumulationMax: Int?,
+    val iceAccumulationMax: Double?,
     @Json(name = "iceAccumulationMin")
-    val iceAccumulationMin: Int?,
+    val iceAccumulationMin: Double?,
     @Json(name = "iceAccumulationSum")
-    val iceAccumulationSum: Int?,
+    val iceAccumulationSum: Double?,
     @Json(name = "moonriseTime")
     val moonriseTime: String?,
     @Json(name = "moonsetTime")
@@ -71,9 +71,9 @@ data class Values(
     @Json(name = "precipitationProbabilityAvg")
     val precipitationProbabilityAvg: Double?,
     @Json(name = "precipitationProbabilityMax")
-    val precipitationProbabilityMax: Int?,
+    val precipitationProbabilityMax: Double?,
     @Json(name = "precipitationProbabilityMin")
-    val precipitationProbabilityMin: Int?,
+    val precipitationProbabilityMin: Double?,
     @Json(name = "pressureSurfaceLevelAvg")
     val pressureSurfaceLevelAvg: Double?,
     @Json(name = "pressureSurfaceLevelMax")
@@ -87,11 +87,11 @@ data class Values(
     @Json(name = "rainAccumulationLweMax")
     val rainAccumulationLweMax: Double?,
     @Json(name = "rainAccumulationLweMin")
-    val rainAccumulationLweMin: Int?,
+    val rainAccumulationLweMin: Double?,
     @Json(name = "rainAccumulationMax")
     val rainAccumulationMax: Double?,
     @Json(name = "rainAccumulationMin")
-    val rainAccumulationMin: Int?,
+    val rainAccumulationMin: Double?,
     @Json(name = "rainAccumulationSum")
     val rainAccumulationSum: Double?,
     @Json(name = "rainIntensityAvg")
@@ -99,49 +99,49 @@ data class Values(
     @Json(name = "rainIntensityMax")
     val rainIntensityMax: Double?,
     @Json(name = "rainIntensityMin")
-    val rainIntensityMin: Int?,
+    val rainIntensityMin: Double?,
     @Json(name = "sleetAccumulationAvg")
-    val sleetAccumulationAvg: Int?,
+    val sleetAccumulationAvg: Double?,
     @Json(name = "sleetAccumulationLweAvg")
-    val sleetAccumulationLweAvg: Int?,
+    val sleetAccumulationLweAvg: Double?,
     @Json(name = "sleetAccumulationLweMax")
-    val sleetAccumulationLweMax: Int?,
+    val sleetAccumulationLweMax: Double?,
     @Json(name = "sleetAccumulationLweMin")
-    val sleetAccumulationLweMin: Int?,
+    val sleetAccumulationLweMin: Double?,
     @Json(name = "sleetAccumulationLweSum")
-    val sleetAccumulationLweSum: Int?,
+    val sleetAccumulationLweSum: Double?,
     @Json(name = "sleetAccumulationMax")
-    val sleetAccumulationMax: Int?,
+    val sleetAccumulationMax: Double?,
     @Json(name = "sleetAccumulationMin")
-    val sleetAccumulationMin: Int?,
+    val sleetAccumulationMin: Double?,
     @Json(name = "sleetIntensityAvg")
-    val sleetIntensityAvg: Int?,
+    val sleetIntensityAvg: Double?,
     @Json(name = "sleetIntensityMax")
-    val sleetIntensityMax: Int?,
+    val sleetIntensityMax: Double?,
     @Json(name = "sleetIntensityMin")
-    val sleetIntensityMin: Int?,
+    val sleetIntensityMin: Double?,
     @Json(name = "snowAccumulationAvg")
-    val snowAccumulationAvg: Int?,
+    val snowAccumulationAvg: Double?,
     @Json(name = "snowAccumulationLweAvg")
-    val snowAccumulationLweAvg: Int?,
+    val snowAccumulationLweAvg: Double?,
     @Json(name = "snowAccumulationLweMax")
-    val snowAccumulationLweMax: Int?,
+    val snowAccumulationLweMax: Double?,
     @Json(name = "snowAccumulationLweMin")
-    val snowAccumulationLweMin: Int?,
+    val snowAccumulationLweMin: Double?,
     @Json(name = "snowAccumulationLweSum")
-    val snowAccumulationLweSum: Int?,
+    val snowAccumulationLweSum: Double?,
     @Json(name = "snowAccumulationMax")
-    val snowAccumulationMax: Int?,
+    val snowAccumulationMax: Double?,
     @Json(name = "snowAccumulationMin")
-    val snowAccumulationMin: Int?,
+    val snowAccumulationMin: Double?,
     @Json(name = "snowAccumulationSum")
-    val snowAccumulationSum: Int?,
+    val snowAccumulationSum: Double?,
     @Json(name = "snowIntensityAvg")
-    val snowIntensityAvg: Int?,
+    val snowIntensityAvg: Double?,
     @Json(name = "snowIntensityMax")
-    val snowIntensityMax: Int?,
+    val snowIntensityMax: Double?,
     @Json(name = "snowIntensityMin")
-    val snowIntensityMin: Int?,
+    val snowIntensityMin: Double?,
     @Json(name = "sunriseTime")
     val sunriseTime: String?,
     @Json(name = "sunsetTime")

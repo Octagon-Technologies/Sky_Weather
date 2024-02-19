@@ -63,6 +63,16 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
 
     private fun setUpSelectedLayout() {
         selectedHourlyForecastBinding = binding.selectedHourlyForecastLayout
+        val selectedCard = selectedHourlyForecastBinding.selectedHourlyCard
+
+        selectedCard.shapeAppearanceModel = selectedCard.shapeAppearanceModel.toBuilder().apply {
+            setTopLeftCornerSize(resources.getDimension(R.dimen._12sdp))
+            setTopRightCornerSize(resources.getDimension(R.dimen._12sdp))
+            setBottomLeftCornerSize(0f)
+            setBottomRightCornerSize(0f)
+
+        }.build()
+
         setUpSelectedHourlyRecyclerView()
 
         selectedHourlyForecastBinding.hourlyTempUnit.text =

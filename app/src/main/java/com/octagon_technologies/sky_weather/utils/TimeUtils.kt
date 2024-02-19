@@ -42,11 +42,12 @@ fun String?.getDayWithMonth(): String =
         "-----, ----"
 
 fun Long?.getHoursAndMinsWithDay(timeFormat: TimeFormat?): String =
-    if (this != null)
-        SimpleDateFormat(
-            "${if (timeFormat == TimeFormat.FULL_DAY) "HH" else "hh"}:mm, EEEE",
-            Locale.getDefault()
-        ).format(Date(this))
+    if (this != null) {
+        val hourAndMinOnly = this.getHoursAndMins(timeFormat)
+        val day = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date(this))
+
+        "$hourAndMinOnly, $day"
+    }
     else
         "--:--, ------"
 
@@ -76,7 +77,7 @@ fun Long.getHoursAndMins(timeFormat: TimeFormat?): String {
         Locale.getDefault()
     ).format(Date(this))
 
-    return if (timeFormat == TimeFormat.HALF_DAY) "$rawTime ${if (hourOfDay < 12) " am" else " pm"}"
+    return if (timeFormat == TimeFormat.HALF_DAY) "$rawTime ${if (hourOfDay < 12) "am" else "pm"}"
     else rawTime
 }
 

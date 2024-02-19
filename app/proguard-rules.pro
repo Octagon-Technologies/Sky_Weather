@@ -24,3 +24,11 @@
 -keep class com.squareup.moshi.Json
 -keep class com.squareup.moshi.JsonClass
 -dontobfuscate
+
+-dontwarn org.jetbrains.annotations.**
+-keep class kotlin.Metadata { *; }
+
+-keepclassmembers class com.octagon_technologies.sky_weather.** {
+  <init>(...);
+  <fields>;
+}

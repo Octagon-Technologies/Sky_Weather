@@ -1,12 +1,13 @@
 package com.octagon_technologies.sky_weather
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.gms.ads.MobileAds
 import com.octagon_technologies.sky_weather.work.RefreshDataWork
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /*
 TODO:
@@ -25,8 +27,17 @@ TODO:
 6) Change Humidity text to Precipitation ------ DONE
  */
 @HiltAndroidApp
-class App : Application() {
+class App : Application(), Configuration.Provider {
+
     private val applicationScope = CoroutineScope(Dispatchers.Default)
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
 
     override fun onCreate() {

@@ -88,7 +88,9 @@ class CurrentForecastViewModel @Inject constructor(
                 currentForecast.asFlow().collectLatest { currentForecast ->
                     currentForecast?.let {
                         // If a forecast was fetched, it means we definitely have the location
-                        updateNotification(location.value!!)
+                        location.value?.let {
+                            updateNotification(it)
+                        }
                     }
                 }
             }

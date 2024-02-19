@@ -3,6 +3,7 @@ package com.octagon_technologies.sky_weather.repository.repo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.LocationManager
+import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
@@ -42,12 +43,20 @@ class LocationRepo @Inject constructor(
      */
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
-    fun useGPSLocation(context: Context, saveLocationToDatabase: Boolean) {
+    fun useGPSLocation(context: Context, saveLocationToDatabase: Boolean, userShouldTurnLocationOn: () -> Unit) {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         Timber.d("gpsEnabled is $gpsEnabled")
 
+        val isLocationTurnedOn = LocationManagerCompat.isLocationEnabled(locationManager)
+
         if (gpsEnabled) {
+            if (!isLocationTurnedOn) {
+                userShouldTurnLocationOn()
+                Timber.d("User should turn on location")
+                return
+            }
+
             val fusedLocationProviderClient =
                 LocationServices.getFusedLocationProviderClient(context)
                     .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)

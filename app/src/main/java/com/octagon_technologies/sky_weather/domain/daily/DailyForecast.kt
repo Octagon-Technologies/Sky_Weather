@@ -21,7 +21,7 @@ fun TimePeriod?.getFormattedCloudCover(): String =
     (this?.cloudCover?.toInt()?.toString() ?: "--") + "%"
 
 fun TimePeriod?.getFormattedCloudCeiling(): String =
-    if (this?.cloudCeiling != null && cloudCeiling.toInt() != 0) "${cloudCeiling.toInt()}" else "-- m"
+    if (this?.cloudCeiling != null && cloudCeiling.toInt() != 0) "${cloudCeiling.toInt()} m" else "-- m"
 
 data class TimePeriod(
     val temp: Double?,

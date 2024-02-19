@@ -42,25 +42,37 @@ data class SearchLocationResponse(
             with(address) {
                 countryCode = countryCode?.uppercase(Locale.getDefault())
 
+                // General format: Display Place, Suburb(if there), City, State (optional), Country
+                // If the full API display name is less than 25 letters, use it
+                this@SearchLocationResponse.displayName
+
+                // User is searching for a city e.g Nairobi
+                if (displayPlace == city)
+                    displayPlace
+
+                // e.g: Limuru Road, Parklands, Nairobi
                 if (suburb != null && city != null)
-                    "$suburb, $city"
-                else if (state != null)
-                    "$state"
-                else if (displayName?.length != null && displayName.length <= 16) {
-                    try {
-                        val miniList = displayName.split(",").subList(0, 1)
-                        miniList.joinToString(", ") { it.capitalize() }
-                    } catch (e: Exception) {
-                        displayName
-                    }
-                } else if (city != null)
-                    "$city"
-                else
-                    country?.capitalize()
-            }
-                ?: "Unknown Location"
-        else
-            "Unknown Location"
+                    "$displayPlace, $suburb, $city"
+
+                // The city name is repeated in the state; do not display the state
+                if (state != null && city != null) {
+                    if (state.split(" ").contains(city))
+                    // Limuru Road, Kiambu
+                        "$displayPlace, $city"
+                    else
+                    // Limuru Road, Ruaka, Kiambu
+                        "$displayPlace, $city, $state"
+                }
+
+                // The city name is null; display the state
+                if (state != null && city == null)
+                // Limuru, Kiambu
+                    "$displayPlace, $state"
+
+                // If everything fails, return the display name... but remove the country
+                displayName?.split(", ")?.dropLast(1)?.joinToString(", ")
+            } ?: "Unknown Location"
+    else "Unknown Location"
 
     fun toLocation() = Location(
         getDisplayNameWithoutCode(),

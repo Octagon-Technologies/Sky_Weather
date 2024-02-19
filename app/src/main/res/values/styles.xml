@@ -26,6 +26,8 @@
         <item name="colorOnSecondary">@color/dark_black</item>
         <item name="colorOnBackground">@color/dark_black</item>
         <item name="colorOnSecondaryFixedVariant">@color/color_black</item>
+
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
     </style>
 
     <style name="AppTheme.SettingsLayout">
@@ -70,6 +72,15 @@
     <!--        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/dark_theme_blue</item>-->
     <!--        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@color/dark_theme_blue</item>-->
     <!--    </style>-->
+
+
+    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">28dp</item>
+        <item name="cornerSizeTopLeft">28dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
 
     <style name="AppTheme.AdAttribution">
         <item name="android:layout_width">wrap_content</item>
