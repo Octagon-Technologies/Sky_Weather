@@ -1,6 +1,7 @@
 package com.octagon_technologies.sky_weather.repository
 
 import androidx.lifecycle.asFlow
+import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.repository.repo.CurrentForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.DailyForecastRepo
@@ -8,11 +9,9 @@ import com.octagon_technologies.sky_weather.repository.repo.HourlyForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.LunarRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
-import kotlinx.coroutines.coroutineScope
+import com.octagon_technologies.sky_weather.utils.Units
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.single
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -26,38 +25,45 @@ class WeatherRepo @Inject constructor(
     private val customNotificationCompat: CustomNotificationCompat
 ) {
 
-    suspend fun refreshData() {
-        coroutineScope {
-            locationRepo.location.asFlow().collectLatest { location ->
-                location?.let {
-                    val units = settingsRepo.units.value
+    suspend fun refreshUrgentForecast() {
+        locationRepo.location.asFlow().collectLatest { location ->
+            location?.let {
+                val units = settingsRepo.units.value
 
-                    currentForecastRepo.refreshCurrentForecast(location, units)
-                    hourlyForecastRepo.refreshHourlyForecast(location, units)
-                    dailyForecastRepo.refreshDailyForecast(location, units)
-                    lunarRepo.refreshCurrentLunarForecast(location)
+                currentForecastRepo.refreshCurrentForecast(location, units)
+                hourlyForecastRepo.refreshHourlyForecast(location, units)
 
-                    Timber.d("Location flow called with settingsRepo.isNotificationAllowed.value is ${settingsRepo.isNotificationAllowed.first()}")
-                }
+                updateNotification(units, location)
             }
         }
-        coroutineScope {
-            currentForecastRepo.currentForecast.asFlow().collect { singleForecast ->
-                val location = locationRepo.location.value
+    }
 
-                if (location != null && singleForecast != null) {
-                    val units = settingsRepo.units.value
+    private suspend fun updateNotification(units: Units?, location: Location) {
+        val isNotificationAllowed = settingsRepo.isNotificationAllowed.first()
+        val currentForecast = currentForecastRepo.currentForecast.value
 
-                    if (settingsRepo.isNotificationAllowed.first()) {
-                        Timber.d("currentForecastRepo.currentForecast.asFlow() called with single forecast as $singleForecast")
-                        customNotificationCompat.createNotification(
-                            singleForecast = singleForecast,
-                            location = location,
-                            timeFormat = settingsRepo.timeFormat.value,
-                            units = units
-                        )
-                    }
-                }
+        if (isNotificationAllowed) {
+            customNotificationCompat.createNotification(
+                singleForecast = currentForecast,
+                location = location,
+                timeFormat = settingsRepo.timeFormat.value,
+                units = units
+            )
+        }
+    }
+
+    suspend fun refreshAllData() {
+        locationRepo.location.asFlow().collectLatest { location ->
+            location?.let {
+                val units = settingsRepo.units.value
+
+//                    currentForecastRepo.refreshCurrentForecast(location, units)
+//                    hourlyForecastRepo.refreshHourlyForecast(location, units)
+                dailyForecastRepo.refreshDailyForecast(location, units)
+                lunarRepo.refreshCurrentLunarForecast(location)
+
+//                    updateNotification(units, location)
+                Timber.d("Location flow called with settingsRepo.isNotificationAllowed.value is ${settingsRepo.isNotificationAllowed.first()}")
             }
         }
     }

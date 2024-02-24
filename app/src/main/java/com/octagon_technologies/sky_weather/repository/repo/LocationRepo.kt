@@ -62,9 +62,17 @@ class LocationRepo @Inject constructor(
                     .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
 
             fusedLocationProviderClient
-                .addOnSuccessListener {
+                .addOnSuccessListener { latLng ->
                     GlobalScope.launch {
-                        getLocationNameFromCoordinates(saveLocationToDatabase, lat = it.latitude, lon = it.longitude)
+                        if (latLng != null) {
+                            getLocationNameFromCoordinates(
+                                saveLocationToDatabase,
+                                lat = latLng.latitude,
+                                lon = latLng.longitude
+                            )
+                        } else {
+                            Timber.e("latLng is null")
+                        }
                     }
                 }
                 .addOnCompleteListener {

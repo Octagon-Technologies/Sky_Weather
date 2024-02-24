@@ -9,6 +9,7 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.octagon_technologies.sky_weather.work.RefreshDataWork
+import com.octagon_technologies.sky_weather.work.UrgentDataWork
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,15 +57,25 @@ class App : Application(), Configuration.Provider {
             .setRequiresBatteryNotLow(false)
             .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(2, TimeUnit.HOURS)
+        val urgentRequest = PeriodicWorkRequestBuilder<UrgentDataWork>(20, TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
+
+        val longerRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(6, TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
 
         try {
             WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                UrgentDataWork.WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                urgentRequest
+            )
+
+            WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
                 RefreshDataWork.WORK_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
-                repeatingRequest
+                longerRequest
             )
         } catch (e: IllegalStateException) {
             Timber.e(e, "Work manager wasn't initialized")

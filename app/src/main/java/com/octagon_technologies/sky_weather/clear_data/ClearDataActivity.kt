@@ -11,6 +11,7 @@ import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.databinding.ActivityClearDataBinding
 import timber.log.Timber
 
+// TODO: See how we can bring this back to the app
 class ClearDataActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

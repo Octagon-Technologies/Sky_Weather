@@ -7,7 +7,7 @@ apply plugin: 'androidx.navigation.safeargs'
 
 android {
     def major_release = 1
-    def default_release = 0
+    def default_release = 1
     def minor_release = 0
 
     compileSdk(34)
