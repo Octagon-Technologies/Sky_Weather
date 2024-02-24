@@ -23,7 +23,7 @@ class RefreshDataWork @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            weatherRepo.refreshData()
+            weatherRepo.refreshAllData()
             Timber.d("doWork: Work is done and successfully")
             Result.success()
         } catch (httpException: HttpException) {
