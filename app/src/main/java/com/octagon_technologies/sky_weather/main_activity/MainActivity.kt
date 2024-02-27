@@ -67,12 +67,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpDarkModeCompat(theme: Theme) {
-        val appCompatDelegate = AppCompatDelegate.create(this@MainActivity, null)
-        appCompatDelegate.localNightMode = when (theme) {
-            Theme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
-            Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
-//            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
+        AppCompatDelegate.setDefaultNightMode(
+            when (theme) {
+                Theme.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+                Theme.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+            }
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
