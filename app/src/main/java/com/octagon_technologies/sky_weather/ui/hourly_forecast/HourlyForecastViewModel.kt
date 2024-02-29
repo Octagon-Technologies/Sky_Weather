@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import com.octagon_technologies.sky_weather.ads.AdRepo
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.repository.repo.HourlyForecastRepo
 import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
@@ -23,6 +24,8 @@ class HourlyForecastViewModel @Inject constructor(
     private val settingsRepo: SettingsRepo,
     private val hourlyForecastRepo: HourlyForecastRepo
 ) : ViewModel() {
+
+    val adRepo = AdRepo()
 
     val theme = settingsRepo.theme
     val units = settingsRepo.units

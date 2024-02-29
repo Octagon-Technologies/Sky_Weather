@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.octagon_technologies.sky_weather.ads.AdRepo
 import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.notification.CustomNotificationCompat
 import com.octagon_technologies.sky_weather.repository.repo.AllergyRepo
@@ -40,6 +41,8 @@ class CurrentForecastViewModel @Inject constructor(
     private val locationRepo: LocationRepo,
     private val customNotificationCompat: CustomNotificationCompat
 ) : ViewModel() {
+
+    val adRepo = AdRepo()
 
     val theme = settingsRepo.theme
     val units = settingsRepo.units

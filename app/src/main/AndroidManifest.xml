@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.octagon_technologies.sky_weather"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -28,6 +27,8 @@
         android:requiredNotFeature="true"
         tools:ignore="UnusedAttribute" />
 
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -43,9 +44,9 @@
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
 
-        <activity
-            android:name=".clear_data.ClearDataActivity"
-            android:theme="@style/DarkBlueStatusBar" />
+<!--        <activity-->
+<!--            android:name=".clear_data.ClearDataActivity"-->
+<!--            android:theme="@style/DarkBlueStatusBar" />-->
 
         <activity
             android:name=".main_activity.MainActivity"
@@ -79,9 +80,12 @@
 <!--            </intent-filter>-->
 <!--        </activity>-->
 
-<!--        <meta-data-->
-<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
-<!--            android:value="ca-app-pub-9000696988586021~2374497269" />-->
+
+<!--        ca-app-pub-2375349794400927~5731013212-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2375349794400927~5731013212"/>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

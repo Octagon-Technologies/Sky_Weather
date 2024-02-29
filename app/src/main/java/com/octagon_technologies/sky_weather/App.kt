@@ -8,6 +8,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.android.gms.ads.MobileAds
 import com.octagon_technologies.sky_weather.work.RefreshDataWork
 import com.octagon_technologies.sky_weather.work.UrgentDataWork
 import dagger.hilt.android.HiltAndroidApp
@@ -43,7 +44,7 @@ class App : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
-//        MobileAds.initialize(applicationContext)
+        MobileAds.initialize(applicationContext)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
         applicationScope.launch {

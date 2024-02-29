@@ -5,8 +5,10 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/dark_theme_blue</item>
         <item name="colorPrimaryVariant">@color/light_white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">@android:color/white</item>
         <item name="colorSurface">@color/dark_theme_blue</item>
+        <item name="colorOnSurface">@android:color/white</item>
         <item name="android:textSize">@dimen/_13ssp</item>
         <item name="android:textColor">@android:color/white</item>
 
@@ -26,6 +28,9 @@
         <item name="colorOnSecondary">@android:color/white</item>
         <item name="colorOnBackground">@android:color/white</item>
         <item name="colorOnSecondaryFixedVariant">@color/light_white</item>
+
+
+        <item name="colorTertiaryContainer">@color/dark_black</item>
     </style>
 
     <style name="AppTheme.SettingsLayout" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">

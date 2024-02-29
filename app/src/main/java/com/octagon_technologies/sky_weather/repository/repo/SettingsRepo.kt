@@ -1,6 +1,7 @@
 package com.octagon_technologies.sky_weather.repository.repo
 
 import android.content.Context
+import android.os.Build
 import androidx.datastore.DataStore
 import androidx.datastore.preferences.Preferences
 import androidx.datastore.preferences.createDataStore
@@ -12,6 +13,7 @@ import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.WindDirectionUnits
+import com.octagon_technologies.sky_weather.utils.checkBuildVersionFrom
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -42,12 +44,15 @@ class SettingsRepo @Inject constructor(
     private val isGpsOnKey = preferencesKey<Boolean>(isGpsOnName)
 
     val units = getDataStoreData(unitsName).map { Units.valueOf(it) }.asLiveData()
-    val windDirectionUnits = getDataStoreData(windDirectionName).map { WindDirectionUnits.valueOf(it) }.asLiveData()
-    val timeFormat = getDataStoreData(timeFormatName).map{ TimeFormat.valueOf(it) }.asLiveData()
+    val windDirectionUnits =
+        getDataStoreData(windDirectionName).map { WindDirectionUnits.valueOf(it) }.asLiveData()
+    val timeFormat = getDataStoreData(timeFormatName).map { TimeFormat.valueOf(it) }.asLiveData()
     val theme: LiveData<Theme> = getDataStoreData(themeName).map { Theme.valueOf(it) }.asLiveData()
 
-    val isNotificationAllowed = getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
-    val isNotificationAllowedFlow = getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
+    val isNotificationAllowed =
+        getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
+    val isNotificationAllowedFlow =
+        getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
     val isGpsOn = getDataStoreData(isGpsOnName).map { it.toBooleanStrict() }
 
 
@@ -87,7 +92,11 @@ class SettingsRepo @Inject constructor(
                 windDirectionName -> it[windDirectionKey] ?: WindDirectionUnits.CARDINAL.toString()
                 timeFormatName -> it[timeFormatKey] ?: TimeFormat.FULL_DAY.toString()
                 themeName -> it[themeKey] ?: Theme.DARK.toString()
-                notificationAllowedName -> it[notificationAllowedKey]?.toString() ?: "false"
+
+                // If below Android S, turn on notifications automatically
+                notificationAllowedName -> it[notificationAllowedKey]?.toString()
+                    ?: if (checkBuildVersionFrom(Build.VERSION_CODES.S)) "true" else "false"
+
                 isGpsOnName -> it[isGpsOnKey]?.toString() ?: "false"
                 else -> throw RuntimeException("Unexpected parameter. preferencesName is $preferencesName")
             }

@@ -128,14 +128,17 @@ class CustomNotificationCompat @Inject constructor(
         notificationManagerCompat.cancelAll()
 
 
-        // This check is kinda unnecessary since we've adequately checked for permission in the ViewModel... but I'm going to add
-        // it just in case... Plus, why not? :)
-        if (ActivityCompat
-                .checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-        ) notificationManagerCompat.notify(NOTIFICATION_ID, notification)
+        if (checkBuildVersionFrom(Build.VERSION_CODES.S)) {
+            // This check is kinda unnecessary since we've adequately checked for permission in the ViewModel... but I'm going to add
+            // it just in case... Plus, why not? :)
+            if (ActivityCompat
+                    .checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+            ) notificationManagerCompat.notify(NOTIFICATION_ID, notification)
+        } else
+            notificationManagerCompat.notify(NOTIFICATION_ID, notification)
     }
 
 
