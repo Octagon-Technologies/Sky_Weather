@@ -23,11 +23,17 @@ fun getFinalMinutes(rise: String?, set: String?): String {
 TODO: Test this function extensively to eliminate odd numbers e.g 36 hours of sunlight
  */
 fun getFinalHours(rise: String?, set: String?): String {
-    if (rise == null || set == null) return "--"
-    val riseList = rise.split(":").map { it.toInt() }
-    val setList = set.split(":").map { it.toInt() }
+    return try {
+        if (rise == null || set == null) {
+            return "--"
+        }
+        val riseList = rise.split(":").map { it.toInt() }
+        val setList = set.split(":").map { it.toInt() }
 
-    return (setList[0] - riseList[0]).let {
-        if (it >= 0) it.toString() else (it + 24).toString()
+        (setList[0] - riseList[0]).let {
+            if (it >= 0) it.toString() else (it + 24).toString()
+        }
+    } catch (e: Exception) {
+        "--"
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.R
+import com.octagon_technologies.sky_weather.ads.AdRepo
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
 import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
@@ -22,6 +23,7 @@ import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.octagon_technologies.sky_weather.utils.setUpToastMessage
 import com.octagon_technologies.sky_weather.utils.showLongToast
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class CurrentForecastFragment : Fragment() {
@@ -52,7 +54,19 @@ class CurrentForecastFragment : Fragment() {
         setUpHourlyForecastPreview()
         setUpSeeMoreButton()
         setUpLiveData()
-//        setUpAd()
+        setUpAd()
+    }
+
+    private fun setUpAd() {
+        viewModel.adRepo.getNativeAd(
+            fragment = this,
+            nativeAdBinding = binding.currentNativeAdLayout,
+            onAdCompleted = { isSuccess ->
+                Timber.d("isSuccess is $isSuccess")
+
+                binding.currentNativeAdLayout.root.visibility =
+                    if (isSuccess) View.VISIBLE else View.GONE
+            })
     }
 
     private fun setUpLiveData() {

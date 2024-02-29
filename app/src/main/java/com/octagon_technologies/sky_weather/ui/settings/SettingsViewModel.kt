@@ -66,7 +66,7 @@ class SettingsViewModel @Inject constructor(
                 .withListener(compositePermissionListener)
                 .check()
         } else {
-            viewModelScope.launch { settingsRepo.changeIsNotificationAllowed(false) }
+            viewModelScope.launch { settingsRepo.changeIsNotificationAllowed(isChecked) }
         }
     }
 

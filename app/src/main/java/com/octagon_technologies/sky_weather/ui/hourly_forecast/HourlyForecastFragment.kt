@@ -47,6 +47,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
         super.onViewCreated(view, savedInstanceState)
         binding = HourlyForecastFragmentBinding.bind(view)
         setUpSelectedLayout()
+        setUpAd()
 
         setUpStatusCode()
         setUpBottomSheet()
@@ -59,6 +60,18 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
             val timeInMillis = listOfDailyForecast?.firstOrNull()?.timeInMillis
             binding.topDayText.text = getDayOfWeek(timeInMillis)
         }
+    }
+
+    private fun setUpAd() {
+        viewModel.adRepo.getNativeAd(
+            fragment = this,
+            nativeAdBinding = binding.selectedHourlyForecastLayout.selectedHourAdView,
+            onAdCompleted = { isSuccess ->
+                Timber.d("isSuccess is $isSuccess")
+
+                binding.selectedHourlyForecastLayout.selectedHourAdView.root.visibility =
+                    if (isSuccess) View.VISIBLE else View.GONE
+            })
     }
 
     private fun setUpSelectedLayout() {

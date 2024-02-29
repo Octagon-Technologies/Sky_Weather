@@ -277,6 +277,19 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <include
+                    android:id="@+id/current_native_ad_layout"
+                    layout="@layout/native_ad_layout"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/_150sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/_18sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/in_one_hour_layout" />
+
                 <TextView
                     android:id="@+id/today_details_plain_text"
                     android:layout_width="wrap_content"
@@ -287,7 +300,7 @@
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/in_one_hour_layout" />
+                    app:layout_constraintTop_toBottomOf="@+id/current_native_ad_layout" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/today_sun_constraint_layout"
@@ -679,16 +692,6 @@
                     app:layout_constraintStart_toStartOf="@+id/main_temp"
                     app:layout_constraintTop_toBottomOf="@+id/main_temp"
                     tools:text="FeelsLike 15°" />
-
-                <include
-                    android:id="@+id/ad_view"
-                    layout="@layout/native_ads_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_30sdp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/in_six_hour_layout" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

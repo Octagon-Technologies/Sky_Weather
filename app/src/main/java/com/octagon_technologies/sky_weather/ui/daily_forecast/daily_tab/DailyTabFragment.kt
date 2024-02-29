@@ -3,8 +3,10 @@ package com.octagon_technologies.sky_weather.ui.daily_forecast.daily_tab
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import com.octagon_technologies.sky_weather.R
+import com.octagon_technologies.sky_weather.ads.AdRepo
 import com.octagon_technologies.sky_weather.databinding.DailyTabFragmentBinding
 import com.octagon_technologies.sky_weather.domain.daily.TimePeriod
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedCloudCeiling
@@ -22,12 +24,13 @@ import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.emptyFlow
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
+
+    private val viewModel: DailyTabViewModel by viewModels()
 
     @Inject
     lateinit var settingsRepo: SettingsRepo
@@ -35,35 +38,30 @@ class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
     private lateinit var binding: DailyTabFragmentBinding
     lateinit var timePeriod: LiveData<TimePeriod>
 
-    val flow = emptyFlow<TimePeriod>()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = DailyTabFragmentBinding.bind(view)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.theme = settingsRepo.theme
 
-        Timber.d("onViewCreated called")
+        if (::binding.isInitialized)
+            setUpAd()
 
         if (::timePeriod.isInitialized && ::binding.isInitialized) {
             setUpWeatherConditions()
         }
-        else {
-            Timber.e("::timePeriod.isInitialized is ${::timePeriod.isInitialized}")
-            Timber.e("::binding.isInitialized is ${::binding.isInitialized}")
-        }
-//        setUpAd()
     }
 
-//    private fun setUpAd() {
-//        adHelper.loadAd(binding.dailyTabAdView) {
-//            Timber.d("Load ad listener return $it")
-//            // If it failed in onAdFailedToLoad(), hide the ad view
-//            if (!it) {
-//                binding.dailyTabAdView.root.visibility = View.GONE
-//            }
-//        }
-//    }
+
+    private fun setUpAd() {
+        viewModel.adRepo.getNativeAd(
+            fragment = this,
+            nativeAdBinding = binding.dailyTabAdView,
+            onAdCompleted = { isSuccess ->
+                Timber.d("isSuccess is $isSuccess")
+
+                binding.dailyTabAdView.root.visibility =
+                    if (isSuccess) View.VISIBLE else View.GONE
+            })
+    }
 
     private fun setUpWeatherConditions() {
         val groupAdapter = GroupAdapter<GroupieViewHolder>()
@@ -72,7 +70,10 @@ class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
         timePeriod.observe(viewLifecycleOwner) { timePeriod ->
             Timber.d("timePeriod.observe called with $timePeriod")
             binding.selectedDayTemp.text = timePeriod.getFormattedTemp()
-            binding.selectedDayHumidityText.text = requireContext().getString(R.string.humidity_format, timePeriod.getFormattedHumidity())
+            binding.selectedDayHumidityText.text = requireContext().getString(
+                R.string.humidity_format,
+                timePeriod.getFormattedHumidity()
+            )
             binding.selectedDayWeatherIcon.loadWeatherIcon(timePeriod.isDay, timePeriod.weatherCode)
             binding.selectedDayWeatherStatus.text = timePeriod.weatherCode.getWeatherTitle()
 
@@ -88,39 +89,7 @@ class DailyTabFragment : Fragment(R.layout.daily_tab_fragment) {
                 timePeriod.lunar.getMoonRiseDisplay(timeFormat)
             binding.selectedMoonSetDisplayTime.text = timePeriod.lunar.getMoonSetDisplay(timeFormat)
 
-            val dailyConditions = listOf(
-                EachWeatherDescription(
-                    "Temp",
-                    timePeriod.getFormattedTemp()
-                ),
-                EachWeatherDescription(
-                    "FeelsLike",
-                    timePeriod.getFormattedFeelsLike()
-                ),
-                EachWeatherDescription(
-                    "Humidity",
-                    timePeriod.getFormattedHumidity()
-                ),
-                EachWeatherDescription(
-                    "Average Wind",
-                    timePeriod.wind.getWindSpeedWithDirection(
-                        settingsRepo.units.value,
-                        settingsRepo.windDirectionUnits.value
-                    )
-                ),
-                EachWeatherDescription(
-                    "Pressure",
-                    "${timePeriod.pressure?.toInt() ?: "-- "} ${if (settingsRepo.units.value == Units.IMPERIAL) "inHg" else "mbar"}"
-                ),
-                EachWeatherDescription(
-                    "Cloud Cover",
-                    timePeriod.getFormattedCloudCover()
-                ),
-                EachWeatherDescription(
-                    "Cloud Ceiling",
-                    timePeriod.getFormattedCloudCeiling()
-                )
-            )
+            val dailyConditions = viewModel.getWeatherDescriptionFromTimePeriod(timePeriod)
 
             groupAdapter.update(
                 dailyConditions.map {

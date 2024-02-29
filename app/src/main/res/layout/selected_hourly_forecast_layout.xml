@@ -121,8 +121,10 @@
 
                     <include
                         android:id="@+id/selected_hour_ad_view"
-                        layout="@layout/native_ads_layout"
+                        layout="@layout/native_ad_layout"
                         android:layout_width="0dp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginEnd="@dimen/_8sdp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_24sdp"
                         app:layout_constraintEnd_toEndOf="parent"

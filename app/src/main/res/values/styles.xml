@@ -4,10 +4,12 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/light_theme_blue</item>
         <item name="colorPrimaryVariant">@color/light_white</item>
+        <item name="colorOnPrimary">@android:color/white</item>
         <item name="colorSecondary">@android:color/white</item>
+        <item name="colorOnSecondary">@color/dark_black</item>
         <item name="colorSurface">@color/light_theme_blue</item>
         <item name="android:textSize">@dimen/_13ssp</item>
-        <item name="colorOnPrimary">@android:color/white</item>
+
         <item name="android:colorBackground">@color/light_theme_blue</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
 
@@ -27,6 +29,8 @@
         <item name="colorOnBackground">@color/dark_black</item>
         <item name="colorOnSecondaryFixedVariant">@color/color_black</item>
 
+
+        <item name="colorTertiaryContainer">@android:color/white</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
     </style>
 

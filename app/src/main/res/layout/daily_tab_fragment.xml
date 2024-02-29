@@ -1,22 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-
-        <import type="androidx.lifecycle.LiveData" />
-
-        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
-
-        <variable
-            name="theme"
-            type="LiveData&lt;Theme&gt;" />
-    </data>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -303,8 +290,10 @@
 
             <include
                 android:id="@+id/daily_tab_ad_view"
-                layout="@layout/native_ads_layout"
+                layout="@layout/native_ad_layout"
                 android:layout_width="0dp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -313,4 +302,3 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-</layout>
