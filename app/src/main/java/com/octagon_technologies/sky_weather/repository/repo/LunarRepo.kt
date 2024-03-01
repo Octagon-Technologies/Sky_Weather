@@ -11,13 +11,11 @@ import com.octagon_technologies.sky_weather.repository.database.toLunar
 import com.octagon_technologies.sky_weather.repository.network.lunar.LunarForecastApi
 import com.octagon_technologies.sky_weather.utils.toLunarDateFormat
 import com.octagon_technologies.sky_weather.utils.toLunarTimeZone
-import timber.log.Timber
 import javax.inject.Inject
 
 
 class LunarRepo @Inject constructor(
     private val lunarApi: LunarForecastApi,
-    private val locationRepo: LocationRepo,
     private val lunarDao: LunarDao
 ) {
 

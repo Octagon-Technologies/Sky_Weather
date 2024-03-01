@@ -22,22 +22,25 @@ data class Wind(
 
     fun getWindSpeedWithDirection(units: Units?, windDirectionUnits: WindDirectionUnits?): String {
         val cardinalDirection = getCardinalDirection(windDirectionUnits ?: WindDirectionUnits.CARDINAL)
-        val windSpeed = getWindSpeed(units ?: Units.METRIC)
+        val windSpeed = getWindSpeed(speed, units ?: Units.METRIC)
 
 
         Timber.d("WindSpeedWithDirection with units as $units and windDirectionUnits as $windDirectionUnits is $cardinalDirection $windSpeed")
         return "$cardinalDirection $windSpeed"
     }
 
-    fun getCardinalDirection(windDirectionUnits: WindDirectionUnits) =
+    private fun getCardinalDirection(windDirectionUnits: WindDirectionUnits) =
         if (windDirectionUnits == WindDirectionUnits.DEGREES)
             "${direction?.toInt()?.toString() ?: "--"}°"
         else
             degreeToCardinalMap.getOrDefault(direction?.div(22.5)?.toInt(), "N")
 
-    fun getWindSpeed(units: Units?): String {
-        return if (units == Units.METRIC || units == null) "${((speed)?.times(3.6))?.toInt() ?: "--"} km/h"
-        else "${speed?.toInt() ?: "--"} mph"
+    fun getWindGusts(units: Units?): String = getWindSpeed(gust,units)
+
+    // Since we always get our wind speed in KM/H
+    fun getWindSpeed(windSpeed: Double?, units: Units?): String {
+        return if (units == Units.METRIC || units == null) "${(windSpeed)?.toInt() ?: "--"} km/h"
+        else "${(windSpeed?.div(3.6))?.toInt() ?: "--"} mph"
     }
 
 }

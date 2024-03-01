@@ -9,19 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.octagon_technologies.sky_weather.R
-import com.octagon_technologies.sky_weather.ads.AdRepo
 import com.octagon_technologies.sky_weather.databinding.CurrentForecastFragmentBinding
 import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
 import com.octagon_technologies.sky_weather.main_activity.MainActivity
-import com.octagon_technologies.sky_weather.utils.StatusCode
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
 import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
-import com.octagon_technologies.sky_weather.utils.getStringResource
 import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.octagon_technologies.sky_weather.utils.setUpToastMessage
-import com.octagon_technologies.sky_weather.utils.showLongToast
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -72,9 +68,9 @@ class CurrentForecastFragment : Fragment() {
     private fun setUpLiveData() {
         viewModel.currentForecast.observe(viewLifecycleOwner) { currentForecast ->
             if (currentForecast != null) {
-                binding.mainTemp.text = currentForecast.getFormattedTemp()
-                binding.mainRealfeelDisplayText.text = currentForecast.getFormattedFeelsLike()
-                binding.mainWeatherImage.loadWeatherIcon(currentForecast.timeInMillis, currentForecast.weatherCode)
+                binding.mainTemp.text = currentForecast.getFormattedTemp(viewModel.isImperial())
+                binding.mainRealfeelDisplayText.text = currentForecast.getFormattedFeelsLike(viewModel.isImperial())
+                binding.mainWeatherImage.loadWeatherIcon(currentForecast.timeInEpochMillis, currentForecast.weatherCode)
             }
         }
     }
@@ -105,20 +101,20 @@ class CurrentForecastFragment : Fragment() {
 
     private fun setUpHourlyForecastPreview() {
         viewModel.oneHourForecast.observe(viewLifecycleOwner) { oneHourForecast ->
-            binding.oneHourTempText.text = oneHourForecast.getFormattedTemp()
-            binding.oneHourFeelslikeDisplayText.text = oneHourForecast.getFormattedFeelsLike()
-            binding.oneHourWeatherImage.loadWeatherIcon(oneHourForecast?.timeInMillis, oneHourForecast?.weatherCode)
+            binding.oneHourTempText.text = oneHourForecast.getFormattedTemp(viewModel.isImperial())
+            binding.oneHourFeelslikeDisplayText.text = oneHourForecast.getFormattedFeelsLike(viewModel.isImperial())
+            binding.oneHourWeatherImage.loadWeatherIcon(oneHourForecast?.timeInEpochMillis, oneHourForecast?.weatherCode)
         }
         viewModel.sixHourForecast.observe(viewLifecycleOwner) { sixHourForecast ->
-            binding.sixHourTempText.text = sixHourForecast.getFormattedTemp()
-            binding.sixHourFeelslikeDisplayText.text = sixHourForecast.getFormattedFeelsLike()
-            binding.sixHourWeatherImage.loadWeatherIcon(sixHourForecast?.timeInMillis, sixHourForecast?.weatherCode)
+            binding.sixHourTempText.text = sixHourForecast.getFormattedTemp(viewModel.isImperial())
+            binding.sixHourFeelslikeDisplayText.text = sixHourForecast.getFormattedFeelsLike(viewModel.isImperial())
+            binding.sixHourWeatherImage.loadWeatherIcon(sixHourForecast?.timeInEpochMillis, sixHourForecast?.weatherCode)
         }
         viewModel.twentyFourHourForecast.observe(viewLifecycleOwner) { twentyFourHourForecast ->
-            binding.twentyFourTempText.text = twentyFourHourForecast.getFormattedTemp()
+            binding.twentyFourTempText.text = twentyFourHourForecast.getFormattedTemp(viewModel.isImperial())
             binding.twentyFourFeelslikeDisplayText.text =
-                twentyFourHourForecast.getFormattedFeelsLike()
-            binding.twentyFourWeatherImage.loadWeatherIcon(twentyFourHourForecast?.timeInMillis, twentyFourHourForecast?.weatherCode)
+                twentyFourHourForecast.getFormattedFeelsLike(viewModel.isImperial())
+            binding.twentyFourWeatherImage.loadWeatherIcon(twentyFourHourForecast?.timeInEpochMillis, twentyFourHourForecast?.weatherCode)
         }
     }
 

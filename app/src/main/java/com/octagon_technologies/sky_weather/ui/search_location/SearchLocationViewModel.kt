@@ -36,11 +36,16 @@ class SearchLocationViewModel @Inject constructor(
     private val _navigateHome = MutableLiveData<Boolean?>()
     val navigateHome: LiveData<Boolean?> = _navigateHome
 
+    private val _isLoading = MutableLiveData(true)
+    val isLoading: LiveData<Boolean> = _isLoading
+
     fun getLocationSuggestions(query: String) {
         viewModelScope.launch {
+            _isLoading.value = true
             _statusCode.catchNetworkErrors {
                 locationRepo.getLocationSuggestionsFromQuery(query)
             }
+            _isLoading.value = false
         }
     }
 

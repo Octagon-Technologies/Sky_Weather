@@ -50,7 +50,7 @@ class DailyForecastViewModel @Inject constructor(
             launch {
                 location.asFlow().collectLatest { location ->
                     if (location != null)
-                        dailyForecastRepo.refreshDailyForecast(location, units.value)
+                        dailyForecastRepo.refreshDailyForecast(location)
                 }
             }
         }

@@ -35,7 +35,7 @@ import com.octagon_technologies.sky_weather.repository.database.weather.hourly.L
         LocalLunar::class,
         LocalAllergy::class,
         LocalHourlyForecast::class],
-    version = 1,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(value = [(RoomTypeConverters::class)])

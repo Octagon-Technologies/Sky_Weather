@@ -18,8 +18,8 @@ class EachDailyForecastItem(private val dailyForecast: DailyForecast, private va
     BindableItem<EachDailyForecastItemBinding>() {
     @SuppressLint("SetTextI18n")
     override fun bind(binding: EachDailyForecastItemBinding, position: Int) {
-        binding.dayText.text = getFirstLetterOfDay(dailyForecast.timeInMillis)
-        binding.dailyDateText.text = getDayOfMonth(dailyForecast.timeInMillis)
+        binding.dayText.text = dailyForecast.timeInEpochSeconds.getFirstLetterOfDay()
+        binding.dailyDateText.text = dailyForecast.timeInEpochSeconds.getDayOfMonth()
 
         binding.minTempOfTheDay.text = dailyForecast.nightTime.getFormattedTemp()
         binding.maxTempOfTheDay.text = dailyForecast.dayTime.getFormattedTemp()

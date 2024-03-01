@@ -7,14 +7,16 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import com.octagon_technologies.sky_weather.domain.SingleForecast
 import com.octagon_technologies.sky_weather.domain.getBasicFeelsLike
-import com.octagon_technologies.sky_weather.domain.getFormattedCloudCeiling
 import com.octagon_technologies.sky_weather.domain.getFormattedCloudCover
-import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedHumidity
+import com.octagon_technologies.sky_weather.domain.getFormattedSeaLevelPressure
+import com.octagon_technologies.sky_weather.domain.getFormattedSnowDepth
+import com.octagon_technologies.sky_weather.domain.getFormattedSoilMoisture
+import com.octagon_technologies.sky_weather.domain.getFormattedSurfacePressure
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
-import com.octagon_technologies.sky_weather.models.Coordinates
+import com.octagon_technologies.sky_weather.domain.getFormattedTerrestrialRad
+import com.octagon_technologies.sky_weather.domain.getFormattedVisibility
 import com.octagon_technologies.sky_weather.models.EachWeatherDescription
-import com.octagon_technologies.sky_weather.repository.network.location.reverse_geocoding_location.ReverseGeoCodingLocation
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,6 +33,8 @@ enum class Units {
     fun getUrlParameter(): String = if (this == IMPERIAL) "imperial" else "metric"
     fun getUnitSymbol(): String = if (this == IMPERIAL) "F" else "C"
 }
+
+fun Units?.isImperial() = this == Units.IMPERIAL
 
 enum class WindDirectionUnits { CARDINAL, DEGREES }
 enum class TimeFormat { HALF_DAY, FULL_DAY }
@@ -66,13 +70,13 @@ fun getBasicForecastConditions(
     arrayOfWeatherDescriptions.add(
         EachWeatherDescription(
             "Temperature",
-            singleForecast.getFormattedTemp()
+            singleForecast.getFormattedTemp(units.isImperial())
         )
     )
     arrayOfWeatherDescriptions.add(
         EachWeatherDescription(
             "FeelsLike Temperature",
-            singleForecast.getBasicFeelsLike()
+            singleForecast.getBasicFeelsLike(units.isImperial())
         )
     )
     arrayOfWeatherDescriptions.add(
@@ -90,7 +94,7 @@ fun getBasicForecastConditions(
     arrayOfWeatherDescriptions.add(
         EachWeatherDescription(
             "Max Wind Gusts",
-            singleForecast?.wind?.getWindSpeed(units) ?: "--"
+            singleForecast?.wind?.getWindGusts(units) ?: "--"
         )
     )
     arrayOfWeatherDescriptions.add(
@@ -127,8 +131,14 @@ fun getAdvancedForecastDescription(
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
-                "Pressure",
-                "${singleForecast.pressure?.toInt() ?: "-- "} ${if (units == Units.METRIC) "mbar" else "inHg"}"
+                "Surface Pressure",
+                singleForecast.getFormattedSurfacePressure(units == Units.IMPERIAL)
+            )
+        )
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Sea Level Pressure",
+                singleForecast.getFormattedSeaLevelPressure(units == Units.IMPERIAL)
             )
         )
         arrayOfWeatherDescriptions.add(
@@ -140,13 +150,25 @@ fun getAdvancedForecastDescription(
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
                 "Visibility",
-                "${singleForecast.visibility?.toInt() ?: "-- "}%"
+                singleForecast.getFormattedVisibility()
             )
         )
         arrayOfWeatherDescriptions.add(
             EachWeatherDescription(
-                "Cloud Ceiling",
-                singleForecast.getFormattedCloudCeiling()
+                "Terrestrial Radiation",
+                singleForecast.getFormattedTerrestrialRad()
+            )
+        )
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Soil Moisture",
+                singleForecast.getFormattedSoilMoisture()
+            )
+        )
+        arrayOfWeatherDescriptions.add(
+            EachWeatherDescription(
+                "Snow Depth",
+                singleForecast.getFormattedSnowDepth()
             )
         )
     }

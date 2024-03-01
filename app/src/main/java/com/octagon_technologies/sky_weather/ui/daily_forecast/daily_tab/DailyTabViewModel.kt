@@ -3,11 +3,15 @@ package com.octagon_technologies.sky_weather.ui.daily_forecast.daily_tab
 import androidx.lifecycle.ViewModel
 import com.octagon_technologies.sky_weather.ads.AdRepo
 import com.octagon_technologies.sky_weather.domain.daily.TimePeriod
-import com.octagon_technologies.sky_weather.domain.daily.getFormattedCloudCeiling
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedCloudCover
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedHumidity
+import com.octagon_technologies.sky_weather.domain.daily.getFormattedSeaLevelPressure
+import com.octagon_technologies.sky_weather.domain.daily.getFormattedSurfacePressure
 import com.octagon_technologies.sky_weather.domain.daily.getFormattedTemp
+import com.octagon_technologies.sky_weather.domain.daily.getFormattedUVIndex
+import com.octagon_technologies.sky_weather.domain.getFormattedSeaLevelPressure
+import com.octagon_technologies.sky_weather.domain.getFormattedSurfacePressure
 import com.octagon_technologies.sky_weather.models.EachWeatherDescription
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.Units
@@ -43,16 +47,20 @@ class DailyTabViewModel @Inject constructor(
                 )
             ),
             EachWeatherDescription(
-                "Pressure",
-                "${timePeriod.pressure?.toInt() ?: "-- "} ${if (settingsRepo.units.value == Units.IMPERIAL) "inHg" else "mbar"}"
-            ),
-            EachWeatherDescription(
                 "Cloud Cover",
                 timePeriod.getFormattedCloudCover()
             ),
             EachWeatherDescription(
-                "Cloud Ceiling",
-                timePeriod.getFormattedCloudCeiling()
+                "UV Index",
+                timePeriod.getFormattedUVIndex()
+            ),
+            EachWeatherDescription(
+                "Surface Pressure",
+                timePeriod.getFormattedSurfacePressure(settingsRepo.units.value == Units.IMPERIAL)
+            ),
+            EachWeatherDescription(
+                "Sea Level Pressure",
+                timePeriod.getFormattedSeaLevelPressure(settingsRepo.units.value == Units.IMPERIAL)
             )
         )
 }

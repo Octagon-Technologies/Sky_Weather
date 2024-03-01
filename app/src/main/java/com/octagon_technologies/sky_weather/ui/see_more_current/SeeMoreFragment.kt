@@ -15,6 +15,7 @@ import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.Mini
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.getAdvancedForecastDescription
+import com.octagon_technologies.sky_weather.utils.isImperial
 import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.octagon_technologies.sky_weather.utils.isLastIndex
 import com.octagon_technologies.sky_weather.utils.removeToolbarAndBottomNav
@@ -42,9 +43,9 @@ class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
         binding = SeeMoreFragmentBinding.bind(view)
 
         binding.seeMoreHighlight.text = currentForecast.weatherCode.getWeatherTitle()
-        binding.seeMoreTemp.text = currentForecast.getFormattedTemp()
-        binding.seeMoreTempUnits.text = if (settingsRepo.units.value == Units.IMPERIAL) "F" else "C"
-        binding.seeMoreWeatherImage.loadWeatherIcon(currentForecast.timeInMillis, currentForecast.weatherCode)
+        binding.seeMoreTemp.text = currentForecast.getFormattedTemp(settingsRepo.units.value.isImperial())
+        binding.seeMoreTempUnits.text = if (settingsRepo.units.value.isImperial()) "F" else "C"
+        binding.seeMoreWeatherImage.loadWeatherIcon(currentForecast.timeInEpochMillis, currentForecast.weatherCode)
 
         setUpSeeMoreConditions()
 
