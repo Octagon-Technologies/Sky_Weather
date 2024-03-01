@@ -16,15 +16,11 @@ import com.octagon_technologies.sky_weather.repository.repo.LocationRepo
 import com.octagon_technologies.sky_weather.repository.repo.LunarRepo
 import com.octagon_technologies.sky_weather.repository.repo.SettingsRepo
 import com.octagon_technologies.sky_weather.utils.StatusCode
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.catchNetworkErrors
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
@@ -46,6 +42,8 @@ class CurrentForecastViewModel @Inject constructor(
 
     val theme = settingsRepo.theme
     val units = settingsRepo.units
+    fun isImperial() = units.value == Units.IMPERIAL
+
     val windDirectionUnits = settingsRepo.windDirectionUnits
     val timeFormat = settingsRepo.timeFormat
 
@@ -72,8 +70,8 @@ class CurrentForecastViewModel @Inject constructor(
                     try {
                         _statusCode.catchNetworkErrors {
                             if (location != null) {
-                                currentForecastRepo.refreshCurrentForecast(location, units.value)
-                                hourlyForecastRepo.refreshHourlyForecast(location, units.value)
+                                currentForecastRepo.refreshCurrentForecast(location)
+                                hourlyForecastRepo.refreshHourlyForecast(location)
                                 lunarRepo.refreshCurrentLunarForecast(location)
 //                    allergyRepo.refreshAllergyForecast(location)
 
@@ -107,8 +105,8 @@ class CurrentForecastViewModel @Inject constructor(
             location.value?.let {
                 _isRefreshing.value = true
                 try {
-                    currentForecastRepo.refreshCurrentForecast(it, settingsRepo.units.value)
-                    hourlyForecastRepo.refreshHourlyForecast(it, settingsRepo.units.value)
+                    currentForecastRepo.refreshCurrentForecast(it)
+                    hourlyForecastRepo.refreshHourlyForecast(it)
                     allergyRepo.refreshAllergyForecast(it)
                     lunarRepo.refreshCurrentLunarForecast(it)
 

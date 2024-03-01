@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
-import android.os.Build
 import android.widget.RemoteViews
-import androidx.core.content.ContextCompat
 import com.octagon_technologies.sky_weather.R
 import com.octagon_technologies.sky_weather.domain.Location
 import com.octagon_technologies.sky_weather.domain.SingleForecast
@@ -33,14 +30,14 @@ class CustomRemoteView(private val context: Context) {
         units: Units?
     ) =
         RemoteViews(context.packageName, R.layout.custom_remote_view).apply {
-            val isDay = (singleForecast?.timeInMillis?.getHoursOfDay() ?: 12) in 6..19
+            val isDay = (singleForecast?.timeInEpochMillis?.getHoursOfDay() ?: 12) in 6..19
 
-            setTextViewText(
-                R.id.expanded_notification_temp, singleForecast.getFormattedTemp()
-            )
-            setTextViewText(
-                R.id.expanded_notification_feelslike, singleForecast.getFormattedFeelsLike()
-            )
+//            setTextViewText(
+//                R.id.expanded_notification_temp, singleForecast.getFormattedTemp()
+//            )
+//            setTextViewText(
+//                R.id.expanded_notification_feelslike, singleForecast.getFormattedFeelsLike()
+//            )
             setTextViewText(
                 R.id.expanded_notification_unit_system,
                 if (units == Units.IMPERIAL) "F" else "C"
@@ -52,7 +49,7 @@ class CustomRemoteView(private val context: Context) {
 
             setTextViewText(
                 R.id.expanded_notification_time_text,
-                singleForecast?.timeInMillis?.getHoursAndMins(timeFormat)
+                singleForecast?.timeInEpochMillis?.getHoursAndMins(timeFormat)
             )
 
             setTextViewText(

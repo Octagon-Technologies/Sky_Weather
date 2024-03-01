@@ -70,7 +70,7 @@ class DailyForecastFragment : Fragment() {
     private fun setUpSelectedDailyForecast() {
         viewModel.selectedDailyForecast.observe(viewLifecycleOwner) { selectedDailyForecast ->
             binding.selectedDailyForecastLayout.dailyDateText.text =
-                selectedDailyForecast.timeInMillis.getDayWithMonth()
+                selectedDailyForecast.timeInEpochSeconds.getDayWithMonth()
             binding.selectedDailyForecastLayout.tempUnitText.text =
                 if (viewModel.units.value == Units.METRIC) "°C" else "°F"
         }
@@ -78,8 +78,8 @@ class DailyForecastFragment : Fragment() {
 
     private fun setUpLiveData() {
         viewModel.listOfDailyForecast.observe(viewLifecycleOwner) { listOfDailyForecast ->
-            val timeInMillis = listOfDailyForecast?.firstOrNull()?.timeInMillis
-            binding.monthText.text = getFullMonth(timeInMillis)
+            val timeInMillis = listOfDailyForecast?.firstOrNull()?.timeInEpochSeconds
+            binding.monthText.text = timeInMillis?.getFullMonth()
         }
     }
 

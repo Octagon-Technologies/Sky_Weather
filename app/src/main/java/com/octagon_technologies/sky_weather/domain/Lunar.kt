@@ -1,11 +1,16 @@
 package com.octagon_technologies.sky_weather.domain
 
 import com.octagon_technologies.sky_weather.utils.TimeFormat
-import com.octagon_technologies.sky_weather.utils.getHoursAndMins
 import org.joda.time.Instant
 import org.joda.time.Interval
 import timber.log.Timber
 
+//data class Lunar(
+//    val sunRise: String?,
+//    val sunSet: String?,
+//    val moonRise: String?,
+//    val moonSet: String?
+//) {
 data class Lunar(
     val sunRise: String?,
     val sunSet: String?,

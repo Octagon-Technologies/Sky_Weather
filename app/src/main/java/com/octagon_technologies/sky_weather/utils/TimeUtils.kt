@@ -1,31 +1,33 @@
 package com.octagon_technologies.sky_weather.utils
 
+import android.annotation.SuppressLint
+import org.joda.time.DateTime
 import org.joda.time.DateTimeFieldType
 import org.joda.time.Instant
+import org.joda.time.format.DateTimeFormat
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun getFirstLetterOfDay(stringTime: String?) =
-    if (stringTime != null)
-        Instant.parse(stringTime).toDateTime().dayOfWeek().asShortText.first().toString()
+fun Long?.getFirstLetterOfDay() =
+    if (this != null)
+        Instant.ofEpochMilli(this).toDateTime().dayOfWeek().asShortText.first().toString()
     else "-"
 
-fun String?.getDayOfWeek() =
+fun Long?.getDayOfWeek() =
     if (this != null)
-        SimpleDateFormat("DD", Locale.getDefault()).format(Instant.parse(this))
+        SimpleDateFormat("DD", Locale.getDefault()).format(Instant.ofEpochMilli(this))
             .toString()
     else "--"
 
-fun getDayOfMonth(stringTime: String?) =
-    if (stringTime != null)
-        Instant.parse(stringTime).toDateTime().dayOfMonth.toString()
+fun Long?.getDayOfMonth() =
+    if (this != null)
+        Instant.ofEpochMilli(this).toDateTime().dayOfMonth.toString()
     else "--"
 
-fun getFullMonth(stringTime: String?): String {
-    Timber.d("stringTime in getFullMonth() is $stringTime")
-    return if (stringTime != null)
-        Instant.parse(stringTime).toDateTime().monthOfYear().asText
+fun Long?.getFullMonth(): String {
+    return if (this != null)
+        Instant.ofEpochMilli(this).toDateTime().monthOfYear().asText
     else
         "-----"
 }
@@ -34,51 +36,33 @@ fun Long.getHoursOfDay() =
     Instant.ofEpochMilli(this).toDateTime().hourOfDay
 
 
-fun String?.getDayWithMonth(): String =
+fun Long?.getDayWithMonth(): String =
     if (this != null)
         SimpleDateFormat("EEEE, MMMM dd", Locale.getDefault())
-            .format(Instant.parse(this).toDate())
+            .format(Instant.ofEpochMilli(this).toDate())
     else
         "-----, ----"
 
 fun Long?.getHoursAndMinsWithDay(timeFormat: TimeFormat?): String =
     if (this != null) {
+        val date = DateTime(this).toLocalDate().toDate()
         val hourAndMinOnly = this.getHoursAndMins(timeFormat)
-        val day = SimpleDateFormat("EEEE", Locale.getDefault()).format(Date(this))
+        val day = SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
 
         "$hourAndMinOnly, $day"
     }
     else
         "--:--, ------"
 
-/*
-Returns time in AM/PM or 24-hour format e.g 4:00 pm or 16:00 based on TimeFormat
- */
-fun String.getHoursAndMins(timeFormat: TimeFormat?): String {
-    val hourIn24System = split(":")[0].toInt()
-    val minutes = split(":")[1]
-
-    return if (timeFormat == TimeFormat.HALF_DAY) {
-        if (hourIn24System <= 11)
-            "$this:$minutes am"
-        else
-            "${hourIn24System - 12}:$minutes pm"
-    } else this
-}
-
+@SuppressLint("SimpleDateFormat")
 fun Long.getHoursAndMins(timeFormat: TimeFormat?): String {
-    val hourOfDay = with(Calendar.getInstance()) {
-        timeInMillis = this@getHoursAndMins
-        get(Calendar.HOUR_OF_DAY)
-    }
+    val isHalfDay = timeFormat == TimeFormat.HALF_DAY
+    val halfDayPattern = "hh:mm a"
+    val builder = SimpleDateFormat(if (isHalfDay) halfDayPattern else "HH:mm")
 
-    val rawTime = SimpleDateFormat(
-        "${if (timeFormat == TimeFormat.FULL_DAY) "HH" else "hh"}:mm",
-        Locale.getDefault()
-    ).format(Date(this))
-
-    return if (timeFormat == TimeFormat.HALF_DAY) "$rawTime ${if (hourOfDay < 12) "am" else "pm"}"
-    else rawTime
+//    val date = DateTime(this).toLocalDate().toDate()
+    val date = Instant.ofEpochMilli(this).toDate()
+    return builder.format(date)
 }
 
 fun Long.toLunarDateFormat(): String =

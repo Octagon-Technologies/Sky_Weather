@@ -28,7 +28,7 @@ fun RecyclerView.addCustomScrollListener(groupAdapter: GroupAdapter<GroupieViewH
             }
 
             val timeInISO =
-                (item as MiniHourlyForecast).hourlyForecast.timeInMillis
+                (item as MiniHourlyForecast).hourlyForecast.timeInEpochMillis
             val date = getDayOfWeek(timeInISO)
 
             binding.topDayText.text.apply {

@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class WeatherCode(val code: Int?, val rainProbability: Double?) : Parcelable {
+data class WeatherCode(val code: Int?, val rainProbability: Int?) : Parcelable {
 }
 
 internal data class Icon(@DrawableRes val dayIcon: Int, @DrawableRes val nightIcon: Int)
@@ -37,128 +37,164 @@ fun WeatherCode?.getWeatherIcon(isDay: Boolean): Int {
     return if (isDay) icon.dayIcon else icon.nightIcon
 }
 
-
 internal val codeMap = mapOf(
-    0 to "Unknown",
-    1000 to "Clear",
-    1100 to "Mostly Clear",
-    1101 to "Partly Cloudy",
-    1102 to "Mostly Cloudy",
-    1001 to "Cloudy",
-    2000 to "Fog",
-    2100 to "Light Fog",
-    4000 to "Drizzle",
-    4001 to "Rain",
-    4200 to "Light Rain",
-    4201 to "Heavy Rain",
-    5000 to "Snow",
-    5001 to "Flurries",
-    5100 to "Light Snow",
-    5101 to "Heavy Snow",
-    6000 to "Freezing Drizzle",
-    6001 to "Freezing Rain",
-    6200 to "Light Freezing Rain",
-    6201 to "Heavy Freezing Rain",
-    7000 to "Ice Pellets",
-    7101 to "Heavy Ice Pellets",
-    7102 to "Light Ice Pellets",
-    8000 to "Thunderstorm"
+    0 to "Clear Sky",
+    1 to "Mostly Clear",
+    2 to "Partly Cloudy",
+    3 to "Mostly Cloudy",
+    48 to "Fog",
+    45 to "Light Fog",
+    51 to "Light Drizzle",
+    53 to "Moderate Drizzle",
+    55 to "Intense Drizzle",
+    56 to "Freezing Drizzle - Light",
+    57 to "Freezing Drizzle - Heavy",
+    61 to "Light Rain",
+    63 to "Rain",
+    65 to "Heavy Rain",
+    66 to "Freezing Rain - Light",
+    67 to "Freezing Rain - Heavy",
+    71 to "Light Snow",
+    73 to "Snow",
+    75 to "Heavy Snow",
+    77 to "Snow grains",
+    80 to "Light Rain Showers",
+    81 to "Rain Showers",
+    82 to "Violent Rain Showers",
+    85 to "Light Snow Showers",
+    86 to "Heavy Snow Showers",
+    95 to "Thunderstorm",
+    96 to "Thunderstorm with light hail",
+    96 to "Thunderstorm with heavy hail"
 )
+
+
+/*
+0	Clear sky
+1, 2, 3	Mainly clear, partly cloudy, and overcast
+45, 48	Fog and depositing rime fog
+51, 53, 55	Drizzle: Light, moderate, and dense intensity
+56, 57	Freezing Drizzle: Light and dense intensity
+61, 63, 65	Rain: Slight, moderate and heavy intensity
+66, 67	Freezing Rain: Light and heavy intensity
+71, 73, 75	Snow fall: Slight, moderate, and heavy intensity
+77	Snow grains
+80, 81, 82	Rain showers: Slight, moderate, and violent
+85, 86	Snow showers slight and heavy
+95 *	Thunderstorm: Slight or moderate
+96, 99 *	Thunderstorm with slight and heavy hail
+ */
 
 internal val iconMap = mapOf(
     0 to Icon(
         dayIcon = R.drawable._10000_clear_large,
         nightIcon = R.drawable._10001_clear_large
     ),
-    1000 to Icon(
-        dayIcon = R.drawable._10000_clear_large,
-        nightIcon = R.drawable._10001_clear_large
-    ),
-    1100 to Icon(
+    1 to Icon(
         dayIcon = R.drawable._11000_mostly_clear_large,
         nightIcon = R.drawable._11001_mostly_clear_large
     ),
-    1101 to Icon(
+    2 to Icon(
         dayIcon = R.drawable._11010_partly_cloudy_large,
         nightIcon = R.drawable._11011_partly_cloudy_large
     ),
-    1102 to Icon(
+    3 to Icon(
         dayIcon = R.drawable._11020_mostly_cloudy_large,
         nightIcon = R.drawable._11021_mostly_cloudy_large
     ),
-    1001 to Icon(
-        dayIcon = R.drawable._10010_cloudy_large,
-        nightIcon = R.drawable._10010_cloudy_large
-    ),
-    2000 to Icon(
-        dayIcon = R.drawable._20000_fog_large,
-        nightIcon = R.drawable._10001_clear_large
-    ),
-    2100 to Icon(
+    45 to Icon(
         dayIcon = R.drawable._21000_fog_light_large,
         nightIcon = R.drawable._21000_fog_light_large
     ),
-    4000 to Icon(
+    48 to Icon(
+        dayIcon = R.drawable._20000_fog_large,
+        nightIcon = R.drawable._20000_fog_large
+    ),
+    51 to Icon(
         dayIcon = R.drawable._40000_drizzle_large,
         nightIcon = R.drawable._40000_drizzle_large
     ),
-    4001 to Icon(
+    53 to Icon(
         dayIcon = R.drawable._40000_drizzle_large,
         nightIcon = R.drawable._40000_drizzle_large
     ),
-    4200 to Icon(
-        dayIcon = R.drawable._42000_rain_light_large,
-        nightIcon = R.drawable._42000_rain_light_large
+    55 to Icon(
+        dayIcon = R.drawable._40000_drizzle_large,
+        nightIcon = R.drawable._40000_drizzle_large
     ),
-    4201 to Icon(
-        dayIcon = R.drawable._42010_rain_heavy_large,
-        nightIcon = R.drawable._42010_rain_heavy_large
-    ),
-    5000 to Icon(
-        dayIcon = R.drawable._50000_snow_large,
-        nightIcon = R.drawable._50000_snow_large
-    ),
-    5001 to Icon(
-        dayIcon = R.drawable._50010_flurries_large,
-        nightIcon = R.drawable._50010_flurries_large
-    ),
-    5100 to Icon(
-        dayIcon = R.drawable._51000_snow_light_large,
-        nightIcon = R.drawable._51000_snow_light_large
-    ),
-    5101 to Icon(
-        dayIcon = R.drawable._51010_snow_heavy_large,
-        nightIcon = R.drawable._51010_snow_heavy_large
-    ),
-    6000 to Icon(
+    56 to Icon(
         dayIcon = R.drawable._60000_freezing_rain_drizzle_large,
         nightIcon = R.drawable._60000_freezing_rain_drizzle_large
     ),
-    6001 to Icon(
-        dayIcon = R.drawable._60010_freezing_rain_large,
-        nightIcon = R.drawable._60010_freezing_rain_large
+    57 to Icon(
+        dayIcon = R.drawable._60000_freezing_rain_drizzle_large,
+        nightIcon = R.drawable._60000_freezing_rain_drizzle_large
     ),
-    6200 to Icon(
-        dayIcon = R.drawable._62000_freezing_rain_light_large,
-        nightIcon = R.drawable._62000_freezing_rain_light_large
+    61 to Icon(
+        dayIcon = R.drawable._42000_rain_light_large,
+        nightIcon = R.drawable._42000_rain_light_large
     ),
-    6201 to Icon(
-        dayIcon = R.drawable._62010_freezing_rain_heavy_large,
-        nightIcon = R.drawable._62010_freezing_rain_heavy_large
+    63 to Icon(
+        dayIcon = R.drawable._40010_rain_large,
+        nightIcon = R.drawable._40010_rain_large
     ),
-    7000 to Icon(
-        dayIcon = R.drawable._70000_ice_pellets_large,
-        nightIcon = R.drawable._70000_ice_pellets_large
+    65 to Icon(
+        dayIcon = R.drawable._42010_rain_heavy_large,
+        nightIcon = R.drawable._42010_rain_heavy_large
     ),
-    7101 to Icon(
-        dayIcon = R.drawable._71010_ice_pellets_heavy_large,
-        nightIcon = R.drawable._71010_ice_pellets_heavy_large
+    66 to Icon(
+        dayIcon = R.drawable._42010_rain_heavy_large,
+        nightIcon = R.drawable._42010_rain_heavy_large
     ),
-    7102 to Icon(
-        dayIcon = R.drawable._71020_ice_pellets_light_large,
-        nightIcon = R.drawable._71020_ice_pellets_light_large
+    67 to Icon(
+        dayIcon = R.drawable._42010_rain_heavy_large,
+        nightIcon = R.drawable._42010_rain_heavy_large
     ),
-    8000 to Icon(
+    71 to Icon(
+        dayIcon = R.drawable._50010_flurries_large,
+        nightIcon = R.drawable._50010_flurries_large
+    ),
+    73 to Icon(
+        dayIcon = R.drawable._51000_snow_light_large,
+        nightIcon = R.drawable._51000_snow_light_large
+    ),
+    75 to Icon(
+        dayIcon = R.drawable._51010_snow_heavy_large,
+        nightIcon = R.drawable._51010_snow_heavy_large
+    ),
+    77 to Icon(
+        dayIcon = R.drawable._50010_flurries_large,
+        nightIcon = R.drawable._50010_flurries_large
+    ),
+    80 to Icon(
+        dayIcon = R.drawable._42000_rain_light_large,
+        nightIcon = R.drawable._42000_rain_light_large
+    ),
+    81 to Icon(
+        dayIcon = R.drawable._40010_rain_large,
+        nightIcon = R.drawable._40010_rain_large
+    ),
+    82 to Icon(
+        dayIcon = R.drawable._42010_rain_heavy_large,
+        nightIcon = R.drawable._42010_rain_heavy_large
+    ),
+    85 to Icon(
+        dayIcon = R.drawable._51000_snow_light_large,
+        nightIcon = R.drawable._51000_snow_light_large
+    ),
+    86 to Icon(
+        dayIcon = R.drawable._51010_snow_heavy_large,
+        nightIcon = R.drawable._51010_snow_heavy_large
+    ),
+    95 to Icon(
+        dayIcon = R.drawable._80000_tstorm_large,
+        nightIcon = R.drawable._80031_tstorm_partly_cloudy_large
+    ),
+    96 to Icon(
+        dayIcon = R.drawable._80000_tstorm_large,
+        nightIcon = R.drawable._80031_tstorm_partly_cloudy_large
+    ),
+    99 to Icon(
         dayIcon = R.drawable._80000_tstorm_large,
         nightIcon = R.drawable._80031_tstorm_partly_cloudy_large
     ),

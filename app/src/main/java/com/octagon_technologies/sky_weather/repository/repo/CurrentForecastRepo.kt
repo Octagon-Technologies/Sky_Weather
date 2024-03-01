@@ -2,15 +2,13 @@ package com.octagon_technologies.sky_weather.repository.repo
 
 import androidx.lifecycle.map
 import com.octagon_technologies.sky_weather.domain.Location
-import com.octagon_technologies.sky_weather.repository.database.toLocalCurrentForecast
 import com.octagon_technologies.sky_weather.repository.database.weather.current.CurrentForecastDao
-import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowApi
-import com.octagon_technologies.sky_weather.utils.Units
-import timber.log.Timber
+import com.octagon_technologies.sky_weather.repository.database.weather.current.LocalCurrentForecast
+import com.octagon_technologies.sky_weather.repository.network.WeatherApi
 import javax.inject.Inject
 
 class CurrentForecastRepo @Inject constructor(
-    private val weatherApi: TomorrowApi,
+    private val weatherApi: WeatherApi,
     private val currentForecastDao: CurrentForecastDao
 ) {
 
@@ -25,14 +23,14 @@ class CurrentForecastRepo @Inject constructor(
 //    }
 
     suspend fun refreshCurrentForecast(
-        location: Location,
-        units: Units?
+        location: Location
     ) {
-        val currentForecastResponse = weatherApi.getCurrentForecast(
-            location = location.getCoordinates(),
-            units = units?.getUrlParameter() ?: Units.METRIC.getUrlParameter()
-        )
-        currentForecastDao.insertData(currentForecastResponse.toLocalCurrentForecast())
+        val currentForecast = weatherApi.getCurrentForecast(
+            lat = location.lat,
+            lon = location.lon
+        ).current.toSingleForecast()
+
+        currentForecastDao.insertData(LocalCurrentForecast(currentForecast = currentForecast))
     }
 
 }

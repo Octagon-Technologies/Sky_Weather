@@ -30,8 +30,8 @@ class WeatherRepo @Inject constructor(
             location?.let {
                 val units = settingsRepo.units.value
 
-                currentForecastRepo.refreshCurrentForecast(location, units)
-                hourlyForecastRepo.refreshHourlyForecast(location, units)
+                currentForecastRepo.refreshCurrentForecast(location)
+                hourlyForecastRepo.refreshHourlyForecast(location)
 
                 updateNotification(units, location)
             }
@@ -59,7 +59,7 @@ class WeatherRepo @Inject constructor(
 
 //                    currentForecastRepo.refreshCurrentForecast(location, units)
 //                    hourlyForecastRepo.refreshHourlyForecast(location, units)
-                dailyForecastRepo.refreshDailyForecast(location, units)
+                dailyForecastRepo.refreshDailyForecast(location)
                 lunarRepo.refreshCurrentLunarForecast(location)
 
 //                    updateNotification(units, location)

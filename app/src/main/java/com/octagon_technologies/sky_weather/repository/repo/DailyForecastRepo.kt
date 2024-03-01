@@ -2,31 +2,30 @@ package com.octagon_technologies.sky_weather.repository.repo
 
 import androidx.lifecycle.map
 import com.octagon_technologies.sky_weather.domain.Location
-import com.octagon_technologies.sky_weather.repository.database.toLocalDailyForecast
 import com.octagon_technologies.sky_weather.repository.database.weather.daily.DailyWeatherDao
-import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowApi
-import com.octagon_technologies.sky_weather.utils.Units
+import com.octagon_technologies.sky_weather.repository.database.weather.daily.LocalDailyForecast
+import com.octagon_technologies.sky_weather.repository.network.WeatherApi
 import timber.log.Timber
 import javax.inject.Inject
 
 class DailyForecastRepo @Inject constructor(
     private val dailyWeatherDao: DailyWeatherDao,
-    private val weatherApi: TomorrowApi
+    private val weatherApi: WeatherApi
 ) {
-    val listOfDailyForecast = dailyWeatherDao.getLocalDailyForecast().map { it?.listOfDailyForecast }
+    val listOfDailyForecast =
+        dailyWeatherDao.getLocalDailyForecast().map { it?.listOfDailyForecast }
 
     suspend fun refreshDailyForecast(
-        location: Location,
-        units: Units?
+        location: Location
     ) = try {
-        val remoteDailyForecast =
+        val dailyForecast =
             weatherApi.getDailyForecast(
-                location = location.getCoordinates(),
-                units = (units ?: Units.METRIC).getUrlParameter()
-            )
+                lat = location.lat,
+                lon = location.lon
+            ).daily.toListOfDailyForecast()
 
-        dailyWeatherDao.insertData(remoteDailyForecast.toLocalDailyForecast())
-    } catch(e: Exception) {
+        dailyWeatherDao.insertData(LocalDailyForecast(listOfDailyForecast = dailyForecast))
+    } catch (e: Exception) {
         Timber.e(e)
     }
 

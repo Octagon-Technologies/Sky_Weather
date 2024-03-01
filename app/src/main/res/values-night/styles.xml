@@ -17,6 +17,16 @@
         <item name="colorTertiaryContainer">#BE0E5080</item>
     </style>
 
+
+    <style name="AppTheme.SearchLayout">
+        <item name="colorPrimary">@color/dark_black</item>
+        <item name="colorSecondary">@color/color_black</item>
+
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+    </style>
+
+
     <style name="AppTheme.SelectedLayout" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
         <item name="colorPrimary">@color/dark_black</item>
         <item name="colorPrimaryVariant">@color/light_black</item>

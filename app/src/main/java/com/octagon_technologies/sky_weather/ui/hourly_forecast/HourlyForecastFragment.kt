@@ -2,7 +2,6 @@ package com.octagon_technologies.sky_weather.ui.hourly_forecast
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -16,18 +15,14 @@ import com.octagon_technologies.sky_weather.main_activity.MainActivity
 import com.octagon_technologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.HeaderMiniHourlyForecast
 import com.octagon_technologies.sky_weather.ui.hourly_forecast.each_hourly_forecast_item.MiniHourlyForecast
-import com.octagon_technologies.sky_weather.utils.StatusCode
 import com.octagon_technologies.sky_weather.utils.Theme
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.addToolbarAndBottomNav
 import com.octagon_technologies.sky_weather.utils.changeSystemNavigationBarColor
 import com.octagon_technologies.sky_weather.utils.getAdvancedForecastDescription
 import com.octagon_technologies.sky_weather.utils.getHoursAndMinsWithDay
-import com.octagon_technologies.sky_weather.utils.getStringResource
 import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
-import com.octagon_technologies.sky_weather.utils.isLastIndex
 import com.octagon_technologies.sky_weather.utils.setUpToastMessage
-import com.octagon_technologies.sky_weather.utils.showLongToast
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +52,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
 
     private fun setUpLiveData() {
         viewModel.listOfHourlyForecast.observe(viewLifecycleOwner) { listOfDailyForecast ->
-            val timeInMillis = listOfDailyForecast?.firstOrNull()?.timeInMillis
+            val timeInMillis = listOfDailyForecast?.firstOrNull()?.timeInEpochMillis
             binding.topDayText.text = getDayOfWeek(timeInMillis)
         }
     }
@@ -94,11 +89,11 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
         viewModel.selectedSingleForecast.observe(viewLifecycleOwner) { selectedSingleForecast ->
             selectedHourlyForecastBinding.apply {
                 weatherStatus.text = selectedSingleForecast.weatherCode.getWeatherTitle()
-                weatherImage.loadWeatherIcon(selectedSingleForecast?.timeInMillis, selectedSingleForecast?.weatherCode)
+                weatherImage.loadWeatherIcon(selectedSingleForecast?.timeInEpochMillis, selectedSingleForecast?.weatherCode)
 
-                tempText.text = selectedSingleForecast.getFormattedTemp()
+                tempText.text = selectedSingleForecast.getFormattedTemp(viewModel.isImperial())
                 selectedHourlyHumidity.text = resources.getString(R.string.humidity_format, selectedSingleForecast.getFormattedHumidity())
-                selectedHourlyDateText.text = selectedSingleForecast.timeInMillis.getHoursAndMinsWithDay(viewModel.timeFormat.value)
+                selectedHourlyDateText.text = selectedSingleForecast.timeInEpochMillis.getHoursAndMinsWithDay(viewModel.timeFormat.value)
             }
         }
     }
@@ -122,7 +117,7 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
             listOfForecastDescription.forEach {
                 selectedForecastGroupAdapter.add(
                     MiniForecastDescription(
-                        isLastItem = listOfForecastDescription.isLastIndex(it),
+                        isLastItem = false,
                         eachWeatherDescription = it
                     )
                 )
@@ -143,14 +138,16 @@ class HourlyForecastFragment : Fragment(R.layout.hourly_forecast_fragment) {
                 hourlyForecastGroupAdapter.clear()
 
             listOfHourlyForecast?.forEach { hourlyForecast ->
-                val currentDay = getDayOfWeek(hourlyForecast.timeInMillis)
+                val currentDay = getDayOfWeek(hourlyForecast.timeInEpochMillis)
 
                 if (firstDay != currentDay) {
                     firstDay = currentDay
                     hourlyForecastGroupAdapter.add(HeaderMiniHourlyForecast(currentDay ?: "Andre"))
                 }
 
-                val miniHourlyForecast = MiniHourlyForecast(hourlyForecast = hourlyForecast,
+                val miniHourlyForecast = MiniHourlyForecast(
+                    hourlyForecast = hourlyForecast,
+                    units = viewModel.units.value,
                     timeFormat = viewModel.timeFormat.value,
                     openSelectedHourlyForecast = {
                         viewModel.selectHourlyForecast(hourlyForecast)

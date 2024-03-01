@@ -32,10 +32,9 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SearchLocationFragmentBinding.bind(view)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
 
         setUpStatusCode()
+        setUpLoadingSpinner()
         setUpLocationSuggestionsRecyclerView()
 
         viewModel.navigateHome.observe(viewLifecycleOwner) { navigateHome ->
@@ -65,6 +64,15 @@ class SearchLocationFragment : Fragment(R.layout.search_location_fragment) {
 //                        widgetConfigureViewModel?.navigateToLocationFragment?.value = false
 //                    }
 //                }
+    }
+
+    private fun setUpLoadingSpinner() {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.searchLocationRecyclerview.visibility =
+                if (isLoading) View.GONE else View.VISIBLE
+            binding.loadingProgressBar.visibility =
+                if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
     // TODO: Removed widget code, but we'll need this in future if we aere to implement it

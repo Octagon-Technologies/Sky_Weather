@@ -8,14 +8,16 @@ import com.octagon_technologies.sky_weather.domain.getFormattedFeelsLike
 import com.octagon_technologies.sky_weather.domain.getFormattedHumidity
 import com.octagon_technologies.sky_weather.domain.getFormattedTemp
 import com.octagon_technologies.sky_weather.utils.TimeFormat
+import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.getHoursAndMins
-import com.octagon_technologies.sky_weather.utils.getHoursOfDay
+import com.octagon_technologies.sky_weather.utils.isImperial
 import com.octagon_technologies.sky_weather.utils.loadWeatherIcon
 import com.xwray.groupie.databinding.BindableItem
 import timber.log.Timber
 
 class MiniHourlyForecast(
     val hourlyForecast: SingleForecast,
+    val units: Units?,
     private val timeFormat: TimeFormat?,
     private val openSelectedHourlyForecast: () -> Unit
 ) : BindableItem<EachHourlyForecastItemBinding>() {
@@ -24,13 +26,16 @@ class MiniHourlyForecast(
 
         binding.humidityLevel.text = hourlyForecast.getFormattedHumidity()
 
-        val time = hourlyForecast.timeInMillis.getHoursAndMins(timeFormat)
+        val time = hourlyForecast.timeInEpochMillis.getHoursAndMins(timeFormat)
         Timber.d("Formatted Time is $time")
         binding.timeDisplayText.text = time
 
-        binding.tempText.text = hourlyForecast.getFormattedTemp()
-        binding.feelsLikeText.text = hourlyForecast.getFormattedFeelsLike()
-        binding.weatherIcon.loadWeatherIcon(hourlyForecast.timeInMillis, hourlyForecast.weatherCode )
+        binding.tempText.text = hourlyForecast.getFormattedTemp(units.isImperial())
+        binding.feelsLikeText.text = hourlyForecast.getFormattedFeelsLike(units.isImperial())
+        binding.weatherIcon.loadWeatherIcon(
+            hourlyForecast.timeInEpochMillis,
+            hourlyForecast.weatherCode
+        )
     }
 
     override fun getLayout(): Int = R.layout.each_hourly_forecast_item
@@ -44,6 +49,3 @@ class HeaderMiniHourlyForecast(private val dayString: String) :
 
     override fun getLayout(): Int = R.layout.header_mini_hourly_forecast
 }
-
-fun Double.celsiusToFahrenheit(): Double = ((this * 1.8) + 32f)
-fun Int.fahrenheitToCelsius(): Int = (this - 32) * 5 / 9

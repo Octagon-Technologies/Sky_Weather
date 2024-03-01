@@ -17,6 +17,14 @@
         <item name="colorTertiaryContainer">#BE2582C5</item>
     </style>
 
+    <style name="AppTheme.SearchLayout">
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/line_grey</item>
+
+        <item name="colorOnPrimary">@color/dark_black</item>
+        <item name="colorOnSecondary">@color/dark_black</item>
+    </style>
+
     <style name="AppTheme.SelectedLayout">
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryVariant">@color/light_white</item>

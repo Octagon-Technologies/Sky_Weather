@@ -21,6 +21,7 @@ import com.octagon_technologies.sky_weather.remote_views.CustomRemoteView
 import com.octagon_technologies.sky_weather.utils.TimeFormat
 import com.octagon_technologies.sky_weather.utils.Units
 import com.octagon_technologies.sky_weather.utils.checkBuildVersionFrom
+import com.octagon_technologies.sky_weather.utils.isImperial
 import com.octagon_technologies.sky_weather.utils.isNull
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
@@ -100,7 +101,7 @@ class CustomNotificationCompat @Inject constructor(
             setAutoCancel(false)
 
             setContentTitle(location?.displayName ?: "-----")
-            setContentText(singleForecast?.getFormattedTemp() + units?.getUnitSymbol())
+            setContentText(singleForecast?.getFormattedTemp(units.isImperial()) + units?.getUnitSymbol())
 //            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
 //                setStyle(NotificationCompat.DecoratedCustomViewStyle())
 //                setCustomContentView(

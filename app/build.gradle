@@ -10,7 +10,7 @@ plugins {
 android {
     def major_release = 1
     def default_release = 2
-    def minor_release = 1
+    def minor_release = 2
 
     compileSdk(34)
 

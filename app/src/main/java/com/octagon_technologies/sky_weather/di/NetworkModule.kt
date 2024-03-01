@@ -1,13 +1,13 @@
 package com.octagon_technologies.sky_weather.di
 
+import com.octagon_technologies.sky_weather.repository.network.WEATHER_BASE_URL
+import com.octagon_technologies.sky_weather.repository.network.WeatherApi
 import com.octagon_technologies.sky_weather.repository.network.allergy.AllergyApi
 import com.octagon_technologies.sky_weather.repository.network.allergy.AllergyBaseUrl
 import com.octagon_technologies.sky_weather.repository.network.location.LocationApi
 import com.octagon_technologies.sky_weather.repository.network.location.LocationBaseUrl
 import com.octagon_technologies.sky_weather.repository.network.lunar.LunarBaseUrl
 import com.octagon_technologies.sky_weather.repository.network.lunar.LunarForecastApi
-import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowApi
-import com.octagon_technologies.sky_weather.repository.network.weather.TomorrowBaseUrl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -44,8 +44,8 @@ object NetworkModule {
         .client(okHttpClient)
 
     @Provides
-    fun providesTomorrowApi(retrofitBuilder: Builder) = retrofitBuilder
-        .baseUrl(TomorrowBaseUrl).build().create<TomorrowApi>()
+    fun providesWeatherApi(retrofitBuilder: Builder) = retrofitBuilder
+        .baseUrl(WEATHER_BASE_URL).build().create<WeatherApi>()
 
     @Provides
     fun providesLocationApi(retrofitBuilder: Builder) = retrofitBuilder
