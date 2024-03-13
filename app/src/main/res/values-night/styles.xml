@@ -40,7 +40,8 @@
         <item name="colorOnSecondaryFixedVariant">@color/light_white</item>
 
 
-        <item name="colorTertiaryContainer">@color/dark_black</item>
+<!--        <item name="colorTertiaryContainer">@color/dark_black</item>-->
+        <item name="colorTertiaryContainer">@color/advert_black</item>
     </style>
 
     <style name="AppTheme.SettingsLayout" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">

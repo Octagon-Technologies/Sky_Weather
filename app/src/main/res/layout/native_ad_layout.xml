@@ -25,9 +25,12 @@
                 android:fontFamily="@font/advent_pro_medium"
                 android:text="@string/advertisement"
                 android:textColor="?attr/colorOnPrimary"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/_8sdp"
                 tools:textColor="@android:color/white" />
 
             <com.google.android.material.card.MaterialCardView
