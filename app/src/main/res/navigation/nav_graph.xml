@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/currentForecastFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.current_forecast.CurrentForecastFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.current_forecast.CurrentForecastFragment"
         android:label="CurrentForecastFragment"
         tools:layout="@layout/current_forecast_fragment">
         <action
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/findLocationFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.find_location.FindLocationFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.find_location.FindLocationFragment"
         android:label="FindLocationFragment"
         tools:layout="@layout/find_location_fragment">
         <action
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.search_location.SearchLocationFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.search_location.SearchLocationFragment"
         android:label="SearchLocationFragment"
         tools:layout="@layout/search_location_fragment">
         <action
@@ -41,27 +41,27 @@
 
     <fragment
         android:id="@+id/seeMoreFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.see_more_current.SeeMoreFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.see_more_current.SeeMoreFragment"
         android:label="SeeMoreFragment"
         tools:layout="@layout/see_more_fragment">
 
         <argument
             android:name="currentForecast"
-            app:argType="com.octagon_technologies.sky_weather.domain.SingleForecast" />
+            app:argType="com.octagontechnologies.sky_weather.domain.SingleForecast" />
     </fragment>
     <fragment
         android:id="@+id/hourlyForecastFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.hourly_forecast.HourlyForecastFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.hourly_forecast.HourlyForecastFragment"
         android:label="HourlyForecastFragment"
         tools:layout="@layout/hourly_forecast_fragment"/>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.settings.SettingsFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.settings.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/settings_fragment"/>
     <fragment
         android:id="@+id/dailyForecastFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.daily_forecast.DailyForecastFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.daily_forecast.DailyForecastFragment"
         android:label="DailyForecastFragment"
         tools:layout="@layout/daily_forecast_fragment"/>
 </navigation>

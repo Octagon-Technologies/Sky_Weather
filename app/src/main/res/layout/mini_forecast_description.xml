@@ -5,13 +5,13 @@
 
     <data>
 
-        <import type="com.octagon_technologies.sky_weather.models.EachWeatherDescription" />
+        <import type="com.octagontechnologies.sky_weather.models.EachWeatherDescription" />
 
-        <import type="com.octagon_technologies.sky_weather.utils.Theme" />
+        <import type="com.octagontechnologies.sky_weather.utils.Theme" />
 
         <variable
             name="eachWeatherDescription"
-            type="com.octagon_technologies.sky_weather.models.EachWeatherDescription" />
+            type="com.octagontechnologies.sky_weather.models.EachWeatherDescription" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,7 +47,7 @@
             android:id="@+id/description_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/cabin_medium"
+            android:fontFamily="@font/cabin_medium_ttf"
             android:text="@{eachWeatherDescription.descriptionData}"
             android:textSize="@dimen/_15ssp"
             app:layout_constraintEnd_toEndOf="parent"

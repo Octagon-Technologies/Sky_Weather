@@ -7,16 +7,16 @@
 
         <import type="android.view.View" />
 
-        <import type="com.octagon_technologies.sky_weather.utils.Units" />
+        <import type="com.octagontechnologies.sky_weather.utils.Units" />
 
-        <import type="com.octagon_technologies.sky_weather.utils.TimeFormat" />
+        <import type="com.octagontechnologies.sky_weather.utils.TimeFormat" />
 
-        <import type="com.octagon_technologies.sky_weather.utils.WindDirectionUnits" />
+        <import type="com.octagontechnologies.sky_weather.utils.WindDirectionUnits" />
 
 
         <variable
             name="viewModel"
-            type="com.octagon_technologies.sky_weather.ui.current_forecast.CurrentForecastViewModel" />
+            type="com.octagontechnologies.sky_weather.ui.current_forecast.CurrentForecastViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -295,7 +295,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_36sdp"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto_medium_ttf"
                     android:text="@string/today_s_details_plain_text"
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -368,7 +368,7 @@
                         changeLunarTime="@{viewModel.lunarForecast.sunRise}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
+                        android:fontFamily="@font/roboto_medium_ttf"
                         app:layout_constraintBottom_toBottomOf="@+id/today_sun_rise_plain_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/today_sun_rise_plain_text"
@@ -400,7 +400,7 @@
                         changeLunarTime="@{viewModel.lunarForecast.sunSet}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
+                        android:fontFamily="@font/roboto_medium_ttf"
                         app:layout_constraintBottom_toBottomOf="@+id/today_sun_set_plain_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/today_sun_set_plain_text"
@@ -474,7 +474,7 @@
                         changeLunarTime="@{viewModel.lunarForecast.moonRise}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
+                        android:fontFamily="@font/roboto_medium_ttf"
                         app:layout_constraintBottom_toBottomOf="@+id/today_moon_rise_plain_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/today_moon_rise_plain_text"
@@ -506,7 +506,7 @@
                         changeLunarTime="@{viewModel.lunarForecast.moonSet}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
+                        android:fontFamily="@font/roboto_medium_ttf"
                         app:layout_constraintBottom_toBottomOf="@+id/today_moon_set_plain_text"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/today_moon_set_plain_text"
@@ -551,7 +551,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_36sdp"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto_medium_ttf"
                     android:text="@string/current_conditions_plain_text"
                     android:textSize="@dimen/_16ssp"
                     app:layout_constraintEnd_toStartOf="@+id/divider_right"

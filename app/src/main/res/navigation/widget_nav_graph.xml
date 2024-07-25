@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/widgetFindLocationFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.find_location.FindLocationFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.find_location.FindLocationFragment"
         android:label="FindLocationFragment" >
         <action
             android:id="@+id/action_widgetFindLocationFragment_to_widgetSearchLocationFragment"
@@ -13,6 +13,6 @@
     </fragment>
     <fragment
         android:id="@+id/widgetSearchLocationFragment"
-        android:name="com.octagon_technologies.sky_weather.ui.search_location.SearchLocationFragment"
+        android:name="com.octagontechnologies.sky_weather.ui.search_location.SearchLocationFragment"
         android:label="SearchLocationFragment" />
 </navigation>

@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_2sdp"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/roboto_medium_ttf"
                 android:textSize="@dimen/_20sdp"
                 app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
                 app:layout_constraintStart_toEndOf="@+id/weather_icon"

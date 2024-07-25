@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:configure="com.octagon_technologies.sky_weather.widgets.WidgetConfigureActivity"
+    android:configure="com.octagontechnologies.sky_weather.widgets.WidgetConfigureActivity"
     android:initialKeyguardLayout="@layout/custom_remote_view"
     android:initialLayout="@layout/custom_remote_view"
     android:minWidth="@dimen/_250sdp"

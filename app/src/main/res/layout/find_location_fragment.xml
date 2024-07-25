@@ -5,11 +5,11 @@
 
     <data>
 
-        <import type="com.octagon_technologies.sky_weather.utils.Units" />
+        <import type="com.octagontechnologies.sky_weather.utils.Units" />
 
         <variable
             name="viewModel"
-            type="com.octagon_technologies.sky_weather.ui.find_location.FindLocationViewModel" />
+            type="com.octagontechnologies.sky_weather.ui.find_location.FindLocationViewModel" />
 
     </data>
 
@@ -47,7 +47,7 @@
                 android:id="@+id/location_plain_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/roboto_medium_ttf"
                 android:text="@string/locations_plain_text"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintBottom_toBottomOf="@+id/close_btn"

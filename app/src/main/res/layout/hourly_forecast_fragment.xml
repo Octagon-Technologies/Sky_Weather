@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_14sdp"
                 android:layout_marginTop="@dimen/_14sdp"
-                android:fontFamily="@font/roboto_medium"
+                android:fontFamily="@font/roboto_medium_ttf"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintStart_toStartOf="parent"
