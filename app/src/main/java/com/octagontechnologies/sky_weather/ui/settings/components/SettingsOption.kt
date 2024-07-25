@@ -39,13 +39,13 @@ data class Option<T>(@StringRes val name: Int, @StringRes val description: Int?,
 
         fun getWindCardinal() = Option(
             R.string.cardinal_plain_text,
-            R.string.f_mph_in_plain_text,
+            R.string.n_e_s_w_plain_text,
             WindDirectionUnits.CARDINAL
         )
 
         fun getWindDegrees() = Option(
             R.string.degrees_plain_text,
-            R.string.c_kph_mm_plain_text,
+            R.string._0_360_plain_text,
             WindDirectionUnits.DEGREES
         )
 
