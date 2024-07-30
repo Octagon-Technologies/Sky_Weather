@@ -23,20 +23,6 @@
         android:name="com.octagontechnologies.sky_weather.ui.find_location.FindLocationFragment"
         android:label="FindLocationFragment"
         tools:layout="@layout/find_location_fragment">
-        <action
-            android:id="@+id/action_findLocationFragment_to_searchLocationFragment"
-            app:destination="@id/searchLocationFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/searchLocationFragment"
-        android:name="com.octagontechnologies.sky_weather.ui.search_location.SearchLocationFragment"
-        android:label="SearchLocationFragment"
-        tools:layout="@layout/search_location_fragment">
-        <action
-            android:id="@+id/action_searchLocationFragment_to_currentForecastFragment"
-            app:destination="@id/currentForecastFragment"
-            app:popUpTo="@id/currentForecastFragment"
-            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -57,8 +43,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.octagontechnologies.sky_weather.ui.settings.SettingsFragment"
-        android:label="SettingsFragment"
-        tools:layout="@layout/settings_fragment"/>
+        android:label="SettingsFragment"/>
     <fragment
         android:id="@+id/dailyForecastFragment"
         android:name="com.octagontechnologies.sky_weather.ui.daily_forecast.DailyForecastFragment"

@@ -61,7 +61,6 @@ import com.octagontechnologies.sky_weather.utils.Theme
 import com.octagontechnologies.sky_weather.utils.TimeFormat
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
-import timber.log.Timber
 
 @Composable
 fun SettingsScreen(navController: NavController) {
@@ -74,36 +73,17 @@ fun SettingsScreen(navController: NavController) {
 
     val areNotificationsOn by viewModel.isNotificationAllowed.collectAsState(initial = false)
 
-    val view = LocalView.current
-    val window = (view.context.getActivity() ?: return).window
-
-
-    val surfaceColor = LocalAppColors.current.surface
-    val useWhiteIcons = LocalAppColors.current.isDarkTheme
-
-    val appBackgroundColor = LocalAppColors.current.background
 
     var navigateBack by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = navigateBack) {
-        if (navigateBack) {
-            navController.popBackStack()
-            changeColor(window, appBackgroundColor, view, false)
-            navigateBack = false
-        }
-    }
 
-    LaunchedEffect(key1 = surfaceColor, key2 = useWhiteIcons) {
-        Timber.d("WhiteStatusAndNavBars called")
-        changeColor(window, surfaceColor, view, !useWhiteIcons)
-    }
+    ChangeStatusBars(
+        navigateBack = navigateBack,
+        navController = navController,
+        resetNavigateBack = { navigateBack = false }
+    )
 
-    BackHandler {
-        navController.popBackStack()
-        changeColor(window, appBackgroundColor, view, false)
-    }
-    
-    
+
     Column(
         Modifier
             .fillMaxSize()
@@ -152,10 +132,22 @@ fun SettingsScreen(navController: NavController) {
                 .padding(horizontal = 8.dp)
                 .padding(top = 16.dp)
         ) {
-            SettingsOption(selectedOption = units, duoOption = DuoOption.units, changeOption = { viewModel.changeUnits(it) })
-            SettingsOption(selectedOption = windDirectionUnits, duoOption = DuoOption.wind, changeOption = { viewModel.changeWindDirections(it) })
-            SettingsOption(selectedOption = timeFormat, duoOption = DuoOption.time, changeOption = { viewModel.changeTimeFormat(it) } )
-            SettingsOption(selectedOption = theme, duoOption = DuoOption.theme, changeOption = { viewModel.changeTheme(it) })
+            SettingsOption(
+                selectedOption = units,
+                duoOption = DuoOption.units,
+                changeOption = { viewModel.changeUnits(it) })
+            SettingsOption(
+                selectedOption = windDirectionUnits,
+                duoOption = DuoOption.wind,
+                changeOption = { viewModel.changeWindDirections(it) })
+            SettingsOption(
+                selectedOption = timeFormat,
+                duoOption = DuoOption.time,
+                changeOption = { viewModel.changeTimeFormat(it) })
+            SettingsOption(
+                selectedOption = theme,
+                duoOption = DuoOption.theme,
+                changeOption = { viewModel.changeTheme(it) })
         }
 
         HorizontalDivider(
@@ -202,6 +194,51 @@ fun SettingsScreen(navController: NavController) {
                 )
             )
         }
+    }
+}
+
+@Composable
+fun ChangeStatusBars(
+    navigateBack: Boolean,
+    navController: NavController,
+    statusBarColor: Color = LocalAppColors.current.surface,
+    bottomBarColor: Color = LocalAppColors.current.surface,
+
+//    isBackHandlerActive: Boolean = true,
+    resetNavigateBack: () -> Unit
+) {
+    val view = LocalView.current
+    val window = (view.context.getActivity() ?: return).window
+
+    val surfaceColor = LocalAppColors.current.surface
+    val useWhiteIcons = LocalAppColors.current.isDarkTheme
+
+    val appBackgroundColor = LocalAppColors.current.background
+
+    LaunchedEffect(key1 = navigateBack) {
+        if (navigateBack) {
+            navController.popBackStack()
+            changeColor(window, view, false, appBackgroundColor)
+
+            resetNavigateBack()
+        }
+    }
+
+    LaunchedEffect(key1 = surfaceColor) {
+        changeColor(
+            window,
+            view,
+            !useWhiteIcons,
+            statusBarColor,
+            bottomBarColor
+        )
+    }
+
+    BackHandler {
+//    BackHandler(enabled = isBackHandlerActive) {
+//        Timber.d("BackHandler(enabled = isBackHandlerActive) is $isBackHandlerActive")
+        navController.popBackStack()
+        changeColor(window, view, false, appBackgroundColor)
     }
 }
 

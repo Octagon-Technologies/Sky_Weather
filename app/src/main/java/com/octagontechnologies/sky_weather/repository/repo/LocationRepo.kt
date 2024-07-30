@@ -10,12 +10,15 @@ import androidx.lifecycle.map
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.octagontechnologies.sky_weather.domain.Location
+import com.octagontechnologies.sky_weather.domain.location.LatLng
 import com.octagontechnologies.sky_weather.repository.database.location.LocalLocation
 import com.octagontechnologies.sky_weather.repository.database.location.LocationDao
+import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocation
 import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocationDao
-import com.octagontechnologies.sky_weather.repository.database.location.current.LocalCurrentLocation
 import com.octagontechnologies.sky_weather.repository.database.toLocalLocation
 import com.octagontechnologies.sky_weather.repository.network.location.LocationApi
+import com.octagontechnologies.sky_weather.utils.Resource
+import com.octagontechnologies.sky_weather.utils.doOperation
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,8 +36,9 @@ class LocationRepo @Inject constructor(
     // ONLY to be used in the FindLocation Fragment to show the user current location
     val currentLocation = currentLocationDao.getUserCurrentLocation().map { it?.currentLocation }
 
-    private val _searchLocationSuggestions = MutableLiveData<List<Location>>()
-    val searchLocationSuggestions: LiveData<List<Location>> = _searchLocationSuggestions
+    private val _suggestions = MutableLiveData<Resource<List<Location>>>()
+    val suggestions: LiveData<Resource<List<Location>>> = _suggestions
+
 
     /*
     Two scenarios:
@@ -43,7 +47,11 @@ class LocationRepo @Inject constructor(
      */
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
-    fun useGPSLocation(context: Context, saveLocationToDatabase: Boolean, userShouldTurnLocationOn: () -> Unit) {
+    fun useGPSLocation(
+        context: Context,
+        saveLocationToDatabase: Boolean,
+        userShouldTurnLocationOn: () -> Unit
+    ) {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         Timber.d("gpsEnabled is $gpsEnabled")
@@ -86,11 +94,77 @@ class LocationRepo @Inject constructor(
         locationDao.insertData(LocalLocation(location = location))
     }
 
-    suspend fun getLocationSuggestionsFromQuery(query: String) =
-        if (query.isEmpty() || query.isBlank())
-            _searchLocationSuggestions.value = listOf()
-        else _searchLocationSuggestions.value =
-            locationApi.getLocationSuggestions(query = query).map { it.toLocation() }
+    suspend fun getLocationSuggestionsFromQuery(query: String) {
+        _suggestions.value = doOperation {
+            if (query.isEmpty() || query.isBlank())
+                Resource.Success(listOf())
+            else Resource.Success(
+                locationApi.getLocationSuggestions(query = query).map { it.toLocation() })
+        }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    fun getGPSCoordinates(
+        context: Context,
+        onGPSReceived: (LatLng) -> Unit,
+        requestLocationBeTurnedOn: () -> Unit
+    ) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        Timber.d("gpsEnabled is $gpsEnabled")
+
+        val isLocationTurnedOn = LocationManagerCompat.isLocationEnabled(locationManager)
+
+        if (gpsEnabled) {
+            if (!isLocationTurnedOn) {
+                requestLocationBeTurnedOn()
+                Timber.d("User should turn on location")
+                return
+            }
+
+            try {
+                val fusedLocationProviderClient =
+                    LocationServices.getFusedLocationProviderClient(context)
+                        .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+
+                fusedLocationProviderClient.addOnSuccessListener {
+                    val systemLocation = fusedLocationProviderClient.result
+                    val latLng = LatLng(
+                        lat = systemLocation.latitude.toString(),
+                        lon = systemLocation.longitude.toString()
+                    )
+
+                    Timber.d("LatLng is $latLng")
+                    onGPSReceived(latLng)
+                }
+                    .addOnCompleteListener {
+                        Timber.d("fusedLocationProviderClient.addOnCompleteListener called")
+                    }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return
+            }
+        }
+    }
+
+
+    suspend fun fetchCurrentLocationDetails(
+        latLng: LatLng
+    ) = doOperation {
+        Timber.d("fetchCurrentLocationDetails start")
+
+        val location =
+            locationApi.getLocationFromCoordinates(
+                lat = latLng.lat.toDouble(),
+                lon = latLng.lon.toDouble()
+            ).toLocation()
+
+        Timber.d("location in fetchCurrentLocationDetails() is $location")
+        currentLocationDao.insertData(CurrentLocation(currentLocation = location))
+
+        Resource.Success(location)
+    }
 
 
     private suspend fun getLocationNameFromCoordinates(
@@ -101,7 +175,7 @@ class LocationRepo @Inject constructor(
         val location =
             locationApi.getLocationFromCoordinates(lat = lat, lon = lon)
                 .toLocation()
-        currentLocationDao.insertData(LocalCurrentLocation(currentLocation = location))
+        currentLocationDao.insertData(CurrentLocation(currentLocation = location))
 
         Timber.d("getLocationNameFromCoordinates called")
 

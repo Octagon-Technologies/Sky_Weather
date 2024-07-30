@@ -45,7 +45,7 @@
             android:textSize="@dimen/_18ssp"
             app:layout_constraintBottom_toBottomOf="@+id/see_more_temp"
             app:layout_constraintEnd_toEndOf="@+id/see_more_temp"
-            tools:text="@string/temp_unit_C" />
+            tools:text="C" />
 
 
         <com.google.android.material.card.MaterialCardView

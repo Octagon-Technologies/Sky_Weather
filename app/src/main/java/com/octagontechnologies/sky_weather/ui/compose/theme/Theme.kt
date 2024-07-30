@@ -45,14 +45,15 @@ private val LightColorScheme = lightColorScheme(
 
 fun changeColor(
     window: Window,
-    surfaceColor: Color,
     view: View,
-    useWhiteIcons: Boolean
-) {
-    window.statusBarColor = surfaceColor.toArgb()
-    window.navigationBarColor = surfaceColor.toArgb()
+    useWhiteIcons: Boolean,
 
-    Timber.d("changeColor called: is DarkBlack: ${surfaceColor == DarkBlack}")
+    // Most of the time, this two will be similar
+    statusBarColor: Color,
+    bottomBarColor: Color = statusBarColor,
+) {
+    window.statusBarColor = statusBarColor.toArgb()
+    window.navigationBarColor = bottomBarColor.toArgb()
 
     WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = useWhiteIcons
     WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = useWhiteIcons
@@ -100,7 +101,7 @@ fun AppTheme(
 
     LaunchedEffect(key1 = Unit) {
         val window = (context.getActivity() ?: return@LaunchedEffect).window
-        changeColor(window, appColors.background, view, isDarkTheme)
+        changeColor(window, view, isDarkTheme, appColors.background)
     }
 
     MaterialTheme(
@@ -109,7 +110,7 @@ fun AppTheme(
         content = {
             CompositionLocalProvider(
                 LocalAppColors provides appColors,
-                LocalRippleTheme provides AppRipple
+                LocalRippleTheme provides DisabledRipple
             ) {
                 content()
             }

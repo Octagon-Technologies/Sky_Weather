@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.octagontechnologies.sky_weather.domain.Location
 
 @Entity(tableName = "localCurrentLocation")
-data class LocalCurrentLocation(
+data class CurrentLocation(
     @PrimaryKey(autoGenerate = false)
     val currentLocationKey: Int = 10,
 

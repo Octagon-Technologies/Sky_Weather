@@ -54,7 +54,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/top_day_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/top_day_text"
-                tools:text="@string/hourly_forecast_temp_unit_C" />
+                tools:text="@string/temp_unit_C" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include

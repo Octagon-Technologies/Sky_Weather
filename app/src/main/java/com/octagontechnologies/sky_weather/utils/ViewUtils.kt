@@ -28,7 +28,7 @@ fun Fragment.showShortToast(message: String) = showToast(message, Toast.LENGTH_S
 
 fun Fragment.getStringResource(@StringRes stringRes: Int) = resources.getString(stringRes)
 
-fun Fragment.removeToolbarAndBottomNav(statusBarColor: Int, isWhiteIcon: Boolean) {
+fun Fragment.removeToolbarAndBottomNav() {
     if (activity is MainActivity) {
         val mainActivity = (activity as MainActivity)
         val gone = View.GONE

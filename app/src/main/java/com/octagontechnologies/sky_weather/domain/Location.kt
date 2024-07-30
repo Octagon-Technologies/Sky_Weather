@@ -16,6 +16,17 @@ data class Location(
 
     fun getCoordinates() = "$lat,$lon"
 
+
+    companion object {
+        fun getTestLocation(name: String = "Karen, Nairobi Ward") = Location(
+            displayNameWithoutCountryCode = name,
+            lat = "34",
+            lon = "23",
+            country = "Kenya",
+            countryCode = "KE",
+            isGps = false
+        )
+    }
 }
 
 

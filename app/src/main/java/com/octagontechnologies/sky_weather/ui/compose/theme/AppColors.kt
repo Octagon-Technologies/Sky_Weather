@@ -11,6 +11,9 @@ val lightAppColors = AppColors(
     onBackground = Color.White,
 
     surface = Color.White,
+    surfaceSmallerVariant = AlmostWhite,
+    surfaceVariant = LightWhite,
+
     onSurface = DarkBlack,
     onSurfaceLighter = LightBlack
 )
@@ -22,6 +25,9 @@ val darkAppColors = AppColors(
     onBackground = Color.White,
 
     surface = DarkBlack,
+    surfaceSmallerVariant = AlmostDarkBlack,
+    surfaceVariant = LightBlack,
+
     onSurface = Color.White,
     onSurfaceLighter = LightWhite
 )
@@ -36,6 +42,8 @@ data class AppColors (
 
 
     val surface: Color,
+    val surfaceSmallerVariant: Color,
+    val surfaceVariant: Color,
 
     // Text Color to be used on a black/white background (main)
     val onSurface: Color,

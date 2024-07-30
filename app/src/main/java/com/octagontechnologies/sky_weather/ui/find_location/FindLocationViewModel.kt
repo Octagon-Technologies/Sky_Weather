@@ -1,28 +1,28 @@
 package com.octagontechnologies.sky_weather.ui.find_location
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.single.BasePermissionListener
+import com.octagontechnologies.sky_weather.R
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.repository.repo.FavouriteLocationRepo
 import com.octagontechnologies.sky_weather.repository.repo.LocationRepo
 import com.octagontechnologies.sky_weather.repository.repo.RecentLocationsRepo
 import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
+import com.octagontechnologies.sky_weather.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,11 +39,13 @@ class FindLocationViewModel @Inject constructor(
     val windDirectionUnits = settingsRepo.windDirectionUnits
     val timeFormat = settingsRepo.timeFormat
 
-    val location = locationRepo.location
+    val currentLocation =
+        locationRepo.currentLocation.asFlow().stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val location =
+        locationRepo.location.asFlow().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private var _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    private val _errorMessage = MutableStateFlow<Int?>(null)
+    val errorMessage: StateFlow<Int?> = _errorMessage
 
     val favouriteLocationsList: LiveData<List<Location>> =
         favouriteLocationRepo.listOfFavouriteLocation
@@ -52,54 +54,20 @@ class FindLocationViewModel @Inject constructor(
     private val _navigateHome = MutableLiveData<Boolean?>()
     val navigateHome: LiveData<Boolean?> = _navigateHome
 
-    init {
-        /*
-        We want to check if the user is currently using his/her location or choose a location in the search.
-        map. If he choose current location, fetch his current location
-         */
-        viewModelScope.launch {
-            location.asFlow().first { location ->
-                try {
-                    val saveLocationToDatabase = location?.isGps == true
-                    val isGpsOn = settingsRepo.isGpsOn.first()
-                    Timber.d("settingsRepo.isGpsOn.value is $isGpsOn and saveLocationToDatabase is $saveLocationToDatabase")
 
-                    if (isGpsOn)
-                        locationRepo.useGPSLocation(
-                            context = context,
-                            saveLocationToDatabase = saveLocationToDatabase,
-                            userShouldTurnLocationOn = {})
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
+    private val _isRefreshingCurrentLocation = MutableStateFlow(true)
+    val isRefreshingCurrentLocation: StateFlow<Boolean> = _isRefreshingCurrentLocation
 
-                true
-            }
-        }
+    fun refreshCurrentLocationIfGPSIsOn(context: Context) {
+        val lastLocation = location.value
+        val isGPSOn = lastLocation?.isGps == true
+
+        if (isGPSOn)
+            fetchCurrentLocation(context)
+
+        _isRefreshingCurrentLocation.value = false
     }
 
-    fun setIsLoadingAsFalse() {
-        if (isLoading.value == true) {
-            _isLoading.value = false
-        }
-    }
-
-
-    fun deleteAllFavourite() {
-        viewModelScope.launch { favouriteLocationRepo.removeAllFavouriteLocations() }
-    }
-
-    fun deleteAllRecent() {
-        viewModelScope.launch { recentLocationsRepo.removeAllRecentLocations() }
-    }
-
-    fun removeFromRecent(location: Location) {
-        viewModelScope.launch { recentLocationsRepo.removeLocalRecentLocation(location) }
-    }
-
-    fun removeFromFavourites(location: Location) {
-        viewModelScope.launch { favouriteLocationRepo.removeLocalFavouriteLocation(location) }
-    }
 
     /*
      Called when a user selects a location from either his/her favorites or recent locations.
@@ -114,39 +82,65 @@ class FindLocationViewModel @Inject constructor(
         }
     }
 
-    fun useAndSaveGPSLocation(context: Context) {
-        locationRepo.useGPSLocation(context, true) {
-            Toast.makeText(context, "Turn on location in your settings", Toast.LENGTH_SHORT).show()
+    fun setLocationAsCurrentLocation() {
+        viewModelScope.launch {
+            currentLocation.value?.let { locationRepo.insertLocalLocation(it) }
+
+            _navigateHome.value = true
         }
     }
 
-    fun checkIfPermissionIsGranted(context: Context) {
-        _isLoading.value = true
-        Timber.d("checkIfPermissionIsGranted has been called.")
 
-        Dexter.withContext(context)
-            .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-            .withListener(object : BasePermissionListener() {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    Timber.d("onPermissionGranted called")
-                    viewModelScope.launch {
-                        useAndSaveGPSLocation(context)
-                        settingsRepo.changeIsGpsOn(true)
-                    }
+    fun fetchCurrentLocation(context: Context) = viewModelScope.launch {
+        locationRepo.getGPSCoordinates(
+            context = context,
+            onGPSReceived = { deviceLatLng ->
+                viewModelScope.launch {
+                    val networkResponse = locationRepo.fetchCurrentLocationDetails(deviceLatLng)
+                    if (networkResponse is Resource.Error)
+                        _errorMessage.value = networkResponse.resMessage
                 }
-
-                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                    Timber.d("onPermissionDenied called")
-                    _isLoading.value = false
-                }
-            })
-            .withErrorListener {
-                Timber.e(it.toString())
-            }
-            .check()
+            },
+            requestLocationBeTurnedOn = { _errorMessage.value = R.string.turn_location_on }
+        )
+//        settingsRepo.changeIsGpsOn(true)
     }
 
-    fun onNavigateHomeDone() {
+
+
+    val suggestions = locationRepo.suggestions
+    val listOfFavouriteLocation = favouriteLocationRepo.listOfFavouriteLocation
+
+    private var searchJob: Job? = null
+
+    fun getLocationSuggestions(query: String) = viewModelScope.launch {
+        searchJob?.cancel()
+
+        searchJob = launch {
+            delay(800)
+            locationRepo.getLocationSuggestionsFromQuery(query)
+        }
+    }
+
+
+    fun addOrRemoveFavourite(location: Location) = viewModelScope.launch {
+        favouriteLocationRepo.addOrRemoveFromFavourites(location)
+    }
+
+
+
+    fun deleteAllFavourite() =
+        viewModelScope.launch { favouriteLocationRepo.removeAllFavouriteLocations() }
+    fun deleteAllRecent() = viewModelScope.launch { recentLocationsRepo.removeAllRecentLocations() }
+
+    fun removeFromRecent(location: Location) =
+        viewModelScope.launch { recentLocationsRepo.removeLocalRecentLocation(location) }
+    fun removeFromFavourites(location: Location) =
+        viewModelScope.launch { favouriteLocationRepo.addOrRemoveFromFavourites(location) }
+
+
+    fun resetErrorMessage() { _errorMessage.value = null }
+    fun resetNavigateHome() {
         _navigateHome.value = null
     }
 }

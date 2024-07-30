@@ -1,10 +1,28 @@
 package com.octagontechnologies.sky_weather.ui.compose.theme
 
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.octagontechnologies.sky_weather.R
+
+@OptIn(ExperimentalTextApi::class)
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val AdventProFont = GoogleFont("Advent Pro")
+val AdventPro =
+    FontFamily(
+        androidx.compose.ui.text.googlefonts.Font(AdventProFont, provider, FontWeight.Normal),
+        androidx.compose.ui.text.googlefonts.Font(AdventProFont, provider, FontWeight.Medium),
+        androidx.compose.ui.text.googlefonts.Font(AdventProFont, provider, FontWeight.SemiBold),
+        androidx.compose.ui.text.googlefonts.Font(AdventProFont, provider, FontWeight.Light),
+    )
 
 // We've created this fonts since Google Fonts isn't loaded in the Android Studio Preview and
 // we use these fonts 99.9% of the time

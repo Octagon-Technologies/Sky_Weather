@@ -10,7 +10,7 @@ import com.octagontechnologies.sky_weather.repository.database.allergy.LocalAlle
 import com.octagontechnologies.sky_weather.repository.database.location.LocalLocation
 import com.octagontechnologies.sky_weather.repository.database.location.LocationDao
 import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocationDao
-import com.octagontechnologies.sky_weather.repository.database.location.current.LocalCurrentLocation
+import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocation
 import com.octagontechnologies.sky_weather.repository.database.location.favorites.FavouriteLocationDao
 import com.octagontechnologies.sky_weather.repository.database.location.favorites.LocalFavouriteLocation
 import com.octagontechnologies.sky_weather.repository.database.location.recent.LocalRecentLocation
@@ -30,7 +30,7 @@ import com.octagontechnologies.sky_weather.repository.database.weather.hourly.Lo
         LocalDailyForecast::class,
         LocalRecentLocation::class,
         LocalLocation::class,
-        LocalCurrentLocation::class,
+        CurrentLocation::class,
         LocalFavouriteLocation::class,
         LocalLunar::class,
         LocalAllergy::class,

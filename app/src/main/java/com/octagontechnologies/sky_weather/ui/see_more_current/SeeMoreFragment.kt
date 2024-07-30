@@ -12,8 +12,6 @@ import com.octagontechnologies.sky_weather.domain.getWeatherTitle
 import com.octagontechnologies.sky_weather.repository.repo.CurrentForecastRepo
 import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
 import com.octagontechnologies.sky_weather.ui.current_forecast.group_items.MiniForecastDescription
-import com.octagontechnologies.sky_weather.utils.Theme
-import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.getAdvancedForecastDescription
 import com.octagontechnologies.sky_weather.utils.isImperial
 import com.octagontechnologies.sky_weather.utils.loadWeatherIcon
@@ -74,10 +72,7 @@ class SeeMoreFragment : Fragment(R.layout.see_more_fragment) {
     override fun onStart() {
         super.onStart()
         val theme = settingsRepo.theme.value
-        removeToolbarAndBottomNav(
-            if (theme == Theme.LIGHT) R.color.light_theme_blue else R.color.dark_theme_blue,
-            true
-        )
+        removeToolbarAndBottomNav()
     }
 
 }

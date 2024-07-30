@@ -14,7 +14,16 @@ class FavouriteLocationRepo @Inject constructor(
         favouriteLocationDao.getAllLocalFavouriteLocations()
             .map { list -> list?.map { it.location }?.sortedBy { it.displayName } ?: listOf() }
 
-    suspend fun insertLocalFavouriteLocation(
+
+    suspend fun addOrRemoveFromFavourites(location: Location) {
+        if (location in (listOfFavouriteLocation.value ?: listOf()))
+            removeLocalFavouriteLocation(location)
+        else
+            insertLocalFavouriteLocation(location)
+    }
+
+
+    private suspend fun insertLocalFavouriteLocation(
         location: Location
     ) {
         favouriteLocationDao.insertData(
@@ -25,7 +34,7 @@ class FavouriteLocationRepo @Inject constructor(
         )
     }
 
-    suspend fun removeLocalFavouriteLocation(
+    private suspend fun removeLocalFavouriteLocation(
         location: Location
     ) {
         favouriteLocationDao.deleteLocalFavouriteLocation(

@@ -3,7 +3,8 @@ agp = "8.4.2"
 androidImageCropper = "4.5.0"
 appcompat = "1.7.0"
 circleimageview = "3.1.0"
-cloudy = "0.1.2"
+
+cloudy = "0.2.0"
 constraintlayout = "2.1.4"
 coordinatorlayout = "1.2.0"
 coreKtxVersion = "1.6.1"
@@ -81,7 +82,6 @@ androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx",
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 core-ktx = { module = "androidx.test:core-ktx", version.ref = "coreKtxVersion" }
 dexter = { module = "com.karumi:dexter", version.ref = "dexter" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
@@ -122,6 +122,7 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage" }
 
 compose-googleFonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "googlefonts-compose" }
 compose-glide = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glide-compose" }
+compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref="cloudy" }
 compose-coil = { group = "io.coil-kt", name ="coil", version = "2.6.0" }
 compose-countrycode = { group = "io.github.joelkanyi", name = "komposecountrycodepicker", version = "1.2.0" }
 compose-imageCropper = { module = "com.vanniktech:android-image-cropper", version.ref = "androidImageCropper" }
