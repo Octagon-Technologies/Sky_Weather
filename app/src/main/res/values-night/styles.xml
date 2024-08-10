@@ -9,7 +9,6 @@
         <item name="colorSecondary">@android:color/white</item>
         <item name="colorSurface">@color/dark_theme_blue</item>
         <item name="colorOnSurface">@android:color/white</item>
-        <item name="android:textSize">@dimen/_13ssp</item>
         <item name="android:textColor">@android:color/white</item>
 
 
@@ -17,54 +16,4 @@
         <item name="colorTertiaryContainer">#BE0E5080</item>
     </style>
 
-
-    <style name="AppTheme.SearchLayout">
-        <item name="colorPrimary">@color/dark_black</item>
-        <item name="colorSecondary">@color/color_black</item>
-
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorOnSecondary">@android:color/white</item>
-    </style>
-
-
-    <style name="AppTheme.SelectedLayout" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
-        <item name="colorPrimary">@color/dark_black</item>
-        <item name="colorPrimaryVariant">@color/light_black</item>
-        <item name="colorSecondary">@color/dark_black</item>
-        <item name="colorSurface">@color/color_black</item>
-        <item name="android:colorBackground">@color/dark_black</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorOnSecondary">@android:color/white</item>
-        <item name="colorOnBackground">@android:color/white</item>
-        <item name="colorOnSecondaryFixedVariant">@color/light_white</item>
-
-
-<!--        <item name="colorTertiaryContainer">@color/dark_black</item>-->
-        <item name="colorTertiaryContainer">@color/advert_black</item>
-    </style>
-
-    <style name="AppTheme.SettingsLayout" parent="ThemeOverlay.Material3.DayNight.BottomSheetDialog">
-        <item name="colorPrimary">@color/dark_black</item>
-        <item name="colorSecondary">@color/dark_black</item>
-        <item name="colorSurface">@color/color_black</item>
-        <item name="android:colorBackground">@color/dark_black</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorOnSecondary">@android:color/white</item>
-        <item name="colorOnBackground">@android:color/white</item>
-        <item name="colorOnSecondaryFixedVariant">@color/light_white</item>
-
-        <!--        For when an item is selected in the settings tab, the item background becomes color_black
-            ColorOnSurface is for the main tab title while ColorOnSurfaceVariant is for the smaller less important text
--->
-        <item name="colorOnSurface">@android:color/white</item>
-        <item name="colorOnSurfaceVariant">@color/light_grey</item>
-
- <!--        When the item is NOT selected
-             ColorOnTertiaryFixed is for the main text while ColorOnTertiaryContainer is for the smaller less important text
--->
-        <item name="colorOnTertiaryFixed">@android:color/white</item>
-        <item name="colorOnTertiaryFixedVariant">@color/light_grey</item>
-    </style>
 </resources>

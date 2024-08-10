@@ -8,62 +8,12 @@
         <item name="colorSecondary">@android:color/white</item>
         <item name="colorOnSecondary">@color/dark_black</item>
         <item name="colorSurface">@color/light_theme_blue</item>
-        <item name="android:textSize">@dimen/_13ssp</item>
 
         <item name="android:colorBackground">@color/light_theme_blue</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
 
 <!--        <item name="colorTertiaryContainer">#356798</item>-->
         <item name="colorTertiaryContainer">#BE2582C5</item>
-    </style>
-
-    <style name="AppTheme.SearchLayout">
-        <item name="colorPrimary">@android:color/white</item>
-        <item name="colorSecondary">@color/line_grey</item>
-
-        <item name="colorOnPrimary">@color/dark_black</item>
-        <item name="colorOnSecondary">@color/dark_black</item>
-    </style>
-
-    <style name="AppTheme.SelectedLayout">
-        <item name="colorPrimary">@android:color/white</item>
-        <item name="colorPrimaryVariant">@color/light_white</item>
-        <item name="colorSecondary">@android:color/white</item>
-        <item name="colorSurface">@color/line_grey</item>
-        <item name="android:colorBackground">@android:color/white</item>
-        <item name="android:textColor">@color/dark_black</item>
-        <item name="colorOnPrimary">@color/dark_black</item>
-        <item name="colorOnSecondary">@color/dark_black</item>
-        <item name="colorOnBackground">@color/dark_black</item>
-        <item name="colorOnSecondaryFixedVariant">@color/color_black</item>
-
-
-<!--        <item name="colorTertiaryContainer">@android:color/white</item>-->
-        <item name="colorTertiaryContainer">@color/advert_white</item>
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
-    </style>
-
-    <style name="AppTheme.SettingsLayout">
-        <item name="colorPrimary">@android:color/white</item>
-        <item name="colorSecondary">@android:color/white</item>
-        <item name="colorSurface">@color/line_grey</item>
-        <item name="android:colorBackground">@android:color/white</item>
-        <item name="android:textColor">@android:color/black</item>
-        <item name="colorOnPrimary">@android:color/black</item>
-        <item name="colorOnSecondary">@android:color/black</item>
-        <item name="colorOnBackground">@android:color/black</item>
-
-<!--        For when an item is selected in the settings tab, the item background becomes color_black
-            ColorOnSurface is for the main tab title while ColorOnSurfaceVariant is for the smaller less important text
--->
-        <item name="colorOnSurface">@android:color/white</item>
-        <item name="colorOnSurfaceVariant">@color/light_grey</item>
-
-<!--        When the item is NOT selected
-            ColorOnTertiaryFixed is for the main text while ColorOnTertiaryContainer is for the smaller less important text
--->
-        <item name="colorOnTertiaryFixed">@android:color/black</item>
-        <item name="colorOnTertiaryFixedVariant">@color/dark_black</item>
     </style>
 
 
@@ -77,90 +27,5 @@
         <item name="windowSplashScreenIconBackgroundColor">@color/dark_theme_blue</item>
         <!-- Set the splash screen background to black -->
         <item name="windowSplashScreenBackground">@color/dark_theme_blue</item>
-    </style>
-
-    <!--    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">-->
-    <!--        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/dark_theme_blue</item>-->
-    <!--        <item name="android:windowBackground">@drawable/splash_screen</item>-->
-    <!--        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/dark_theme_blue</item>-->
-    <!--        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">@color/dark_theme_blue</item>-->
-    <!--    </style>-->
-
-
-    <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">28dp</item>
-        <item name="cornerSizeTopLeft">28dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-    </style>
-
-    <style name="AppTheme.AdAttribution">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">left</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">@dimen/_10ssp</item>
-        <item name="android:text">@string/ad_attribution</item>
-        <item name="android:width">@dimen/_12sdp</item>
-        <item name="android:height">@dimen/_12sdp</item>
-    </style>
-
-    <style name="CustomTabItem" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textSize">@dimen/_12sdp</item>
-    </style>
-
-    <style name="AppTheme.WhiteTextColor">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="AppTheme.BlackTextColor">
-        <item name="android:textColor">@color/color_black</item>
-    </style>
-
-    <style name="BottomNavigationView" parent="@style/TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">@dimen/_11ssp</item>
-    </style>
-
-    <style name="BottomNavigationView.Active">
-        <item name="android:textSize">@dimen/_13ssp</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="current_details_style">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="number_current_details_style">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-    </style>
-
-    <style name="settings_each_item_title">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">@font/roboto</item>
-<!--        <item name="android:textColor">@android:color/black</item>-->
-        <item name="android:textSize">@dimen/_14ssp</item>
-    </style>
-
-    <style name="settings_each_item_description">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-<!--        <item name="android:textColor">@color/color_black</item>-->
-    </style>
-
-
-    <style name="DarkBlueStatusBar" parent="AppTheme">
-        <item name="android:statusBarColor" >@color/dark_theme_blue</item>
-        <item name="android:navigationBarColor" >@color/dark_theme_blue
-        </item>
-        <item name="android:navigationBarDividerColor" tools:targetApi="o_mr1">
-            @color/dark_theme_blue
-        </item>
     </style>
 </resources>

@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">Sky Weather</string>
     <string name="current_conditions">Current Conditions</string>
-    <string name="temp_unit_C">C</string>
+
     <string name="weather_image_content_description">Weather Image</string>
     <string name="back_button">Back Button</string>
     <string name="drop_of_water_content_description">Drop of water</string>
-    <string name="hourly_forecast_temp_unit_C">°C</string>
-    <string name="hourly_forecast_temp_unit_F">°F</string>
+
+    <string name="temp_unit_C">°C</string>
+    <string name="temp_unit_F">°F</string>
+
     <string name="precipitation_plain_text">Precipitation: %d%</string>
     <string name="favourites_plain_text">FAVOURITES</string>
     <string name="recent_plain_text">RECENT</string>
@@ -17,6 +19,12 @@
     <string name="you_haven_t_added_any_locations_yet_plain_text">You haven\'t added any locations yet.</string>
     <string name="it_looks_like_your_recent_history_is_empty_plain_text">It looks like your recent history is empty.</string>
     <string name="current_plain_text">CURRENT</string>
+
+    <string name="current">Current</string>
+    <string name="hourly">Hourly</string>
+    <string name="daily">Daily</string>
+
+    <string name="refreshing_location">REFRESHING</string>
     <string name="location_is_needed_to_get_weather_forecast">Location is needed to get weather forecast</string>
     <string name="locations_plain_text">Locations</string>
     <string name="close_button_plain_text">Close Button</string>
@@ -26,8 +34,10 @@
     <string name="settings_plain_text">Settings</string>
     <string name="loading_plain_text">Loading</string>
 
+    <string name="error_occured">Error occurred</string>
     <string name="no_network_availble_plain_text">No Network available</string>
     <string name="api_limit_exceeded_plain_text">"Api limit has been exceeded. Try again in an hour.</string>
+    <string name="turn_location_on">Turn on location in your settings</string>
 
     <string name="temp_format">%s°</string>
     <string name="feelslike_format">FeelsLike %s°</string>
@@ -72,6 +82,7 @@
     <string name="display_mode_plain_text">DISPLAY MODE</string>
     <string name="light_plain_text">Light</string>
     <string name="dark_plain_text">Dark</string>
+    <string name="black_plain_text">Black</string>
     <string name="enable_notifications_plain_text">Enable notifications</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
@@ -90,4 +101,16 @@
     <string name="rise">Rise</string>
     <string name="set">Set</string>
     <string name="advertisement">ADVERTISEMENT</string>
+    <string name="select_location">Select Location</string>
+    <string name="sky_weather_is_about_to_request_for_location_permission">Sky Weather is about to request for location permission</string>
+    <string name="location_permission_reason">The permission will be used to determine the weather based on your current location</string>
+    <string name="no_favourite_locations_selected_yet">No favourite locations selected yet</string>
+    <string name="no_recent_locations_selected_yet">No recent locations selected yet</string>
+    <string name="remove_from_favourites">Remove from favourites</string>
+    <string name="proceed">Proceed</string>
+    <string name="cancel">Cancel</string>
+    <string name="search_your_location">Search your location…</string>
+
+    <string name="no_search_input">Start typing to see locations</string>
+    <string name="open_settings">Open settings</string>
 </resources>

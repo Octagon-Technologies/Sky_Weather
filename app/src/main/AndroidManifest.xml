@@ -22,12 +22,6 @@
         android:name="android.permission.ACCESS_COARSE_LOCATION"
         android:requiredNotFeature="true"
         tools:ignore="UnusedAttribute" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:requiredNotFeature="true"
-        tools:ignore="UnusedAttribute" />
-
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
     <application
         android:name=".App"
@@ -82,10 +76,6 @@
 
 
 <!--        ca-app-pub-2375349794400927~5731013212-->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2375349794400927~5731013212"/>
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
