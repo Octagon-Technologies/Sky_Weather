@@ -17,6 +17,7 @@ android {
     namespace = "com.octagontechnologies.sky_weather"
     compileSdk = 34
 
+
     defaultConfig {
         val majorRelease = 2
         val defaultRelease = 0
@@ -24,6 +25,8 @@ android {
 
         applicationId = "com.octagontechnologies.sky_weather"
         minSdk = 24
+        //noinspection OldTargetApi
+        targetSdk = 34
 
         versionCode = (majorRelease * 100) + (defaultRelease * 10) + minorRelease
         versionName = "$majorRelease.$defaultRelease.$minorRelease"

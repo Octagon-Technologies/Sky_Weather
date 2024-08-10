@@ -22,11 +22,6 @@
         android:name="android.permission.ACCESS_COARSE_LOCATION"
         android:requiredNotFeature="true"
         tools:ignore="UnusedAttribute" />
-<!--    <uses-permission-->
-<!--        android:name="android.permission.ACCESS_FINE_LOCATION"-->
-<!--        android:requiredNotFeature="true"-->
-<!--        tools:ignore="UnusedAttribute" />-->
-
 
     <application
         android:name=".App"
