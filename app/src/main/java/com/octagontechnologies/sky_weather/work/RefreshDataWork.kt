@@ -29,6 +29,9 @@ class RefreshDataWork @AssistedInject constructor(
         } catch (httpException: HttpException) {
             Timber.d("doWork: Work failed")
             Result.retry()
+        } catch (e: Exception) {
+            Timber.e(e)
+            Result.failure()
         }
     }
 }

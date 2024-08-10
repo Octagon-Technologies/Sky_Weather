@@ -1,10 +1,11 @@
 package com.octagontechnologies.sky_weather.repository.repo
 
-import androidx.lifecycle.map
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.repository.database.weather.current.CurrentForecastDao
 import com.octagontechnologies.sky_weather.repository.database.weather.current.LocalCurrentForecast
 import com.octagontechnologies.sky_weather.repository.network.WeatherApi
+import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 
 class CurrentForecastRepo @Inject constructor(
@@ -14,23 +15,24 @@ class CurrentForecastRepo @Inject constructor(
 
     val currentForecast = currentForecastDao.getLocalCurrentForecast().map { it?.currentForecast }
 
-//    suspend fun setUpRefresh() {
-//        locationRepo.location.asFlow().collectLatest { location ->
-//            location?.let {
-//                refreshCurrentForecast(location, settingsRepo.units.value)
-//            }
-//        }
-//    }
 
     suspend fun refreshCurrentForecast(
         location: Location
     ) {
-        val currentForecast = weatherApi.getCurrentForecast(
-            lat = location.lat,
-            lon = location.lon
-        ).current.toSingleForecast()
+        try {
+            Timber.d("refreshCurrentForecast: before")
 
-        currentForecastDao.insertData(LocalCurrentForecast(currentForecast = currentForecast))
+            val currentForecast = weatherApi.getCurrentForecast(
+                lat = location.lat,
+                lon = location.lon
+            ).current.toSingleForecast()
+
+            Timber.d("refreshCurrentForecast: With currentforecast $currentForecast")
+            currentForecastDao.insertData(LocalCurrentForecast(currentForecast = currentForecast))
+        }
+        catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
 }

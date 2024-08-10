@@ -20,6 +20,10 @@
     <string name="it_looks_like_your_recent_history_is_empty_plain_text">It looks like your recent history is empty.</string>
     <string name="current_plain_text">CURRENT</string>
 
+    <string name="current">Current</string>
+    <string name="hourly">Hourly</string>
+    <string name="daily">Daily</string>
+
     <string name="refreshing_location">REFRESHING</string>
     <string name="location_is_needed_to_get_weather_forecast">Location is needed to get weather forecast</string>
     <string name="locations_plain_text">Locations</string>
@@ -78,6 +82,7 @@
     <string name="display_mode_plain_text">DISPLAY MODE</string>
     <string name="light_plain_text">Light</string>
     <string name="dark_plain_text">Dark</string>
+    <string name="black_plain_text">Black</string>
     <string name="enable_notifications_plain_text">Enable notifications</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
@@ -100,10 +105,12 @@
     <string name="sky_weather_is_about_to_request_for_location_permission">Sky Weather is about to request for location permission</string>
     <string name="location_permission_reason">The permission will be used to determine the weather based on your current location</string>
     <string name="no_favourite_locations_selected_yet">No favourite locations selected yet</string>
+    <string name="no_recent_locations_selected_yet">No recent locations selected yet</string>
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="proceed">Proceed</string>
     <string name="cancel">Cancel</string>
     <string name="search_your_location">Search your location…</string>
 
     <string name="no_search_input">Start typing to see locations</string>
+    <string name="open_settings">Open settings</string>
 </resources>

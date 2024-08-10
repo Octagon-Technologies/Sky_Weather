@@ -1,7 +1,6 @@
 package com.octagontechnologies.sky_weather.repository.repo
 
 import android.content.Context
-import android.os.Build
 import androidx.datastore.DataStore
 import androidx.datastore.preferences.Preferences
 import androidx.datastore.preferences.createDataStore
@@ -13,10 +12,13 @@ import com.octagontechnologies.sky_weather.utils.Theme
 import com.octagontechnologies.sky_weather.utils.TimeFormat
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
-import com.octagontechnologies.sky_weather.utils.checkBuildVersionFrom
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 class SettingsRepo @Inject constructor(
@@ -34,14 +36,14 @@ class SettingsRepo @Inject constructor(
     private val timeFormatName = "time_format"
     private val themeName = "theme_name"
     private val notificationAllowedName = "notification_allowed"
-    private val isGpsOnName = "is_gps_on"
+
 
     private val unitsKey = preferencesKey<String>(unitsName)
     private val windDirectionKey = preferencesKey<String>(windDirectionName)
     private val timeFormatKey = preferencesKey<String>(timeFormatName)
     private val themeKey = preferencesKey<String>(themeName)
     private val notificationAllowedKey = preferencesKey<Boolean>(notificationAllowedName)
-    private val isGpsOnKey = preferencesKey<Boolean>(isGpsOnName)
+
 
     val units = getDataStoreData(unitsName).map { Units.valueOf(it) }.asLiveData()
     val windDirectionUnits =
@@ -49,17 +51,12 @@ class SettingsRepo @Inject constructor(
     val timeFormat = getDataStoreData(timeFormatName).map { TimeFormat.valueOf(it) }.asLiveData()
     val theme: LiveData<Theme> = getDataStoreData(themeName).map { Theme.valueOf(it) }.asLiveData()
 
+
+    @OptIn(DelicateCoroutinesApi::class)
     val isNotificationAllowed =
         getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
-    val isNotificationAllowedFlow =
-        getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
-    val isGpsOn = getDataStoreData(isGpsOnName).map { it.toBooleanStrict() }
+            .stateIn(GlobalScope, SharingStarted.Eagerly, false)
 
-
-
-    suspend fun changeIsGpsOn(isGpsOn: Boolean) {
-        dataStore.edit { it[isGpsOnKey] = isGpsOn }
-    }
 
     suspend fun changeIsNotificationAllowed(isNotificationAllowed: Boolean) {
         dataStore.edit { it[notificationAllowedKey] = isNotificationAllowed }
@@ -84,16 +81,13 @@ class SettingsRepo @Inject constructor(
     private fun getDataStoreData(preferencesName: String): Flow<String> {
         return dataStore.data.map {
             when (preferencesName) {
-                unitsName -> it[unitsKey] ?: Units.METRIC.toString()
-                windDirectionName -> it[windDirectionKey] ?: WindDirectionUnits.CARDINAL.toString()
-                timeFormatName -> it[timeFormatKey] ?: TimeFormat.FULL_DAY.toString()
-                themeName -> it[themeKey] ?: Theme.DARK.toString()
+                unitsName -> it[unitsKey] ?: Units.getDefault().toString()
+                windDirectionName -> it[windDirectionKey] ?: WindDirectionUnits.getDefault().toString()
+                timeFormatName -> it[timeFormatKey] ?: TimeFormat.getDefault().toString()
+                themeName -> it[themeKey] ?: Theme.getDefault().toString()
 
-                // If below Android S, turn on notifications automatically
-                notificationAllowedName -> it[notificationAllowedKey]?.toString()
-                    ?: if (checkBuildVersionFrom(Build.VERSION_CODES.S)) "false" else "true"
+                notificationAllowedName -> it[notificationAllowedKey]?.toString() ?: "false"
 
-                isGpsOnName -> it[isGpsOnKey]?.toString() ?: "false"
                 else -> throw RuntimeException("Unexpected parameter. preferencesName is $preferencesName")
             }
         }

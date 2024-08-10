@@ -2,8 +2,6 @@ package com.octagontechnologies.sky_weather.di
 
 import com.octagontechnologies.sky_weather.repository.network.WEATHER_BASE_URL
 import com.octagontechnologies.sky_weather.repository.network.WeatherApi
-import com.octagontechnologies.sky_weather.repository.network.allergy.AllergyApi
-import com.octagontechnologies.sky_weather.repository.network.allergy.AllergyBaseUrl
 import com.octagontechnologies.sky_weather.repository.network.location.LocationApi
 import com.octagontechnologies.sky_weather.repository.network.location.LocationBaseUrl
 import com.octagontechnologies.sky_weather.repository.network.lunar.LunarBaseUrl
@@ -50,10 +48,6 @@ object NetworkModule {
     @Provides
     fun providesLocationApi(retrofitBuilder: Builder) = retrofitBuilder
         .baseUrl(LocationBaseUrl).build().create<LocationApi>()
-
-    @Provides
-    fun providesAllergyApi(retrofitBuilder: Builder) = retrofitBuilder
-        .baseUrl(AllergyBaseUrl).build().create<AllergyApi>()
 
     @Provides
     fun providesLunarForecastApi(retrofitBuilder: Builder) = retrofitBuilder

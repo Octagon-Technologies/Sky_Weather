@@ -9,8 +9,7 @@
     android:paddingLeft="@dimen/_10sdp"
     android:paddingEnd="@dimen/_10sdp"
     android:paddingRight="@dimen/_10sdp"
-    android:paddingBottom="@dimen/_6sdp"
-    android:theme="@style/AppTheme.SelectedLayout">
+    android:paddingBottom="@dimen/_6sdp">
 <!--    android:background="@android:color/white"-->
 
     <TextView

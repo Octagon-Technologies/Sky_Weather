@@ -1,10 +1,10 @@
 package com.octagontechnologies.sky_weather.domain
 
-import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
 import com.octagontechnologies.sky_weather.R
 import kotlinx.parcelize.Parcelize
+import org.joda.time.DateTime
 
 
 @Parcelize
@@ -16,23 +16,17 @@ internal data class Icon(@DrawableRes val dayIcon: Int, @DrawableRes val nightIc
 fun WeatherCode?.getWeatherTitle(): String {
     if (this?.code == null)
         return "Fair"
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        codeMap.getOrDefault(code, "Fair")
-    } else {
-        codeMap[code] ?: "Fair"
-    }
+    return codeMap.getOrDefault(code, "Fair")
 }
 
-fun WeatherCode?.getWeatherIcon(isDay: Boolean): Int {
+fun WeatherCode?.getWeatherIcon(): Int {
     val defaultIcon =
         Icon(R.drawable._11000_mostly_clear_large, R.drawable._11001_mostly_clear_large)
     val icon = this?.code?.let {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            iconMap.getOrDefault(code, defaultIcon)
-        else
-            iconMap[code] ?: defaultIcon
+        iconMap.getOrDefault(code, defaultIcon)
     } ?: defaultIcon
 
+    val isDay = DateTime.now().hourOfDay in 6..17
     return if (isDay) icon.dayIcon else icon.nightIcon
 }
 

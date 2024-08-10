@@ -22,7 +22,6 @@ class HourlyForecastRepo @Inject constructor(
                 lat = location.lat,
                 lon = location.lon
             ).hourly.toListOfSingleForecast()
-        Timber.d("Hourly forecast: $hourlyForecastResponse")
 
         hourlyWeatherDao.insertData(
             LocalHourlyForecast(listOfHourlyForecast = hourlyForecastResponse)

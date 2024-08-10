@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.domain.Lunar
+import com.octagontechnologies.sky_weather.domain.location.LatLng
 import com.octagontechnologies.sky_weather.repository.database.lunar.LunarDao
 import com.octagontechnologies.sky_weather.repository.database.toLocalLunar
 import com.octagontechnologies.sky_weather.repository.database.toLunar
 import com.octagontechnologies.sky_weather.repository.network.lunar.LunarForecastApi
+import com.octagontechnologies.sky_weather.utils.Resource
+import com.octagontechnologies.sky_weather.utils.doOperation
 import com.octagontechnologies.sky_weather.utils.toLunarDateFormat
 import com.octagontechnologies.sky_weather.utils.toLunarTimeZone
 import javax.inject.Inject
@@ -53,9 +56,9 @@ class LunarRepo @Inject constructor(
     }
 
     suspend fun getSelectedLunarForecast(
-        location: Location,
+        location: LatLng,
         dateInMillis: Long
-    ) {
+    ): Resource<Lunar> = doOperation {
         val lunarForecastResponse =
             lunarApi.getLunarForecast(
                 date = dateInMillis.toLunarDateFormat(),
@@ -64,6 +67,6 @@ class LunarRepo @Inject constructor(
                 timezone = dateInMillis.toLunarTimeZone()
             )
 
-        _selectedLunar.value = lunarForecastResponse.toLunar()
+        Resource.Success(lunarForecastResponse.toLunar())
     }
 }

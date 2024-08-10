@@ -1,14 +1,19 @@
 package com.octagontechnologies.sky_weather.ui.find_location.screen
 
 import android.Manifest
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -33,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -54,19 +61,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.octagontechnologies.sky_weather.R
 import com.octagontechnologies.sky_weather.domain.Location
-import com.octagontechnologies.sky_weather.ui.compose.theme.AdventPro
+import com.octagontechnologies.sky_weather.domain.location.CurrentLocationState
+import com.octagontechnologies.sky_weather.domain.location.getTagName
+import com.octagontechnologies.sky_weather.main_activity.Screens
+import com.octagontechnologies.sky_weather.ui.compose.ChangeStatusBars
+import com.octagontechnologies.sky_weather.ui.compose.getActivity
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
+import com.octagontechnologies.sky_weather.ui.compose.theme.DarkGreen
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.find_location.FindLocationViewModel
 import com.octagontechnologies.sky_weather.ui.find_location.components.LocationSuggestion
 import com.octagontechnologies.sky_weather.ui.find_location.components.SearchTab
-import com.octagontechnologies.sky_weather.ui.settings.ChangeStatusBars
 import com.octagontechnologies.sky_weather.utils.ErrorType
 import com.octagontechnologies.sky_weather.utils.Resource
 import com.octagontechnologies.sky_weather.utils.Units
@@ -75,31 +86,51 @@ import timber.log.Timber
 
 @Composable
 fun FindLocationScreen(navController: NavController, snackbarHostState: SnackbarHostState) {
-    val viewModel = viewModel<FindLocationViewModel>()
-
+    val context = LocalContext.current
+    val viewModel = hiltViewModel<FindLocationViewModel>()
     val units by viewModel.units.observeAsState()
 
     var showSearchTab by remember { mutableStateOf(false) }
 
 
+    val location by viewModel.location.collectAsState(initial = null)
     val currentLocation by viewModel.currentLocation.collectAsState()
-    val isRefreshingCurrentLocation by viewModel.isRefreshingCurrentLocation.collectAsState()
+    val currentLocationState by viewModel.currentLocationState.collectAsState(CurrentLocationState.Refreshing)
 
-    var navigateBack by remember { mutableStateOf(false) }
+
+    val navigateHome by viewModel.navigateHome.observeAsState(initial = false)
+
+
+    // If there is no location set, back press == app exit
+    val activity = LocalContext.current.getActivity()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.refreshCurrentLocationIfGPSIsOn(context)
+    }
 
     ChangeStatusBars(
-        navigateBack = navigateBack,
-        navController = navController,
-        statusBarColor = LocalAppColors.current.surfaceVariant,
-        bottomBarColor = LocalAppColors.current.surface,
-        resetNavigateBack = { navigateBack = false }
+        navigateBack = navigateHome,
+
+        // Activate default functioning if location is set
+        onNavigateBack = {
+            Timber.d("onNavigateBack called with location as $location")
+            if (location != null)
+                navController.navigate(Screens.Current) {
+                    popUpTo(Screens.Current) {
+                        inclusive = true
+                    }
+                }
+            else {
+                if (!viewModel.isInitLocationSet.value)
+                    activity?.finish()
+            }
+        },
+        resetNavigateBack = { viewModel.resetNavigateHome() }
     )
 
     Box {
         var showPermissionInfoBar by remember { mutableStateOf(false) }
         var showLocationRequest by remember { mutableStateOf(false) }
-
-
 
         Column(
             Modifier
@@ -109,6 +140,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
                 .verticalScroll(rememberScrollState())
                 .cloudy(radius = if (showPermissionInfoBar) 4 else 0)
         ) {
+
             Card(
                 colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surfaceVariant),
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
@@ -121,7 +153,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Icon(
-                        modifier = Modifier.clickable { navigateBack = true },
+                        modifier = Modifier.clickable { viewModel.navigateHome() },
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         contentDescription = stringResource(id = R.string.back_button),
                         tint = LocalAppColors.current.onSurface
@@ -150,10 +182,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
 
 
                 TextButton(
-                    onClick = {
-                        // TODO: Open Search Tab
-                        showSearchTab = true
-                    },
+                    onClick = { showSearchTab = true },
                     modifier = Modifier
                         .padding(horizontal = 8.dp, vertical = 8.dp)
                         .fillMaxWidth(),
@@ -185,7 +214,8 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
                     if (currentLocation != null)
                         UseCurrentLocation(
                             location = currentLocation!!,
-                            isRefreshingCurrentLocation = isRefreshingCurrentLocation,
+                            currentLocationState = currentLocationState.getTagName(),
+                            locationInUse = currentLocationState == CurrentLocationState.InUse,
                             modifier = Modifier.padding(horizontal = 8.dp),
                             useCurrentLocation = { viewModel.setLocationAsCurrentLocation() }
                         )
@@ -193,7 +223,11 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
                         EnableLocationButton(
                             modifier = Modifier.padding(top = 12.dp),
                             requestLocation = {
-                                showPermissionInfoBar = true
+                                val locationPermission =
+                                    context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+                                if (locationPermission != PackageManager.PERMISSION_GRANTED)
+                                    showPermissionInfoBar = true
                             }
                         )
                 }
@@ -207,6 +241,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
             SpecialLocationTab(
                 tabTitle = stringResource(id = R.string.favourites_plain_text),
                 locationList = favourites,
+                emptyPlaceholderText = stringResource(id = R.string.no_favourite_locations_selected_yet),
                 selectLocation = { viewModel.setNewLocation(it) },
                 removeFromSpecialList = { viewModel.removeFromFavourites(it) },
                 clearAll = { viewModel.deleteAllFavourite() }
@@ -215,6 +250,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
             val recents by viewModel.recentLocationsList.observeAsState(initial = listOf())
             SpecialLocationTab(
                 tabTitle = stringResource(id = R.string.recent_plain_text),
+                emptyPlaceholderText = stringResource(id = R.string.no_recent_locations_selected_yet),
                 locationList = recents,
                 selectLocation = { viewModel.setNewLocation(it) },
                 removeFromSpecialList = { viewModel.removeFromRecent(it) },
@@ -223,13 +259,15 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
         }
 
 
-        val context = LocalContext.current
         val permissionLauncher =
             rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { permissionGranted ->
                 Timber.d("permissionGranted is $permissionGranted")
                 if (permissionGranted)
-                    viewModel.fetchCurrentLocation(context)
+                    viewModel.fetchCurrentLocation(
+                        context = context, updateUserLocation = true
+                    )
             }
+
         LaunchedEffect(key1 = showLocationRequest) {
             if (showLocationRequest) {
                 permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -257,7 +295,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
         )
         val favouriteLocations by viewModel.listOfFavouriteLocation.observeAsState(listOf())
 
-        if (showSearchTab)
+        AnimatedVisibility(visible = showSearchTab, enter = fadeIn(), exit = fadeOut()) {
             SearchTab(
                 query = searchQuery,
                 onSearchQueryChanged = {
@@ -269,13 +307,15 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
                 selectLocation = {
                     viewModel.setNewLocation(it)
                     showSearchTab = false
-                    navigateBack = true
+
+                    viewModel.navigateHome()
                 },
                 addOrRemoveFromFavourite = { viewModel.addOrRemoveFavourite(it) },
                 hideSearchTab = {
                     showSearchTab = false
                 }
             )
+        }
 
 
         val errorMessage by viewModel.errorMessage.collectAsState()
@@ -300,6 +340,7 @@ fun FindLocationScreen(navController: NavController, snackbarHostState: Snackbar
 private fun SpecialLocationTab(
     modifier: Modifier = Modifier,
     tabTitle: String,
+    emptyPlaceholderText: String,
     locationList: List<Location>?,
     selectLocation: (Location) -> Unit,
     removeFromSpecialList: (Location) -> Unit,
@@ -311,10 +352,10 @@ private fun SpecialLocationTab(
             .padding(horizontal = 8.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = LocalAppColors.current.surface,
+            containerColor = LocalAppColors.current.distinctSurface,
             contentColor = LocalAppColors.current.onSurface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.elevatedCardElevation(),
         shape = RoundedCornerShape(8.dp)
     ) {
         Row(
@@ -329,10 +370,13 @@ private fun SpecialLocationTab(
                 fontFamily = QuickSand,
                 color = LocalAppColors.current.onSurface,
                 fontWeight = FontWeight.Medium,
-                fontSize = 18.sp
+                letterSpacing = (0.1).sp,
+                fontSize = 17.sp
             )
 
             Button(
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = LocalAppColors.current.distinctSurface),
                 onClick = {
                     clearAll()
                 },
@@ -343,7 +387,7 @@ private fun SpecialLocationTab(
                     fontFamily = QuickSand,
                     color = LocalAppColors.current.onSurface,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp
+                    fontSize = 15.sp
                 )
             }
         }
@@ -355,12 +399,11 @@ private fun SpecialLocationTab(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(R.string.no_favourite_locations_selected_yet),
+                    text = emptyPlaceholderText,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
         } else {
-            // TODO: Change this from Column to LazyColumn
             Column(
                 modifier = Modifier
                     .padding(bottom = 12.dp)
@@ -410,10 +453,15 @@ fun EnableLocationButton(modifier: Modifier = Modifier, requestLocation: () -> U
 @Composable
 fun UseCurrentLocation(
     location: Location,
-    isRefreshingCurrentLocation: Boolean,
+    currentLocationState: String,
+    locationInUse: Boolean,
     modifier: Modifier = Modifier,
     useCurrentLocation: (Location) -> Unit
 ) {
+    LaunchedEffect(key1 = currentLocationState) {
+        Timber.d("currentLocationState is $currentLocationState")
+    }
+
     Column(
         modifier
             .fillMaxWidth()
@@ -424,22 +472,29 @@ fun UseCurrentLocation(
             Icon(
                 painter = painterResource(
                     id =
-                    // TODO: Change this to Refresh icon
-                    if (isRefreshingCurrentLocation) R.drawable.radar else R.drawable.send
+                    if (locationInUse) R.drawable.current_location else R.drawable.radar
                 ),
                 contentDescription = null,
                 tint = LocalAppColors.current.onSurface,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(if (locationInUse) 20.dp else 18.dp)
             )
 
-            Text(
-                text = stringResource(id = if (isRefreshingCurrentLocation) R.string.refreshing_location else R.string.current_plain_text),
-                fontFamily = AdventPro,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                color = LocalAppColors.current.onSurface,
-                modifier = Modifier.padding(start = 12.dp)
-            )
+            Surface(
+                modifier = Modifier.padding(start = 12.dp),
+                color = if (locationInUse) DarkGreen.copy(alpha = 0.8f) else LocalAppColors.current.surfaceVariant,
+                shape = CircleShape
+            ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 1.dp),
+                    text = currentLocationState,
+                    fontFamily = QuickSand,
+                    fontSize = 14.sp,
+                    lineHeight = 16.sp,
+                    letterSpacing = (0.2).sp,
+                    fontWeight = FontWeight.Medium,
+                    color = LocalAppColors.current.onSurface,
+                )
+            }
         }
 
         Text(

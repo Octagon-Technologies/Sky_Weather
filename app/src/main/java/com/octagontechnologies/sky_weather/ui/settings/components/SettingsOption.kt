@@ -63,13 +63,35 @@ data class Option<T>(@StringRes val name: Int, @StringRes val description: Int?,
 
         fun getLightMode() = Option(R.string.light_plain_text, null, Theme.LIGHT)
         fun getDarkMode() = Option(R.string.dark_plain_text, null, Theme.DARK)
+        fun getBlackMode() = Option(R.string.black_plain_text, null, Theme.BLACK)
     }
 }
 
-data class DuoOption<T>(@StringRes val title: Int, val first: Option<T>, val second: Option<T>) {
+
+
+sealed class MultiOption<T>(@StringRes open val title: Int, val options: List<Option<T>>) {
+
+    class TrioOption<T>(
+        override val title: Int,
+        first: Option<T>,
+        second: Option<T>,
+        third: Option<T>
+    ) :
+        MultiOption<T>(title = title, options = listOf(first, second, third))
+
+    class DuoOption<T>(override val title: Int, first: Option<T>, second: Option<T>) :
+        MultiOption<T>(title = title, options = listOf(first, second))
+
+
+
+
     companion object {
         val units =
-            DuoOption(R.string.units_plain_text, Option.getUnitImperial(), Option.getUnitMetric())
+            DuoOption(
+                R.string.units_plain_text,
+                Option.getUnitImperial(),
+                Option.getUnitMetric()
+            )
         val wind = DuoOption(
             R.string.wind_direction_plain_text,
             Option.getWindCardinal(),
@@ -81,14 +103,19 @@ data class DuoOption<T>(@StringRes val title: Int, val first: Option<T>, val sec
             Option.getTime24Hour()
         )
         val theme =
-            DuoOption(R.string.display_mode_plain_text, Option.getLightMode(), Option.getDarkMode())
+            TrioOption(
+                R.string.display_mode_plain_text,
+                Option.getLightMode(),
+                Option.getDarkMode(),
+                Option.getBlackMode()
+            )
     }
 }
 
 @Composable
 fun <T> SettingsOption(
     selectedOption: T,
-    duoOption: DuoOption<T>,
+    multiOption: MultiOption<T>,
     changeOption: (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -96,7 +123,7 @@ fun <T> SettingsOption(
 
     Column {
         Text(
-            text = stringResource(id = duoOption.title),
+            text = stringResource(id = multiOption.title),
             fontSize = 15.sp,
             fontFamily = Poppins,
             color = LocalAppColors.current.onSurface
@@ -110,15 +137,12 @@ fun <T> SettingsOption(
                 .border(1.dp, LightBlack, rounded)
         ) {
 
-            OptionItem(
-                selectedOption = selectedOption, option = duoOption.first,
-                onOptionSelected = changeOption, modifier = Modifier.weight(1f)
-            )
-
-            OptionItem(
-                selectedOption = selectedOption, option = duoOption.second,
-                onOptionSelected = changeOption, modifier = Modifier.weight(1f)
-            )
+            multiOption.options.forEach { option ->
+                OptionItem(
+                    selectedOption = selectedOption, option = option,
+                    onOptionSelected = changeOption, modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }

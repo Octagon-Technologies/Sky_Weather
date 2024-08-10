@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository
 
-import androidx.lifecycle.asFlow
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.notification.CustomNotificationCompat
 import com.octagontechnologies.sky_weather.repository.repo.CurrentForecastRepo
@@ -10,8 +9,11 @@ import com.octagontechnologies.sky_weather.repository.repo.LocationRepo
 import com.octagontechnologies.sky_weather.repository.repo.LunarRepo
 import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
 import com.octagontechnologies.sky_weather.utils.Units
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,45 +27,48 @@ class WeatherRepo @Inject constructor(
     private val customNotificationCompat: CustomNotificationCompat
 ) {
 
+    @OptIn(DelicateCoroutinesApi::class)
+    val currentForecast =
+        currentForecastRepo.currentForecast.stateIn(GlobalScope, SharingStarted.Eagerly, null)
+
     suspend fun refreshUrgentForecast() {
-        locationRepo.location.asFlow().collectLatest { location ->
-            location?.let {
-                val units = settingsRepo.units.value
+        locationRepo.location.collectLatest { location ->
+            try {
+                location?.let {
+                    val units = settingsRepo.units.value
 
-                currentForecastRepo.refreshCurrentForecast(location)
-                hourlyForecastRepo.refreshHourlyForecast(location)
+                    currentForecastRepo.refreshCurrentForecast(location)
+                    hourlyForecastRepo.refreshHourlyForecast(location)
 
-                updateNotification(units, location)
+                    updateNotification(units, location)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }
 
-    private suspend fun updateNotification(units: Units?, location: Location) {
-        val isNotificationAllowed = settingsRepo.isNotificationAllowed.first()
-        val currentForecast = currentForecastRepo.currentForecast.value
+    private fun updateNotification(units: Units?, location: Location) {
+        val isNotificationAllowed = settingsRepo.isNotificationAllowed.value
 
         if (isNotificationAllowed) {
             customNotificationCompat.createNotification(
-                singleForecast = currentForecast,
+                singleForecast = currentForecast.value,
                 location = location,
-                timeFormat = settingsRepo.timeFormat.value,
                 units = units
             )
         }
     }
 
     suspend fun refreshAllData() {
-        locationRepo.location.asFlow().collectLatest { location ->
-            location?.let {
-                val units = settingsRepo.units.value
-
-//                    currentForecastRepo.refreshCurrentForecast(location, units)
-//                    hourlyForecastRepo.refreshHourlyForecast(location, units)
-                dailyForecastRepo.refreshDailyForecast(location)
-                lunarRepo.refreshCurrentLunarForecast(location)
-
-//                    updateNotification(units, location)
-                Timber.d("Location flow called with settingsRepo.isNotificationAllowed.value is ${settingsRepo.isNotificationAllowed.first()}")
+        locationRepo.location.collectLatest { location ->
+            try {
+                location?.let {
+                    dailyForecastRepo.refreshDailyForecast(location)
+                    lunarRepo.refreshCurrentLunarForecast(location)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
         }
     }

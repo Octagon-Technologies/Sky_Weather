@@ -1,6 +1,9 @@
 package com.octagontechnologies.sky_weather.ui.settings
 
-import androidx.activity.compose.BackHandler
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,25 +40,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.octagontechnologies.sky_weather.R
-import com.octagontechnologies.sky_weather.ui.compose.getActivity
+import com.octagontechnologies.sky_weather.ui.compose.ChangeStatusBars
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppRipple
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LightBlack
 import com.octagontechnologies.sky_weather.ui.compose.theme.LightBlue
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
-import com.octagontechnologies.sky_weather.ui.compose.theme.changeColor
-import com.octagontechnologies.sky_weather.ui.settings.components.DuoOption
+import com.octagontechnologies.sky_weather.ui.settings.components.MultiOption
 import com.octagontechnologies.sky_weather.ui.settings.components.SettingsOption
 import com.octagontechnologies.sky_weather.utils.Theme
 import com.octagontechnologies.sky_weather.utils.TimeFormat
@@ -64,7 +65,7 @@ import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 
 @Composable
 fun SettingsScreen(navController: NavController) {
-    val viewModel = viewModel<SettingsViewModel>()
+    val viewModel = hiltViewModel<SettingsViewModel>()
 
     val units by viewModel.units.observeAsState(Units.METRIC)
     val windDirectionUnits by viewModel.windDirectionUnits.observeAsState(WindDirectionUnits.DEGREES)
@@ -79,7 +80,7 @@ fun SettingsScreen(navController: NavController) {
 
     ChangeStatusBars(
         navigateBack = navigateBack,
-        navController = navController,
+        onNavigateBack = { navController.popBackStack() },
         resetNavigateBack = { navigateBack = false }
     )
 
@@ -134,19 +135,19 @@ fun SettingsScreen(navController: NavController) {
         ) {
             SettingsOption(
                 selectedOption = units,
-                duoOption = DuoOption.units,
+                multiOption = MultiOption.units,
                 changeOption = { viewModel.changeUnits(it) })
             SettingsOption(
                 selectedOption = windDirectionUnits,
-                duoOption = DuoOption.wind,
+                multiOption = MultiOption.wind,
                 changeOption = { viewModel.changeWindDirections(it) })
             SettingsOption(
                 selectedOption = timeFormat,
-                duoOption = DuoOption.time,
+                multiOption = MultiOption.time,
                 changeOption = { viewModel.changeTimeFormat(it) })
             SettingsOption(
                 selectedOption = theme,
-                duoOption = DuoOption.theme,
+                multiOption = MultiOption.theme,
                 changeOption = { viewModel.changeTheme(it) })
         }
 
@@ -158,6 +159,20 @@ fun SettingsScreen(navController: NavController) {
                 .background(LocalAppColors.current.onSurfaceLighter)
         )
 
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()) { isGranted ->
+            viewModel.handleNotificationPermissionResponse(isGranted = isGranted)
+        }
+
+        val showSystemPermissionDialog by viewModel.showSystemPermissionDialog.collectAsState(false)
+        LaunchedEffect(key1 = showSystemPermissionDialog) {
+            if (showSystemPermissionDialog)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+
+            viewModel.resetSystemPermissionDialog()
+        }
 
 
         Row(
@@ -176,14 +191,11 @@ fun SettingsScreen(navController: NavController) {
                 fontSize = 18.sp
             )
 
-            val view = LocalView.current.rootView
+
             Switch(
                 checked = areNotificationsOn,
                 onCheckedChange = { turnOn ->
-                    if (turnOn) {
-
-                    }
-                    viewModel.toggleNotificationAllowed(turnOn, view)
+                    viewModel.toggleNotificationAllowed(turnOn)
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
@@ -197,50 +209,6 @@ fun SettingsScreen(navController: NavController) {
     }
 }
 
-@Composable
-fun ChangeStatusBars(
-    navigateBack: Boolean,
-    navController: NavController,
-    statusBarColor: Color = LocalAppColors.current.surface,
-    bottomBarColor: Color = LocalAppColors.current.surface,
-
-//    isBackHandlerActive: Boolean = true,
-    resetNavigateBack: () -> Unit
-) {
-    val view = LocalView.current
-    val window = (view.context.getActivity() ?: return).window
-
-    val surfaceColor = LocalAppColors.current.surface
-    val useWhiteIcons = LocalAppColors.current.isDarkTheme
-
-    val appBackgroundColor = LocalAppColors.current.background
-
-    LaunchedEffect(key1 = navigateBack) {
-        if (navigateBack) {
-            navController.popBackStack()
-            changeColor(window, view, false, appBackgroundColor)
-
-            resetNavigateBack()
-        }
-    }
-
-    LaunchedEffect(key1 = surfaceColor) {
-        changeColor(
-            window,
-            view,
-            !useWhiteIcons,
-            statusBarColor,
-            bottomBarColor
-        )
-    }
-
-    BackHandler {
-//    BackHandler(enabled = isBackHandlerActive) {
-//        Timber.d("BackHandler(enabled = isBackHandlerActive) is $isBackHandlerActive")
-        navController.popBackStack()
-        changeColor(window, view, false, appBackgroundColor)
-    }
-}
 
 @Preview
 @Composable

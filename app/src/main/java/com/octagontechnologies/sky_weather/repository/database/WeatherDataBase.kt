@@ -5,12 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.octagontechnologies.sky_weather.repository.database.allergy.AllergyDao
-import com.octagontechnologies.sky_weather.repository.database.allergy.LocalAllergy
 import com.octagontechnologies.sky_weather.repository.database.location.LocalLocation
 import com.octagontechnologies.sky_weather.repository.database.location.LocationDao
-import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocationDao
 import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocation
+import com.octagontechnologies.sky_weather.repository.database.location.current.CurrentLocationDao
 import com.octagontechnologies.sky_weather.repository.database.location.favorites.FavouriteLocationDao
 import com.octagontechnologies.sky_weather.repository.database.location.favorites.LocalFavouriteLocation
 import com.octagontechnologies.sky_weather.repository.database.location.recent.LocalRecentLocation
@@ -33,15 +31,13 @@ import com.octagontechnologies.sky_weather.repository.database.weather.hourly.Lo
         CurrentLocation::class,
         LocalFavouriteLocation::class,
         LocalLunar::class,
-        LocalAllergy::class,
         LocalHourlyForecast::class],
-    version = 3,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(value = [(RoomTypeConverters::class)])
 abstract class WeatherDataBase : RoomDatabase() {
 
-    abstract val allergyDao: AllergyDao
     abstract val lunarDao: LunarDao
 
     abstract val currentForecastDao: CurrentForecastDao

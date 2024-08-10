@@ -44,10 +44,6 @@ object RoomModule {
         weatherDataBase.recentLocationDao
 
     @Provides
-    fun providesAllergyDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.allergyDao
-
-    @Provides
     fun providesLunarForecastDao(weatherDataBase: WeatherDataBase) =
         weatherDataBase.lunarDao
 

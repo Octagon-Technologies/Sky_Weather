@@ -18,8 +18,8 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        val majorRelease = 1
-        val defaultRelease = 3
+        val majorRelease = 2
+        val defaultRelease = 0
         val minorRelease = 0
 
         applicationId = "com.octagontechnologies.sky_weather"
@@ -106,7 +106,7 @@ dependencies {
 
     // Others
     implementation(libs.logging.timber)
-//    implementation(libs.permissionX)
+    implementation(libs.permissionX)
     implementation(libs.jodaTime)
 
 
@@ -136,7 +136,7 @@ dependencies {
     implementation(libs.play.services.location)
 
     // Dexter
-    implementation(libs.dexter)
+//    implementation(libs.dexter)
 
     // Test dependencies
     testImplementation(libs.junit)
@@ -214,6 +214,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
     kapt(libs.androidx.hilt.compiler)
 
@@ -221,7 +222,7 @@ dependencies {
     implementation(libs.androidx.splashScreen)
 
     // Ads
-    implementation(libs.play.services.ads)
+//    implementation(libs.play.services.ads)
 }
 
 kapt {

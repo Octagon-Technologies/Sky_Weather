@@ -6,7 +6,6 @@ import com.octagontechnologies.sky_weather.domain.UVIndex
 import com.octagontechnologies.sky_weather.domain.WeatherCode
 import com.octagontechnologies.sky_weather.domain.Wind
 import com.squareup.moshi.Json
-import org.joda.time.Instant
 
 data class Current(
     @Json(name = "apparent_temperature")
@@ -74,7 +73,7 @@ data class Current(
             soilMoisture = soilMoisture0To1cm,
             soilTemp = soilTemperature0cm,
             snowDepth = snowDepth,
-            timeInEpochMillis = Instant.parse(time).millis,
+            timeInEpochMillis = System.currentTimeMillis(),
             humidity = relativeHumidity2m
         )
 

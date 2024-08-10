@@ -1,7 +1,6 @@
 package com.octagontechnologies.sky_weather.repository.database
 
 import androidx.room.TypeConverter
-import com.octagontechnologies.sky_weather.domain.Allergy
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.domain.Lunar
 import com.octagontechnologies.sky_weather.domain.SingleForecast
@@ -20,7 +19,6 @@ class RoomTypeConverters {
         .build()
 
     private val singleForecastJsonAdapter = moshi.adapter(SingleForecast::class.java)
-    private val allergyJsonAdapter = moshi.adapter(Allergy::class.java)
     private val lunarJsonAdapter = moshi.adapter(Lunar::class.java)
     private val locationJsonAdapter = moshi.adapter(Location::class.java)
     private val favouriteLocationJsonAdapter = moshi.adapter(LocalFavouriteLocation::class.java)
@@ -45,10 +43,6 @@ class RoomTypeConverters {
     fun singleForecastToString(currentWeatherDataClass: SingleForecast): String =
         singleForecastJsonAdapter.toJson(currentWeatherDataClass)
 
-    @TypeConverter
-    fun stringToAllergy(data: String): Allergy? = allergyJsonAdapter.fromJson(data)
-    @TypeConverter
-    fun allergyToString(allergy: Allergy?): String = allergyJsonAdapter.toJson(allergy)
 
 
     @TypeConverter

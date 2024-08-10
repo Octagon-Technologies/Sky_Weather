@@ -17,11 +17,7 @@ import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.domain.SingleForecast
 import com.octagontechnologies.sky_weather.domain.getFormattedTemp
 import com.octagontechnologies.sky_weather.main_activity.MainActivity
-import com.octagontechnologies.sky_weather.utils.TimeFormat
 import com.octagontechnologies.sky_weather.utils.Units
-import com.octagontechnologies.sky_weather.utils.checkBuildVersionFrom
-import com.octagontechnologies.sky_weather.utils.isImperial
-import com.octagontechnologies.sky_weather.utils.isNull
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -42,16 +38,14 @@ class CustomNotificationCompat @Inject constructor(
     }
 
     private val notificationManagerCompat by lazy { NotificationManagerCompat.from(context) }
-//    private val customRemoteView by lazy { CustomRemoteView(context) }
 
 
-    init {
-        createNotificationChannel()
-    }
+
+    fun clearNotification() { notificationManagerCompat.cancelAll() }
 
     @SuppressLint("NewApi")
     fun createNotificationChannel() {
-        if (checkBuildVersionFrom(Build.VERSION_CODES.O)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 NOTIFICATION_CHANNEL_NAME,
@@ -72,26 +66,25 @@ class CustomNotificationCompat @Inject constructor(
     fun createNotification(
         singleForecast: SingleForecast?,
         location: Location?,
-        timeFormat: TimeFormat?,
         units: Units?
     ) {
-        Timber.d("createNotification called")
+        Timber.d("createNotification called: Part 1")
 
-        if (singleForecast.isNull() || location.isNull() || timeFormat.isNull() || units.isNull()) {
-            Timber.d("createNotification failed because singleForecast is ${singleForecast.isNull()}, location is ${location.isNull()}, units is ${units.isNull()} and timeFormat is ${timeFormat.isNull()}")
+        if (singleForecast == null || location == null)
             return
-        }
+
+        if (context.checkCallingOrSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+            return
+
+
+        Timber.d("createNotification called: PArt 2")
+
+        if (notificationManagerCompat.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null)
+            createNotificationChannel()
+
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
             setSilent(true)
             setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-//            setContent(
-//                customRemoteView.getCustomRemoteView(
-//                    singleForecast,
-//                    location,
-//                    timeFormat,
-//                    units
-//                )
-//            )
             setSmallIcon(R.drawable.sky_weather_icon)
             setShowWhen(false)
             setSound(null)
@@ -99,27 +92,9 @@ class CustomNotificationCompat @Inject constructor(
             setOngoing(true)
             setAutoCancel(false)
 
-            setContentTitle(location?.displayName ?: "-----")
-            setContentText(singleForecast?.getFormattedTemp(units.isImperial()) + units?.getUnitSymbol())
-//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-//                setStyle(NotificationCompat.DecoratedCustomViewStyle())
-//                setCustomContentView(
-//                    customRemoteView
-//                        .getCustomRemoteView(singleForecast, location, timeFormat, units)
-//                )
-//                setCustomBigContentView(
-//                    customRemoteView
-//                        .getCustomRemoteView(singleForecast, location, timeFormat, units)
-//                )
-//            }
-//            else {
-//                setContentTitle(location?.displayName ?: "-----")
-//                setContentText(singleForecast?.getFormattedTemp() + units?.getUnitSymbol())
+            setContentTitle(location.displayName ?: "-----")
+            setContentText(singleForecast.getFormattedTemp(units) + (units ?: Units.getDefault()).getUnitSymbol())
 
-//                setCustomBigContentView(
-//                    customRemoteView
-//                        .getCustomRemoteView(singleForecast, location, timeFormat, units))
-//            }
             setCustomHeadsUpContentView(null)
             setContentIntent(clickPendingIntent)
         }.build()
@@ -128,7 +103,7 @@ class CustomNotificationCompat @Inject constructor(
         notificationManagerCompat.cancelAll()
 
 
-        if (checkBuildVersionFrom(Build.VERSION_CODES.S)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // This check is kinda unnecessary since we've adequately checked for permission in the ViewModel... but I'm going to add
             // it just in case... Plus, why not? :)
             if (ActivityCompat

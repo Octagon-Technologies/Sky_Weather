@@ -19,9 +19,7 @@ import com.octagontechnologies.sky_weather.repository.database.toLocalLocation
 import com.octagontechnologies.sky_weather.repository.network.location.LocationApi
 import com.octagontechnologies.sky_weather.utils.Resource
 import com.octagontechnologies.sky_weather.utils.doOperation
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -40,57 +38,8 @@ class LocationRepo @Inject constructor(
     val suggestions: LiveData<Resource<List<Location>>> = _suggestions
 
 
-    /*
-    Two scenarios:
-    a) We are loading the current location only for display; but the user is yet to choose it
-    b) The user has explicitly selected current location
-     */
-    @OptIn(DelicateCoroutinesApi::class)
-    @SuppressLint("MissingPermission")
-    fun useGPSLocation(
-        context: Context,
-        saveLocationToDatabase: Boolean,
-        userShouldTurnLocationOn: () -> Unit
-    ) {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        Timber.d("gpsEnabled is $gpsEnabled")
-
-        val isLocationTurnedOn = LocationManagerCompat.isLocationEnabled(locationManager)
-
-        if (gpsEnabled) {
-            if (!isLocationTurnedOn) {
-                userShouldTurnLocationOn()
-                Timber.d("User should turn on location")
-                return
-            }
-
-            val fusedLocationProviderClient =
-                LocationServices.getFusedLocationProviderClient(context)
-                    .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-
-            fusedLocationProviderClient
-                .addOnSuccessListener { latLng ->
-                    GlobalScope.launch {
-                        if (latLng != null) {
-                            getLocationNameFromCoordinates(
-                                saveLocationToDatabase,
-                                lat = latLng.latitude,
-                                lon = latLng.longitude
-                            )
-                        } else {
-                            Timber.e("latLng is null")
-                        }
-                    }
-                }
-                .addOnCompleteListener {
-                    Timber.d("fusedLocationProviderClient.addOnCompleteListener called")
-                }
-        }
-    }
-
-    suspend fun insertLocalLocation(location: Location) {
-        Timber.d("insertLocalLocation called")
+    suspend fun setUserLocation(location: Location) {
+        Timber.d("setUserLocation called")
         locationDao.insertData(LocalLocation(location = location))
     }
 
@@ -149,7 +98,7 @@ class LocationRepo @Inject constructor(
     }
 
 
-    suspend fun fetchCurrentLocationDetails(
+    suspend fun updateCurrentLocationInDatabase(
         latLng: LatLng
     ) = doOperation {
         Timber.d("fetchCurrentLocationDetails start")

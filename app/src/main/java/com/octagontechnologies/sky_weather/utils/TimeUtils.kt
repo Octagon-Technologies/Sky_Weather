@@ -2,10 +2,8 @@ package com.octagontechnologies.sky_weather.utils
 
 import android.annotation.SuppressLint
 import org.joda.time.DateTime
-import org.joda.time.DateTimeFieldType
 import org.joda.time.Instant
-import org.joda.time.format.DateTimeFormat
-import timber.log.Timber
+import org.joda.time.Interval
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +34,20 @@ fun Long.getHoursOfDay() =
     Instant.ofEpochMilli(this).toDateTime().hourOfDay
 
 
+fun Long?.getDateOfMonth(): String =
+    if (this != null)
+        SimpleDateFormat("dd", Locale.getDefault())
+            .format(Instant.ofEpochMilli(this).toDate())
+    else
+        "--"
+
+fun Long?.getDay(): String =
+    if (this != null)
+        SimpleDateFormat("EEEE", Locale.getDefault())
+            .format(Instant.ofEpochMilli(this).toDate())
+    else
+        "-----"
+
 fun Long?.getDayWithMonth(): String =
     if (this != null)
         SimpleDateFormat("EEEE, MMMM dd", Locale.getDefault())
@@ -50,17 +62,15 @@ fun Long?.getHoursAndMinsWithDay(timeFormat: TimeFormat?): String =
         val day = SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
 
         "$hourAndMinOnly, $day"
-    }
-    else
+    } else
         "--:--, ------"
 
 @SuppressLint("SimpleDateFormat")
 fun Long.getHoursAndMins(timeFormat: TimeFormat?): String {
-    val isHalfDay = timeFormat == TimeFormat.HALF_DAY
+    val isHalfDay = (timeFormat ?: TimeFormat.getDefault()) == TimeFormat.HALF_DAY
     val halfDayPattern = "hh:mm a"
     val builder = SimpleDateFormat(if (isHalfDay) halfDayPattern else "HH:mm")
 
-//    val date = DateTime(this).toLocalDate().toDate()
     val date = Instant.ofEpochMilli(this).toDate()
     return builder.format(date)
 }
@@ -71,6 +81,25 @@ fun Long.toLunarDateFormat(): String =
         Locale.getDefault()
     ).format(this)
 
-fun Long.toLunarTimeZone() =
-    (TimeZone.getDefault().getOffset(Date().time).toDouble() / 3_600_000.0).toInt()
-        .toString()
+
+//TODO: Make this better looking
+fun Long.toLunarTimeZone(): String {
+    val sdf = SimpleDateFormat("z", Locale.getDefault())
+    val longTimeZone = sdf.format(DateTime.now().toDate())
+
+    val startAt = longTimeZone.indexOf("+") + 1
+    val endAt = longTimeZone.indexOf(":")
+    val timeZone =  longTimeZone.substring(startAt, endAt)
+
+    return timeZone
+//    DateTimeZone.forTimeZone(TimeZone.getDefault()).getStandardOffset() / 3_600_000
+}
+//    (TimeZone.getDefault().getOffset(Date().time).toDouble() / 3_600_000.0).toInt()
+//        .toString()
+
+
+
+
+
+fun getHoursInterval(start: Long, end: Long) = Interval(start, end).toPeriod().hours
+fun getMinsInterval(start: Long, end: Long) = Interval(start, end).toPeriod().minutes

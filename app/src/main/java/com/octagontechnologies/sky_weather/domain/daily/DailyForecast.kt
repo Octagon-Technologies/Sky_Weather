@@ -4,6 +4,7 @@ import com.octagontechnologies.sky_weather.domain.UVIndex
 import com.octagontechnologies.sky_weather.domain.WeatherCode
 import com.octagontechnologies.sky_weather.domain.Wind
 import com.octagontechnologies.sky_weather.utils.TimeFormat
+import com.octagontechnologies.sky_weather.utils.Units
 import org.joda.time.Instant
 import org.joda.time.Interval
 import timber.log.Timber
@@ -12,18 +13,60 @@ data class DailyForecast(
     val timeInEpochSeconds: Long,
     val dayTime: TimePeriod,
     val nightTime: TimePeriod
-)
+) {
+
+    fun getTempHigh(units: Units?): Int? {
+        val temp = dayTime.temp?.let { dayTemp -> if (dayTemp >= nightTime.temp!!) dayTemp else nightTime.temp }?.toInt()
+        return temp?.let { if (units == Units.IMPERIAL) (temp * (9 / 5) + 32) else temp }
+    }
+    fun getTempLow(units: Units?): Int? {
+        val temp = nightTime.temp?.let { nightTemp -> if (nightTemp <= dayTime.temp!!) nightTemp else dayTime.temp }?.toInt()
+        return temp?.let { if (units == Units.IMPERIAL) (temp * (9 / 5) + 32) else temp }
+    }
 
 
+    companion object {
+        val DAY_TIME_PERIOD = TimePeriod(
+            20.0,
+            4,
+            25.5,
+            WeatherCode(56, 5),
+            UVIndex.getUVIndexFromNum(5),
+            Wind(20.5, 45.3, 23.5),
+            760.44,
+            700.2,
+            45,
+            true,
+            rainProbability = 45,
+            DailyLunar(1722312085, 1722348085 )
+        )
+        val NIGHT_TIME = DAY_TIME_PERIOD.copy(isDay = false, temp = 14.7)
+
+        val TEST_FORE = DailyForecast(System.currentTimeMillis(), DAY_TIME_PERIOD, NIGHT_TIME)
+    }
+
+}
+
+
+fun TimePeriod?.getFormattedTemp(units: Units?): String =
+    this?.temp?.let { (if (units == Units.IMPERIAL) (temp * (9/5) + 32) else temp).toInt().toString() + "°" } ?: "--°"
 fun TimePeriod?.getFormattedTemp(): String = (this?.temp?.toInt()?.toString() ?: "--") + "°"
+fun TimePeriod?.getBasicFeelsLike(units: Units?): String =
+    this?.feelsLike?.let { (if (units == Units.IMPERIAL) (feelsLike * (9/5) + 32) else feelsLike).toInt().toString() + "°" } ?: "--°"
+
 fun TimePeriod?.getFormattedFeelsLike(): String =
     "FeelsLike " + (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
 
 fun TimePeriod?.getFormattedHumidity(): String = (this?.humidity?.toInt()?.toString() ?: "--") + "%"
 fun TimePeriod?.getFormattedCloudCover(): String =
     (this?.cloudCover?.toInt()?.toString() ?: "--") + "%"
-fun TimePeriod?.getFormattedSurfacePressure(isImperial: Boolean) = (this?.surfacePressure?.toString() ?: "--") + if (isImperial) " inHg" else " mbar"
-fun TimePeriod?.getFormattedSeaLevelPressure(isImperial: Boolean) = (this?.seaLevelPressure?.toString() ?: "--") + if (isImperial) " inHg" else " mbar"
+
+fun TimePeriod?.getFormattedSurfacePressure(units: Units?) =
+    (this?.surfacePressure?.toString() ?: "--") + if (units == Units.IMPERIAL) " inHg" else " mbar"
+
+fun TimePeriod?.getFormattedSeaLevelPressure(units: Units?) =
+    (this?.seaLevelPressure?.toString() ?: "--") + if (units == Units.IMPERIAL) " inHg" else " mbar"
+
 fun TimePeriod?.getFormattedUVIndex() = (this?.uvIndex ?: UVIndex.Low).toString()
 
 data class TimePeriod(
@@ -37,6 +80,7 @@ data class TimePeriod(
     val seaLevelPressure: Double?,
     val humidity: Int?,
     val isDay: Boolean,
+    val rainProbability: Int,
     /*
     I've added this here instead of the main DailyForecast so that the selected Daily Forecast (day and night tabs)
     can access the info
@@ -44,10 +88,10 @@ data class TimePeriod(
     val dailyLunar: DailyLunar
 )
 
-data class DailyLunar(val sunRise: Long, val sunSet: Long) {
+data class DailyLunar(val rise: Long, val set: Long) {
 
-    fun getSunRiseDisplay(timeFormat: TimeFormat?) = sunRise.getHoursAndMins(timeFormat)
-    fun getSunSetDisplay(timeFormat: TimeFormat?) = sunSet.getHoursAndMins(timeFormat)
+    fun getSunRiseDisplay(timeFormat: TimeFormat?) = rise.getHoursAndMins(timeFormat)
+    fun getSunSetDisplay(timeFormat: TimeFormat?) = set.getHoursAndMins(timeFormat)
 
     fun getMoonRiseDisplay(timeFormat: TimeFormat?) = "--:--"
     fun getMoonSetDisplay(timeFormat: TimeFormat?) = "--:--"
@@ -66,8 +110,8 @@ data class DailyLunar(val sunRise: Long, val sunSet: Long) {
         return time
     }
 
-    fun getSunHoursFull() = getHoursForFullTimeFormat(sunRise, sunSet)
-    fun getSunMinutesFull() = getMinutesForFullTimeFormat(sunRise, sunSet)
+    fun getSunHoursFull() = getHoursForFullTimeFormat(rise, set)
+    fun getSunMinutesFull() = getMinutesForFullTimeFormat(rise, set)
     fun getMoonHoursFull() = getHoursForFullTimeFormat(null, null)
     fun getMoonMinutesFull() = getMinutesForFullTimeFormat(null, null)
 
@@ -79,7 +123,10 @@ data class DailyLunar(val sunRise: Long, val sunSet: Long) {
 
         return try {
             val hours =
-                Interval(Instant.ofEpochMilli(rise), Instant.ofEpochMilli(set)).toDuration().standardHours
+                Interval(
+                    Instant.ofEpochMilli(rise),
+                    Instant.ofEpochMilli(set)
+                ).toDuration().standardHours
             Timber.d("Hours is $hours")
             "$hours hrs"
         } catch (e: IllegalArgumentException) {
@@ -92,7 +139,10 @@ data class DailyLunar(val sunRise: Long, val sunSet: Long) {
             return "-- mins"
         return try {
             val minutes =
-                Interval(Instant.ofEpochMilli(rise), Instant.ofEpochMilli(set)).toDuration().standardMinutes % 60
+                Interval(
+                    Instant.ofEpochMilli(rise),
+                    Instant.ofEpochMilli(set)
+                ).toDuration().standardMinutes % 60
             Timber.d("Minutes is $minutes")
             "$minutes mins"
         } catch (e: Exception) {

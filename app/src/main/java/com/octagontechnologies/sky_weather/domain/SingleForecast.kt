@@ -1,13 +1,14 @@
 package com.octagontechnologies.sky_weather.domain
 
 import android.os.Parcelable
+import com.octagontechnologies.sky_weather.utils.Units
 import kotlinx.parcelize.Parcelize
 
 // ALWAYS fetch data km/h, C then do the convertions on the device
 @Parcelize
 data class SingleForecast(
     val temp: Double?,
-    val feelsLike: Double?,
+    internal val feelsLike: Double?,
     val weatherCode: WeatherCode,
     val uvIndex: UVIndex,
     val wind: Wind,
@@ -23,16 +24,43 @@ data class SingleForecast(
     val snowDepth: Double?,
     val timeInEpochMillis: Long,
     val humidity: Int?
-) : Parcelable
+) : Parcelable {
 
-fun SingleForecast?.getFormattedTemp(isImperial: Boolean): String =
-    this?.temp?.let { (if (isImperial) (temp * (9/5) + 32) else temp).toInt().toString() + "°" } ?: "--°"
+    companion object {
+        val TEST_DUMMY = SingleForecast(
+            23.0,
+            24.2,
+            WeatherCode(3, 34),
+            UVIndex.getUVIndexFromNum(6),
+            Wind(24.0, 23.0, 90.0),
+            4,
+            null,
+            35.0,
+            23.0,
+            1500,
+            1650,
+            12.0,
+            5.0,
+            20.5,
+            null,
+            System.currentTimeMillis(),
+            45
+        )
+    }
 
-fun SingleForecast?.getBasicFeelsLike(isImperial: Boolean): String =
-    this?.feelsLike?.let { (if (isImperial) (feelsLike * (9/5) + 32) else feelsLike).toInt().toString() + "°" } ?: "--°"
+}
 
-fun SingleForecast?.getFormattedFeelsLike(isImperial: Boolean): String =
-    "FeelsLike " + getBasicFeelsLike(isImperial)
+fun SingleForecast?.getFormattedTemp(units: Units?): String =
+    this?.temp?.let { (if (units == Units.IMPERIAL) (temp * (9 / 5) + 32) else temp).toInt().toString() + "°" }
+        ?: "--°"
+
+fun SingleForecast?.getBasicFeelsLike(units: Units?): String =
+    this?.feelsLike?.let {
+        (if (units == Units.IMPERIAL) (feelsLike * (9 / 5) + 32) else feelsLike).toInt().toString() + "°"
+    } ?: "--°"
+
+fun SingleForecast?.getFormattedFeelsLike(units: Units?): String =
+    "FeelsLike " + getBasicFeelsLike(units)
 
 fun SingleForecast?.getFormattedHumidity(): String = (this?.humidity?.toString() ?: "--") + "%"
 fun SingleForecast?.getFormattedCloudCover(): String = (this?.cloudCover?.toString() ?: "--") + "%"

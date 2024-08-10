@@ -8,14 +8,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.octagontechnologies.sky_weather.R
 
-@OptIn(ExperimentalTextApi::class)
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
     certificates = R.array.com_google_android_gms_fonts_certs
 )
 
-val AdventProFont = GoogleFont("Advent Pro")
+private val AdventProFont = GoogleFont("Advent Pro")
 val AdventPro =
     FontFamily(
         androidx.compose.ui.text.googlefonts.Font(AdventProFont, provider, FontWeight.Normal),

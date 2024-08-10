@@ -1,24 +1,19 @@
 package com.octagontechnologies.sky_weather.ui.settings
 
-import android.Manifest
 import android.os.Build
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.single.BasePermissionListener
-import com.karumi.dexter.listener.single.CompositePermissionListener
-import com.karumi.dexter.listener.single.SnackbarOnDeniedPermissionListener
+import com.octagontechnologies.sky_weather.notification.CustomNotificationCompat
 import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
 import com.octagontechnologies.sky_weather.utils.Theme
 import com.octagontechnologies.sky_weather.utils.TimeFormat
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -27,10 +22,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsRepo: SettingsRepo
+    private val settingsRepo: SettingsRepo,
+    private val customNotificationCompat: CustomNotificationCompat
 ) : ViewModel() {
 
     val isNotificationAllowed = settingsRepo.isNotificationAllowed
+
+    private val _showSystemPermissionDialog = MutableStateFlow(false)
+    val showSystemPermissionDialog: StateFlow<Boolean> = _showSystemPermissionDialog
 
     val units = settingsRepo.units
     val windDirectionUnits = settingsRepo.windDirectionUnits
@@ -38,43 +37,33 @@ class SettingsViewModel @Inject constructor(
     val theme = settingsRepo.theme.asFlow().onEach { Timber.d("theme: $it") }
         .stateIn(viewModelScope, SharingStarted.Eagerly, Theme.LIGHT)
 
-    fun toggleNotificationAllowed(isChecked: Boolean, rootView: View) {
+
+
+    fun toggleNotificationAllowed(shouldTurnOn: Boolean) {
         viewModelScope.launch {
-            // To avoid unnecessary edits, confirm that the new value is different from what we have stored
-//            if (isChecked != isNotificationAllowed.value) {
-            confirmNotificationPermission(isChecked, rootView)
-//            }
-        }
-    }
+            Timber.d("shouldTurnOn is $shouldTurnOn")
 
-    private fun confirmNotificationPermission(isChecked: Boolean, rootView: View) {
-        // If we are changing this to false or we are below Tiramisu, we don't need Notification Permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isChecked) {
-            val snackBarListener = SnackbarOnDeniedPermissionListener.Builder
-                .with(rootView, "Allow notifications in Settings")
-                .withDuration(Snackbar.LENGTH_LONG)
-                .withOpenSettingsButton("Open Settings")
-                .build()
-
-            val basePermissionListener = object : BasePermissionListener() {
-                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                    super.onPermissionGranted(p0)
-
-                    viewModelScope.launch {
-                        settingsRepo.changeIsNotificationAllowed(isChecked)
-                    }
-                }
+            // We are turning notifications off
+            if (!shouldTurnOn) {
+                settingsRepo.changeIsNotificationAllowed(false)
+                customNotificationCompat.clearNotification()
+                return@launch
             }
-            val compositePermissionListener =
-                CompositePermissionListener(snackBarListener, basePermissionListener)
-            Dexter.withContext(rootView.context)
-                .withPermission(Manifest.permission.POST_NOTIFICATIONS)
-                .withListener(compositePermissionListener)
-                .check()
-        } else {
-            viewModelScope.launch { settingsRepo.changeIsNotificationAllowed(isChecked) }
+
+            // Below Tiramisu - API 33, notifications do not need permission
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                settingsRepo.changeIsNotificationAllowed(true)
+            } else {
+                _showSystemPermissionDialog.value = true
+            }
         }
     }
+
+
+    fun handleNotificationPermissionResponse(isGranted: Boolean) = viewModelScope.launch {
+        settingsRepo.changeIsNotificationAllowed(isGranted)
+    }
+
 
     fun changeUnits(newUnits: Units) {
         viewModelScope.launch {
@@ -99,5 +88,10 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             if (newTheme != theme.value) settingsRepo.changeTheme(newTheme)
         }
+    }
+
+
+    fun resetSystemPermissionDialog() {
+        _showSystemPermissionDialog.value = false
     }
 }

@@ -78,6 +78,7 @@ data class Daily(
             surfacePressure = surfacePressureMin[index],
             seaLevelPressure = pressureMslMin[index],
             humidity = relativeHumidity2mMin[index],
+            rainProbability = precipitationProbabilityMax[index],
             isDay = true,
             dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
         )
@@ -93,6 +94,7 @@ data class Daily(
             surfacePressure = surfacePressureMax[index],
             seaLevelPressure = pressureMslMax[index],
             humidity = relativeHumidity2mMax[index],
+            rainProbability = precipitationProbabilityMin[index],
             isDay = false,
             dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
         )

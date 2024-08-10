@@ -1,6 +1,8 @@
 package com.octagontechnologies.sky_weather.domain
 
+import com.octagontechnologies.sky_weather.domain.location.LatLng
 import com.octagontechnologies.sky_weather.utils.capitalize
+
 
 data class Location(
     val displayNameWithoutCountryCode: String,
@@ -29,6 +31,7 @@ data class Location(
     }
 }
 
+fun Location.toLatLng() = LatLng(lat, lon)
 
 //@Json(name = "city")
 //val city: String?,

@@ -9,6 +9,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import retrofit2.HttpException
 import timber.log.Timber
+import javax.xml.transform.Result
 
 @HiltWorker
 class UrgentDataWork @AssistedInject constructor(
@@ -29,6 +30,9 @@ class UrgentDataWork @AssistedInject constructor(
         } catch (httpException: HttpException) {
             Timber.d("doWork: Work failed")
             Result.retry()
+        } catch (e: Exception) {
+            Timber.e(e)
+            Result.failure()
         }
     }
 }

@@ -59,11 +59,11 @@ class CustomRemoteView(private val context: Context) {
 
             setImageViewResource(
                 R.id.expanded_notification_weather_icon,
-                singleForecast?.weatherCode.getWeatherIcon(isDay)
+                singleForecast?.weatherCode.getWeatherIcon()
             )
 
             val drawable =
-                singleForecast?.weatherCode.getWeatherIcon(isDay)
+                singleForecast?.weatherCode.getWeatherIcon()
             setImageViewIcon(R.id.expanded_notification_weather_icon, Icon.createWithResource(context, drawable))
 //            val tint = ContextCompat.getColor(
 //                context,

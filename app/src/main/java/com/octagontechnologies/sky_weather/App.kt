@@ -8,8 +8,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.gms.ads.MobileAds
-import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
 import com.octagontechnologies.sky_weather.work.RefreshDataWork
 import com.octagontechnologies.sky_weather.work.UrgentDataWork
 import dagger.hilt.android.HiltAndroidApp
@@ -22,8 +20,12 @@ import javax.inject.Inject
 
 /*
 TODO:
+1) Fix status bar colors -------- DONE
+2) Loaded them in advance ----- DONE
+3) Add Black theme  --- DONE
+
 1) Add widgets
-2) Fix notification
+2) Fix notification ----- DONE
 3) Save isGpsAllowed on DataStore to auto-update current location       -------- DONE
 4) Add try catch in search location and display a No Internet toast/snackbar   ------ DONE
 5) Look for the perfect grey blue to re-design Current Forecast, Hourly Forecast and ------- DONE
@@ -42,13 +44,8 @@ class App : Application(), Configuration.Provider {
             .setWorkerFactory(workerFactory)
             .build()
 
-
-    private val settingsRepo by lazy { SettingsRepo(applicationContext) }
-
-
     override fun onCreate() {
         super.onCreate()
-        MobileAds.initialize(applicationContext)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
 
         applicationScope.launch {
@@ -82,12 +79,8 @@ class App : Application(), Configuration.Provider {
                 ExistingPeriodicWorkPolicy.KEEP,
                 longerRequest
             )
-        } catch (e: IllegalStateException) {
-            Timber.e(e, "Work manager wasn't initialized")
+        } catch (e: Exception) {
+            Timber.e(e)
         }
-
-//        widgetRepo.updateAllWidgets {
-//            Timber.d("In App, updateAllWidgets.isSuccess is ${it.isSuccess}")
-//        }
     }
 }
