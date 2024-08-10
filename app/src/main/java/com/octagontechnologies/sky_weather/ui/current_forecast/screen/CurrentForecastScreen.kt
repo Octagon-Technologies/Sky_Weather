@@ -87,6 +87,13 @@ fun CurrentForecastScreen(
         currentForecast?.getCoreWeatherConditions(units, windDirectionUnits) ?: mapOf()
     }
 
+
+    val activity = LocalContext.current.getActivity()
+    BackHandler {
+        activity?.finish()
+    }
+
+
     Column(
         Modifier
             .fillMaxSize()

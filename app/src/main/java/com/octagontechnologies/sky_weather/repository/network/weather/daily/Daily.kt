@@ -5,7 +5,6 @@ import com.octagontechnologies.sky_weather.domain.UVIndex
 import com.octagontechnologies.sky_weather.domain.WeatherCode
 import com.octagontechnologies.sky_weather.domain.Wind
 import com.octagontechnologies.sky_weather.domain.daily.DailyForecast
-import com.octagontechnologies.sky_weather.domain.daily.DailyLunar
 import com.octagontechnologies.sky_weather.domain.daily.TimePeriod
 import com.squareup.moshi.Json
 import org.joda.time.Instant
@@ -80,7 +79,7 @@ data class Daily(
             humidity = relativeHumidity2mMin[index],
             rainProbability = precipitationProbabilityMax[index],
             isDay = true,
-            dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
+//            dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
         )
 
     private fun toNightTimePeriod(index: Int) =
@@ -96,7 +95,7 @@ data class Daily(
             humidity = relativeHumidity2mMax[index],
             rainProbability = precipitationProbabilityMin[index],
             isDay = false,
-            dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
+//            dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
         )
 
 }

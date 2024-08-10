@@ -28,12 +28,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.octagontechnologies.sky_weather.R
 import com.octagontechnologies.sky_weather.repository.repo.LocationRepo
 import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
 import com.octagontechnologies.sky_weather.ui.compose.AppBottomNavBar
@@ -66,13 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-
-        ActivityOptionsCompat.makeCustomAnimation(
-            applicationContext,
-            R.animator.nav_default_enter_anim,
-            R.animator.nav_default_exit_anim
-        )
-
+        
         setContent {
             val theme by settingsRepo.theme.observeAsState(initial = Theme.DARK)
             val isAppInStartup by locationRepo.location.map { it == null }

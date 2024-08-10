@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_70sdp"
+    android:layout_height="80dp"
     android:background="@android:color/white"
     android:fontFamily="@font/advent_pro_medium"
     android:gravity="center"
     android:text="@string/out_of_sync_widget_can_be_removed_plain_text"
     android:textColor="@color/dark_black"
-    android:textSize="@dimen/_15ssp" />
+    android:textSize="19sp" />

@@ -55,9 +55,6 @@ android {
 
     buildFeatures {
         compose = true
-        viewBinding = true
-        //noinspection DataBindingWithoutKapt
-        dataBinding = true
     }
     kotlinOptions {
         jvmTarget =("1.8")
@@ -66,7 +63,7 @@ android {
 }
 
 dependencies {
-//
+
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -81,6 +78,11 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.google.material)
+
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
 
     // Compose UI libraries
@@ -97,46 +99,37 @@ dependencies {
     implementation(libs.kotlin.serialization)
     implementation(libs.moshi)
     implementation(libs.moshi.reflect)
-//    ksp(libs.ksp.moshi.codegen)
 
 //    Local caching
+    implementation(libs.androidx.datastore.preferences)
+
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
+
     // Others
     implementation(libs.logging.timber)
-    implementation(libs.permissionX)
     implementation(libs.jodaTime)
-
-
-    testImplementation(libs.junit)
-    testImplementation(libs.truth)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-//    implementation fileTree(dir:("libs", include: ["*.jar"]))
-//    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
-//    implementation("androidx.core:core-ktx:1.12.0")
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.google.material)
-
-    // Coordinator Layout
-    implementation(libs.androidx.coordinatorlayout)
 
     // Google Android
     implementation(libs.play.services.location)
+    implementation(libs.androidx.work.runtime.ktx)
 
-    // Dexter
-//    implementation(libs.dexter)
+    // Timber
+    implementation(libs.logging.timber)
+
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+    kapt(libs.androidx.hilt.compiler)
+
+    // Splash Screen
+    implementation(libs.androidx.splashScreen)
+
 
     // Test dependencies
     testImplementation(libs.junit)
@@ -149,80 +142,11 @@ dependencies {
     // Android Test dependencies
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Room and Lifecycle dependencies
-//    implementation(libs.room.runtime)
-//    implementation(libs.room.ktx)
-//    ksp("androidx.room:room-compiler:2.6.1")
-
-    // ViewModel
-    implementation(libs.androidx.lifecycle.extensions)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
-//    // Moshi
-//    implementation("com.squareup.moshi:moshi:1.15.0")
-//    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
-//    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
-
-//    // Retrofit
-//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-//    implementation("com.squareup.retrofit2:converter-moshi:2.6.0")
-//
-//    // Coroutines
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-//    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
-
-    // Glide
-    implementation(libs.glide)
-
-    // CircleImageView
-    implementation(libs.circleimageview)
-
-    // Groupie
-    implementation(libs.groupie)
-    implementation(libs.groupie.databinding)
-
-    // Timber
-    implementation(libs.logging.timber)
-
-    // RecyclerView
-    implementation(libs.recyclerview)
-
-    // Preferences DataStore
-    //noinspection GradleDependency
-    implementation(libs.androidx.datastore.preferences)
-
-
-
-    // Sdp
-    implementation(libs.sdp.android)
-    implementation(libs.ssp.android)
-
-    // Okhttp Logging Interceptor
-    implementation(libs.retrofit.okhttp.logger)
-
-    // SwipeToRefresh
-    implementation(libs.androidx.swiperefreshlayout)
-
-    // Switch Button
-    implementation(libs.library)
-
-    // WorkManager
-    // Kotlin + coroutines
-    implementation(libs.androidx.work.runtime.ktx)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
-
-    // Splash Screen
-    implementation(libs.androidx.splashScreen)
-
-    // Ads
-//    implementation(libs.play.services.ads)
 }
 
 kapt {

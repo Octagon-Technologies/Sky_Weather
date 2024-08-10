@@ -67,20 +67,16 @@ class App : Application(), Configuration.Provider {
             .setConstraints(constraints)
             .build()
 
-        try {
-            WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-                UrgentDataWork.WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
-                urgentRequest
-            )
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            UrgentDataWork.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            urgentRequest
+        )
 
-            WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-                RefreshDataWork.WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
-                longerRequest
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            RefreshDataWork.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            longerRequest
+        )
     }
 }

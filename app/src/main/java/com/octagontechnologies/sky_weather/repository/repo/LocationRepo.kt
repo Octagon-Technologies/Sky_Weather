@@ -78,14 +78,18 @@ class LocationRepo @Inject constructor(
                         .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
 
                 fusedLocationProviderClient.addOnSuccessListener {
-                    val systemLocation = fusedLocationProviderClient.result
-                    val latLng = LatLng(
-                        lat = systemLocation.latitude.toString(),
-                        lon = systemLocation.longitude.toString()
-                    )
+                    try {
+                        val systemLocation = fusedLocationProviderClient.result
+                        val latLng = LatLng(
+                            lat = systemLocation.latitude.toString(),
+                            lon = systemLocation.longitude.toString()
+                        )
 
-                    Timber.d("LatLng is $latLng")
-                    onGPSReceived(latLng)
+                        Timber.d("LatLng is $latLng")
+                        onGPSReceived(latLng)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
                 }
                     .addOnCompleteListener {
                         Timber.d("fusedLocationProviderClient.addOnCompleteListener called")

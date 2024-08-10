@@ -14,7 +14,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
-import timber.log.Timber
 import javax.inject.Inject
 
 class WeatherRepo @Inject constructor(
@@ -33,17 +32,13 @@ class WeatherRepo @Inject constructor(
 
     suspend fun refreshUrgentForecast() {
         locationRepo.location.collectLatest { location ->
-            try {
-                location?.let {
-                    val units = settingsRepo.units.value
+            location?.let {
+                val units = settingsRepo.units.value
 
-                    currentForecastRepo.refreshCurrentForecast(location)
-                    hourlyForecastRepo.refreshHourlyForecast(location)
+                currentForecastRepo.refreshCurrentForecast(location)
+                hourlyForecastRepo.refreshHourlyForecast(location)
 
-                    updateNotification(units, location)
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
+                updateNotification(units, location)
             }
         }
     }
@@ -62,13 +57,9 @@ class WeatherRepo @Inject constructor(
 
     suspend fun refreshAllData() {
         locationRepo.location.collectLatest { location ->
-            try {
-                location?.let {
-                    dailyForecastRepo.refreshDailyForecast(location)
-                    lunarRepo.refreshCurrentLunarForecast(location)
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
+            location?.let {
+                dailyForecastRepo.refreshDailyForecast(location)
+                lunarRepo.refreshCurrentLunarForecast(location)
             }
         }
     }
