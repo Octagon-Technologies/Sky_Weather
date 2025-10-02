@@ -13,7 +13,7 @@ abstract class RecentLocationDao: BaseDao<LocalRecentLocation> {
     abstract suspend fun deleteLocalRecentLocation(recentLocation: LocalRecentLocation)
 
     @Query("SELECT * FROM localRecentLocation")
-    abstract fun getAllLocalRecentLocations(): LiveData<List<LocalRecentLocation>?>
+    abstract fun getAllLocalRecentLocations(): LiveData<List<LocalRecentLocation>>
 
     @Query("DELETE FROM localRecentLocation")
     abstract suspend fun deleteAllRecentLocations()

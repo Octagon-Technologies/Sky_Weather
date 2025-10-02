@@ -1,25 +1,35 @@
 package com.octagontechnologies.sky_weather.ui.compose.theme
 
 import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.CompositionLocalProvider
 
-object AppRipple : RippleTheme {
-    @Composable
-    override fun defaultColor(): Color = LightBlue
 
-    @Composable
-    override fun rippleAlpha(): RippleAlpha =
-        RippleAlpha(0f, 0f, 0f, 0.075f)
+private val AppRippleConfiguration = RippleConfiguration(
+    color = LightBlue,
+    rippleAlpha = RippleAlpha (
+        pressedAlpha = 0.2f,
+        focusedAlpha = 0.1f,
+        draggedAlpha = 0.15f,
+        hoveredAlpha = 0.075f
+    )
+)
+
+
+@Composable
+fun AppRipple(content: @Composable () -> Unit) {
+    CompositionLocalProvider(
+        LocalRippleConfiguration provides AppRippleConfiguration,
+        content = content
+    )
 }
 
-
-object DisabledRipple : RippleTheme {
-    @Composable
-    override fun defaultColor(): Color = Color.Transparent
-
-    @Composable
-    override fun rippleAlpha(): RippleAlpha =
-        RippleAlpha(0f, 0f, 0f, 0f)
+@Composable
+fun DisabledRipple(content: @Composable () -> Unit) {
+    CompositionLocalProvider(
+        LocalRippleConfiguration provides null,
+        content = content
+    )
 }

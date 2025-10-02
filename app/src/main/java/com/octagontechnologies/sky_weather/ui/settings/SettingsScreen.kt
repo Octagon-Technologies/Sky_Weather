@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -28,7 +27,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,7 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.octagontechnologies.sky_weather.R
@@ -101,7 +99,7 @@ fun SettingsScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(vertical = 12.dp)
             ) {
-                CompositionLocalProvider(LocalRippleTheme provides AppRipple) {
+                AppRipple {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
                         contentDescription = stringResource(id = R.string.back_button),
@@ -115,6 +113,7 @@ fun SettingsScreen(navController: NavController) {
                             .padding(2.dp)
                     )
                 }
+
 
                 Text(
                     text = stringResource(id = R.string.settings_plain_text),

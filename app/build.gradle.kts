@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 
     // Annotation processing
     id(libs.plugins.ksp.get().pluginId)
@@ -15,7 +16,7 @@ plugins {
 
 android {
     namespace = "com.octagontechnologies.sky_weather"
-    compileSdk = 34
+    compileSdk = 36
 
 
     defaultConfig {
@@ -79,6 +80,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
+
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.appcompat)
@@ -93,7 +96,7 @@ dependencies {
     implementation(libs.compose.googleFonts)
     implementation(libs.compose.cloudy)
 
-//     Network library
+    // Network library
     implementation(libs.retrofit)
     implementation(libs.retrofit.moshiconverter)
     implementation(libs.retrofit.okhttp.logger)
@@ -103,7 +106,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.reflect)
 
-//    Local caching
+    // Local caching
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.room.runtime)
