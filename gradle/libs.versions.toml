@@ -1,50 +1,50 @@
 [versions]
-agp = "8.4.2"
+agp = "8.9.3"
 androidImageCropper = "4.5.0"
-appcompat = "1.7.0"
+appcompat = "1.7.1"
 circleimageview = "3.1.0"
 
 cloudy = "0.2.0"
-constraintlayout = "2.1.4"
-coordinatorlayout = "1.2.0"
-coreKtxVersion = "1.6.1"
+constraintlayout = "2.2.1"
+coordinatorlayout = "1.3.0"
+coreKtxVersion = "1.7.0"
 coreTesting = "2.2.0"
-datastorePreferences = "1.0.0-alpha02"
+datastorePreferences = "1.1.7"
 dexter = "6.2.2"
 glide = "4.16.0"
 groupie = "2.10.1"
 groupieDatabinding = "2.10.1"
 hamcrest = "2.2"
 hiltAndroid = "2.50"
-hiltCompiler = "2.50"
-hiltCompilerVersion = "1.2.0"
-hiltNavigationCompose = "1.2.0"
-hiltWork = "1.2.0"
+hiltCompiler = "2.51.1"
+hiltCompilerVersion = "1.3.0"
+hiltNavigationCompose = "1.3.0"
+hiltWork = "1.3.0"
 jodaTimeVersion = "2.12.7"
-kotlin = "1.9.0"
-coreKtx = "1.13.1"
+kotlin = "2.0.21"
+coreKtx = "1.17.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
 legacySupportV4 = "1.0.0"
 library = "2.1.0"
 lifecycleExtensions = "2.2.0"
-lifecycleRuntimeKtx = "2.8.3"
-activityCompose = "1.9.0"
-materialVersion = "1.12.0"
-navigationCompose = "2.8.0-beta04"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+materialVersion = "1.13.0"
+navigationCompose = "2.9.5"
 
-composeBom = "2024.06.00"
-firebaseBom = "33.1.1"
+composeBom = "2025.09.01"
+firebaseBom = "34.3.0"
 koin-bom = "3.5.0"
 
-googlefonts-compose = "1.6.8"
+googlefonts-compose = "1.9.2"
 glide-compose = "1.0.0-beta01"
 
-navigation = "2.7.7"
-playServicesAds = "23.2.0"
+navigation = "2.9.5"
+playServicesAds = "24.6.0"
 playServicesLocation = "21.3.0"
-recyclerviewVersion = "1.3.2"
+recyclerviewVersion = "1.4.0"
 robolectric = "4.5.1"
 sdpAndroid = "1.0.6"
 spotless = "6.7.0"
@@ -57,11 +57,11 @@ permissionX = "1.7.1"
 jodaTime = "2.12.7"
 moshi = "1.15.1"
 retrofit = "2.11.0"
-room = "2.6.1"
+room = "2.8.1"
 
-firebasePlugin = "4.4.2"
+firebasePlugin = "4.4.3"
 truth = "1.4.2"
-workRuntimeKtx = "2.9.0"
+workRuntimeKtx = "2.10.5"
 
 
 [libraries]
@@ -111,6 +111,8 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+
 androidx-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
@@ -179,7 +181,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 kapt = { id = "kotlin-kapt" }
-ksp = { id = "com.google.devtools.ksp", version = "1.9.0-1.0.12" }
+ksp = { id = "com.google.devtools.ksp", version = "2.0.20-1.0.24" }
 parcelize = { id = "kotlin-parcelize" }
 gms = { id = "com.google.gms.google-services", version.ref = "firebasePlugin" }
 

@@ -13,7 +13,7 @@ abstract class FavouriteLocationDao: BaseDao<LocalFavouriteLocation> {
     abstract suspend fun deleteLocalFavouriteLocation(localFavouriteLocation: LocalFavouriteLocation)
 
     @Query("SELECT * FROM localFavoriteLocation")
-    abstract fun getAllLocalFavouriteLocations(): LiveData<List<LocalFavouriteLocation>?>
+    abstract fun getAllLocalFavouriteLocations(): LiveData<List<LocalFavouriteLocation>>
 
     @Query("DELETE FROM localFavoriteLocation")
     abstract suspend fun deleteAllFavouriteLocations()

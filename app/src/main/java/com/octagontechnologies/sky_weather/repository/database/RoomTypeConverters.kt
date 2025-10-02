@@ -18,17 +18,20 @@ class RoomTypeConverters {
         .add(KotlinJsonAdapterFactory())
         .build()
 
-    private val singleForecastJsonAdapter = moshi.adapter(SingleForecast::class.java)
-    private val lunarJsonAdapter = moshi.adapter(Lunar::class.java)
-    private val locationJsonAdapter = moshi.adapter(Location::class.java)
-    private val favouriteLocationJsonAdapter = moshi.adapter(LocalFavouriteLocation::class.java)
-    private val recentLocationJsonAdapter = moshi.adapter(LocalRecentLocation::class.java)
+//    private val singleForecastJsonAdapter = moshi.adapter(SingleForecast::class.java)
+    private val lunarJsonAdapter = moshi.adapter<Lunar>(Lunar::class.java)
+    private val locationJsonAdapter = moshi.adapter<Location>(Location::class.java)
+    private val favouriteLocationJsonAdapter = moshi.adapter<LocalFavouriteLocation>(LocalFavouriteLocation::class.java)
+    private val recentLocationJsonAdapter = moshi.adapter<LocalRecentLocation>(LocalRecentLocation::class.java)
+
 
 
     private val hourlyForecastType: ParameterizedType =
         Types.newParameterizedType(List::class.java, SingleForecast::class.java)
     private val hourlyForecastJsonAdapter: JsonAdapter<List<SingleForecast>> =
         moshi.adapter(hourlyForecastType)
+
+    private val singleForecastAdapter = moshi.adapter<SingleForecast>(SingleForecast::class.java)
 
     private val dailyForecastType: ParameterizedType =
         Types.newParameterizedType(List::class.java, DailyForecast::class.java)
@@ -37,11 +40,11 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun stringToSingleForecast(data: String): SingleForecast? =
-        singleForecastJsonAdapter.fromJson(data)
+        singleForecastAdapter.fromJson(data)
 
     @TypeConverter
     fun singleForecastToString(currentWeatherDataClass: SingleForecast): String =
-        singleForecastJsonAdapter.toJson(currentWeatherDataClass)
+        singleForecastAdapter.toJson(currentWeatherDataClass)
 
 
 

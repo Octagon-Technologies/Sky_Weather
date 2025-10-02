@@ -89,14 +89,12 @@ fun Long.toLunarTimeZone(): String {
 
     val startAt = longTimeZone.indexOf("+") + 1
     val endAt = longTimeZone.indexOf(":")
-    val timeZone =  longTimeZone.substring(startAt, endAt)
+
+    if (endAt < startAt) return  ""
+    val timeZone = longTimeZone.substring(startAt, endAt)
 
     return timeZone
-//    DateTimeZone.forTimeZone(TimeZone.getDefault()).getStandardOffset() / 3_600_000
 }
-//    (TimeZone.getDefault().getOffset(Date().time).toDouble() / 3_600_000.0).toInt()
-//        .toString()
-
 
 
 

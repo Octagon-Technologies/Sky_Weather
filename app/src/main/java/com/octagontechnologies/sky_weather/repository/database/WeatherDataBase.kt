@@ -35,7 +35,7 @@ import com.octagontechnologies.sky_weather.repository.database.weather.hourly.Lo
     version = 5,
     exportSchema = false
 )
-@TypeConverters(value = [(RoomTypeConverters::class)])
+@TypeConverters(RoomTypeConverters::class)
 abstract class WeatherDataBase : RoomDatabase() {
 
     abstract val lunarDao: LunarDao
