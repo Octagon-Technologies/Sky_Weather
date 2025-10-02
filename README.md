@@ -1,12 +1,3 @@
-# Sky Weather ~ Your Weather App
-Pshhttt... Here's the link: <a href="https://play.google.com/store/apps/details?id=com.octagontechnologies.sky_weather">https://play.google.com/store/apps/details?id=com.octagontechnologies.sky_weather</link>
-```
-First and foremost, download the app from the Google Play Store...
-Like right now... Coz you're an amazing person, right?? 
-Just kidding...
-Time for some serious project README documentation (motivated emoji here)
-```
-
 # Sky Weather
 A beautifully designed weather app created with XML for the UI and Kotlin for the logic.
 
