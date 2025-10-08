@@ -51,21 +51,11 @@ class CurrentForecastViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            launch {
-//                location.collectLatest { location ->
-//                    if (location != null) {
-//                        currentForecastRepo.refreshCurrentForecast(location)
-//                        hourlyForecastRepo.refreshHourlyForecast(location)
-//                        lunarRepo.refreshCurrentLunarForecast(location)
-//                    }
-//                }
-            }
+            currentForecast.collectLatest { currentForecast ->
+                val location = location.value
 
-            launch {
-                currentForecast.collectLatest { currentForecast ->
-                    if (currentForecast != null && location.value != null) {
-                        updateNotification(location.value!!)
-                    }
+                if (currentForecast != null && location != null) {
+                    updateNotification(location)
                 }
             }
         }
