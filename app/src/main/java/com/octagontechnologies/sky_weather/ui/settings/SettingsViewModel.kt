@@ -21,77 +21,76 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
-    private val settingsRepo: SettingsRepo,
-    private val customNotificationCompat: CustomNotificationCompat
-) : ViewModel() {
+class SettingsViewModel
+    @Inject
+    constructor(
+        private val settingsRepo: SettingsRepo,
+        private val customNotificationCompat: CustomNotificationCompat,
+    ) : ViewModel() {
+        val isNotificationAllowed = settingsRepo.isNotificationAllowed
 
-    val isNotificationAllowed = settingsRepo.isNotificationAllowed
+        private val _showSystemPermissionDialog = MutableStateFlow(false)
+        val showSystemPermissionDialog: StateFlow<Boolean> = _showSystemPermissionDialog
 
-    private val _showSystemPermissionDialog = MutableStateFlow(false)
-    val showSystemPermissionDialog: StateFlow<Boolean> = _showSystemPermissionDialog
+        val units = settingsRepo.units
+        val windDirectionUnits = settingsRepo.windDirectionUnits
+        val timeFormat = settingsRepo.timeFormat
+        val theme =
+            settingsRepo.theme.asFlow().onEach { Timber.d("theme: $it") }
+                .stateIn(viewModelScope, SharingStarted.Eagerly, Theme.LIGHT)
 
-    val units = settingsRepo.units
-    val windDirectionUnits = settingsRepo.windDirectionUnits
-    val timeFormat = settingsRepo.timeFormat
-    val theme = settingsRepo.theme.asFlow().onEach { Timber.d("theme: $it") }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, Theme.LIGHT)
+        fun toggleNotificationAllowed(shouldTurnOn: Boolean) {
+            viewModelScope.launch {
+                Timber.d("shouldTurnOn is $shouldTurnOn")
 
+                // We are turning notifications off
+                if (!shouldTurnOn) {
+                    settingsRepo.changeIsNotificationAllowed(false)
+                    customNotificationCompat.clearNotification()
+                    return@launch
+                }
 
+                // Below Tiramisu - API 33, notifications do not need permission
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    settingsRepo.changeIsNotificationAllowed(true)
+                } else {
+                    _showSystemPermissionDialog.value = true
+                }
+            }
+        }
 
-    fun toggleNotificationAllowed(shouldTurnOn: Boolean) {
-        viewModelScope.launch {
-            Timber.d("shouldTurnOn is $shouldTurnOn")
-
-            // We are turning notifications off
-            if (!shouldTurnOn) {
-                settingsRepo.changeIsNotificationAllowed(false)
-                customNotificationCompat.clearNotification()
-                return@launch
+        fun handleNotificationPermissionResponse(isGranted: Boolean) =
+            viewModelScope.launch {
+                settingsRepo.changeIsNotificationAllowed(isGranted)
             }
 
-            // Below Tiramisu - API 33, notifications do not need permission
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                settingsRepo.changeIsNotificationAllowed(true)
-            } else {
-                _showSystemPermissionDialog.value = true
+        fun changeUnits(newUnits: Units) {
+            viewModelScope.launch {
+                if (newUnits != units.value) settingsRepo.changeUnits(newUnits)
             }
         }
-    }
 
+        fun changeWindDirections(newWindDirectionUnits: WindDirectionUnits) {
+            viewModelScope.launch {
+                if (newWindDirectionUnits != windDirectionUnits.value) {
+                    settingsRepo.changeWindDirectionUnits(newWindDirectionUnits)
+                }
+            }
+        }
 
-    fun handleNotificationPermissionResponse(isGranted: Boolean) = viewModelScope.launch {
-        settingsRepo.changeIsNotificationAllowed(isGranted)
-    }
+        fun changeTimeFormat(newTimeFormat: TimeFormat) {
+            viewModelScope.launch {
+                if (newTimeFormat != timeFormat.value) settingsRepo.changeTimeFormat(newTimeFormat)
+            }
+        }
 
+        fun changeTheme(newTheme: Theme) {
+            viewModelScope.launch {
+                if (newTheme != theme.value) settingsRepo.changeTheme(newTheme)
+            }
+        }
 
-    fun changeUnits(newUnits: Units) {
-        viewModelScope.launch {
-            if (newUnits != units.value) settingsRepo.changeUnits(newUnits)
+        fun resetSystemPermissionDialog() {
+            _showSystemPermissionDialog.value = false
         }
     }
-
-    fun changeWindDirections(newWindDirectionUnits: WindDirectionUnits) {
-        viewModelScope.launch {
-            if (newWindDirectionUnits != windDirectionUnits.value)
-                settingsRepo.changeWindDirectionUnits(newWindDirectionUnits)
-        }
-    }
-
-    fun changeTimeFormat(newTimeFormat: TimeFormat) {
-        viewModelScope.launch {
-            if (newTimeFormat != timeFormat.value) settingsRepo.changeTimeFormat(newTimeFormat)
-        }
-    }
-
-    fun changeTheme(newTheme: Theme) {
-        viewModelScope.launch {
-            if (newTheme != theme.value) settingsRepo.changeTheme(newTheme)
-        }
-    }
-
-
-    fun resetSystemPermissionDialog() {
-        _showSystemPermissionDialog.value = false
-    }
-}

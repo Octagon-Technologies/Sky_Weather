@@ -25,39 +25,48 @@ fun LocationSuggestion(
     currentIndex: Int,
     lastIndex: Int,
     actionIcon: ImageVector,
-    actionIconContentDescription: String? = null,
     onActionIcon: (Location) -> Unit,
+    modifier: Modifier = Modifier,
+    actionIconContentDescription: String? = null,
 ) {
-    Column(Modifier.padding(top = 10.dp)) {
+    Column(modifier.padding(top = 10.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable { onSelectLocation(location) }) {
+            modifier = Modifier.clickable { onSelectLocation(location) },
+        ) {
             Text(
                 text = location.displayNameWithoutCountryCode,
                 lineHeight = 19.sp,
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 12.dp)
-                    .weight(1f)
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp, end = 12.dp)
+                        .weight(1f),
             )
 
-            IconButton(modifier = Modifier
-                .padding(end = 12.dp)
-                .size(32.dp), onClick = {}) {
+            IconButton(
+                modifier =
+                    Modifier
+                        .padding(end = 12.dp)
+                        .size(32.dp),
+                onClick = {},
+            ) {
                 Icon(
-                    modifier = Modifier
-                        .clickable { onActionIcon(location) }
-                        .padding(2.dp),
+                    modifier =
+                        Modifier
+                            .clickable { onActionIcon(location) }
+                            .padding(2.dp),
                     imageVector = actionIcon,
-                    contentDescription = actionIconContentDescription
+                    contentDescription = actionIconContentDescription,
                 )
             }
         }
 
-        if (currentIndex != lastIndex)
+        if (currentIndex != lastIndex) {
             HorizontalDivider(
                 modifier = Modifier.padding(top = 8.dp),
                 thickness = (0.125).dp,
-                color = LocalAppColors.current.onSurfaceLighter
+                color = LocalAppColors.current.onSurfaceLighter,
             )
+        }
     }
 }

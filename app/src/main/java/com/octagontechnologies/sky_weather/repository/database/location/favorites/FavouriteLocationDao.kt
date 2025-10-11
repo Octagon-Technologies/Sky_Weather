@@ -7,7 +7,7 @@ import androidx.room.Query
 import com.octagontechnologies.sky_weather.repository.database.BaseDao
 
 @Dao
-abstract class FavouriteLocationDao: BaseDao<LocalFavouriteLocation> {
+abstract class FavouriteLocationDao : BaseDao<LocalFavouriteLocation> {
 //    @Query("DELETE FROM localFavoriteLocation WHERE favouriteLocationKey = :favoriteLocationKey")
     @Delete
     abstract suspend fun deleteLocalFavouriteLocation(localFavouriteLocation: LocalFavouriteLocation)

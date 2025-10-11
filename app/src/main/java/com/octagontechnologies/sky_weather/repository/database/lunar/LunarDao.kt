@@ -6,7 +6,7 @@ import androidx.room.Query
 import com.octagontechnologies.sky_weather.repository.database.BaseDao
 
 @Dao
-abstract class LunarDao: BaseDao<LocalLunar> {
+abstract class LunarDao : BaseDao<LocalLunar> {
     @Query("SELECT * FROM localLunar")
     abstract fun getLocalLunar(): LiveData<LocalLunar?>
 }

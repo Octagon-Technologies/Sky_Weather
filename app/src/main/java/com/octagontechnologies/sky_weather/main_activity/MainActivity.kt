@@ -3,6 +3,7 @@ package com.octagontechnologies.sky_weather.main_activity
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -53,7 +54,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     @Inject
     lateinit var settingsRepo: SettingsRepo
 
@@ -64,10 +64,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-        
+
+        enableEdgeToEdge()
+
         setContent {
             val theme by settingsRepo.theme.observeAsState(initial = Theme.DARK)
-            val isAppInStartup by locationRepo.location.map { it == null }
+            val isAppInStartup by locationRepo.location
+                .map { it == null }
                 .collectAsState(initial = true)
 
             AppTheme(theme = theme) {
@@ -79,100 +82,107 @@ class MainActivity : AppCompatActivity() {
                 var activeBottomNav by remember { mutableStateOf(BottomNav.Current) }
 
                 Scaffold(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                     snackbarHost = {
                         SnackbarHost(hostState = snackbarHostState)
-                    }
+                    },
                 ) {
                     Column(
                         Modifier
                             .fillMaxSize()
-                            .background(LocalAppColors.current.background)
+                            .background(LocalAppColors.current.background),
                     ) {
                         NavHost(
                             modifier = Modifier.weight(1f),
                             navController = navController,
-                            startDestination = Screens.SplashScreen
+                            startDestination = Screens.SPLASH_SCREEN,
                         ) {
-                            composable(Screens.SplashScreen) {
+                            composable(Screens.SPLASH_SCREEN) {
                                 SplashScreen(locationRepo, navController)
                             }
 
-                            composable(Screens.Current) {
+                            composable(Screens.CURRENT) {
                                 showBottomNav = true
                                 CurrentForecastScreen(navController = navController)
                             }
-                            composable(Screens.SeeMore) {
+                            composable(Screens.SEE_MORE) {
                                 showBottomNav = false
                                 SeeMoreScreen(navController = navController)
                             }
 
-                            composable(Screens.Hourly) {
+                            composable(Screens.HOURLY) {
                                 HourlyForecastScreen(
                                     coroutineScope = coroutineScope,
                                     showBottomNavView = { shouldShow ->
                                         showBottomNav = shouldShow
-                                    }
+                                    },
                                 )
                             }
 
-                            composable(Screens.Daily) {
+                            composable(Screens.DAILY) {
                                 DailyForecastScreen(
                                     coroutineScope = coroutineScope,
                                     showBottomNavView = { shouldShow ->
                                         showBottomNav = shouldShow
-                                    }
+                                    },
                                 )
                             }
 
-                            composable(Screens.SelectLocation) {
+                            composable(Screens.SELECT_LOCATION) {
                                 showBottomNav = false
                                 FindLocationScreen(
                                     navController = navController,
-                                    snackbarHostState = snackbarHostState
+                                    snackbarHostState = snackbarHostState,
                                 )
                             }
 
-                            composable(Screens.Settings) {
+                            composable(Screens.SETTINGS) {
                                 showBottomNav = false
                                 SettingsScreen(navController = navController)
                             }
                         }
 
                         LaunchedEffect(key1 = activeBottomNav) {
-                            if (!isAppInStartup)
+                            if (!isAppInStartup) {
                                 navController.navigate(activeBottomNav.getScreen())
+                            }
                         }
 
-
                         if (!isAppInStartup) {
-                            val ANIM_DURATION = remember { 250 }
                             AnimatedVisibility(
-                                enter = fadeIn(tween(ANIM_DURATION)) + expandVertically(
-                                    tween(
-                                        ANIM_DURATION
-                                    )
-                                ),
-                                exit = fadeOut(tween(ANIM_DURATION)) + shrinkVertically(
-                                    tween(
-                                        ANIM_DURATION
-                                    )
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        LocalAppColors.current.background
-                                    ), visible = showBottomNav
+                                enter =
+                                    fadeIn(tween(ANIM_DURATION)) +
+                                        expandVertically(
+                                            tween(
+                                                ANIM_DURATION,
+                                            ),
+                                        ),
+                                exit =
+                                    fadeOut(tween(ANIM_DURATION)) +
+                                        shrinkVertically(
+                                            tween(
+                                                ANIM_DURATION,
+                                            ),
+                                        ),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            LocalAppColors.current.background,
+                                        ),
+                                visible = showBottomNav,
                             ) {
                                 AppBottomNavBar(
-                                    modifier = Modifier
-                                        .padding(horizontal = 8.dp)
-                                        .padding(vertical = 6.dp),
+                                    modifier =
+                                        Modifier
+                                            .padding(horizontal = 8.dp)
+                                            .padding(vertical = 6.dp),
                                     activeBottomNav = activeBottomNav,
                                     navigateToBottomNav = { newTab ->
                                         if (newTab != activeBottomNav) activeBottomNav = newTab
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -180,5 +190,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val ANIM_DURATION = 250
     }
 }

@@ -5,7 +5,6 @@ import com.octagontechnologies.sky_weather.domain.WeatherCode
 import com.octagontechnologies.sky_weather.domain.Wind
 import com.octagontechnologies.sky_weather.utils.Units
 
-
 data class TimePeriod(
     val temp: Double?,
     val cloudCover: Int?,
@@ -21,17 +20,16 @@ data class TimePeriod(
 )
 
 fun TimePeriod?.getFormattedTemp(units: Units?): String =
-    this?.temp?.let { (if (units == Units.IMPERIAL) (temp * (9/5) + 32) else temp).toInt().toString() + "°" } ?: "--°"
-
+    this?.temp?.let { (if (units == Units.IMPERIAL) (temp * (9 / 5) + 32) else temp).toInt().toString() + "°" } ?: "--°"
 
 fun TimePeriod?.getBasicFeelsLike(units: Units?): String =
-    this?.feelsLike?.let { (if (units == Units.IMPERIAL) (feelsLike * (9/5) + 32) else feelsLike).toInt().toString() + "°" } ?: "--°"
-fun TimePeriod?.getFormattedFeelsLike(): String =
-    "FeelsLike " + (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
+    this?.feelsLike?.let { (if (units == Units.IMPERIAL) (feelsLike * (9 / 5) + 32) else feelsLike).toInt().toString() + "°" } ?: "--°"
+
+fun TimePeriod?.getFormattedFeelsLike(): String = "FeelsLike " + (this?.feelsLike?.toInt()?.toString() ?: "--") + "°"
 
 fun TimePeriod?.getFormattedHumidity(): String = (this?.humidity?.toInt()?.toString() ?: "--") + "%"
-fun TimePeriod?.getFormattedCloudCover(): String =
-    (this?.cloudCover?.toInt()?.toString() ?: "--") + "%"
+
+fun TimePeriod?.getFormattedCloudCover(): String = (this?.cloudCover?.toInt()?.toString() ?: "--") + "%"
 
 fun TimePeriod?.getFormattedSurfacePressure(units: Units?) =
     (this?.surfacePressure?.toString() ?: "--") + if (units == Units.IMPERIAL) " inHg" else " mbar"

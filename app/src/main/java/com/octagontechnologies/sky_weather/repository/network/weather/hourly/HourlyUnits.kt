@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.hourly
 
-
 import com.squareup.moshi.Json
 
 data class HourlyUnits(
@@ -47,5 +46,5 @@ data class HourlyUnits(
     @Json(name = "wind_gusts_10m")
     val windGusts10m: String,
     @Json(name = "wind_speed_10m")
-    val windSpeed10m: String
+    val windSpeed10m: String,
 )

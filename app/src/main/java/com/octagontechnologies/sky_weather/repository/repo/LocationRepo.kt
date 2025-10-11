@@ -23,120 +23,122 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
-class LocationRepo @Inject constructor(
-    private val locationDao: LocationDao,
-    private val currentLocationDao: CurrentLocationDao,
-    private val locationApi: LocationApi
-) {
-
-    val location = locationDao.getLocalLocation().map { it?.location }
-
-    // ONLY to be used in the FindLocation Fragment to show the user current location
-    val currentLocation = currentLocationDao.getUserCurrentLocation().map { it?.currentLocation }
-
-    private val _suggestions = MutableLiveData<Resource<List<Location>>>()
-    val suggestions: LiveData<Resource<List<Location>>> = _suggestions
-
-
-    suspend fun setUserLocation(location: Location) {
-        Timber.d("setUserLocation called")
-        locationDao.insertData(LocalLocation(location = location))
-    }
-
-    suspend fun getLocationSuggestionsFromQuery(query: String) {
-        _suggestions.value = doOperation {
-            if (query.isEmpty() || query.isBlank())
-                Resource.Success(listOf())
-            else Resource.Success(
-                locationApi.getLocationSuggestions(query = query).map { it.toLocation() })
-        }
-    }
-
-
-    @SuppressLint("MissingPermission")
-    fun getGPSCoordinates(
-        context: Context,
-        onGPSReceived: (LatLng) -> Unit,
-        requestLocationBeTurnedOn: () -> Unit
+class LocationRepo
+    @Inject
+    constructor(
+        private val locationDao: LocationDao,
+        private val currentLocationDao: CurrentLocationDao,
+        private val locationApi: LocationApi,
     ) {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        Timber.d("gpsEnabled is $gpsEnabled")
+        val location = locationDao.getLocalLocation().map { it?.location }
 
-        val isLocationTurnedOn = LocationManagerCompat.isLocationEnabled(locationManager)
+        // ONLY to be used in the FindLocation Fragment to show the user current location
+        val currentLocation = currentLocationDao.getUserCurrentLocation().map { it?.currentLocation }
 
-        if (gpsEnabled) {
-            if (!isLocationTurnedOn) {
-                requestLocationBeTurnedOn()
-                Timber.d("User should turn on location")
-                return
-            }
+        private val _suggestions = MutableLiveData<Resource<List<Location>>>()
+        val suggestions: LiveData<Resource<List<Location>>> = _suggestions
 
-            try {
-                val fusedLocationProviderClient =
-                    LocationServices.getFusedLocationProviderClient(context)
-                        .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+        suspend fun setUserLocation(location: Location) {
+            Timber.d("setUserLocation called")
+            locationDao.insertData(LocalLocation(location = location))
+        }
 
-                fusedLocationProviderClient.addOnSuccessListener {
-                    try {
-                        val systemLocation = fusedLocationProviderClient.result
-                        val latLng = LatLng(
-                            lat = systemLocation.latitude.toString(),
-                            lon = systemLocation.longitude.toString()
+        suspend fun getLocationSuggestionsFromQuery(query: String) {
+            _suggestions.value =
+                doOperation {
+                    if (query.isEmpty() || query.isBlank()) {
+                        Resource.Success(listOf())
+                    } else {
+                        Resource.Success(
+                            locationApi.getLocationSuggestions(query = query).map { it.toLocation() },
                         )
-
-                        Timber.d("LatLng is $latLng")
-                        onGPSReceived(latLng)
-                    } catch (e: Exception) {
-                        Timber.e(e)
                     }
                 }
-                    .addOnCompleteListener {
-                        Timber.d("fusedLocationProviderClient.addOnCompleteListener called")
+        }
+
+        @SuppressLint("MissingPermission")
+        fun getGPSCoordinates(
+            context: Context,
+            onGPSReceived: (LatLng) -> Unit,
+            requestLocationBeTurnedOn: () -> Unit,
+        ) {
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            Timber.d("gpsEnabled is $gpsEnabled")
+
+            val isLocationTurnedOn = LocationManagerCompat.isLocationEnabled(locationManager)
+
+            if (gpsEnabled) {
+                if (!isLocationTurnedOn) {
+                    requestLocationBeTurnedOn()
+                    Timber.d("User should turn on location")
+                    return
+                }
+
+                try {
+                    val fusedLocationProviderClient =
+                        LocationServices.getFusedLocationProviderClient(context)
+                            .getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+
+                    fusedLocationProviderClient.addOnSuccessListener {
+                        try {
+                            val systemLocation = fusedLocationProviderClient.result
+                            val latLng =
+                                LatLng(
+                                    lat = systemLocation.latitude.toString(),
+                                    lon = systemLocation.longitude.toString(),
+                                )
+
+                            Timber.d("LatLng is $latLng")
+                            onGPSReceived(latLng)
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                        }
                     }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return
+                        .addOnCompleteListener {
+                            Timber.d("fusedLocationProviderClient.addOnCompleteListener called")
+                        }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return
+                }
             }
         }
+
+        suspend fun updateCurrentLocationInDatabase(latLng: LatLng) =
+            doOperation {
+                Timber.d("fetchCurrentLocationDetails start")
+
+                val location =
+                    locationApi.getLocationFromCoordinates(
+                        lat = latLng.lat.toDouble(),
+                        lon = latLng.lon.toDouble(),
+                    ).toLocation()
+
+                Timber.d("location in fetchCurrentLocationDetails() is $location")
+                currentLocationDao.insertData(CurrentLocation(currentLocation = location))
+
+                Resource.Success(location)
+            }
+
+        private suspend fun getLocationNameFromCoordinates(
+            saveLocationToDatabase: Boolean,
+            lat: Double,
+            lon: Double,
+        ) = try {
+            val location =
+                locationApi.getLocationFromCoordinates(lat = lat, lon = lon)
+                    .toLocation()
+            currentLocationDao.insertData(CurrentLocation(currentLocation = location))
+
+            Timber.d("getLocationNameFromCoordinates called")
+
+            if (saveLocationToDatabase) {
+                locationDao.insertData(location.toLocalLocation())
+            } else {
+                Unit
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
-
-
-    suspend fun updateCurrentLocationInDatabase(
-        latLng: LatLng
-    ) = doOperation {
-        Timber.d("fetchCurrentLocationDetails start")
-
-        val location =
-            locationApi.getLocationFromCoordinates(
-                lat = latLng.lat.toDouble(),
-                lon = latLng.lon.toDouble()
-            ).toLocation()
-
-        Timber.d("location in fetchCurrentLocationDetails() is $location")
-        currentLocationDao.insertData(CurrentLocation(currentLocation = location))
-
-        Resource.Success(location)
-    }
-
-
-    private suspend fun getLocationNameFromCoordinates(
-        saveLocationToDatabase: Boolean,
-        lat: Double,
-        lon: Double
-    ) = try {
-        val location =
-            locationApi.getLocationFromCoordinates(lat = lat, lon = lon)
-                .toLocation()
-        currentLocationDao.insertData(CurrentLocation(currentLocation = location))
-
-        Timber.d("getLocationNameFromCoordinates called")
-
-        if (saveLocationToDatabase)
-            locationDao.insertData(location.toLocalLocation())
-        else
-            Unit
-    } catch (e: Exception) {
-        Timber.e(e)
-    }
-}

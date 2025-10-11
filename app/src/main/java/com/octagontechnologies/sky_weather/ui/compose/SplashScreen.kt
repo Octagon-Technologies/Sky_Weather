@@ -14,16 +14,21 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import kotlinx.coroutines.flow.firstOrNull
 
 @Composable
-fun SplashScreen(locationRepo: LocationRepo, navController: NavController) {
+fun SplashScreen(
+    locationRepo: LocationRepo,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.background),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(LocalAppColors.current.background),
+        contentAlignment = Alignment.Center,
     ) {
         LaunchedEffect(key1 = Unit) {
             val location = locationRepo.location.firstOrNull()
-            navController.navigate(if (location != null) Screens.Current else Screens.SelectLocation)
+            navController.navigate(if (location != null) Screens.CURRENT else Screens.SELECT_LOCATION)
         }
     }
 }

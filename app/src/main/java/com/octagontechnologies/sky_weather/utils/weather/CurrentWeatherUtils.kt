@@ -14,24 +14,23 @@ import com.octagontechnologies.sky_weather.domain.getFormattedVisibility
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 
-
 fun SingleForecast?.getCoreWeatherConditions(
     units: Units?,
-    windDirectionUnits: WindDirectionUnits?
+    windDirectionUnits: WindDirectionUnits?,
 ) = mapOf(
     "Temperature" to getFormattedTemp(units),
     "FeelsLike Temperature" to
-            getBasicFeelsLike(units),
+        getBasicFeelsLike(units),
     "Rain Probability" to
-            "${(this?.weatherCode?.rainProbability ?: 0)}%",
+        "${(this?.weatherCode?.rainProbability ?: 0)}%",
     "Wind" to
-            (this?.wind?.getWindSpeedWithDirection(units, windDirectionUnits) ?: "--"),
+        (this?.wind?.getWindSpeedWithDirection(units, windDirectionUnits) ?: "--"),
     "Max Wind Gusts" to
-            (this?.wind?.getWindGusts(units) ?: "--"),
+        (this?.wind?.getWindGusts(units) ?: "--"),
     "UV Index" to
-            (this?.uvIndex?.toString() ?: "Moderate"),
+        (this?.uvIndex?.toString() ?: "Moderate"),
     "Humidity" to
-            getFormattedHumidity()
+        getFormattedHumidity(),
 )
 
 fun SingleForecast?.getAdvancedWeatherConditions(units: Units?) =
@@ -39,20 +38,15 @@ fun SingleForecast?.getAdvancedWeatherConditions(units: Units?) =
         "Dew Point" to "${this?.dewPoint?.toInt() ?: "--"}°",
         "Surface Pressure" to getFormattedSurfacePressure(units == Units.IMPERIAL),
         "Sea Level Pressure" to
-                getFormattedSeaLevelPressure(units == Units.IMPERIAL),
+            getFormattedSeaLevelPressure(units == Units.IMPERIAL),
         "Cloud Cover" to
-                getFormattedCloudCover(),
-
+            getFormattedCloudCover(),
         "Visibility" to
-                getFormattedVisibility(),
-
+            getFormattedVisibility(),
         "Terrestrial Radiation" to
-                getFormattedTerrestrialRad(),
-
-
+            getFormattedTerrestrialRad(),
         "Soil Moisture" to
-                getFormattedSoilMoisture(),
-
+            getFormattedSoilMoisture(),
         "Snow Depth" to
-                getFormattedSnowDepth()
+            getFormattedSnowDepth(),
     )

@@ -16,22 +16,23 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class SeeMoreViewModel @Inject constructor(
-    private val currentRepo: CurrentForecastRepo,
-    private val settingsRepo: SettingsRepo
-) : ViewModel() {
+class SeeMoreViewModel
+    @Inject
+    constructor(
+        private val currentRepo: CurrentForecastRepo,
+        private val settingsRepo: SettingsRepo,
+    ) : ViewModel() {
+        val currentForecast = currentRepo.currentForecast
+        val units =
+            settingsRepo.units.asFlow().stateIn(viewModelScope, SharingStarted.Eagerly, Units.getDefault())
+        val windDirectionUnits =
+            settingsRepo.windDirectionUnits.asFlow()
+                .stateIn(viewModelScope, SharingStarted.Eagerly, WindDirectionUnits.getDefault())
 
-    val currentForecast = currentRepo.currentForecast
-    val units =
-        settingsRepo.units.asFlow().stateIn(viewModelScope, SharingStarted.Eagerly, Units.getDefault())
-    val windDirectionUnits =
-        settingsRepo.windDirectionUnits.asFlow()
-            .stateIn(viewModelScope, SharingStarted.Eagerly, WindDirectionUnits.getDefault())
-
-    val conditions = currentForecast.map { singleForecast ->
-        singleForecast.getCoreWeatherConditions(units.value, windDirectionUnits.value
-        ) + singleForecast.getAdvancedWeatherConditions(units.value)
+        val conditions =
+            currentForecast.map { singleForecast ->
+                singleForecast.getCoreWeatherConditions(
+                    units.value, windDirectionUnits.value,
+                ) + singleForecast.getAdvancedWeatherConditions(units.value)
+            }
     }
-
-
-}

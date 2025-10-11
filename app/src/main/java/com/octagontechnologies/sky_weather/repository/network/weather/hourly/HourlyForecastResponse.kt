@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.hourly
 
-
 import com.squareup.moshi.Json
 
 data class HourlyForecastResponse(
@@ -21,5 +20,5 @@ data class HourlyForecastResponse(
     @Json(name = "timezone_abbreviation")
     val timezoneAbbreviation: String,
     @Json(name = "utc_offset_seconds")
-    val utcOffsetSeconds: Int
+    val utcOffsetSeconds: Int,
 )

@@ -2,9 +2,9 @@ package com.octagontechnologies.sky_weather.di
 
 import com.octagontechnologies.sky_weather.repository.network.WEATHER_BASE_URL
 import com.octagontechnologies.sky_weather.repository.network.WeatherApi
+import com.octagontechnologies.sky_weather.repository.network.location.LOCATION_API_BASE_URL
 import com.octagontechnologies.sky_weather.repository.network.location.LocationApi
-import com.octagontechnologies.sky_weather.repository.network.location.LocationBaseUrl
-import com.octagontechnologies.sky_weather.repository.network.lunar.LunarBaseUrl
+import com.octagontechnologies.sky_weather.repository.network.lunar.LUNAR_BASE_URL
 import com.octagontechnologies.sky_weather.repository.network.lunar.LunarForecastApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -22,34 +22,50 @@ import java.util.concurrent.TimeUnit
 @InstallIn(SingletonComponent::class)
 @Module
 object NetworkModule {
+    @Provides
+    fun providesMoshi(): Moshi =
+        Moshi
+            .Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
 
     @Provides
-    fun providesMoshi(): Moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    fun providesOkHttp(): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .callTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .build()
 
     @Provides
-    fun providesOkHttp(): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-        .callTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .build()
+    fun providesRetrofitBuilder(
+        moshi: Moshi,
+        okHttpClient: OkHttpClient,
+    ): Builder =
+        Builder()
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .client(okHttpClient)
 
     @Provides
-    fun providesRetrofitBuilder(moshi: Moshi, okHttpClient: OkHttpClient): Builder = Builder()
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .client(okHttpClient)
+    fun providesWeatherApi(retrofitBuilder: Builder) =
+        retrofitBuilder
+            .baseUrl(WEATHER_BASE_URL)
+            .build()
+            .create<WeatherApi>()
 
     @Provides
-    fun providesWeatherApi(retrofitBuilder: Builder) = retrofitBuilder
-        .baseUrl(WEATHER_BASE_URL).build().create<WeatherApi>()
+    fun providesLocationApi(retrofitBuilder: Builder) =
+        retrofitBuilder
+            .baseUrl(LOCATION_API_BASE_URL)
+            .build()
+            .create<LocationApi>()
 
     @Provides
-    fun providesLocationApi(retrofitBuilder: Builder) = retrofitBuilder
-        .baseUrl(LocationBaseUrl).build().create<LocationApi>()
-
-    @Provides
-    fun providesLunarForecastApi(retrofitBuilder: Builder) = retrofitBuilder
-        .baseUrl(LunarBaseUrl).build().create<LunarForecastApi>()
+    fun providesLunarForecastApi(retrofitBuilder: Builder) =
+        retrofitBuilder
+            .baseUrl(LUNAR_BASE_URL)
+            .build()
+            .create<LunarForecastApi>()
 }

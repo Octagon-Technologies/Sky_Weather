@@ -2,8 +2,7 @@
 
 A modern Android weather application built with **Jetpack Compose** and structured around **Clean Architecture**. The app demonstrates scalable engineering practices, dependency injection, reactive UI, and offline-first design.
 
-![Sky Weather Screenshot](./screenshots/screenshot_home.png)  
-![Sky Weather Screenshot](./screenshots/screenshot_forecast.png)
+<img width="920" alt="play_store_graphic (1)" src="https://github.com/Octagon-Technologies/Sky_Weather/assets/62815445/3eb4a5ce-d11a-4a20-a69b-268b3269cd17">
 
 ---
 
@@ -28,6 +27,15 @@ The project follows a **Clean Architecture + MVVM** pattern:
 - **Dependency Injection** → Hilt modules wiring all layers together.
 
 This design ensures **testability**, **scalability**, and **separation of concerns**.
+
+---
+
+## App Screens 📱
+
+<img src="https://github.com/Octagon-Technologies/Sky_Weather/assets/62815445/d581d793-93da-4de2-a524-67a8003a4510" width="250">
+<img src="https://github.com/Octagon-Technologies/Sky_Weather/assets/62815445/4e7b8eaa-3728-41d6-af0a-e8f859008ce4" width="250">
+<img src="https://github.com/Octagon-Technologies/Sky_Weather/assets/62815445/7107ede8-a6e5-4dcb-a111-5a64d6d039fc" width="250">
+<img src="https://github.com/Octagon-Technologies/Sky_Weather/assets/62815445/92dbf7ca-b3ae-4ea0-9c48-d9f00b11d92c" width="250">
 
 ---
 

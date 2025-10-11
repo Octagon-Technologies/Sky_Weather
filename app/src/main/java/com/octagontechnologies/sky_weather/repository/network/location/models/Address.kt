@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.location.models
 
-
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -21,5 +20,5 @@ data class Address(
     @Json(name = "state")
     val state: String?,
     @Json(name = "suburb")
-    val suburb: String?
+    val suburb: String?,
 )

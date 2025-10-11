@@ -1,6 +1,6 @@
 package com.octagontechnologies.sky_weather.ui.current_forecast
 
-//import com.octagontechnologies.sky_weather.ads.AdRepo
+// import com.octagontechnologies.sky_weather.ads.AdRepo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -20,34 +20,34 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class CurrentForecastViewModel @Inject constructor(
-    private val currentForecastRepo: CurrentForecastRepo,
-    private val hourlyForecastRepo: HourlyForecastRepo,
-    private val lunarRepo: LunarRepo,
-    private val settingsRepo: SettingsRepo,
-    private val locationRepo: LocationRepo,
-    private val customNotificationCompat: CustomNotificationCompat
-) : ViewModel() {
+class CurrentForecastViewModel
+    @Inject
+    constructor(
+        private val currentForecastRepo: CurrentForecastRepo,
+        private val hourlyForecastRepo: HourlyForecastRepo,
+        private val lunarRepo: LunarRepo,
+        private val settingsRepo: SettingsRepo,
+        private val locationRepo: LocationRepo,
+        private val customNotificationCompat: CustomNotificationCompat,
+    ) : ViewModel() {
+        val theme = settingsRepo.theme
+        val units = settingsRepo.units
+        val windDirectionUnits = settingsRepo.windDirectionUnits
+        val timeFormat = settingsRepo.timeFormat
 
-    val theme = settingsRepo.theme
-    val units = settingsRepo.units
-    val windDirectionUnits = settingsRepo.windDirectionUnits
-    val timeFormat = settingsRepo.timeFormat
+        val location = locationRepo.location.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val location = locationRepo.location.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        val currentForecast =
+            currentForecastRepo.currentForecast.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+        val lunarForecast = lunarRepo.currentLunar
 
-    val currentForecast =
-        currentForecastRepo.currentForecast.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val lunarForecast = lunarRepo.currentLunar
-
-    val predictions = hourlyForecastRepo.listOfHourlyForecast.map {
-        it?.filterIndexed { index, _ ->
-            index in listOf(0, 1, 2)
-        }
-    }
-
+        val predictions =
+            hourlyForecastRepo.listOfHourlyForecast.map {
+                it?.filterIndexed { index, _ ->
+                    index in listOf(0, 1, 2)
+                }
+            }
 
     init {
         viewModelScope.launch {
@@ -59,19 +59,17 @@ class CurrentForecastViewModel @Inject constructor(
                 }
             }
         }
-    }
 
-    private fun updateNotification(location: Location) {
-        val isNotificationAllowed = settingsRepo.isNotificationAllowed.value
-        Timber.d("updateNotification called: isNotificationAllowed is $isNotificationAllowed")
+        private fun updateNotification(location: Location) {
+            val isNotificationAllowed = settingsRepo.isNotificationAllowed.value
+            Timber.d("updateNotification called: isNotificationAllowed is $isNotificationAllowed")
 
-
-        if (isNotificationAllowed) {
-            customNotificationCompat.createNotification(
-                singleForecast = currentForecast.value,
-                location = location,
-                units = units.value
-            )
+            if (isNotificationAllowed) {
+                customNotificationCompat.createNotification(
+                    singleForecast = currentForecast.value,
+                    location = location,
+                    units = units.value,
+                )
+            }
         }
     }
-}

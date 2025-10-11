@@ -7,9 +7,8 @@ import com.octagontechnologies.sky_weather.domain.Lunar
 
 @Entity(tableName = "localLunar")
 data class LocalLunar(
-        @PrimaryKey(autoGenerate = false)
-        val lunarKey: Int = 20,
-
-        @ColumnInfo
-        val lunarForecast: Lunar
+    @PrimaryKey(autoGenerate = false)
+    val lunarKey: Int = 20,
+    @ColumnInfo
+    val lunarForecast: Lunar,
 )

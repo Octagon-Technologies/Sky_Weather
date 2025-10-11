@@ -9,7 +9,6 @@ import com.octagontechnologies.sky_weather.domain.SingleForecast
 data class LocalCurrentForecast(
     @PrimaryKey(autoGenerate = false)
     val currentForecastId: Int = 1,
-
     @ColumnInfo
-    val currentForecast: SingleForecast
+    val currentForecast: SingleForecast,
 )

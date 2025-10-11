@@ -39,32 +39,33 @@ fun HourlyForecastCard(
     units: Units?,
     timeFormat: TimeFormat?,
     modifier: Modifier = Modifier,
-    selectHourlyForecast: () -> Unit
+    selectHourlyForecast: () -> Unit,
 ) {
     Card(
         onClick = { selectHourlyForecast() },
-        colors = CardDefaults.cardColors(
-            containerColor = LocalAppColors.current.backgroundVariant,
-            contentColor = LocalAppColors.current.onBackground
-        ),
-        modifier = modifier.fillMaxWidth()
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalAppColors.current.backgroundVariant,
+                contentColor = LocalAppColors.current.onBackground,
+            ),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
             Modifier.padding(horizontal = 8.dp, vertical = 15.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Surface(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 color = LocalAppColors.current.onBackground.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(8.dp),
-                contentColor = LocalAppColors.current.onBackground
+                contentColor = LocalAppColors.current.onBackground,
             ) {
                 Text(
                     text = hourlyForecast.timeInEpochMillis.getHoursAndMins(timeFormat),
                     letterSpacing = 0.sp,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                 )
             }
 //            Text(text = hourlyForecast.timeInEpochMillis.getHoursAndMins(timeFormat))
@@ -72,9 +73,10 @@ fun HourlyForecastCard(
             Image(
                 painter = painterResource(id = hourlyForecast.weatherCode.getWeatherIcon()),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(start = 14.dp)
-                    .size(43.dp)
+                modifier =
+                    Modifier
+                        .padding(start = 14.dp)
+                        .size(43.dp),
             )
 
             Box(modifier = Modifier.padding(start = 20.dp)) {
@@ -82,14 +84,14 @@ fun HourlyForecastCard(
                     text = hourlyForecast.getFormattedTemp(units),
                     fontSize = 27.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(end = 6.dp, top = 5.dp, bottom = 5.dp)
+                    modifier = Modifier.padding(end = 6.dp, top = 5.dp, bottom = 5.dp),
                 )
 
                 Text(
                     text = (units ?: Units.getDefault()).getUnitSymbol(),
                     modifier = Modifier.align(Alignment.BottomEnd),
                     fontSize = 14.sp,
-                    color = LocalAppColors.current.onBackground.copy(alpha = 0.75f)
+                    color = LocalAppColors.current.onBackground.copy(alpha = 0.75f),
                 )
             }
 
@@ -98,41 +100,41 @@ fun HourlyForecastCard(
             Image(
                 painter = painterResource(id = R.drawable.drop),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(horizontal = 4.dp)
-                    .size(16.dp)
+                modifier =
+                    Modifier
+                        .padding(horizontal = 4.dp)
+                        .size(16.dp),
             )
 
             Text(
                 text = "${hourlyForecast.weatherCode.rainProbability ?: "0"}%",
                 fontWeight = FontWeight.SemiBold,
-                fontSize = (17.25).sp
+                fontSize = (17.25).sp,
             )
         }
     }
 }
-
 
 @Preview
 @Composable
-private fun PreviewHourlyForecastCard() = AppTheme {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .background(LocalAppColors.current.background)
-            .padding(vertical = 8.dp)
-    ) {
-        repeat(6) {
-            HourlyForecastCard(
-                hourlyForecast = SingleForecast.TEST_DUMMY,
-                units = Units.getDefault(),
-                timeFormat = TimeFormat.getDefault(),
-                modifier = Modifier.padding(horizontal = 8.dp),
-                selectHourlyForecast = {
-
-                }
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+private fun PreviewHourlyForecastCard() =
+    AppTheme {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(LocalAppColors.current.background)
+                .padding(vertical = 8.dp),
+        ) {
+            repeat(6) {
+                HourlyForecastCard(
+                    hourlyForecast = SingleForecast.TEST_DUMMY,
+                    units = Units.getDefault(),
+                    timeFormat = TimeFormat.getDefault(),
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    selectHourlyForecast = {
+                    },
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
         }
     }
-}

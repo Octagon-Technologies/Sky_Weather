@@ -9,7 +9,6 @@ import com.octagontechnologies.sky_weather.domain.daily.DailyForecast
 data class LocalDailyForecast(
     @PrimaryKey(autoGenerate = false)
     val dailyForecastId: Int = 2,
-
     @ColumnInfo
-    val listOfDailyForecast: List<DailyForecast>
+    val listOfDailyForecast: List<DailyForecast>,
 )

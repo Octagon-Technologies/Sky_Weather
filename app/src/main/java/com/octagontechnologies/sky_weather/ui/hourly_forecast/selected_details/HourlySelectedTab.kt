@@ -28,6 +28,7 @@ import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 import com.octagontechnologies.sky_weather.utils.getHoursAndMinsWithDay
 import com.octagontechnologies.sky_weather.utils.weather.getAdvancedWeatherConditions
 import com.octagontechnologies.sky_weather.utils.weather.getCoreWeatherConditions
+import kotlinx.collections.immutable.toPersistentMap
 
 @Composable
 fun HourlySelectedTab(
@@ -35,20 +36,21 @@ fun HourlySelectedTab(
     windDirectionUnits: WindDirectionUnits?,
     timeFormat: TimeFormat?,
     selectedForecast: SingleForecast?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val conditions = remember(key1 = selectedForecast) {
-        selectedForecast
-            ?.getCoreWeatherConditions(units, windDirectionUnits)
-            ?.plus(selectedForecast.getAdvancedWeatherConditions(units)) ?: mapOf()
-    }
+    val conditions =
+        remember(key1 = selectedForecast) {
+            selectedForecast
+                ?.getCoreWeatherConditions(units, windDirectionUnits)
+                ?.plus(selectedForecast.getAdvancedWeatherConditions(units)) ?: mapOf()
+        }
 
     Column(
         modifier
             .fillMaxWidth()
             .background(LocalAppColors.current.surface)
             .padding(bottom = 12.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         HorizontalDivider(
             Modifier
@@ -57,36 +59,39 @@ fun HourlySelectedTab(
                 .padding(top = 10.dp, bottom = 4.dp)
                 .clip(RoundedCornerShape(100)),
             thickness = (3).dp,
-            color = LocalAppColors.current.onSurfaceLighter
+            color = LocalAppColors.current.onSurfaceLighter,
         )
 
         Box(Modifier.fillMaxWidth()) {
             Text(
-                text = selectedForecast?.timeInEpochMillis?.getHoursAndMinsWithDay(timeFormat)
-                    ?: "----",
+                text =
+                    selectedForecast?.timeInEpochMillis?.getHoursAndMinsWithDay(timeFormat)
+                        ?: "----",
                 fontFamily = QuickSand,
                 fontSize = 17.sp,
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 8.dp)
-                    .align(Alignment.Center),
-                fontWeight = FontWeight.SemiBold
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp, bottom = 8.dp)
+                        .align(Alignment.Center),
+                fontWeight = FontWeight.SemiBold,
             )
 
             Text(
                 text = units?.getUnitSymbol() ?: "C",
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(end = 12.dp)
-                    .align(Alignment.CenterEnd)
+                modifier =
+                    Modifier
+                        .padding(end = 12.dp)
+                        .align(Alignment.CenterEnd),
             )
         }
 
         SelectedForecastScreen(
             modifier = Modifier.padding(top = 12.dp),
-            conditions = conditions,
+            conditions = conditions.toPersistentMap(),
             weatherCode = selectedForecast?.weatherCode,
             temp = selectedForecast?.temp?.toInt(),
-            units = units ?: Units.getDefault()
+            units = units ?: Units.getDefault(),
         )
     }
 }

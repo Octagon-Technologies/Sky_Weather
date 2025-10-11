@@ -9,7 +9,6 @@ import com.octagontechnologies.sky_weather.domain.Location
 data class LocalRecentLocation(
     @PrimaryKey(autoGenerate = false)
     val recentLocationKey: String,
-
     @ColumnInfo
-    val location: Location
+    val location: Location,
 )

@@ -1,8 +1,6 @@
 package com.octagontechnologies.sky_weather.repository.network.lunar.models
 
-
 import com.squareup.moshi.Json
-
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -54,5 +52,5 @@ data class HourlyRating(
     @Json(name = "8")
     val x8: Int?,
     @Json(name = "9")
-    val x9: Int?
+    val x9: Int?,
 )

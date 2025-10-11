@@ -10,25 +10,24 @@ import com.octagontechnologies.sky_weather.domain.daily.getFormattedTemp
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 
-
 fun TimePeriod?.getWeatherConditions(
     units: Units?,
-    windDirectionUnits: WindDirectionUnits?
+    windDirectionUnits: WindDirectionUnits?,
 ) = mapOf(
     "Temperature" to getFormattedTemp(units),
     "FeelsLike Temperature" to
-            getBasicFeelsLike(units),
+        getBasicFeelsLike(units),
     "Wind" to
-            (this?.wind?.getWindSpeedWithDirection(units, windDirectionUnits) ?: "--"),
+        (this?.wind?.getWindSpeedWithDirection(units, windDirectionUnits) ?: "--"),
     "Max Wind Gusts" to
-            (this?.wind?.getWindGusts(units) ?: "--"),
+        (this?.wind?.getWindGusts(units) ?: "--"),
     "UV Index" to
-            (this?.uvIndex?.toString() ?: "Moderate"),
+        (this?.uvIndex?.toString() ?: "Moderate"),
     "Humidity" to
-            getFormattedHumidity(),
+        getFormattedHumidity(),
     "Surface Pressure" to getFormattedSurfacePressure(units),
     "Sea Level Pressure" to
-            getFormattedSeaLevelPressure(units),
+        getFormattedSeaLevelPressure(units),
     "Cloud Cover" to
-            getFormattedCloudCover(),
+        getFormattedCloudCover(),
 )

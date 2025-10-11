@@ -4,20 +4,40 @@ plugins {
     alias(libs.plugins.compose.compiler)
 
     // Annotation processing
-    id(libs.plugins.ksp.get().pluginId)
-    id(libs.plugins.kapt.get().pluginId)
+    id(
+        libs.plugins.ksp
+            .get()
+            .pluginId,
+    )
+    id(
+        libs.plugins.kapt
+            .get()
+            .pluginId,
+    )
 
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktlint)
 
-    id(libs.plugins.parcelize.get().pluginId)
-    id(libs.plugins.hilt.get().pluginId)
-    id(libs.plugins.safeArgs.get().pluginId)
+    id(
+        libs.plugins.parcelize
+            .get()
+            .pluginId,
+    )
+    id(
+        libs.plugins.hilt
+            .get()
+            .pluginId,
+    )
+    id(
+        libs.plugins.safeArgs
+            .get()
+            .pluginId,
+    )
 }
 
 android {
     namespace = "com.octagontechnologies.sky_weather"
     compileSdk = 36
-
 
     defaultConfig {
         val majorRelease = 2
@@ -38,13 +58,12 @@ android {
         }
     }
 
-
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
             )
         }
     }
@@ -54,16 +73,23 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion =("1.5.1")
+        kotlinCompilerExtensionVersion = ("1.5.1")
     }
 
     buildFeatures {
         compose = true
     }
     kotlinOptions {
-        jvmTarget =("1.8")
+        jvmTarget = ("1.8")
         freeCompilerArgs = listOf("-Xallow-result-return-type")
     }
+}
+
+ktlint {
+    additionalEditorconfig.put(
+        "compose_allowed_composition_locals",
+        "LocalAppColors",
+    )
 }
 
 dependencies {
@@ -90,7 +116,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-
     // Compose UI libraries
     implementation(libs.compose.glide)
     implementation(libs.compose.googleFonts)
@@ -113,7 +138,6 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
-
     // Others
     implementation(libs.logging.timber)
     implementation(libs.jodaTime)
@@ -125,7 +149,6 @@ dependencies {
     // Timber
     implementation(libs.logging.timber)
 
-
     // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.work)
@@ -135,7 +158,6 @@ dependencies {
 
     // Splash Screen
     implementation(libs.androidx.splashScreen)
-
 
     // Test dependencies
     testImplementation(libs.junit)
@@ -153,6 +175,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.core.immutable)
+    ktlintRuleset(libs.ktlint.compose)
 }
 
 kapt {

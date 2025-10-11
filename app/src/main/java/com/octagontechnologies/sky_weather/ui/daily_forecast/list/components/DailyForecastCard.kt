@@ -34,29 +34,35 @@ import com.octagontechnologies.sky_weather.utils.getDateOfMonth
 import com.octagontechnologies.sky_weather.utils.getDay
 
 @Composable
-fun DailyForecastCard(forecast: DailyForecast, units: Units, modifier: Modifier = Modifier, onForecastClick: () -> Unit) {
+fun DailyForecastCard(
+    forecast: DailyForecast,
+    units: Units,
+    modifier: Modifier = Modifier,
+    onForecastClick: () -> Unit,
+) {
     Card(
         modifier = modifier,
         onClick = { onForecastClick() },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalAppColors.current.backgroundVariant,
-            contentColor = LocalAppColors.current.onBackground
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalAppColors.current.backgroundVariant,
+                contentColor = LocalAppColors.current.onBackground,
+            ),
     ) {
         Column(
             Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 8.dp)
+                    .padding(top = 4.dp, bottom = 8.dp),
             ) {
                 Surface(
                     shape = CircleShape,
                     modifier = Modifier.requiredSize(28.dp),
-                    color = LocalAppColors.current.distinctBackground
+                    color = LocalAppColors.current.distinctBackground,
                 ) {
                     Box(Modifier.fillMaxSize()) {
                         Text(
@@ -64,7 +70,7 @@ fun DailyForecastCard(forecast: DailyForecast, units: Units, modifier: Modifier 
                             modifier = Modifier.align(Alignment.Center),
                             fontFamily = QuickSand,
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
                         )
                     }
                 }
@@ -74,30 +80,35 @@ fun DailyForecastCard(forecast: DailyForecast, units: Units, modifier: Modifier 
                     text = forecast.timeInEpochSeconds.getDay(),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 17.sp
+                    fontSize = 17.sp,
                 )
             }
-
 
             Image(
                 painter = painterResource(id = forecast.dayTime.weatherCode.getWeatherIcon()),
                 contentDescription = null,
-                modifier = Modifier.size(56.dp)
+                modifier = Modifier.size(56.dp),
             )
 
             Column(Modifier.padding(start = 8.dp, top = 12.dp)) {
                 Row(
                     Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text(text = "High: ${forecast.getTempHigh(units)}",
-                        letterSpacing = (0.25).sp, fontSize = (17.5).sp,
+                    Text(
+                        text = "High: ${forecast.getTempHigh(units)}",
+                        letterSpacing = (0.25).sp,
+                        fontSize = (17.5).sp,
                         fontWeight = FontWeight.SemiBold,
-                        fontFamily = AdventPro,)
-                    Text(text = "Low: ${forecast.getTempLow(units)}",
-                        letterSpacing = (0.25).sp, fontSize = (17.5).sp,
+                        fontFamily = AdventPro,
+                    )
+                    Text(
+                        text = "Low: ${forecast.getTempLow(units)}",
+                        letterSpacing = (0.25).sp,
+                        fontSize = (17.5).sp,
                         fontWeight = FontWeight.SemiBold,
-                        fontFamily = AdventPro,)
+                        fontFamily = AdventPro,
+                    )
                 }
 
                 Text(
@@ -107,7 +118,7 @@ fun DailyForecastCard(forecast: DailyForecast, units: Units, modifier: Modifier 
                     lineHeight = 17.sp,
                     fontFamily = AdventPro,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 2.dp)
+                    modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
                 )
             }
         }
