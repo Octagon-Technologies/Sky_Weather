@@ -20,63 +20,63 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class HourlyForecastViewModel @Inject constructor(
-    private val locationRepo: LocationRepo,
-    private val settingsRepo: SettingsRepo,
-    private val hourlyForecastRepo: HourlyForecastRepo
-) : ViewModel() {
+class HourlyForecastViewModel
+    @Inject
+    constructor(
+        private val locationRepo: LocationRepo,
+        private val settingsRepo: SettingsRepo,
+        private val hourlyForecastRepo: HourlyForecastRepo,
+    ) : ViewModel() {
+        //    val adRepo = AdRepo()
 
-//    val adRepo = AdRepo()
+        val theme = settingsRepo.theme
+        val units = settingsRepo.units
 
-    val theme = settingsRepo.theme
-    val units = settingsRepo.units
+        val timeFormat = settingsRepo.timeFormat
+        val windDirectionUnits = settingsRepo.windDirectionUnits
 
-    val timeFormat = settingsRepo.timeFormat
-    val windDirectionUnits = settingsRepo.windDirectionUnits
+        val location = locationRepo.location
+        val listOfHourlyForecast = hourlyForecastRepo.listOfHourlyForecast
 
-    val location = locationRepo.location
-    val listOfHourlyForecast = hourlyForecastRepo.listOfHourlyForecast
+        private val _selectedHourlyForecast = MutableLiveData<SingleForecast>()
+        val selectedHourlyForecast: LiveData<SingleForecast> = _selectedHourlyForecast
 
-    private val _selectedHourlyForecast = MutableLiveData<SingleForecast>()
-    val selectedHourlyForecast: LiveData<SingleForecast> = _selectedHourlyForecast
+        private val _titleDay = MutableStateFlow("")
+        val titleDay: StateFlow<String> = _titleDay
 
-    private val _titleDay = MutableStateFlow("")
-    val titleDay: StateFlow<String> = _titleDay
+        private var _statusCode = MutableLiveData<StatusCode?>()
+        val statusCode: LiveData<StatusCode?> = _statusCode
 
-
-    private var _statusCode = MutableLiveData<StatusCode?>()
-    val statusCode: LiveData<StatusCode?> = _statusCode
-
-    init {
-        viewModelScope.launch {
-            listOfHourlyForecast.asFlow().collectLatest { listOfHourlyForecast ->
-                Timber.d("listOfHourlyForecast.asFlow().collectLatest is ${listOfHourlyForecast?.firstOrNull()}")
-                if (listOfHourlyForecast != null)
-                    selectHourlyForecast(listOfHourlyForecast.first())
-            }
-
-            location.collectLatest { location ->
-                if (location != null)
-                    _statusCode.catchNetworkErrors {
-                        hourlyForecastRepo.refreshHourlyForecast(location)
+        init {
+            viewModelScope.launch {
+                listOfHourlyForecast.asFlow().collectLatest { listOfHourlyForecast ->
+                    Timber.d("listOfHourlyForecast.asFlow().collectLatest is ${listOfHourlyForecast?.firstOrNull()}")
+                    if (listOfHourlyForecast != null) {
+                        selectHourlyForecast(listOfHourlyForecast.first())
                     }
+                }
+
+                location.collectLatest { location ->
+                    if (location != null) {
+                        _statusCode.catchNetworkErrors {
+                            hourlyForecastRepo.refreshHourlyForecast(location)
+                        }
+                    }
+                }
             }
         }
-    }
 
-    fun selectHourlyForecast(hourlyForecast: SingleForecast) {
-        _selectedHourlyForecast.value = hourlyForecast
-    }
+        fun selectHourlyForecast(hourlyForecast: SingleForecast) {
+            _selectedHourlyForecast.value = hourlyForecast
+        }
 
+        fun updateTitleDay(newDay: String) {
+            if (titleDay.value != newDay) {
+                _titleDay.value = newDay
+            }
+        }
 
-    fun updateTitleDay(newDay: String) {
-        if (titleDay.value != newDay) {
-            _titleDay.value = newDay
+        fun onStatusCodeDisplayed() {
+            _statusCode.value = null
         }
     }
-
-
-    fun onStatusCodeDisplayed() {
-        _statusCode.value = null
-    }
-}

@@ -8,26 +8,26 @@ import com.octagontechnologies.sky_weather.repository.network.WeatherApi
 import timber.log.Timber
 import javax.inject.Inject
 
-class HourlyForecastRepo @Inject constructor(
-    private val hourlyWeatherDao: HourlyWeatherDao,
-    private val weatherApi: WeatherApi
-) {
-    val listOfHourlyForecast = hourlyWeatherDao.getLocalHourlyForecast().map { it?.listOfHourlyForecast }
+class HourlyForecastRepo
+    @Inject
+    constructor(
+        private val hourlyWeatherDao: HourlyWeatherDao,
+        private val weatherApi: WeatherApi,
+    ) {
+        val listOfHourlyForecast = hourlyWeatherDao.getLocalHourlyForecast().map { it?.listOfHourlyForecast }
 
-    suspend fun refreshHourlyForecast(
-        location: Location
-    ) = try {
-        val hourlyForecastResponse =
-            weatherApi.getHourlyForecast(
-                lat = location.lat,
-                lon = location.lon
-            ).hourly.toListOfSingleForecast()
+        suspend fun refreshHourlyForecast(location: Location) =
+            try {
+                val hourlyForecastResponse =
+                    weatherApi.getHourlyForecast(
+                        lat = location.lat,
+                        lon = location.lon,
+                    ).hourly.toListOfSingleForecast()
 
-        hourlyWeatherDao.insertData(
-            LocalHourlyForecast(listOfHourlyForecast = hourlyForecastResponse)
-        )
-    }  catch(e: Exception) {
-        Timber.e(e)
+                hourlyWeatherDao.insertData(
+                    LocalHourlyForecast(listOfHourlyForecast = hourlyForecastResponse),
+                )
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
     }
-
-}

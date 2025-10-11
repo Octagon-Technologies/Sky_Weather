@@ -1,0 +1,11 @@
+# This will apply the settings to all Kotlin files in the project
+[*.{kt,kts}]
+
+# Disable the package-name rule to allow underscores
+ktlint_standard_package-name = disabled
+
+# Allow usage of PascalCase for Composables
+ktlint_function_naming_ignore_when_annotated_with=Composable
+
+[*.{kt,kts}]
+compose_allowed_composition_locals = LocalAppColors

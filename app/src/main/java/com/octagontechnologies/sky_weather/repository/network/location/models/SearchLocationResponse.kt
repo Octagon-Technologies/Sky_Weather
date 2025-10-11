@@ -1,11 +1,9 @@
 package com.octagontechnologies.sky_weather.repository.network.location.models
 
-
 import com.octagontechnologies.sky_weather.domain.Location
-import com.octagontechnologies.sky_weather.utils.capitalize
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.*
+import java.util.Locale
 
 @JsonClass(generateAdapter = true)
 data class SearchLocationResponse(
@@ -34,11 +32,10 @@ data class SearchLocationResponse(
     @Json(name = "place_id")
     val placeId: String?,
     @Json(name = "type")
-    val type: String?
+    val type: String?,
 ) {
-
     private fun getDisplayNameWithoutCode() =
-        if (address != null)
+        if (address != null) {
             with(address) {
                 countryCode = countryCode?.uppercase(Locale.getDefault())
 
@@ -47,38 +44,45 @@ data class SearchLocationResponse(
                 this@SearchLocationResponse.displayName
 
                 // User is searching for a city e.g Nairobi
-                if (displayPlace == city)
+                if (displayPlace == city) {
                     displayPlace
+                }
 
                 // e.g: Limuru Road, Parklands, Nairobi
-                if (suburb != null && city != null)
+                if (suburb != null && city != null) {
                     "$displayPlace, $suburb, $city"
+                }
 
                 // The city name is repeated in the state; do not display the state
                 if (state != null && city != null) {
-                    if (state.split(" ").contains(city))
-                    // Limuru Road, Kiambu
+                    if (state.split(" ").contains(city)) {
+                        // Limuru Road, Kiambu
                         "$displayPlace, $city"
-                    else
-                    // Limuru Road, Ruaka, Kiambu
+                    } else {
+                        // Limuru Road, Ruaka, Kiambu
                         "$displayPlace, $city, $state"
+                    }
                 }
 
                 // The city name is null; display the state
-                if (state != null && city == null)
-                // Limuru, Kiambu
+                if (state != null && city == null) {
+                    // Limuru, Kiambu
                     "$displayPlace, $state"
+                }
 
                 // If everything fails, return the display name... but remove the country
                 displayName?.split(", ")?.dropLast(1)?.joinToString(", ")
             } ?: "Unknown Location"
-    else "Unknown Location"
+        } else {
+            "Unknown Location"
+        }
 
-    fun toLocation() = Location(
-        getDisplayNameWithoutCode(),
-        lat!!,
-        lon!!,
-        address?.country ?: "",
-        address?.countryCode ?: "--"
-    )
+    fun toLocation() =
+        Location(
+            getDisplayNameWithoutCode(),
+            lat!!,
+            lon!!,
+            address?.country ?: "",
+            address?.countryCode ?: "--",
+        )
 }

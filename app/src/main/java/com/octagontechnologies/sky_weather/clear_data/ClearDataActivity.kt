@@ -4,8 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 // TODO: See how we can bring this back to the app
 class ClearDataActivity : AppCompatActivity() {
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
+    //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        val binding = ActivityClearDataBinding.inflate(layoutInflater)
 //        setContentView(binding.root)

@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.current
 
-
 import com.octagontechnologies.sky_weather.domain.SingleForecast
 import com.octagontechnologies.sky_weather.domain.UVIndex
 import com.octagontechnologies.sky_weather.domain.WeatherCode
@@ -53,9 +52,8 @@ data class Current(
     @Json(name = "wind_gusts_10m")
     val windGusts10m: Double,
     @Json(name = "wind_speed_10m")
-    val windSpeed10m: Double
+    val windSpeed10m: Double,
 ) {
-
     fun toSingleForecast() =
         SingleForecast(
             temp = temperature2m,
@@ -74,7 +72,6 @@ data class Current(
             soilTemp = soilTemperature0cm,
             snowDepth = snowDepth,
             timeInEpochMillis = System.currentTimeMillis(),
-            humidity = relativeHumidity2m
+            humidity = relativeHumidity2m,
         )
-
 }

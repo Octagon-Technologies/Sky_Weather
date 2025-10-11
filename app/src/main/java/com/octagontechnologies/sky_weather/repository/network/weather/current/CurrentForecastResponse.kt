@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.current
 
-
 import com.squareup.moshi.Json
 
 data class CurrentForecastResponse(
@@ -21,5 +20,5 @@ data class CurrentForecastResponse(
     @Json(name = "timezone_abbreviation")
     val timezoneAbbreviation: String,
     @Json(name = "utc_offset_seconds")
-    val utcOffsetSeconds: Int
+    val utcOffsetSeconds: Int,
 )

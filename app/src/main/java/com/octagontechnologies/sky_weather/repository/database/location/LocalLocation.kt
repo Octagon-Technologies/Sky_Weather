@@ -7,9 +7,8 @@ import com.octagontechnologies.sky_weather.domain.Location
 
 @Entity(tableName = "localLocation")
 data class LocalLocation(
-        @PrimaryKey(autoGenerate = false)
-        val locationKey: Int = 40,
-
-        @ColumnInfo
-        val location: Location
+    @PrimaryKey(autoGenerate = false)
+    val locationKey: Int = 40,
+    @ColumnInfo
+    val location: Location,
 )

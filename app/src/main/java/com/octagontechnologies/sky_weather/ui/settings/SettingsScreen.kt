@@ -62,9 +62,11 @@ import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 
 @Composable
-fun SettingsScreen(navController: NavController) {
-    val viewModel = hiltViewModel<SettingsViewModel>()
-
+fun SettingsScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = hiltViewModel(),
+) {
     val units by viewModel.units.observeAsState(Units.METRIC)
     val windDirectionUnits by viewModel.windDirectionUnits.observeAsState(WindDirectionUnits.DEGREES)
     val timeFormat by viewModel.timeFormat.observeAsState(TimeFormat.HALF_DAY)
@@ -72,82 +74,83 @@ fun SettingsScreen(navController: NavController) {
 
     val areNotificationsOn by viewModel.isNotificationAllowed.collectAsState(initial = false)
 
-
     var navigateBack by remember { mutableStateOf(false) }
-
 
     ChangeStatusBars(
         navigateBack = navigateBack,
         onNavigateBack = { navController.popBackStack() },
-        resetNavigateBack = { navigateBack = false }
+        resetNavigateBack = { navigateBack = false },
     )
 
-
     Column(
-        Modifier
+        modifier
             .fillMaxSize()
-            .background(LocalAppColors.current.surface)
+            .background(LocalAppColors.current.surface),
     ) {
         Card(
             Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp),
             colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
             ) {
                 AppRipple {
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
                         contentDescription = stringResource(id = R.string.back_button),
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .clickable {
-                                navigateBack = true
-                            }
-                            .padding(2.dp)
+                        modifier =
+                            Modifier
+                                .padding(start = 8.dp)
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .clickable {
+                                    navigateBack = true
+                                }.padding(2.dp),
                     )
                 }
-
 
                 Text(
                     text = stringResource(id = R.string.settings_plain_text),
                     modifier = Modifier.align(Alignment.Center),
                     fontFamily = QuickSand,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
                 )
             }
         }
 
-
         Column(
             verticalArrangement = Arrangement.spacedBy(space = 24.dp),
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .padding(top = 16.dp)
+            modifier =
+                Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 16.dp),
         ) {
             SettingsOption(
                 selectedOption = units,
                 multiOption = MultiOption.units,
-                changeOption = { viewModel.changeUnits(it) })
+                changeOption = { viewModel.changeUnits(it) },
+            )
             SettingsOption(
                 selectedOption = windDirectionUnits,
                 multiOption = MultiOption.wind,
-                changeOption = { viewModel.changeWindDirections(it) })
+                changeOption = { viewModel.changeWindDirections(it) },
+            )
             SettingsOption(
                 selectedOption = timeFormat,
                 multiOption = MultiOption.time,
-                changeOption = { viewModel.changeTimeFormat(it) })
+                changeOption = { viewModel.changeTimeFormat(it) },
+            )
             SettingsOption(
                 selectedOption = theme,
                 multiOption = MultiOption.theme,
-                changeOption = { viewModel.changeTheme(it) })
+                changeOption = { viewModel.changeTheme(it) },
+            )
         }
 
         HorizontalDivider(
@@ -155,24 +158,26 @@ fun SettingsScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(top = 24.dp)
                 .height((0.5).dp)
-                .background(LocalAppColors.current.onSurfaceLighter)
+                .background(LocalAppColors.current.onSurfaceLighter),
         )
 
-        val permissionLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission()) { isGranted ->
-            viewModel.handleNotificationPermissionResponse(isGranted = isGranted)
-        }
+        val permissionLauncher =
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+            ) { isGranted ->
+                viewModel.handleNotificationPermissionResponse(isGranted = isGranted)
+            }
 
         val showSystemPermissionDialog by viewModel.showSystemPermissionDialog.collectAsState(false)
         LaunchedEffect(key1 = showSystemPermissionDialog) {
-            if (showSystemPermissionDialog)
+            if (showSystemPermissionDialog) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
+            }
 
             viewModel.resetSystemPermissionDialog()
         }
-
 
         Row(
             Modifier
@@ -180,37 +185,37 @@ fun SettingsScreen(navController: NavController) {
                 .padding(horizontal = 8.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = stringResource(id = R.string.enable_notifications_plain_text),
                 fontFamily = QuickSand,
                 fontWeight = FontWeight.Medium,
                 color = LocalAppColors.current.onSurface,
-                fontSize = 18.sp
+                fontSize = 18.sp,
             )
-
 
             Switch(
                 checked = areNotificationsOn,
                 onCheckedChange = { turnOn ->
                     viewModel.toggleNotificationAllowed(turnOn)
                 },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    uncheckedThumbColor = Color.White,
-                    uncheckedTrackColor = LightBlack,
-                    checkedTrackColor = LightBlue,
-                    uncheckedBorderColor = Color.Transparent
-                )
+                colors =
+                    SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        uncheckedThumbColor = Color.White,
+                        uncheckedTrackColor = LightBlack,
+                        checkedTrackColor = LightBlue,
+                        uncheckedBorderColor = Color.Transparent,
+                    ),
             )
         }
     }
 }
 
-
 @Preview
 @Composable
-private fun PreviewSettingsScreen() = AppTheme {
-    SettingsScreen(rememberNavController())
-}
+private fun PreviewSettingsScreen() =
+    AppTheme {
+        SettingsScreen(rememberNavController())
+    }

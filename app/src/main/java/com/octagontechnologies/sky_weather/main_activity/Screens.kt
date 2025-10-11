@@ -1,14 +1,13 @@
 package com.octagontechnologies.sky_weather.main_activity
 
 object Screens {
-    const val SplashScreen = "SplashScreen"
+    const val SPLASH_SCREEN = "SplashScreen"
 
-    const val Current = "Current"
-    const val Hourly = "Hourly"
-    const val Daily = "Daily"
+    const val CURRENT = "Current"
+    const val HOURLY = "Hourly"
+    const val DAILY = "Daily"
 
-    const val SeeMore = "SeeMore"
-    const val SelectLocation = "SelectLocation"
-
-    const val Settings = "Settings"
+    const val SEE_MORE = "SeeMore"
+    const val SELECT_LOCATION = "SelectLocation"
+    const val SETTINGS = "Settings"
 }

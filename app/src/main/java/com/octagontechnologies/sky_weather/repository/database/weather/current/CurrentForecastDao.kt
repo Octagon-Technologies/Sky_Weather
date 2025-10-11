@@ -6,8 +6,7 @@ import com.octagontechnologies.sky_weather.repository.database.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class CurrentForecastDao: BaseDao<LocalCurrentForecast> {
+abstract class CurrentForecastDao : BaseDao<LocalCurrentForecast> {
     @Query("SELECT * FROM localCurrentForecast")
     abstract fun getLocalCurrentForecast(): Flow<LocalCurrentForecast?>
-
 }

@@ -32,17 +32,20 @@ TODO:
 6) Change Humidity text to Precipitation ------ DONE
  */
 @HiltAndroidApp
-class App : Application(), Configuration.Provider {
-
+class App :
+    Application(),
+    Configuration.Provider {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+        get() =
+            Configuration
+                .Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
 
     override fun onCreate() {
         super.onCreate()
@@ -54,29 +57,33 @@ class App : Application(), Configuration.Provider {
     }
 
     private fun setRecurringWork() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(false)
-            .build()
+        val constraints =
+            Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(false)
+                .build()
 
-        val urgentRequest = PeriodicWorkRequestBuilder<UrgentDataWork>(20, TimeUnit.MINUTES)
-            .setConstraints(constraints)
-            .build()
+        val urgentRequest =
+            PeriodicWorkRequestBuilder<UrgentDataWork>(20, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
 
-        val longerRequest = PeriodicWorkRequestBuilder<RefreshDataWork>(6, TimeUnit.HOURS)
-            .setConstraints(constraints)
-            .build()
+        val longerRequest =
+            PeriodicWorkRequestBuilder<RefreshDataWork>(6, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             UrgentDataWork.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            urgentRequest
+            urgentRequest,
         )
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             RefreshDataWork.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            longerRequest
+            longerRequest,
         )
     }
 }

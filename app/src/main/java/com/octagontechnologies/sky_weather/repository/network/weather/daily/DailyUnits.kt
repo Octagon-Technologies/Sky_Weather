@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.daily
 
-
 import com.squareup.moshi.Json
 
 data class DailyUnits(
@@ -49,5 +48,5 @@ data class DailyUnits(
     @Json(name = "wind_speed_10m_max")
     val windSpeed10mMax: String,
     @Json(name = "wind_speed_10m_min")
-    val windSpeed10mMin: String
+    val windSpeed10mMin: String,
 )

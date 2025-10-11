@@ -29,85 +29,94 @@ import com.octagontechnologies.sky_weather.utils.TimeFormat
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 
-data class Option<T>(@StringRes val name: Int, @StringRes val description: Int?, val type: T) {
+data class Option<T>(
+    @StringRes val name: Int,
+    @StringRes val description: Int?,
+    val type: T,
+) {
     companion object {
-        fun getUnitImperial() =
-            Option(R.string.imperial_plain_text, R.string.f_mph_in_plain_text, Units.IMPERIAL)
+        fun getUnitImperial() = Option(R.string.imperial_plain_text, R.string.f_mph_in_plain_text, Units.IMPERIAL)
 
-        fun getUnitMetric() =
-            Option(R.string.metric_plain_text, R.string.c_kph_mm_plain_text, Units.METRIC)
+        fun getUnitMetric() = Option(R.string.metric_plain_text, R.string.c_kph_mm_plain_text, Units.METRIC)
 
-        fun getWindCardinal() = Option(
-            R.string.cardinal_plain_text,
-            R.string.n_e_s_w_plain_text,
-            WindDirectionUnits.CARDINAL
-        )
+        fun getWindCardinal() =
+            Option(
+                R.string.cardinal_plain_text,
+                R.string.n_e_s_w_plain_text,
+                WindDirectionUnits.CARDINAL,
+            )
 
-        fun getWindDegrees() = Option(
-            R.string.degrees_plain_text,
-            R.string._0_360_plain_text,
-            WindDirectionUnits.DEGREES
-        )
+        fun getWindDegrees() =
+            Option(
+                R.string.degrees_plain_text,
+                R.string._0_360_plain_text,
+                WindDirectionUnits.DEGREES,
+            )
 
-        fun getTime12Hour() = Option(
-            R.string._12_hour_plain_text,
-            R.string._2_pm_3_pm_etc_plain_text,
-            TimeFormat.HALF_DAY
-        )
+        fun getTime12Hour() =
+            Option(
+                R.string._12_hour_plain_text,
+                R.string._2_pm_3_pm_etc_plain_text,
+                TimeFormat.HALF_DAY,
+            )
 
-        fun getTime24Hour() = Option(
-            R.string._24_hour_plain_text,
-            R.string._12_00_13_00_etc_plain_text,
-            TimeFormat.FULL_DAY
-        )
+        fun getTime24Hour() =
+            Option(
+                R.string._24_hour_plain_text,
+                R.string._12_00_13_00_etc_plain_text,
+                TimeFormat.FULL_DAY,
+            )
 
         fun getLightMode() = Option(R.string.light_plain_text, null, Theme.LIGHT)
+
         fun getDarkMode() = Option(R.string.dark_plain_text, null, Theme.DARK)
+
         fun getBlackMode() = Option(R.string.black_plain_text, null, Theme.BLACK)
     }
 }
 
-
-
-sealed class MultiOption<T>(@StringRes open val title: Int, val options: List<Option<T>>) {
-
+sealed class MultiOption<T>(
+    @StringRes open val title: Int,
+    val options: List<Option<T>>,
+) {
     class TrioOption<T>(
         override val title: Int,
         first: Option<T>,
         second: Option<T>,
-        third: Option<T>
-    ) :
-        MultiOption<T>(title = title, options = listOf(first, second, third))
+        third: Option<T>,
+    ) : MultiOption<T>(title = title, options = listOf(first, second, third))
 
-    class DuoOption<T>(override val title: Int, first: Option<T>, second: Option<T>) :
-        MultiOption<T>(title = title, options = listOf(first, second))
-
-
-
+    class DuoOption<T>(
+        override val title: Int,
+        first: Option<T>,
+        second: Option<T>,
+    ) : MultiOption<T>(title = title, options = listOf(first, second))
 
     companion object {
         val units =
             DuoOption(
                 R.string.units_plain_text,
                 Option.getUnitImperial(),
-                Option.getUnitMetric()
+                Option.getUnitMetric(),
             )
-        val wind = DuoOption(
-            R.string.wind_direction_plain_text,
-            Option.getWindCardinal(),
-            Option.getWindDegrees()
-        )
-        val time = DuoOption(
-            R.string.time_format_plain_text,
-            Option.getTime12Hour(),
-            Option.getTime24Hour()
-        )
+        val wind =
+            DuoOption(
+                R.string.wind_direction_plain_text,
+                Option.getWindCardinal(),
+                Option.getWindDegrees(),
+            )
+        val time =
+            DuoOption(
+                R.string.time_format_plain_text,
+                Option.getTime12Hour(),
+                Option.getTime24Hour(),
+            )
         val theme =
             TrioOption(
                 R.string.display_mode_plain_text,
                 Option.getLightMode(),
                 Option.getDarkMode(),
-                Option.getBlackMode()
+                Option.getBlackMode(),
             )
     }
 }
@@ -117,30 +126,31 @@ fun <T> SettingsOption(
     selectedOption: T,
     multiOption: MultiOption<T>,
     changeOption: (T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val rounded = RoundedCornerShape(percent = 100)
 
-    Column {
+    Column(modifier = modifier) {
         Text(
             text = stringResource(id = multiOption.title),
             fontSize = 15.sp,
             fontFamily = Poppins,
-            color = LocalAppColors.current.onSurface
+            color = LocalAppColors.current.onSurface,
         )
 
         Row(
-            modifier
+            Modifier
                 .padding(top = 8.dp)
                 .fillMaxWidth()
                 .clip(rounded)
-                .border(1.dp, LightBlack, rounded)
+                .border(1.dp, LightBlack, rounded),
         ) {
-
             multiOption.options.forEach { option ->
                 OptionItem(
-                    selectedOption = selectedOption, option = option,
-                    onOptionSelected = changeOption, modifier = Modifier.weight(1f)
+                    selectedOption = selectedOption,
+                    option = option,
+                    onOptionSelected = changeOption,
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -148,11 +158,11 @@ fun <T> SettingsOption(
 }
 
 @Composable
-private fun <T> OptionItem(
+fun <T> OptionItem(
     selectedOption: T,
     option: Option<T>,
     onOptionSelected: (T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val backgroundColor =
         if (selectedOption == option.type) LocalAppColors.current.onSurfaceLighter else LocalAppColors.current.surface
@@ -166,14 +176,14 @@ private fun <T> OptionItem(
             .clickable { onOptionSelected(option.type) }
             .padding(vertical = if (option.description == null) 20.dp else 14.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = stringResource(id = option.name),
             fontWeight = FontWeight.SemiBold,
             color = textColor,
             fontFamily = QuickSand,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
 
         if (option.description != null) {
@@ -183,7 +193,7 @@ private fun <T> OptionItem(
                 fontWeight = FontWeight.Medium,
                 color = textColor,
                 fontFamily = QuickSand,
-                fontSize = 15.sp
+                fontSize = 15.sp,
             )
         }
     }

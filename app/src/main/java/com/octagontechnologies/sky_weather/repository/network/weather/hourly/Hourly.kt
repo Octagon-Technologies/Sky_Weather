@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.hourly
 
-
 import com.octagontechnologies.sky_weather.domain.SingleForecast
 import com.octagontechnologies.sky_weather.domain.UVIndex
 import com.octagontechnologies.sky_weather.domain.WeatherCode
@@ -52,9 +51,8 @@ data class Hourly(
     @Json(name = "wind_gusts_10m")
     val windGusts10m: List<Double>,
     @Json(name = "wind_speed_10m")
-    val windSpeed10m: List<Double>
+    val windSpeed10m: List<Double>,
 ) {
-
     fun toListOfSingleForecast() =
         time.map {
             val index = time.indexOf(it)
@@ -76,9 +74,7 @@ data class Hourly(
                 soilTemp = soilTemperature0cm[index],
                 snowDepth = snowDepth[index],
                 timeInEpochMillis = Instant.parse(time[index]).millis,
-                humidity = relativeHumidity2m[index]
+                humidity = relativeHumidity2m[index],
             )
         }
-
-
 }

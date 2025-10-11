@@ -7,11 +7,8 @@ import com.octagontechnologies.sky_weather.domain.SingleForecast
 
 @Entity(tableName = "localHourlyForecast")
 data class LocalHourlyForecast(
-        @PrimaryKey(autoGenerate = false)
-        val hourlyForecastId: Int = 2,
-
-        @ColumnInfo
-        val listOfHourlyForecast: List<SingleForecast>
-
+    @PrimaryKey(autoGenerate = false)
+    val hourlyForecastId: Int = 2,
+    @ColumnInfo
+    val listOfHourlyForecast: List<SingleForecast>,
 )
-

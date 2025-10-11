@@ -33,32 +33,33 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.see_more_current.components.MiniWeatherDescription
 import com.octagontechnologies.sky_weather.utils.Units
-
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 
 @Composable
 fun SelectedForecastScreen(
-    conditions: Map<String, String>,
+    conditions: ImmutableMap<String, String>,
     weatherCode: WeatherCode?,
     temp: Int?,
     units: Units,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier
             .fillMaxWidth()
             .padding(top = 4.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
             modifier = Modifier.padding(top = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             weatherCode?.getWeatherIcon()?.let {
                 Image(
                     painter = painterResource(id = it),
                     contentDescription = null,
-                    modifier = Modifier.size(64.dp)
+                    modifier = Modifier.size(64.dp),
                 )
             }
 
@@ -68,13 +69,13 @@ fun SelectedForecastScreen(
                     fontFamily = QuickSand,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 58.sp,
-                    color = LocalAppColors.current.onSurface
+                    color = LocalAppColors.current.onSurface,
                 )
                 Text(
                     text = units.getUnitSymbol(),
                     modifier = Modifier.align(Alignment.BottomEnd),
                     fontSize = 22.sp,
-                    color = LocalAppColors.current.onSurface.copy(alpha = 0.7f)
+                    color = LocalAppColors.current.onSurface.copy(alpha = 0.7f),
                 )
             }
         }
@@ -82,16 +83,15 @@ fun SelectedForecastScreen(
         Surface(
             color = LocalAppColors.current.surfaceVariant.copy(alpha = 0.35f),
             modifier = Modifier.padding(top = 16.dp),
-            shape = RoundedCornerShape(24.dp)
+            shape = RoundedCornerShape(24.dp),
         ) {
             Text(
                 text = weatherCode?.getWeatherTitle() ?: "",
                 modifier = Modifier.padding(vertical = 2.dp, horizontal = 16.dp),
                 color = LocalAppColors.current.onSurface,
-                fontFamily = QuickSand
+                fontFamily = QuickSand,
             )
         }
-
 
         Card(
             Modifier
@@ -99,38 +99,39 @@ fun SelectedForecastScreen(
                 .padding(vertical = 24.dp, horizontal = 8.dp),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = (1).dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = (1).dp),
         ) {
             MiniWeatherDescription(
                 modifier = Modifier,
                 title = "Rain Probability",
                 value = "${weatherCode?.rainProbability ?: "--"}%",
-                cardColor = LocalAppColors.current.surface,//.surfaceVariant.copy(alpha = 0.35f),
-                onCardColor = LocalAppColors.current.onSurface
+                cardColor = LocalAppColors.current.surface,
+                onCardColor = LocalAppColors.current.onSurface,
             )
         }
 
         Column(Modifier.padding(bottom = 8.dp)) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surface),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = (0.5).dp),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
             ) {
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 8.dp),
                 ) {
                     conditions.forEach { (title, value) ->
                         MiniWeatherDescription(
                             modifier = Modifier,
                             title = title,
                             value = value,
-                            cardColor = LocalAppColors.current.surfaceSmallerVariant,//surfaceVariant.copy(alpha = 0.35f),
-                            onCardColor = LocalAppColors.current.onSurface
+                            cardColor = LocalAppColors.current.surfaceSmallerVariant,
+                            onCardColor = LocalAppColors.current.onSurface,
                         )
                     }
                 }
@@ -139,20 +140,20 @@ fun SelectedForecastScreen(
     }
 }
 
-
 @Preview
 @Composable
-private fun PreviewSelectedForecastScreen() = AppTheme {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.surface)
-    ) {
-        SelectedForecastScreen(
-            conditions = mapOf(),
-            weatherCode = WeatherCode(3, 45),
-            temp = 24,
-            units = Units.METRIC
-        )
+private fun PreviewSelectedForecastScreen() =
+    AppTheme {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(LocalAppColors.current.surface),
+        ) {
+            SelectedForecastScreen(
+                conditions = persistentMapOf(),
+                weatherCode = WeatherCode(3, 45),
+                temp = 24,
+                units = Units.METRIC,
+            )
+        }
     }
-}

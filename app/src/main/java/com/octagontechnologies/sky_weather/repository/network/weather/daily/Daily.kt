@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.daily
 
-
 import com.octagontechnologies.sky_weather.domain.UVIndex
 import com.octagontechnologies.sky_weather.domain.WeatherCode
 import com.octagontechnologies.sky_weather.domain.Wind
@@ -55,16 +54,16 @@ data class Daily(
     @Json(name = "wind_speed_10m_max")
     val windSpeed10mMax: List<Double>,
     @Json(name = "wind_speed_10m_min")
-    val windSpeed10mMin: List<Double>
+    val windSpeed10mMin: List<Double>,
 ) {
+    fun toListOfDailyForecast() =
+        time.map { eachTime ->
+            val index = time.indexOf(eachTime)
+            val dayTimePeriod = toDayTimePeriod(index)
+            val nightTimePeriod = toNightTimePeriod(index)
 
-    fun toListOfDailyForecast() = time.map { eachTime ->
-        val index = time.indexOf(eachTime)
-        val dayTimePeriod = toDayTimePeriod(index)
-        val nightTimePeriod = toNightTimePeriod(index)
-
-        DailyForecast(Instant.parse(eachTime).millis, dayTimePeriod, nightTimePeriod)
-    }
+            DailyForecast(Instant.parse(eachTime).millis, dayTimePeriod, nightTimePeriod)
+        }
 
     private fun toDayTimePeriod(index: Int) =
         TimePeriod(
@@ -97,5 +96,4 @@ data class Daily(
             isDay = false,
 //            dailyLunar = DailyLunar(Instant.parse(sunrise[index]).millis, Instant.parse(sunset[index]).millis)
         )
-
 }

@@ -1,11 +1,10 @@
 package com.octagontechnologies.sky_weather.repository.network.location.reverse_geocoding_location
 
-
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.utils.capitalize
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.*
+import java.util.Locale
 
 @JsonClass(generateAdapter = true)
 data class ReverseGeoCodingLocation(
@@ -26,35 +25,32 @@ data class ReverseGeoCodingLocation(
     @Json(name = "osm_type")
     val osmType: String?,
     @Json(name = "place_id")
-    val placeId: String?
+    val placeId: String?,
 ) {
-
     private fun getDisplayNameWithoutCode() =
-            if (reverseGeoCodingAddress != null)
-                with(reverseGeoCodingAddress) {
-                    countryCode = countryCode?.uppercase(Locale.getDefault())
+        if (reverseGeoCodingAddress != null) {
+            with(reverseGeoCodingAddress) {
+                countryCode = countryCode?.uppercase(Locale.getDefault())
 
-                    if (suburb != null && city != null)
-                        "$suburb, $city"
-                    else if (state != null)
-                        "$state"
-                    else if (displayName?.length != null && displayName.length <= 16) {
-                        try {
-                            val miniList = displayName.split(",").subList(0, 1)
-                            miniList.joinToString(", ") { it.capitalize() }
-                        } catch (e: Exception) {
-                            displayName
-                        }
+                if (suburb != null && city != null) {
+                    "$suburb, $city"
+                } else if (state != null) {
+                    "$state"
+                } else if (displayName?.length != null && displayName.length <= 16) {
+                    try {
+                        val miniList = displayName.split(",").subList(0, 1)
+                        miniList.joinToString(", ") { it.capitalize() }
+                    } catch (e: Exception) {
+                        displayName
                     }
-                    else if (city != null)
-                        "$city"
-                    else
-                        country?.capitalize()
+                } else {
+                    city ?: country?.capitalize()
                 }
-                    ?: "Unknown Location"
-            else
-                "Unknown Location"
-
+            }
+                ?: "Unknown Location"
+        } else {
+            "Unknown Location"
+        }
 
     fun toLocation(): Location {
         // Formatting the location to something small enough to fit but still adequately descriptive
@@ -66,7 +62,7 @@ data class ReverseGeoCodingLocation(
             lon = lon!!,
             country = reverseGeoCodingAddress?.country ?: "",
             countryCode = reverseGeoCodingAddress?.countryCode ?: "--",
-            isGps = true
+            isGps = true,
         )
     }
 }
