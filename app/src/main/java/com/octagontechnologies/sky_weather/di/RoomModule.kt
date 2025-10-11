@@ -12,39 +12,33 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RoomModule {
-
     @Singleton
     @Provides
-    fun providesWeatherDatabase(@ApplicationContext context: Context) =
-        WeatherDataBase.getInstance(context)
+    fun providesWeatherDatabase(
+        @ApplicationContext context: Context,
+    ) = WeatherDataBase.getInstance(context)
 
     @Provides
-    fun providesCurrentForecastDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.currentForecastDao
+    fun providesCurrentForecastDao(weatherDataBase: WeatherDataBase) = weatherDataBase.currentForecastDao
 
     @Provides
-    fun providesHourlyForecastDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.hourlyDao
+    fun providesHourlyForecastDao(weatherDataBase: WeatherDataBase) = weatherDataBase.hourlyDao
 
     @Provides
-    fun providesDailyForecastDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.dailyDao
+    fun providesDailyForecastDao(weatherDataBase: WeatherDataBase) = weatherDataBase.dailyDao
 
     @Provides
-    fun providesLocationDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.locationDao
-    @Provides
-    fun providesCurrentLocationDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.currentLocationDao
-    @Provides
-    fun providesFavoriteLocationDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.favouriteLocationDao
-    @Provides
-    fun providesRecentLocationDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.recentLocationDao
+    fun providesLocationDao(weatherDataBase: WeatherDataBase) = weatherDataBase.locationDao
 
     @Provides
-    fun providesLunarForecastDao(weatherDataBase: WeatherDataBase) =
-        weatherDataBase.lunarDao
+    fun providesCurrentLocationDao(weatherDataBase: WeatherDataBase) = weatherDataBase.currentLocationDao
 
+    @Provides
+    fun providesFavoriteLocationDao(weatherDataBase: WeatherDataBase) = weatherDataBase.favouriteLocationDao
+
+    @Provides
+    fun providesRecentLocationDao(weatherDataBase: WeatherDataBase) = weatherDataBase.recentLocationDao
+
+    @Provides
+    fun providesLunarForecastDao(weatherDataBase: WeatherDataBase) = weatherDataBase.lunarDao
 }

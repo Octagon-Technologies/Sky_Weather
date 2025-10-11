@@ -31,13 +31,13 @@ import com.octagontechnologies.sky_weather.repository.database.weather.hourly.Lo
         CurrentLocation::class,
         LocalFavouriteLocation::class,
         LocalLunar::class,
-        LocalHourlyForecast::class],
+        LocalHourlyForecast::class,
+    ],
     version = 5,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(RoomTypeConverters::class)
 abstract class WeatherDataBase : RoomDatabase() {
-
     abstract val lunarDao: LunarDao
 
     abstract val currentForecastDao: CurrentForecastDao
@@ -51,20 +51,21 @@ abstract class WeatherDataBase : RoomDatabase() {
 
     companion object {
         @Volatile
-        var INSTANCE: WeatherDataBase? = null
+        var instance: WeatherDataBase? = null
 
         fun getInstance(context: Context): WeatherDataBase {
-            var instance = INSTANCE
-            if (instance == null) {
-                instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    WeatherDataBase::class.java,
-                    "weatherDatabase"
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
+            var localInstance = instance
+            if (localInstance == null) {
+                localInstance =
+                    Room
+                        .databaseBuilder(
+                            context.applicationContext,
+                            WeatherDataBase::class.java,
+                            "weatherDatabase",
+                        ).fallbackToDestructiveMigration()
+                        .build()
             }
-            return instance
+            return localInstance
         }
     }
 }

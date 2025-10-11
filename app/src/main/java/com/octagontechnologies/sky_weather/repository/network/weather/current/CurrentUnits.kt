@@ -1,6 +1,5 @@
 package com.octagontechnologies.sky_weather.repository.network.weather.current
 
-
 import com.squareup.moshi.Json
 
 data class CurrentUnits(
@@ -49,5 +48,5 @@ data class CurrentUnits(
     @Json(name = "wind_gusts_10m")
     val windGusts10m: String,
     @Json(name = "wind_speed_10m")
-    val windSpeed10m: String
+    val windSpeed10m: String,
 )

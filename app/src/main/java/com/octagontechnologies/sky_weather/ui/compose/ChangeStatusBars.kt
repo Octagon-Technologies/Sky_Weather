@@ -11,15 +11,13 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 
-
 @Composable
 fun ChangeStatusBars(
     navigateBack: Boolean,
-
     // Whether to intercept navigateBack and BackHandler commands...
     // Useful on initial startup when back press (with no location) should cause app exit
     onNavigateBack: () -> Unit,
-    resetNavigateBack: () -> Unit
+    resetNavigateBack: () -> Unit,
 ) {
     val view = LocalView.current
     val window = (view.context.getActivity() ?: return).window
@@ -37,7 +35,6 @@ fun ChangeStatusBars(
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = true
         }
     }
-
 
     LaunchedEffect(key1 = navigateBack) {
         if (navigateBack) {
@@ -61,7 +58,10 @@ fun ChangeStatusBars(
     }
 }
 
-fun restoreIconsToWhite(window: Window, view: View) {
+fun restoreIconsToWhite(
+    window: Window,
+    view: View,
+) {
     WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
     WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = false
 }

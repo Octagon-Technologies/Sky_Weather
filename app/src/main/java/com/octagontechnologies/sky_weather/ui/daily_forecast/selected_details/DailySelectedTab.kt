@@ -53,8 +53,8 @@ import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 import com.octagontechnologies.sky_weather.utils.getDayWithMonth
 import com.octagontechnologies.sky_weather.utils.weather.getWeatherConditions
+import kotlinx.collections.immutable.toPersistentMap
 import timber.log.Timber
-
 
 @Composable
 fun DailySelectedTab(
@@ -62,14 +62,14 @@ fun DailySelectedTab(
     windDirectionUnits: WindDirectionUnits?,
     selectedDailyForecast: DailyForecast?,
     selectedLunarForecast: Lunar?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier
             .fillMaxWidth()
             .background(LocalAppColors.current.surface)
             .padding(bottom = 12.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         HorizontalDivider(
             Modifier
@@ -78,7 +78,7 @@ fun DailySelectedTab(
                 .padding(top = 10.dp, bottom = 4.dp)
                 .clip(RoundedCornerShape(100)),
             thickness = (3).dp,
-            color = LocalAppColors.current.onSurfaceLighter
+            color = LocalAppColors.current.onSurfaceLighter,
         )
 
         Box(Modifier.fillMaxWidth()) {
@@ -86,24 +86,25 @@ fun DailySelectedTab(
                 text = selectedDailyForecast?.timeInEpochSeconds?.getDayWithMonth() ?: "----",
                 fontFamily = QuickSand,
                 fontSize = 17.sp,
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 8.dp)
-                    .align(Alignment.Center),
-                fontWeight = FontWeight.SemiBold
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp, bottom = 8.dp)
+                        .align(Alignment.Center),
+                fontWeight = FontWeight.SemiBold,
             )
 
             Text(
                 text = units?.getUnitSymbol() ?: "C",
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .align(Alignment.CenterEnd)
+                modifier =
+                    Modifier
+                        .padding(end = 16.dp)
+                        .align(Alignment.CenterEnd),
             )
         }
 
         var selectedPageIndex by remember { mutableIntStateOf(0) }
         val pagerState = rememberPagerState(pageCount = { 2 })
-
 
         val tabs = listOf("Day", "Night")
         TabRow(
@@ -117,19 +118,20 @@ fun DailySelectedTab(
                         Modifier
                             .tabIndicatorOffset(tabPositions[selectedPageIndex])
                             .padding(top = 8.dp),
-                        color = DarkBlue
+                        color = DarkBlue,
                     )
                 }
-            }
+            },
         ) {
             tabs.forEachIndexed { tabIndex, tabTitle ->
                 Text(
-                    modifier = Modifier
-                        .padding(top = 8.dp, bottom = 12.dp)
-                        .weight(1f)
-                        .clickable { selectedPageIndex = tabIndex },
+                    modifier =
+                        Modifier
+                            .padding(top = 8.dp, bottom = 12.dp)
+                            .weight(1f)
+                            .clickable { selectedPageIndex = tabIndex },
                     text = tabTitle,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }
@@ -139,35 +141,43 @@ fun DailySelectedTab(
         }
 
         LaunchedEffect(key1 = pagerState.currentPage, pagerState.isScrollInProgress) {
-            if (!pagerState.isScrollInProgress)
+            if (!pagerState.isScrollInProgress) {
                 selectedPageIndex = pagerState.currentPage
+            }
         }
 
         HorizontalPager(state = pagerState) { pageIndex ->
             val isDayTab = pageIndex == 0
 
-            if (isDayTab)
+            if (isDayTab) {
                 SelectedForecastScreen(
                     modifier = Modifier.padding(top = 12.dp),
-                    conditions = selectedDailyForecast?.dayTime?.getWeatherConditions(
-                        units,
-                        windDirectionUnits
-                    ) ?: mapOf(),
+                    conditions =
+                        (
+                            selectedDailyForecast?.dayTime?.getWeatherConditions(
+                                units,
+                                windDirectionUnits,
+                            ) ?: mapOf()
+                        ).toPersistentMap(),
                     weatherCode = selectedDailyForecast?.dayTime?.weatherCode,
                     temp = selectedDailyForecast?.getTempHigh(units),
-                    units = units ?: Units.getDefault()
+                    units = units ?: Units.getDefault(),
                 )
-            else
+            } else {
                 SelectedForecastScreen(
                     modifier = Modifier.padding(top = 12.dp),
-                    conditions = selectedDailyForecast?.nightTime?.getWeatherConditions(
-                        units,
-                        windDirectionUnits
-                    ) ?: mapOf(),
+                    conditions =
+                        (
+                            selectedDailyForecast?.nightTime?.getWeatherConditions(
+                                units,
+                                windDirectionUnits,
+                            ) ?: mapOf()
+                        ).toPersistentMap(),
                     weatherCode = selectedDailyForecast?.nightTime?.weatherCode,
                     temp = selectedDailyForecast?.getTempLow(units),
-                    units = units ?: Units.getDefault()
+                    units = units ?: Units.getDefault(),
                 )
+            }
         }
 
         selectedLunarForecast?.let {
@@ -176,7 +186,7 @@ fun DailySelectedTab(
                     .fillMaxWidth()
                     .background(LocalAppColors.current.surface)
                     .padding(horizontal = 8.dp, vertical = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 LaunchedEffect(key1 = Unit) {
                     Timber.d("selectedLunarForecast.sunRise is ${selectedLunarForecast.sunRise}")
@@ -187,13 +197,13 @@ fun DailySelectedTab(
                     true,
                     rise = selectedLunarForecast.sunRise,
                     set = selectedLunarForecast.sunSet,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 LunarPreview(
                     false,
                     rise = selectedLunarForecast.moonRise,
                     set = selectedLunarForecast.moonSet,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -208,34 +218,35 @@ fun LunarPreview(
     modifier: Modifier = Modifier,
     tabColor: Color = LocalAppColors.current.surface,
     tabSecondaryColor: Color = LocalAppColors.current.surfaceVariant.copy(alpha = 0.3f),
-    onTabColor: Color = LocalAppColors.current.onSurface
+    onTabColor: Color = LocalAppColors.current.onSurface,
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = tabColor, contentColor = onTabColor),
         modifier = modifier,
         elevation = CardDefaults.cardElevation((1).dp),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
     ) {
         Column(Modifier.padding(top = 8.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Image(
-                    modifier = Modifier
-                        .padding(start = 6.dp)
-                        .size(44.dp)
-                        .padding(4.dp),
+                    modifier =
+                        Modifier
+                            .padding(start = 6.dp)
+                            .size(44.dp)
+                            .padding(4.dp),
                     painter = painterResource(id = if (isSunPreview) R.drawable.yellow_sun else R.drawable.moon),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(if (isSunPreview) DarkOrange else LocalAppColors.current.onSurface)
+                    colorFilter = ColorFilter.tint(if (isSunPreview) DarkOrange else LocalAppColors.current.onSurface),
                 )
-
 
                 Text(
                     text = if (isSunPreview) "Sunlight" else "Moonlight",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(end = 6.dp)
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(end = 6.dp),
                 )
 
 //                Column {
@@ -244,11 +255,11 @@ fun LunarPreview(
 //                }
             }
 
-
             Surface(
                 modifier = Modifier.padding(top = 12.dp),
-                shape = RoundedCornerShape(8.dp), // (bottomEnd = 8.dp, bottomStart = 8.dp, topStart = 15.dp, topEnd = 15.dp),
-                color = tabSecondaryColor
+                shape = RoundedCornerShape(8.dp),
+                // (bottomEnd = 8.dp, bottomStart = 8.dp, topStart = 15.dp, topEnd = 15.dp),
+                color = tabSecondaryColor,
             ) {
                 Column(Modifier.padding(vertical = 6.dp, horizontal = 2.dp)) {
                     val mapOf = mapOf("Rise" to rise, "Set" to set)
@@ -257,7 +268,7 @@ fun LunarPreview(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 6.dp, horizontal = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             Text(text = type, fontWeight = FontWeight.Medium)
 
@@ -274,37 +285,38 @@ fun LunarPreview(
 //
 @Preview
 @Composable
-private fun PreviewLunarPreview() = AppTheme {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .background(LocalAppColors.current.surface)
-            .padding(horizontal = 8.dp, vertical = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        LunarPreview(
-            isSunPreview = true,
-            rise = "6:13",
-            set = "18:21",
-            modifier = Modifier.weight(1f)
-        )
-        LunarPreview(
-            isSunPreview = false,
-            rise = "1:55",
-            set = "12:45",
-            modifier = Modifier.weight(1f)
-        )
+private fun PreviewLunarPreview() =
+    AppTheme {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(LocalAppColors.current.surface)
+                .padding(horizontal = 8.dp, vertical = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            LunarPreview(
+                isSunPreview = true,
+                rise = "6:13",
+                set = "18:21",
+                modifier = Modifier.weight(1f),
+            )
+            LunarPreview(
+                isSunPreview = false,
+                rise = "1:55",
+                set = "12:45",
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
-}
-
 
 @Preview
 @Composable
-private fun PreviewDailySelectedTab() = AppTheme {
-    DailySelectedTab(
-        Units.getDefault(),
-        WindDirectionUnits.getDefault(),
-        DailyForecast.TEST_FORE,
-        selectedLunarForecast = Lunar("6:34", "18:45", "1:55", "12:56")
-    )
-}
+private fun PreviewDailySelectedTab() =
+    AppTheme {
+        DailySelectedTab(
+            Units.getDefault(),
+            WindDirectionUnits.getDefault(),
+            DailyForecast.TEST_FORE,
+            selectedLunarForecast = Lunar("6:34", "18:45", "1:55", "12:56"),
+        )
+    }

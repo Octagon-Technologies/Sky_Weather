@@ -39,46 +39,55 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 
 @Composable
-fun CurrentTopBar(location: Location?, navController: NavController, modifier: Modifier = Modifier) {
+fun CurrentTopBar(
+    location: Location?,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
     Card(
         modifier.fillMaxWidth(),
         shape = RoundedCornerShape(0.dp, 0.dp, 8.dp, 8.dp),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalAppColors.current.background,//.copy(alpha = 0.1f),
-            contentColor = LocalAppColors.current.onBackground
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalAppColors.current.background,
+                // .copy(alpha = 0.1f),
+                contentColor = LocalAppColors.current.onBackground,
+            ),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
         ) {
             IconButton(
                 onClick = {
-                    navController.navigate(Screens.Settings)
+                    navController.navigate(Screens.SETTINGS)
                 },
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .align(Alignment.CenterStart)
+                modifier =
+                    Modifier
+                        .padding(start = 8.dp)
+                        .align(Alignment.CenterStart),
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Menu,
-                    contentDescription = stringResource(R.string.open_settings)
+                    contentDescription = stringResource(R.string.open_settings),
                 )
             }
 
             Surface(
-                onClick = { navController.navigate(Screens.SelectLocation) },
-                modifier = Modifier
+                onClick = { navController.navigate(Screens.SELECT_LOCATION) },
+                modifier =
+                    Modifier
 //                    .fillMaxWidth(0.65f)
-                    .align(Alignment.Center),
+                        .align(Alignment.Center),
                 color = LocalAppColors.current.backgroundVariant,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp),
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         text = location?.displayNameWithoutCountryCode ?: "----",
@@ -87,18 +96,20 @@ fun CurrentTopBar(location: Location?, navController: NavController, modifier: M
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .widthIn(max = 230.dp)
+                        modifier =
+                            Modifier
+                                .padding(vertical = 8.dp)
+                                .widthIn(max = 230.dp),
                     )
                     Image(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(LocalAppColors.current.onBackground),
-                        modifier = Modifier
-                            .size(22.dp)
-                            .padding(start = 4.dp)
-                            .align(Alignment.CenterVertically)
+                        modifier =
+                            Modifier
+                                .size(22.dp)
+                                .padding(start = 4.dp)
+                                .align(Alignment.CenterVertically),
                     )
                 }
             }
@@ -106,23 +117,25 @@ fun CurrentTopBar(location: Location?, navController: NavController, modifier: M
     }
 }
 
-
 @Preview
 @Composable
-private fun PreviewCurrentTopBar() = AppTheme {
-    CurrentTopBar(null, rememberNavController())
-}
+private fun PreviewCurrentTopBar() =
+    AppTheme {
+        CurrentTopBar(null, rememberNavController())
+    }
 
-
-enum class BottomNav(@StringRes val nameRes: Int, @DrawableRes val icon: Int) {
+enum class BottomNav(
+    @StringRes val nameRes: Int,
+    @DrawableRes val icon: Int,
+) {
     Current(R.string.current, R.drawable.radar),
     Hourly(R.string.hourly, R.drawable.clock),
-    Daily(R.string.daily, R.drawable.daily_calender)
+    Daily(R.string.daily, R.drawable.daily_calender),
 }
 
-fun BottomNav.getScreen() = when(this) {
-    BottomNav.Current -> Screens.Current
-    BottomNav.Hourly -> Screens.Hourly
-    BottomNav.Daily -> Screens.Daily
-}
-
+fun BottomNav.getScreen() =
+    when (this) {
+        BottomNav.Current -> Screens.CURRENT
+        BottomNav.Hourly -> Screens.HOURLY
+        BottomNav.Daily -> Screens.DAILY
+    }

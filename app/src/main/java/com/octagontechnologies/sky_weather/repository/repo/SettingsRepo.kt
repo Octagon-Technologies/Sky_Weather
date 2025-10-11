@@ -22,71 +22,68 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-class SettingsRepo @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+class SettingsRepo
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) {
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+        private val unitsName = "units"
+        private val windDirectionName = "wind_direction"
+        private val timeFormatName = "time_format"
+        private val themeName = "theme_name"
+        private val notificationAllowedName = "notification_allowed"
 
-    private val unitsName = "units"
-    private val windDirectionName = "wind_direction"
-    private val timeFormatName = "time_format"
-    private val themeName = "theme_name"
-    private val notificationAllowedName = "notification_allowed"
+        private val unitsKey = stringPreferencesKey(unitsName)
+        private val windDirectionKey = stringPreferencesKey(windDirectionName)
+        private val timeFormatKey = stringPreferencesKey(timeFormatName)
+        private val themeKey = stringPreferencesKey(themeName)
+        private val notificationAllowedKey = booleanPreferencesKey(notificationAllowedName)
 
+        val units = getDataStoreData(unitsName).map { Units.valueOf(it) }.asLiveData()
+        val windDirectionUnits =
+            getDataStoreData(windDirectionName).map { WindDirectionUnits.valueOf(it) }.asLiveData()
+        val timeFormat = getDataStoreData(timeFormatName).map { TimeFormat.valueOf(it) }.asLiveData()
+        val theme: LiveData<Theme> = getDataStoreData(themeName).map { Theme.valueOf(it) }.asLiveData()
 
-    private val unitsKey = stringPreferencesKey(unitsName)
-    private val windDirectionKey = stringPreferencesKey(windDirectionName)
-    private val timeFormatKey = stringPreferencesKey(timeFormatName)
-    private val themeKey = stringPreferencesKey(themeName)
-    private val notificationAllowedKey = booleanPreferencesKey(notificationAllowedName)
+        @OptIn(DelicateCoroutinesApi::class)
+        val isNotificationAllowed =
+            getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
+                .stateIn(GlobalScope, SharingStarted.Eagerly, false)
 
+        suspend fun changeIsNotificationAllowed(isNotificationAllowed: Boolean) {
+            context.dataStore.edit { it[notificationAllowedKey] = isNotificationAllowed }
+        }
 
-    val units = getDataStoreData(unitsName).map { Units.valueOf(it) }.asLiveData()
-    val windDirectionUnits =
-        getDataStoreData(windDirectionName).map { WindDirectionUnits.valueOf(it) }.asLiveData()
-    val timeFormat = getDataStoreData(timeFormatName).map { TimeFormat.valueOf(it) }.asLiveData()
-    val theme: LiveData<Theme> = getDataStoreData(themeName).map { Theme.valueOf(it) }.asLiveData()
+        suspend fun changeUnits(units: Units) {
+            context.dataStore.edit { it[unitsKey] = units.toString() }
+        }
 
+        suspend fun changeWindDirectionUnits(windDirectionUnits: WindDirectionUnits) {
+            context.dataStore.edit { it[windDirectionKey] = windDirectionUnits.toString() }
+        }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    val isNotificationAllowed =
-        getDataStoreData(notificationAllowedName).map { it.toBooleanStrict() }
-            .stateIn(GlobalScope, SharingStarted.Eagerly, false)
+        suspend fun changeTimeFormat(timeFormat: TimeFormat) {
+            context.dataStore.edit { it[timeFormatKey] = timeFormat.toString() }
+        }
 
+        suspend fun changeTheme(theme: Theme) {
+            context.dataStore.edit { it[themeKey] = theme.toString() }
+        }
 
-    suspend fun changeIsNotificationAllowed(isNotificationAllowed: Boolean) {
-        context.dataStore.edit { it[notificationAllowedKey] = isNotificationAllowed }
-    }
+        private fun getDataStoreData(preferencesName: String): Flow<String> {
+            return context.dataStore.data.map {
+                when (preferencesName) {
+                    unitsName -> it[unitsKey] ?: Units.getDefault().toString()
+                    windDirectionName -> it[windDirectionKey] ?: WindDirectionUnits.getDefault().toString()
+                    timeFormatName -> it[timeFormatKey] ?: TimeFormat.getDefault().toString()
+                    themeName -> it[themeKey] ?: Theme.getDefault().toString()
 
-    suspend fun changeUnits(units: Units) {
-        context.dataStore.edit { it[unitsKey] = units.toString() }
-    }
+                    notificationAllowedName -> it[notificationAllowedKey]?.toString() ?: "false"
 
-    suspend fun changeWindDirectionUnits(windDirectionUnits: WindDirectionUnits) {
-        context.dataStore.edit { it[windDirectionKey] = windDirectionUnits.toString() }
-    }
-
-    suspend fun changeTimeFormat(timeFormat: TimeFormat) {
-        context.dataStore.edit { it[timeFormatKey] = timeFormat.toString() }
-    }
-
-    suspend fun changeTheme(theme: Theme) {
-        context.dataStore.edit { it[themeKey] = theme.toString() }
-    }
-
-    private fun getDataStoreData(preferencesName: String): Flow<String> {
-        return context.dataStore.data.map {
-            when (preferencesName) {
-                unitsName -> it[unitsKey] ?: Units.getDefault().toString()
-                windDirectionName -> it[windDirectionKey] ?: WindDirectionUnits.getDefault().toString()
-                timeFormatName -> it[timeFormatKey] ?: TimeFormat.getDefault().toString()
-                themeName -> it[themeKey] ?: Theme.getDefault().toString()
-
-                notificationAllowedName -> it[notificationAllowedKey]?.toString() ?: "false"
-
-                else -> throw RuntimeException("Unexpected parameter. preferencesName is $preferencesName")
+                    else -> throw RuntimeException("Unexpected parameter. preferencesName is $preferencesName")
+                }
             }
         }
     }
-}

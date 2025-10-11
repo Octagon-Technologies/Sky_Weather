@@ -7,9 +7,7 @@ import com.octagontechnologies.sky_weather.repository.database.BaseDao
 
 // Only the user's actual current location
 @Dao
-abstract class CurrentLocationDao: BaseDao<CurrentLocation> {
-
+abstract class CurrentLocationDao : BaseDao<CurrentLocation> {
     @Query("SELECT * FROM localCurrentLocation")
     abstract fun getUserCurrentLocation(): LiveData<CurrentLocation?>
-
 }

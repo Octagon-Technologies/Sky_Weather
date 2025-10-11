@@ -7,9 +7,8 @@ import com.octagontechnologies.sky_weather.domain.Location
 
 @Entity(tableName = "localFavoriteLocation")
 data class LocalFavouriteLocation(
-        @PrimaryKey(autoGenerate = false)
-        val favouriteLocationKey: String,
-
-        @ColumnInfo
-        val location: Location
+    @PrimaryKey(autoGenerate = false)
+    val favouriteLocationKey: String,
+    @ColumnInfo
+    val location: Location,
 )

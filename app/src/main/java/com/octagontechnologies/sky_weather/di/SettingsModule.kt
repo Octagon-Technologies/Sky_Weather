@@ -12,10 +12,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SettingsModule {
-
     @Singleton
     @Provides
-    fun provideSettingsRepo(@ApplicationContext context: Context) =
-        SettingsRepo(context)
-
+    fun provideSettingsRepo(
+        @ApplicationContext context: Context,
+    ) = SettingsRepo(context)
 }

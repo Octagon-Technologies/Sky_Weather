@@ -17,7 +17,13 @@ import androidx.compose.ui.unit.sp
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 
 @Composable
-fun MiniWeatherDescription(title: String, value: String, cardColor: Color, onCardColor: Color, modifier: Modifier = Modifier) {
+fun MiniWeatherDescription(
+    title: String,
+    value: String,
+    cardColor: Color,
+    onCardColor: Color,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier
             .fillMaxWidth()
@@ -25,14 +31,14 @@ fun MiniWeatherDescription(title: String, value: String, cardColor: Color, onCar
             .clip(RoundedCornerShape(8.dp))
             .background(cardColor)
             .padding(horizontal = 8.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             text = title,
             fontWeight = FontWeight.Medium,
             fontFamily = QuickSand,
             color = onCardColor,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
 
         Text(
@@ -40,7 +46,7 @@ fun MiniWeatherDescription(title: String, value: String, cardColor: Color, onCar
             fontWeight = FontWeight.SemiBold,
             fontFamily = QuickSand,
             fontSize = 16.sp,
-            color = onCardColor
+            color = onCardColor,
         )
     }
 }

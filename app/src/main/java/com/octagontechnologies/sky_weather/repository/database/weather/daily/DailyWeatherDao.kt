@@ -6,7 +6,7 @@ import androidx.room.Query
 import com.octagontechnologies.sky_weather.repository.database.BaseDao
 
 @Dao
-abstract class DailyWeatherDao: BaseDao<LocalDailyForecast> {
+abstract class DailyWeatherDao : BaseDao<LocalDailyForecast> {
     @Query("SELECT * FROM localDailyForecast")
     abstract fun getLocalDailyForecast(): LiveData<LocalDailyForecast?>
 }

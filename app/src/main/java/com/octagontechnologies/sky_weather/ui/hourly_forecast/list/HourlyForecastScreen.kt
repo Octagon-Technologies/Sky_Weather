@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.octagontechnologies.sky_weather.ui.compose.getActivity
 import com.octagontechnologies.sky_weather.ui.compose.theme.CabinSemiCondensed
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
@@ -52,14 +52,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun HourlyForecastScreen(
     coroutineScope: CoroutineScope,
-    showBottomNavView: (Boolean) -> Unit
+    modifier: Modifier = Modifier,
+    viewModel: HourlyForecastViewModel = hiltViewModel(),
+    showBottomNavView: (Boolean) -> Unit,
 ) {
     Column(
-        Modifier
+        modifier
             .fillMaxSize()
-            .background(LocalAppColors.current.background)
+            .background(LocalAppColors.current.background),
     ) {
-        val viewModel = hiltViewModel<HourlyForecastViewModel>()
         val listOfHourlyForecast by viewModel.listOfHourlyForecast.observeAsState()
 
         val selectedHourlyForecast by viewModel.selectedHourlyForecast.observeAsState()
@@ -74,21 +75,19 @@ fun HourlyForecastScreen(
         val view = LocalView.current
         val window = (view.context.getActivity() ?: return).window
 
-
         val blueBackground = LocalAppColors.current.background
         val bottomSheetBackground = LocalAppColors.current.surface
 
         val scrollState = rememberScrollState()
-
 
         LaunchedEffect(key1 = sheetState.bottomSheetState.currentValue) {
             val isExpanded = sheetState.bottomSheetState.currentValue == SheetValue.Expanded
             showBottomNavView(!isExpanded)
 
             // It's being collapsed; scroll to the top bar of the dialog
-            if (!isExpanded)
+            if (!isExpanded) {
                 scrollState.animateScrollTo(0)
-
+            }
 
             window.navigationBarColor =
                 (if (isExpanded) bottomSheetBackground else blueBackground).toArgb()
@@ -107,31 +106,33 @@ fun HourlyForecastScreen(
                     units = units,
                     windDirectionUnits = windDirectionUnits,
                     timeFormat = timeFormat,
-                    selectedForecast = selectedHourlyForecast
+                    selectedForecast = selectedHourlyForecast,
                 )
             },
-            sheetDragHandle = null
+            sheetDragHandle = null,
         ) {
             if (listOfHourlyForecast.isNullOrEmpty()) {
                 Box(Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .align(Alignment.Center)
+                        modifier =
+                            Modifier
+                                .size(36.dp)
+                                .align(Alignment.Center),
                     )
                 }
             } else {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LocalAppColors.current.background)
-                        .padding(horizontal = 8.dp)
-                        .padding(bottom = peekHeight)
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(LocalAppColors.current.background)
+                            .padding(horizontal = 8.dp)
+                            .padding(bottom = peekHeight),
                 ) {
                     Box(
                         Modifier
                             .fillMaxWidth()
-                            .padding(top = 18.dp, bottom = 16.dp)
+                            .padding(top = 18.dp, bottom = 16.dp),
                     ) {
                         val titleDay by viewModel.titleDay.collectAsState()
 
@@ -140,15 +141,16 @@ fun HourlyForecastScreen(
                             color = LocalAppColors.current.onBackground,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(horizontal = 8.dp),
-                            fontSize = 19.sp
+                            fontSize = 19.sp,
                         )
 
                         Surface(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 4.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 4.dp),
                             color = LocalAppColors.current.onBackground.copy(alpha = 0.15f),
-                            shape = RoundedCornerShape(6.dp)
+                            shape = RoundedCornerShape(6.dp),
                         ) {
                             Text(
                                 text = units.getUnitSymbol(),
@@ -156,11 +158,10 @@ fun HourlyForecastScreen(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                 fontFamily = CabinSemiCondensed,
                                 fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
                             )
                         }
                     }
-
 
                     val lazyColumnState = rememberLazyListState()
                     val firstVisibleIndex by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex } }
@@ -172,10 +173,11 @@ fun HourlyForecastScreen(
 
                     LazyColumn(
                         state = lazyColumnState,
-                        modifier = Modifier
-                            .padding(bottom = (0.5).dp)
-                            .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                        modifier =
+                            Modifier
+                                .padding(bottom = (0.5).dp)
+                                .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         items(listOfHourlyForecast!!) { hourlyForecast ->
                             HourlyForecastCard(
@@ -188,7 +190,7 @@ fun HourlyForecastScreen(
                                     coroutineScope.launch {
                                         sheetState.bottomSheetState.expand()
                                     }
-                                }
+                                },
                             )
                         }
                     }

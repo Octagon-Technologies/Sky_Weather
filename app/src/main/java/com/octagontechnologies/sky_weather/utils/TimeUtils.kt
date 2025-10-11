@@ -5,55 +5,77 @@ import org.joda.time.DateTime
 import org.joda.time.Instant
 import org.joda.time.Interval
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 fun Long?.getFirstLetterOfDay() =
-    if (this != null)
-        Instant.ofEpochMilli(this).toDateTime().dayOfWeek().asShortText.first().toString()
-    else "-"
+    if (this != null) {
+        Instant
+            .ofEpochMilli(this)
+            .toDateTime()
+            .dayOfWeek()
+            .asShortText
+            .first()
+            .toString()
+    } else {
+        "-"
+    }
 
 fun Long?.getDayOfWeek() =
-    if (this != null)
-        SimpleDateFormat("DD", Locale.getDefault()).format(Instant.ofEpochMilli(this))
+    if (this != null) {
+        SimpleDateFormat("DD", Locale.getDefault())
+            .format(Instant.ofEpochMilli(this))
             .toString()
-    else "--"
+    } else {
+        "--"
+    }
 
 fun Long?.getDayOfMonth() =
-    if (this != null)
-        Instant.ofEpochMilli(this).toDateTime().dayOfMonth.toString()
-    else "--"
+    if (this != null) {
+        Instant
+            .ofEpochMilli(this)
+            .toDateTime()
+            .dayOfMonth
+            .toString()
+    } else {
+        "--"
+    }
 
-fun Long?.getFullMonth(): String {
-    return if (this != null)
-        Instant.ofEpochMilli(this).toDateTime().monthOfYear().asText
-    else
+fun Long?.getFullMonth(): String =
+    if (this != null) {
+        Instant
+            .ofEpochMilli(this)
+            .toDateTime()
+            .monthOfYear()
+            .asText
+    } else {
         "-----"
-}
+    }
 
-fun Long.getHoursOfDay() =
-    Instant.ofEpochMilli(this).toDateTime().hourOfDay
-
+fun Long.getHoursOfDay() = Instant.ofEpochMilli(this).toDateTime().hourOfDay
 
 fun Long?.getDateOfMonth(): String =
-    if (this != null)
+    if (this != null) {
         SimpleDateFormat("dd", Locale.getDefault())
             .format(Instant.ofEpochMilli(this).toDate())
-    else
+    } else {
         "--"
+    }
 
 fun Long?.getDay(): String =
-    if (this != null)
+    if (this != null) {
         SimpleDateFormat("EEEE", Locale.getDefault())
             .format(Instant.ofEpochMilli(this).toDate())
-    else
+    } else {
         "-----"
+    }
 
 fun Long?.getDayWithMonth(): String =
-    if (this != null)
+    if (this != null) {
         SimpleDateFormat("EEEE, MMMM dd", Locale.getDefault())
             .format(Instant.ofEpochMilli(this).toDate())
-    else
+    } else {
         "-----, ----"
+    }
 
 fun Long?.getHoursAndMinsWithDay(timeFormat: TimeFormat?): String =
     if (this != null) {
@@ -62,8 +84,9 @@ fun Long?.getHoursAndMinsWithDay(timeFormat: TimeFormat?): String =
         val day = SimpleDateFormat("EEEE", Locale.getDefault()).format(date)
 
         "$hourAndMinOnly, $day"
-    } else
+    } else {
         "--:--, ------"
+    }
 
 @SuppressLint("SimpleDateFormat")
 fun Long.getHoursAndMins(timeFormat: TimeFormat?): String {
@@ -78,11 +101,10 @@ fun Long.getHoursAndMins(timeFormat: TimeFormat?): String {
 fun Long.toLunarDateFormat(): String =
     SimpleDateFormat(
         "yyyyMMdd",
-        Locale.getDefault()
+        Locale.getDefault(),
     ).format(this)
 
-
-//TODO: Make this better looking
+// TODO: Make this better looking
 fun Long.toLunarTimeZone(): String {
     val sdf = SimpleDateFormat("z", Locale.getDefault())
     val longTimeZone = sdf.format(DateTime.now().toDate())
@@ -90,14 +112,18 @@ fun Long.toLunarTimeZone(): String {
     val startAt = longTimeZone.indexOf("+") + 1
     val endAt = longTimeZone.indexOf(":")
 
-    if (endAt < startAt) return  ""
+    if (endAt < startAt) return ""
     val timeZone = longTimeZone.substring(startAt, endAt)
 
     return timeZone
 }
 
+fun getHoursInterval(
+    start: Long,
+    end: Long,
+) = Interval(start, end).toPeriod().hours
 
-
-
-fun getHoursInterval(start: Long, end: Long) = Interval(start, end).toPeriod().hours
-fun getMinsInterval(start: Long, end: Long) = Interval(start, end).toPeriod().minutes
+fun getMinsInterval(
+    start: Long,
+    end: Long,
+) = Interval(start, end).toPeriod().minutes

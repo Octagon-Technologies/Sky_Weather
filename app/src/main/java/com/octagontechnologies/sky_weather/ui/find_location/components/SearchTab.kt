@@ -35,58 +35,57 @@ import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.utils.Resource
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SearchTab(
     query: String,
     onSearchQueryChanged: (String) -> Unit,
     suggestions: Resource<List<Location>>,
-    favouriteLocations: List<Location>,
-    modifier: Modifier = Modifier,
-
+    favouriteLocations: ImmutableList<Location>,
     selectLocation: (Location) -> Unit,
     addOrRemoveFromFavourite: (Location) -> Unit,
-    hideSearchTab: () -> Unit
+    hideSearchTab: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     BackHandler {
         hideSearchTab()
     }
 
-
     Box(
         modifier
             .fillMaxSize()
-            .clickable { hideSearchTab() }
+            .clickable { hideSearchTab() },
     ) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(0.85f)
-                .align(Alignment.Center)
-                .clickable {  },
-            colors = CardDefaults.cardColors(
-                containerColor = LocalAppColors.current.surface,
-                contentColor = LocalAppColors.current.onSurface
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth(0.9f)
+                    .fillMaxHeight(0.85f)
+                    .align(Alignment.Center)
+                    .clickable { },
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = LocalAppColors.current.surface,
+                    contentColor = LocalAppColors.current.onSurface,
+                ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         ) {
             Column(Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
                 TextField(
                     value = query,
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = LocalAppColors.current.surfaceVariant,
-                        focusedContainerColor = LocalAppColors.current.surfaceVariant,
-
-                        unfocusedTextColor = LocalAppColors.current.onSurface,
-                        focusedTextColor = LocalAppColors.current.onSurface,
-
+                    colors =
+                        TextFieldDefaults.colors(
+                            unfocusedContainerColor = LocalAppColors.current.surfaceVariant,
+                            focusedContainerColor = LocalAppColors.current.surfaceVariant,
+                            unfocusedTextColor = LocalAppColors.current.onSurface,
+                            focusedTextColor = LocalAppColors.current.onSurface,
 //                        unfocusedPlaceholderColor = LocalAppColors.current.onSurface.copy(alpha = 0.75f),
-
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = LocalAppColors.current.onSurface,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = LocalAppColors.current.onSurface,
 //                        focusedIndicatorColor = LocalAppColors.current.onSurface,
 //                        unfocusedIndicatorColor = LocalAppColors.current.onSurface
-                    ),
+                        ),
                     onValueChange = onSearchQueryChanged,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
@@ -94,9 +93,9 @@ fun SearchTab(
                         Text(
                             text = stringResource(R.string.search_your_location),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = LocalAppColors.current.onSurface.copy(alpha = 0.9f)
+                            color = LocalAppColors.current.onSurface.copy(alpha = 0.9f),
                         )
-                    }
+                    },
                 )
 
                 when (suggestions) {
@@ -105,7 +104,7 @@ fun SearchTab(
                             Modifier
                                 .padding(top = 8.dp, bottom = 10.dp)
                                 .fillMaxWidth()
-                                .weight(1f)
+                                .weight(1f),
                         ) {
                             itemsIndexed(suggestions.data!!) { currentIndex, location ->
                                 val isFavourite = location in favouriteLocations
@@ -117,7 +116,7 @@ fun SearchTab(
                                     actionIconContentDescription = stringResource(R.string.remove_from_favourites),
                                     onActionIcon = { addOrRemoveFromFavourite(location) },
                                     currentIndex = currentIndex,
-                                    lastIndex = suggestions.data.lastIndex
+                                    lastIndex = suggestions.data.lastIndex,
                                 )
                             }
                         }
@@ -129,7 +128,7 @@ fun SearchTab(
                                 Modifier
                                     .size(32.dp)
                                     .align(Alignment.Center),
-                                color = LocalAppColors.current.onSurface
+                                color = LocalAppColors.current.onSurface,
                             )
                         }
                     }
@@ -138,7 +137,8 @@ fun SearchTab(
                         Box(
                             Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 24.dp), contentAlignment = Alignment.Center
+                                .padding(horizontal = 24.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
                             val errorMessage = suggestions.resMessage
 
@@ -148,7 +148,7 @@ fun SearchTab(
                                 fontSize = 18.sp,
                                 color = LocalAppColors.current.onSurface,
                                 fontFamily = QuickSand,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
                             )
                         }
                     }

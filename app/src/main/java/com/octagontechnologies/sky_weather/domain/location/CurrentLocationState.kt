@@ -5,7 +5,7 @@ enum class CurrentLocationState(val title: String) {
     Refreshing("REFRESHING"),
     NoNetwork("NO NETWORK"),
     LocationOff("DEVICE LOCATION IS OFF"),
-    InUse("IN USE")
+    InUse("IN USE"),
 }
 
 fun CurrentLocationState.getTagName() =

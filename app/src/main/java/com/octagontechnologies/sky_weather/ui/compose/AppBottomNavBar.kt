@@ -28,12 +28,11 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.current_forecast.components.BottomNav
 
-
 @Composable
 fun AppBottomNavBar(
     activeBottomNav: BottomNav,
     navigateToBottomNav: (BottomNav) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier
@@ -42,28 +41,28 @@ fun AppBottomNavBar(
             .padding(bottom = 6.dp),
         shape = RoundedCornerShape(8.dp),
         color = LocalAppColors.current.backgroundVariant,
-        shadowElevation = 3.dp
+        shadowElevation = 3.dp,
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
 //                .padding(top = 6.dp, bottom = 4.dp)
-                .padding(top = 10.dp, bottom = 6.dp)
+                .padding(top = 10.dp, bottom = 6.dp),
         ) {
             BottomNavItem(
                 bottomNav = BottomNav.Current,
                 isActive = activeBottomNav == BottomNav.Current,
-                onClick = { navigateToBottomNav(BottomNav.Current) }
+                onClick = { navigateToBottomNav(BottomNav.Current) },
             )
             BottomNavItem(
                 bottomNav = BottomNav.Hourly,
                 isActive = activeBottomNav == BottomNav.Hourly,
-                onClick = { navigateToBottomNav(BottomNav.Hourly) }
+                onClick = { navigateToBottomNav(BottomNav.Hourly) },
             )
             BottomNavItem(
                 bottomNav = BottomNav.Daily,
                 isActive = activeBottomNav == BottomNav.Daily,
-                onClick = { navigateToBottomNav(BottomNav.Daily) }
+                onClick = { navigateToBottomNav(BottomNav.Daily) },
             )
         }
     }
@@ -71,41 +70,41 @@ fun AppBottomNavBar(
 
 @Preview
 @Composable
-private fun PreviewAppBottomNavBar() = AppTheme {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .background(LocalAppColors.current.background)
-            .height(150.dp)
-    ) {
-        AppBottomNavBar(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            activeBottomNav = BottomNav.Current,
-            navigateToBottomNav = { }
-        )
+private fun PreviewAppBottomNavBar() =
+    AppTheme {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(LocalAppColors.current.background)
+                .height(150.dp),
+        ) {
+            AppBottomNavBar(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                activeBottomNav = BottomNav.Current,
+                navigateToBottomNav = { },
+            )
+        }
     }
-}
-
 
 @Composable
 fun RowScope.BottomNavItem(
     bottomNav: BottomNav,
     isActive: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val onSurface = LocalAppColors.current.onBackground.copy(alpha = if (isActive) 1f else 0.55f)
 
     Column(
         modifier.weight(1f),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
             modifier = Modifier.clickable { onClick() }.size(24.dp),
             painter = painterResource(id = bottomNav.icon),
             contentDescription = stringResource(id = bottomNav.nameRes),
-            tint = onSurface
+            tint = onSurface,
         )
 
         Text(
@@ -113,7 +112,7 @@ fun RowScope.BottomNavItem(
             fontSize = 15.sp,
             modifier = Modifier.padding(top = 2.dp),
             color = onSurface,
-            fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium
+            fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
         )
     }
 }

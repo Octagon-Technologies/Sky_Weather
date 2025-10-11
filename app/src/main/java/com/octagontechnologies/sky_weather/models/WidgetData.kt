@@ -9,5 +9,5 @@ data class WidgetData(
     val location: Location?,
     var transparencyOutOf255: Int,
     var timeFormat: TimeFormat,
-    var units: Units
+    var units: Units,
 )
