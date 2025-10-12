@@ -9,7 +9,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import retrofit2.HttpException
 import timber.log.Timber
-import javax.xml.transform.Result
 
 @HiltWorker
 class UrgentDataWork
@@ -23,9 +22,9 @@ class UrgentDataWork
             const val WORK_NAME = "UrgentDataWork"
         }
 
-        override suspend fun doWork(): Result {
-            return try {
-                weatherRepo.refreshUrgentForecast()
+        override suspend fun doWork(): Result =
+            try {
+                weatherRepo.refreshCurrentAndHourlyForecast()
                 Timber.d("urgent doWork: Work is done and successfully")
                 Result.success()
             } catch (httpException: HttpException) {
@@ -35,5 +34,4 @@ class UrgentDataWork
                 Timber.e(e)
                 Result.failure()
             }
-        }
     }

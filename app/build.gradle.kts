@@ -78,10 +78,17 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = ("1.8")
         freeCompilerArgs = listOf("-Xallow-result-return-type")
+    }
+
+    testOptions {
+        unitTests.all { test ->
+            test.useJUnitPlatform()
+        }
     }
 }
 
@@ -159,24 +166,19 @@ dependencies {
     // Splash Screen
     implementation(libs.androidx.splashScreen)
 
-    // Test dependencies
-    testImplementation(libs.junit)
-    testImplementation(libs.hamcrest)
-    testImplementation(libs.core.ktx)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.androidx.junit.ktx)
-    testImplementation(libs.androidx.core.testing)
-
-    // Android Test dependencies
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
     implementation(libs.core.immutable)
     ktlintRuleset(libs.ktlint.compose)
+
+    // Unit Testing
+    testImplementation(platform(libs.testing.junit.bom))
+    testImplementation(libs.testing.unit.junit.jupiter)
+    testRuntimeOnly(libs.testing.unit.junit.launcher)
+
+    testImplementation(libs.testing.mock)
+    testImplementation(libs.testing.coroutines)
+
+    // Android Testing
+//    androidTestImplementation(platform(libs.testing.junit.bom))
 }
 
 kapt {

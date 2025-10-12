@@ -1,6 +1,7 @@
 package com.octagontechnologies.sky_weather.di
 
 import android.content.Context
+import androidx.room.Room
 import com.octagontechnologies.sky_weather.repository.database.WeatherDataBase
 import dagger.Module
 import dagger.Provides
@@ -16,7 +17,13 @@ object RoomModule {
     @Provides
     fun providesWeatherDatabase(
         @ApplicationContext context: Context,
-    ) = WeatherDataBase.getInstance(context)
+    ) = Room
+        .databaseBuilder(
+            context.applicationContext,
+            WeatherDataBase::class.java,
+            "weatherDatabase",
+        ).fallbackToDestructiveMigration(true)
+        .build()
 
     @Provides
     fun providesCurrentForecastDao(weatherDataBase: WeatherDataBase) = weatherDataBase.currentForecastDao

@@ -87,22 +87,24 @@ class CustomNotificationCompat
             }
 
             val notification =
-                NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
-                    setSilent(true)
-                    setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-                    setSmallIcon(R.drawable.sky_weather_icon)
-                    setShowWhen(false)
-                    setSound(null)
+                NotificationCompat
+                    .Builder(context, NOTIFICATION_CHANNEL_ID)
+                    .apply {
+                        setSilent(true)
+                        setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
+                        setSmallIcon(R.drawable.sky_weather_icon)
+                        setShowWhen(false)
+                        setSound(null)
 
-                    setOngoing(true)
-                    setAutoCancel(false)
+                        setOngoing(true)
+                        setAutoCancel(false)
 
-                    setContentTitle(location.displayName ?: "-----")
-                    setContentText(singleForecast.getFormattedTemp(units) + (units ?: Units.getDefault()).getUnitSymbol())
+                        setContentTitle(location.displayName ?: "-----")
+                        setContentText(singleForecast.getFormattedTemp(units) + (units ?: Units.getDefault()).getUnitSymbol())
 
-                    setCustomHeadsUpContentView(null)
-                    setContentIntent(clickPendingIntent)
-                }.build()
+                        setCustomHeadsUpContentView(null)
+                        setContentIntent(clickPendingIntent)
+                    }.build()
 
             Timber.d("createNotification called with notification as $notification")
             notificationManagerCompat.cancelAll()
