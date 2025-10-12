@@ -62,7 +62,7 @@ abstract class WeatherDataBase : RoomDatabase() {
                             context.applicationContext,
                             WeatherDataBase::class.java,
                             "weatherDatabase",
-                        ).fallbackToDestructiveMigration()
+                        ).fallbackToDestructiveMigration(true)
                         .build()
             }
             return localInstance

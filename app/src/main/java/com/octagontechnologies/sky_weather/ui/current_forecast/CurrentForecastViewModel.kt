@@ -49,13 +49,14 @@ class CurrentForecastViewModel
                 }
             }
 
-    init {
-        viewModelScope.launch {
-            currentForecast.collectLatest { currentForecast ->
-                val location = location.value
+        init {
+            viewModelScope.launch {
+                currentForecast.collectLatest { currentForecast ->
+                    val location = location.value
 
-                if (currentForecast != null && location != null) {
-                    updateNotification(location)
+                    if (currentForecast != null && location != null) {
+                        updateNotification(location)
+                    }
                 }
             }
         }

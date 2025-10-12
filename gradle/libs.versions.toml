@@ -25,8 +25,13 @@ jodaTimeVersion = "2.12.7"
 ktlintPlugin = "12.1.1"
 ktlint-compose = "0.3.5"
 coreKtx = "1.17.0"
-junit = "4.13.2"
+
+
+junit = "6.0.0"
+mockk = "1.14.6"
+coroutinesTest = "1.8.1"
 junitVersion = "1.3.0"
+
 espressoCore = "3.7.0"
 legacySupportV4 = "1.0.0"
 library = "2.1.0"
@@ -99,7 +104,6 @@ hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 
-junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -171,6 +175,16 @@ permissionX = { group = "com.guolindev.permissionx", name = "permissionx", versi
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
+
+# Testing
+testing-junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit"  }
+
+testing-unit-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
+testing-unit-junit-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+
+
+testing-mock = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+testing-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 
 
 [plugins]

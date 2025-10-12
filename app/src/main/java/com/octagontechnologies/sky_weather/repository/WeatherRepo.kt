@@ -31,7 +31,7 @@ class WeatherRepo
         val currentForecast =
             currentForecastRepo.currentForecast.stateIn(GlobalScope, SharingStarted.Eagerly, null)
 
-        suspend fun refreshUrgentForecast() {
+        suspend fun refreshCurrentAndHourlyForecast() {
             locationRepo.location.collectLatest { location ->
                 location?.let {
                     val units = settingsRepo.units.value
