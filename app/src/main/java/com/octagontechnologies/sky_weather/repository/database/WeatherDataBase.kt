@@ -1,8 +1,6 @@
 package com.octagontechnologies.sky_weather.repository.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.octagontechnologies.sky_weather.repository.database.location.LocalLocation
@@ -48,24 +46,4 @@ abstract class WeatherDataBase : RoomDatabase() {
     abstract val currentLocationDao: CurrentLocationDao
     abstract val favouriteLocationDao: FavouriteLocationDao
     abstract val recentLocationDao: RecentLocationDao
-
-    companion object {
-        @Volatile
-        var instance: WeatherDataBase? = null
-
-        fun getInstance(context: Context): WeatherDataBase {
-            var localInstance = instance
-            if (localInstance == null) {
-                localInstance =
-                    Room
-                        .databaseBuilder(
-                            context.applicationContext,
-                            WeatherDataBase::class.java,
-                            "weatherDatabase",
-                        ).fallbackToDestructiveMigration(true)
-                        .build()
-            }
-            return localInstance
-        }
-    }
 }
