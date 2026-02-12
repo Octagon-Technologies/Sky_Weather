@@ -11,6 +11,7 @@ import com.octagontechnologies.sky_weather.repository.repo.LocationRepo
 import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
 import com.octagontechnologies.sky_weather.utils.StatusCode
 import com.octagontechnologies.sky_weather.utils.catchNetworkErrors
+import com.octagontechnologies.sky_weather.utils.getDay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -68,6 +69,7 @@ class HourlyForecastViewModel
 
         fun selectHourlyForecast(hourlyForecast: SingleForecast) {
             _selectedHourlyForecast.value = hourlyForecast
+            updateTitleDay(hourlyForecast.timeInEpochMillis.getDay())
         }
 
         fun updateTitleDay(newDay: String) {
