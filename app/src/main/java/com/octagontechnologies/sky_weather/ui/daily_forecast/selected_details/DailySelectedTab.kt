@@ -1,6 +1,7 @@
 package com.octagontechnologies.sky_weather.ui.daily_forecast.selected_details
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -58,6 +58,7 @@ import timber.log.Timber
 
 @Composable
 fun DailySelectedTab(
+    sheetState: ScrollState,
     units: Units?,
     windDirectionUnits: WindDirectionUnits?,
     selectedDailyForecast: DailyForecast?,
@@ -68,8 +69,7 @@ fun DailySelectedTab(
         modifier
             .fillMaxWidth()
             .background(LocalAppColors.current.surface)
-            .padding(bottom = 12.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(bottom = 12.dp),
     ) {
         HorizontalDivider(
             Modifier
@@ -82,10 +82,15 @@ fun DailySelectedTab(
         )
 
         Box(Modifier.fillMaxWidth()) {
+            LaunchedEffect(selectedDailyForecast?.timeInEpochSeconds) {
+                Timber.d("selectedDailyForecast?.timeInEpochSeconds is ${selectedDailyForecast?.timeInEpochSeconds}")
+            }
+
             Text(
                 text = selectedDailyForecast?.timeInEpochSeconds?.getDayWithMonth() ?: "----",
                 fontFamily = QuickSand,
                 fontSize = 17.sp,
+                color = LocalAppColors.current.onSurface,
                 modifier =
                     Modifier
                         .padding(top = 8.dp, bottom = 8.dp)
@@ -96,6 +101,7 @@ fun DailySelectedTab(
             Text(
                 text = units?.getUnitSymbol() ?: "C",
                 fontWeight = FontWeight.SemiBold,
+                color = LocalAppColors.current.onSurfaceLighter,
                 modifier =
                     Modifier
                         .padding(end = 16.dp)
@@ -162,6 +168,7 @@ fun DailySelectedTab(
                     weatherCode = selectedDailyForecast?.dayTime?.weatherCode,
                     temp = selectedDailyForecast?.getTempHigh(units),
                     units = units ?: Units.getDefault(),
+                    sheetState = sheetState,
                 )
             } else {
                 SelectedForecastScreen(
@@ -176,6 +183,7 @@ fun DailySelectedTab(
                     weatherCode = selectedDailyForecast?.nightTime?.weatherCode,
                     temp = selectedDailyForecast?.getTempLow(units),
                     units = units ?: Units.getDefault(),
+                    sheetState = sheetState,
                 )
             }
         }
@@ -314,6 +322,7 @@ private fun PreviewLunarPreview() =
 private fun PreviewDailySelectedTab() =
     AppTheme {
         DailySelectedTab(
+            sheetState = rememberScrollState(),
             Units.getDefault(),
             WindDirectionUnits.getDefault(),
             DailyForecast.TEST_FORE,

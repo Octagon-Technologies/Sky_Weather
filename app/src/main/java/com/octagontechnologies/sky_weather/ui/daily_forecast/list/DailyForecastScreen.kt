@@ -9,14 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
@@ -24,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,16 +30,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.octagontechnologies.sky_weather.ui.compose.LocalSystemBarsColorOverrides
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.compose.theme.Poppins
 import com.octagontechnologies.sky_weather.ui.daily_forecast.list.components.DailyForecastCard
+import com.octagontechnologies.sky_weather.ui.daily_forecast.list.components.ShimmerDailyForecastScreen
 import com.octagontechnologies.sky_weather.ui.daily_forecast.selected_details.DailySelectedTab
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
@@ -66,11 +66,9 @@ fun DailyForecastScreen(
     val peekHeight = remember { 64.dp }
     val sheetState = rememberBottomSheetScaffoldState()
 
-//    val view = LocalView.current
-//    val window = (view.context.getActivity() ?: return).window
-//
-//    val blueBackground = LocalAppColors.current.background
-//    val bottomSheetBackground = LocalAppColors.current.surface
+    val systemBarsOverrides = LocalSystemBarsColorOverrides.current
+    val blueBackground = LocalAppColors.current.background
+    val bottomSheetBackground = LocalAppColors.current.surface
 
     val scrollState = rememberScrollState()
 
@@ -82,9 +80,17 @@ fun DailyForecastScreen(
         if (!isExpanded) {
             scrollState.animateScrollTo(0)
         }
+        systemBarsOverrides?.setNavigationBarColor(
+            if (isExpanded) bottomSheetBackground else blueBackground,
+        )
+    }
 
-//        window.navigationBarColor =
-//            (if (isExpanded) bottomSheetBackground else blueBackground).toArgb()
+    // Clear override when leaving this screen
+    DisposableEffect(Unit) {
+        onDispose {
+            systemBarsOverrides?.setStatusBarColor(blueBackground)
+            systemBarsOverrides?.setNavigationBarColor(blueBackground)
+        }
     }
 
     // If back button is pressed if the bottom sheet is expanded, hide it
@@ -100,6 +106,7 @@ fun DailyForecastScreen(
         sheetPeekHeight = peekHeight,
         sheetContent = {
             DailySelectedTab(
+                sheetState = scrollState,
                 units = units,
                 windDirectionUnits = windDirectionUnits,
                 selectedDailyForecast = selectedDailyForecast,
@@ -151,19 +158,13 @@ fun DailyForecastScreen(
             }
 
             if (listOfDailyForecast.isNullOrEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(36.dp),
-                        trackColor = Color.Transparent,
-                        color = Color.White,
-                    )
-                }
+                ShimmerDailyForecastScreen()
             } else {
                 LazyVerticalGrid(
                     GridCells.Fixed(2),
                     Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     items(listOfDailyForecast!!) { forecast ->
                         DailyForecastCard(

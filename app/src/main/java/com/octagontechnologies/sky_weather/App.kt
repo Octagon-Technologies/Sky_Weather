@@ -2,14 +2,14 @@ package com.octagontechnologies.sky_weather
 
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.BackoffPolicy
 import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.octagontechnologies.sky_weather.work.RefreshDataWork
-import com.octagontechnologies.sky_weather.work.UrgentDataWork
+import com.octagontechnologies.sky_weather.work.WeatherWorker
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,26 +64,19 @@ class App :
                 .setRequiresBatteryNotLow(false)
                 .build()
 
-        val urgentRequest =
-            PeriodicWorkRequestBuilder<UrgentDataWork>(20, TimeUnit.MINUTES)
+        val weatherRefreshRequest =
+            PeriodicWorkRequestBuilder<WeatherWorker>(1, TimeUnit.HOURS)
                 .setConstraints(constraints)
-                .build()
-
-        val longerRequest =
-            PeriodicWorkRequestBuilder<RefreshDataWork>(6, TimeUnit.HOURS)
-                .setConstraints(constraints)
-                .build()
+                .setBackoffCriteria(
+                    backoffPolicy = BackoffPolicy.LINEAR,
+                    backoffDelay = 20,
+                    timeUnit = TimeUnit.MINUTES,
+                ).build()
 
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            UrgentDataWork.WORK_NAME,
+            WeatherWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            urgentRequest,
-        )
-
-        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            RefreshDataWork.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            longerRequest,
+            weatherRefreshRequest,
         )
     }
 }

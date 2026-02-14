@@ -14,6 +14,7 @@ import com.octagontechnologies.sky_weather.utils.Resource
 import com.octagontechnologies.sky_weather.utils.doOperation
 import com.octagontechnologies.sky_weather.utils.toLunarDateFormat
 import com.octagontechnologies.sky_weather.utils.toLunarTimeZone
+import timber.log.Timber
 import javax.inject.Inject
 
 class LunarRepo
@@ -39,17 +40,24 @@ class LunarRepo
 //        }
 //    }
 
-        suspend fun refreshCurrentLunarForecast(location: Location) {
+        suspend fun refreshCurrentLunarForecast(location: Location): Result<Boolean> {
             val dateInMillis: Long = System.currentTimeMillis()
-            val lunarForecastResponse =
-                lunarApi.getLunarForecast(
-                    date = dateInMillis.toLunarDateFormat(),
-                    lat = location.lat.toDouble(),
-                    lon = location.lon.toDouble(),
-                    timezone = dateInMillis.toLunarTimeZone(),
-                )
 
-            lunarDao.insertData(lunarForecastResponse.toLocalLunar())
+            return try {
+                val lunarForecastResponse =
+                    lunarApi.getLunarForecast(
+                        date = dateInMillis.toLunarDateFormat(),
+                        lat = location.lat.toDouble(),
+                        lon = location.lon.toDouble(),
+                        timezone = dateInMillis.toLunarTimeZone(),
+                    )
+
+                lunarDao.insertData(lunarForecastResponse.toLocalLunar())
+                Result.success(true)
+            } catch (e: Exception) {
+                Timber.e(e)
+                Result.failure(e)
+            }
         }
 
         suspend fun getSelectedLunarForecast(

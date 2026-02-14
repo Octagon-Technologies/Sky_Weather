@@ -1,13 +1,13 @@
 package com.octagontechnologies.sky_weather.ui.hourly_forecast.selected_details
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,8 +30,10 @@ import com.octagontechnologies.sky_weather.utils.weather.getAdvancedWeatherCondi
 import com.octagontechnologies.sky_weather.utils.weather.getCoreWeatherConditions
 import kotlinx.collections.immutable.toPersistentMap
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HourlySelectedTab(
+    sheetState: ScrollState,
     units: Units?,
     windDirectionUnits: WindDirectionUnits?,
     timeFormat: TimeFormat?,
@@ -49,8 +51,7 @@ fun HourlySelectedTab(
         modifier
             .fillMaxWidth()
             .background(LocalAppColors.current.surface)
-            .padding(bottom = 12.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(bottom = 12.dp),
     ) {
         HorizontalDivider(
             Modifier
@@ -69,6 +70,7 @@ fun HourlySelectedTab(
                         ?: "----",
                 fontFamily = QuickSand,
                 fontSize = 17.sp,
+                color = LocalAppColors.current.onSurface,
                 modifier =
                     Modifier
                         .padding(top = 8.dp, bottom = 8.dp)
@@ -79,6 +81,7 @@ fun HourlySelectedTab(
             Text(
                 text = units?.getUnitSymbol() ?: "C",
                 fontWeight = FontWeight.SemiBold,
+                color = LocalAppColors.current.onSurfaceLighter,
                 modifier =
                     Modifier
                         .padding(end = 12.dp)
@@ -92,6 +95,7 @@ fun HourlySelectedTab(
             weatherCode = selectedForecast?.weatherCode,
             temp = selectedForecast?.temp?.toInt(),
             units = units ?: Units.getDefault(),
+            sheetState = sheetState,
         )
     }
 }

@@ -30,6 +30,18 @@ class WeatherRepoTest {
     // 2. Declare the class under test
     private lateinit var weatherRepo: WeatherRepo
 
+    val fakeLocation =
+        Location(
+            lat = "40.3",
+            lon = "40.3",
+            displayNameWithoutCountryCode = "Karen",
+            country = "Kenya",
+            countryCode = "KE",
+            isGps = false,
+        )
+
+    val fakeUnits = Units.METRIC
+
     // 3. Setup function to initialize mocks before each test
     @BeforeEach
     fun setUp() {
@@ -57,17 +69,6 @@ class WeatherRepoTest {
     @DisplayName("Given a valid location, when refreshUrgentForecast is called, then it should refresh data and notification")
     fun `refreshUrgentForecast should refresh data and notification`() =
         runTest {
-            val fakeLocation =
-                Location(
-                    lat = "40.3",
-                    lon = "40.3",
-                    displayNameWithoutCountryCode = "Karen",
-                    country = "Kenya",
-                    countryCode = "KE",
-                    isGps = false,
-                )
-
-            val fakeUnits = Units.METRIC
             val fakeNotificationAllowed = true
 
             every { settingsRepo.units.value } returns fakeUnits
@@ -92,17 +93,6 @@ class WeatherRepoTest {
     @DisplayName("Given notifications are off, when refreshUrgentForecast is called, then it should only refresh data")
     fun `refreshUrgentForecast should refresh data but not notification`() =
         runTest {
-            val fakeLocation =
-                Location(
-                    lat = "40.3",
-                    lon = "40.3",
-                    displayNameWithoutCountryCode = "Karen",
-                    country = "Kenya",
-                    countryCode = "KE",
-                    isGps = false,
-                )
-
-            val fakeUnits = Units.METRIC
             val fakeNotificationAllowed = false
 
             every { settingsRepo.units.value } returns fakeUnits
