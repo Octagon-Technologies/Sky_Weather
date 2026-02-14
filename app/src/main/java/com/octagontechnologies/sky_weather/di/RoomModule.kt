@@ -2,7 +2,7 @@ package com.octagontechnologies.sky_weather.di
 
 import android.content.Context
 import androidx.room.Room
-import com.octagontechnologies.sky_weather.repository.database.WeatherDataBase
+import com.octagontechnologies.sky_weather.data.local.room.WeatherDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

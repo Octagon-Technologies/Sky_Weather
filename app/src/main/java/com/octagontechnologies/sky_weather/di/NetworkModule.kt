@@ -1,11 +1,11 @@
 package com.octagontechnologies.sky_weather.di
 
-import com.octagontechnologies.sky_weather.repository.network.WEATHER_BASE_URL
-import com.octagontechnologies.sky_weather.repository.network.WeatherApi
-import com.octagontechnologies.sky_weather.repository.network.location.LOCATION_API_BASE_URL
-import com.octagontechnologies.sky_weather.repository.network.location.LocationApi
-import com.octagontechnologies.sky_weather.repository.network.lunar.LUNAR_BASE_URL
-import com.octagontechnologies.sky_weather.repository.network.lunar.LunarForecastApi
+import com.octagontechnologies.sky_weather.data.remote.api.WEATHER_BASE_URL
+import com.octagontechnologies.sky_weather.data.remote.api.WeatherApi
+import com.octagontechnologies.sky_weather.data.remote.api.location.LOCATION_API_BASE_URL
+import com.octagontechnologies.sky_weather.data.remote.api.location.LocationApi
+import com.octagontechnologies.sky_weather.data.remote.api.lunar.LUNAR_BASE_URL
+import com.octagontechnologies.sky_weather.data.remote.api.lunar.LunarForecastApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
