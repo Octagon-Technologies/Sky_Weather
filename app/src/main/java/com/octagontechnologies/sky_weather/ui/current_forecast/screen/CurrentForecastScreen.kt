@@ -26,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +60,7 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.CabinCondensed
 import com.octagontechnologies.sky_weather.ui.compose.theme.LessDarkBlue
 import com.octagontechnologies.sky_weather.ui.compose.theme.LightBlack
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
+import com.octagontechnologies.sky_weather.ui.compose.theme.OnBackgroundAsContentColor
 import com.octagontechnologies.sky_weather.ui.compose.theme.Poppins
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.current_forecast.CurrentForecastViewModel
@@ -94,133 +96,133 @@ fun CurrentForecastScreen(
         activity?.finish()
     }
 
-    Column(
-        modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.background),
-    ) {
-        CurrentTopBar(location, navController)
+    OnBackgroundAsContentColor {
+        Column(
+            modifier
+                .fillMaxSize()
+                .background(LocalAppColors.current.background),
+        ) {
+            CurrentTopBar(location, navController)
 
-        val scrollState = rememberScrollState()
-        if (currentForecast == null) {
-            ShimmerCurrentForecastScreen()
-        } else {
-            Column(
-                Modifier
-                    .padding(top = 2.dp)
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
-            ) {
-                CurrentTempBar(
-                    units = units,
-                    theme = theme,
-                    currentForecast = currentForecast!!,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
+            val scrollState = rememberScrollState()
+            if (currentForecast == null) {
+                ShimmerCurrentForecastScreen()
+            } else {
+                Column(
+                    Modifier
+                        .padding(top = 2.dp)
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                ) {
+                    CurrentTempBar(
+                        units = units,
+                        theme = theme,
+                        currentForecast = currentForecast!!,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
 
-                val predictions by viewModel.predictions.observeAsState()
-                predictions?.let {
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(top = 28.dp)
-                                .padding(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        predictions!!.forEachIndexed { index, hourly ->
-                            CurrentHourlyPrediction(
-                                hour = index + 1,
-                                formattedTemp = hourly.getFormattedTemp(units),
-                                formattedFeelsLike = hourly.getFormattedFeelsLike(units),
-                                weatherIcon = hourly.weatherCode.getWeatherIcon(),
-                                modifier = Modifier.weight(1f),
-                            )
+                    val predictions by viewModel.predictions.observeAsState()
+                    predictions?.let {
+                        Row(
+                            modifier =
+                                Modifier
+                                    .padding(top = 28.dp)
+                                    .padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            predictions!!.forEachIndexed { index, hourly ->
+                                CurrentHourlyPrediction(
+                                    hour = index + 1,
+                                    formattedTemp = hourly.getFormattedTemp(units),
+                                    formattedFeelsLike = hourly.getFormattedFeelsLike(units),
+                                    weatherIcon = hourly.weatherCode.getWeatherIcon(),
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
                     }
-                }
 
 //                val lunar = Lunar("8:00", "17:51", null, null)
 
-                Row(
-                    Modifier
-                        .padding(horizontal = 8.dp)
-                        .padding(top = 30.dp)
-                        .height(150.dp),
-                ) {
-                    LunarPreview(
-                        modifier = Modifier.weight(1f),
-                        isSunPreview = true,
-                        rise = lunar?.sunRise,
-                        set = lunar?.sunSet,
-                        tabColor = LocalAppColors.current.background,
-                        tabSecondaryColor = LocalAppColors.current.backgroundVariant,
-                        onTabColor = LocalAppColors.current.onBackground,
-                    )
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    CurrentRainProbability(
-                        rainProbability = currentForecast?.weatherCode?.rainProbability,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-
-                Text(
-                    text = "Current Conditions",
-                    color = LocalAppColors.current.onBackground,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 24.dp),
-                )
-
-                Surface(
-                    modifier =
+                    Row(
                         Modifier
                             .padding(horizontal = 8.dp)
-                            .padding(top = 12.dp),
-                    shadowElevation = 2.dp,
-                    tonalElevation = 2.dp,
-                    shape = RoundedCornerShape(8.dp),
-                    color = LocalAppColors.current.background,
-                ) {
-                    Column {
-                        coreConditions.forEach { (title, value) ->
-                            MiniWeatherDescription(
-                                title = title,
-                                value = value,
-                                cardColor = LocalAppColors.current.backgroundVariant.copy(alpha = 0.2f),
-                                onCardColor = LocalAppColors.current.onBackground,
-                            )
+                            .padding(top = 30.dp)
+                            .height(150.dp),
+                    ) {
+                        LunarPreview(
+                            modifier = Modifier.weight(1f),
+                            isSunPreview = true,
+                            rise = lunar?.sunRise,
+                            set = lunar?.sunSet,
+                            tabColor = LocalAppColors.current.background,
+                            tabSecondaryColor = LocalAppColors.current.backgroundVariant,
+                            onTabColor = LocalAppColors.current.onBackground,
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        CurrentRainProbability(
+                            rainProbability = currentForecast?.weatherCode?.rainProbability,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+
+                    Text(
+                        text = "Current Conditions",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(top = 24.dp),
+                    )
+
+                    Surface(
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 8.dp)
+                                .padding(top = 12.dp),
+                        shadowElevation = 2.dp,
+                        tonalElevation = 2.dp,
+                        shape = RoundedCornerShape(8.dp),
+                        color = LocalAppColors.current.background,
+                    ) {
+                        Column {
+                            coreConditions.forEach { (title, value) ->
+                                MiniWeatherDescription(
+                                    title = title,
+                                    value = value,
+                                    cardColor = LocalAppColors.current.backgroundVariant.copy(alpha = 0.2f),
+                                    onCardColor = LocalAppColors.current.onBackground,
+                                )
+                            }
                         }
                     }
-                }
 
-                Button(
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 8.dp)
-                            .padding(top = 12.dp, bottom = 16.dp)
-                            .fillMaxWidth(),
-                    onClick = {
-                        navController.navigate(Screens.SEE_MORE)
-                    },
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            contentColor = LocalAppColors.current.background,
-                            containerColor = LocalAppColors.current.onBackground,
-                        ),
-                    shape = RoundedCornerShape(8.dp),
-                    border = BorderStroke(1.dp, LocalAppColors.current.onBackground),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.see_more_plain_text),
-                        fontFamily = QuickSand,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
+                    Button(
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 8.dp)
+                                .padding(top = 12.dp, bottom = 16.dp)
+                                .fillMaxWidth(),
+                        onClick = {
+                            navController.navigate(Screens.SEE_MORE)
+                        },
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                contentColor = LocalAppColors.current.background,
+                                containerColor = LocalAppColors.current.onBackground,
+                            ),
+                        shape = RoundedCornerShape(8.dp),
+                        border = BorderStroke(1.dp, LocalAppColors.current.onBackground),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.see_more_plain_text),
+                            fontFamily = QuickSand,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
             }
         }

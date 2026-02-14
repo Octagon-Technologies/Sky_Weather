@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,13 +30,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.octagontechnologies.sky_weather.ui.compose.LocalSystemBarsColorOverrides
-import com.octagontechnologies.sky_weather.ui.compose.theme.CabinSemiCondensed
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
+import com.octagontechnologies.sky_weather.ui.compose.theme.OnBackgroundAsContentColor
 import com.octagontechnologies.sky_weather.ui.hourly_forecast.list.components.HourlyForecastCard
 import com.octagontechnologies.sky_weather.ui.hourly_forecast.list.components.ShimmerHourlyForecastCard
 import com.octagontechnologies.sky_weather.ui.hourly_forecast.selected_details.HourlySelectedTab
@@ -55,175 +54,171 @@ fun HourlyForecastScreen(
     viewModel: HourlyForecastViewModel = hiltViewModel(),
     showBottomNavView: (Boolean) -> Unit,
 ) {
-    Column(
-        modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.background),
-    ) {
-        val listOfHourlyForecast by viewModel.listOfHourlyForecast.observeAsState()
-
-        val selectedHourlyForecast by viewModel.selectedHourlyForecast.observeAsState()
-
-        val units by viewModel.units.observeAsState(initial = Units.getDefault())
-        val timeFormat by viewModel.timeFormat.observeAsState(initial = TimeFormat.getDefault())
-        val windDirectionUnits by viewModel.windDirectionUnits.observeAsState(initial = WindDirectionUnits.getDefault())
-
-        val peekHeight = remember { 64.dp }
-        val sheetState = rememberBottomSheetScaffoldState()
-
-        val systemBarsOverrides = LocalSystemBarsColorOverrides.current
-        val blueBackground = LocalAppColors.current.background
-        val bottomSheetBackground = LocalAppColors.current.surface
-
-        val scrollState = rememberScrollState()
-
-        LaunchedEffect(key1 = sheetState.bottomSheetState.currentValue) {
-            val isExpanded = sheetState.bottomSheetState.currentValue == SheetValue.Expanded
-            showBottomNavView(!isExpanded)
-
-            if (!isExpanded) {
-                scrollState.animateScrollTo(0)
-            }
-
-            systemBarsOverrides?.setNavigationBarColor(
-                if (isExpanded) bottomSheetBackground else blueBackground,
-            )
-        }
-
-        // Clear override when leaving this screen
-        DisposableEffect(Unit) {
-            onDispose {
-                systemBarsOverrides?.setNavigationBarColor(blueBackground)
-            }
-        }
-
-        // If back button is pressed if the bottom sheet is expanded, hide it
-        BackHandler(enabled = sheetState.bottomSheetState.currentValue == SheetValue.Expanded) {
-            coroutineScope.launch { sheetState.bottomSheetState.partialExpand() }
-        }
-
-        BottomSheetScaffold(
-            scaffoldState = sheetState,
-            sheetPeekHeight = peekHeight,
-            sheetContent = {
-                HourlySelectedTab(
-                    units = units,
-                    windDirectionUnits = windDirectionUnits,
-                    timeFormat = timeFormat,
-                    selectedForecast = selectedHourlyForecast,
-                    sheetState = scrollState,
-                )
-            },
-            sheetDragHandle = null,
+    OnBackgroundAsContentColor {
+        Column(
+            modifier
+                .fillMaxSize()
+                .background(LocalAppColors.current.background),
         ) {
-            if (listOfHourlyForecast.isNullOrEmpty()) {
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .background(LocalAppColors.current.background),
-                ) {
-                    Text(
-                        "Hourly Forecasts",
-                        color = LocalAppColors.current.onBackground,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier =
-                            Modifier
-                                .padding(vertical = 18.dp)
-                                .align(Alignment.CenterHorizontally),
-                        fontSize = 19.sp,
-                    )
+            val listOfHourlyForecast by viewModel.listOfHourlyForecast.observeAsState()
 
-                    LazyColumn(
-                        modifier =
-                            Modifier
-                                .background(LocalAppColors.current.background)
-                                .padding(top = 8.dp)
-                                .padding(horizontal = 8.dp)
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .shimmer(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        items(10) {
-                            ShimmerHourlyForecastCard(
-                                modifier = Modifier.fillMaxWidth(),
-                            )
-                        }
-                    }
+            val selectedHourlyForecast by viewModel.selectedHourlyForecast.observeAsState()
+
+            val units by viewModel.units.observeAsState(initial = Units.getDefault())
+            val timeFormat by viewModel.timeFormat.observeAsState(initial = TimeFormat.getDefault())
+            val windDirectionUnits by viewModel.windDirectionUnits.observeAsState(initial = WindDirectionUnits.getDefault())
+
+            val peekHeight = remember { 64.dp }
+            val sheetState = rememberBottomSheetScaffoldState()
+
+            val systemBarsOverrides = LocalSystemBarsColorOverrides.current
+            val blueBackground = LocalAppColors.current.background
+            val bottomSheetBackground = LocalAppColors.current.surface
+
+            val scrollState = rememberScrollState()
+
+            LaunchedEffect(key1 = sheetState.bottomSheetState.currentValue) {
+                val isExpanded = sheetState.bottomSheetState.currentValue == SheetValue.Expanded
+                showBottomNavView(!isExpanded)
+
+                if (!isExpanded) {
+                    scrollState.animateScrollTo(0)
                 }
-            } else {
-                Column(
-                    modifier =
+
+                systemBarsOverrides?.setNavigationBarColor(
+                    if (isExpanded) bottomSheetBackground else blueBackground,
+                )
+            }
+
+            // Restore the navigation bar color to the default when leaving this screen
+            DisposableEffect(Unit) {
+                onDispose {
+                    systemBarsOverrides?.setNavigationBarColor(blueBackground)
+                }
+            }
+
+            // If back button is pressed while the bottom sheet is expanded, hide it
+            BackHandler(enabled = sheetState.bottomSheetState.currentValue == SheetValue.Expanded) {
+                coroutineScope.launch { sheetState.bottomSheetState.partialExpand() }
+            }
+
+            BottomSheetScaffold(
+                scaffoldState = sheetState,
+                sheetPeekHeight = peekHeight,
+                sheetContent = {
+                    HourlySelectedTab(
+                        units = units,
+                        windDirectionUnits = windDirectionUnits,
+                        timeFormat = timeFormat,
+                        selectedForecast = selectedHourlyForecast,
+                        sheetState = scrollState,
+                    )
+                },
+                sheetDragHandle = null,
+            ) {
+                if (listOfHourlyForecast.isNullOrEmpty()) {
+                    Column(
                         Modifier
                             .fillMaxSize()
-                            .background(LocalAppColors.current.background)
-                            .padding(horizontal = 8.dp)
-                            .padding(bottom = peekHeight),
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 18.dp, bottom = 16.dp),
+                            .background(LocalAppColors.current.background),
                     ) {
-                        val titleDay by viewModel.titleDay.collectAsState()
-
                         Text(
-                            text = titleDay,
-                            color = LocalAppColors.current.onBackground,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            fontSize = 19.sp,
-                        )
-
-                        Surface(
+                            "Hourly Forecasts",
+                            style = MaterialTheme.typography.titleMedium,
                             modifier =
                                 Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(end = 4.dp),
-                            color = LocalAppColors.current.onBackground.copy(alpha = 0.15f),
-                            shape = RoundedCornerShape(6.dp),
+                                    .padding(vertical = 18.dp)
+                                    .align(Alignment.CenterHorizontally),
+                        )
+
+                        LazyColumn(
+                            modifier =
+                                Modifier
+                                    .background(LocalAppColors.current.background)
+                                    .padding(top = 8.dp)
+                                    .padding(horizontal = 8.dp)
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .shimmer(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Text(
-                                text = units.getUnitSymbol(),
-                                color = LocalAppColors.current.onBackground,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                                fontFamily = CabinSemiCondensed,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                            )
+                            items(10) {
+                                ShimmerHourlyForecastCard(
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                            }
                         }
                     }
-
-                    val lazyColumnState = rememberLazyListState()
-                    val firstVisibleIndex by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex } }
-
-                    LaunchedEffect(key1 = firstVisibleIndex) {
-                        val timeInEpochMillis =
-                            listOfHourlyForecast?.getOrNull(firstVisibleIndex)?.timeInEpochMillis
-                        viewModel.updateTitleDay(timeInEpochMillis.getDay())
-                    }
-
-                    LazyColumn(
-                        state = lazyColumnState,
+                } else {
+                    Column(
                         modifier =
                             Modifier
-                                .padding(bottom = (0.5).dp)
-                                .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                                .fillMaxSize()
+                                .background(LocalAppColors.current.background)
+                                .padding(horizontal = 8.dp)
+                                .padding(bottom = peekHeight),
                     ) {
-                        items(listOfHourlyForecast!!) { hourlyForecast ->
-                            HourlyForecastCard(
-                                hourlyForecast = hourlyForecast,
-                                units = units,
-                                timeFormat = timeFormat,
-                                selectHourlyForecast = {
-                                    viewModel.selectHourlyForecast(hourlyForecast)
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 18.dp, bottom = 16.dp),
+                        ) {
+                            val titleDay by viewModel.titleDay.collectAsState()
 
-                                    coroutineScope.launch {
-                                        sheetState.bottomSheetState.expand()
-                                    }
-                                },
+                            Text(
+                                text = titleDay,
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(horizontal = 8.dp),
                             )
+
+                            Surface(
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .padding(end = 4.dp),
+                                color = LocalAppColors.current.onBackground.copy(alpha = 0.15f),
+                                shape = RoundedCornerShape(6.dp),
+                                contentColor = LocalAppColors.current.onBackground,
+                            ) {
+                                Text(
+                                    text = units.getUnitSymbol(),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                            }
+                        }
+
+                        val lazyColumnState = rememberLazyListState()
+                        val firstVisibleIndex by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex } }
+
+                        LaunchedEffect(key1 = firstVisibleIndex) {
+                            val timeInEpochMillis =
+                                listOfHourlyForecast?.getOrNull(firstVisibleIndex)?.timeInEpochMillis
+                            viewModel.updateTitleDay(timeInEpochMillis.getDay())
+                        }
+
+                        LazyColumn(
+                            state = lazyColumnState,
+                            modifier =
+                                Modifier
+                                    .padding(bottom = (0.5).dp)
+                                    .weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            items(listOfHourlyForecast!!) { hourlyForecast ->
+                                HourlyForecastCard(
+                                    hourlyForecast = hourlyForecast,
+                                    units = units,
+                                    timeFormat = timeFormat,
+                                    selectHourlyForecast = {
+                                        viewModel.selectHourlyForecast(hourlyForecast)
+
+                                        coroutineScope.launch {
+                                            sheetState.bottomSheetState.expand()
+                                        }
+                                    },
+                                )
+                            }
                         }
                     }
                 }

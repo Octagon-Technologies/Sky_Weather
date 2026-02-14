@@ -55,6 +55,7 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LightBlack
 import com.octagontechnologies.sky_weather.ui.compose.theme.LightBlue
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
+import com.octagontechnologies.sky_weather.ui.compose.theme.OnSurfaceAsContentColor
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.settings.components.MultiOption
 import com.octagontechnologies.sky_weather.ui.settings.components.SettingsOption
@@ -94,133 +95,134 @@ fun SettingsScreen(
         }
     }
 
-    Column(
-        modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.surface),
-    ) {
-        Card(
-            Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp),
-            colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    OnSurfaceAsContentColor {
+        Column(
+            modifier
+                .fillMaxSize()
+                .background(LocalAppColors.current.surface),
         ) {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp),
+            Card(
+                Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             ) {
-                AppRipple {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
-                        contentDescription = stringResource(id = R.string.back_button),
-                        modifier =
-                            Modifier
-                                .padding(start = 8.dp)
-                                .size(32.dp)
-                                .clip(CircleShape)
-                                .clickable {
-                                    navigateBack = true
-                                }.padding(2.dp),
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
+                ) {
+                    AppRipple {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                            contentDescription = stringResource(id = R.string.back_button),
+                            modifier =
+                                Modifier
+                                    .padding(start = 8.dp)
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .clickable {
+                                        navigateBack = true
+                                    }.padding(2.dp),
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(id = R.string.settings_plain_text),
+                        modifier = Modifier.align(Alignment.Center),
+                        fontFamily = QuickSand,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp,
                     )
                 }
+            }
 
-                Text(
-                    text = stringResource(id = R.string.settings_plain_text),
-                    modifier = Modifier.align(Alignment.Center),
-                    fontFamily = QuickSand,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
+            Column(
+                verticalArrangement = Arrangement.spacedBy(space = 24.dp),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 8.dp)
+                        .padding(top = 16.dp),
+            ) {
+                SettingsOption(
+                    selectedOption = units,
+                    multiOption = MultiOption.units,
+                    changeOption = { viewModel.changeUnits(it) },
+                )
+                SettingsOption(
+                    selectedOption = windDirectionUnits,
+                    multiOption = MultiOption.wind,
+                    changeOption = { viewModel.changeWindDirections(it) },
+                )
+                SettingsOption(
+                    selectedOption = timeFormat,
+                    multiOption = MultiOption.time,
+                    changeOption = { viewModel.changeTimeFormat(it) },
+                )
+                SettingsOption(
+                    selectedOption = theme,
+                    multiOption = MultiOption.theme,
+                    changeOption = { viewModel.changeTheme(it) },
                 )
             }
-        }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(space = 24.dp),
-            modifier =
+            HorizontalDivider(
                 Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 16.dp),
-        ) {
-            SettingsOption(
-                selectedOption = units,
-                multiOption = MultiOption.units,
-                changeOption = { viewModel.changeUnits(it) },
+                    .fillMaxWidth()
+                    .padding(top = 24.dp)
+                    .height((0.5).dp)
+                    .background(LocalAppColors.current.onSurfaceLighter),
             )
-            SettingsOption(
-                selectedOption = windDirectionUnits,
-                multiOption = MultiOption.wind,
-                changeOption = { viewModel.changeWindDirections(it) },
-            )
-            SettingsOption(
-                selectedOption = timeFormat,
-                multiOption = MultiOption.time,
-                changeOption = { viewModel.changeTimeFormat(it) },
-            )
-            SettingsOption(
-                selectedOption = theme,
-                multiOption = MultiOption.theme,
-                changeOption = { viewModel.changeTheme(it) },
-            )
-        }
 
-        HorizontalDivider(
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp)
-                .height((0.5).dp)
-                .background(LocalAppColors.current.onSurfaceLighter),
-        )
-
-        val permissionLauncher =
-            rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestPermission(),
-            ) { isGranted ->
-                viewModel.handleNotificationPermissionResponse(isGranted = isGranted)
-            }
-
-        val showSystemPermissionDialog by viewModel.showSystemPermissionDialog.collectAsState(false)
-        LaunchedEffect(key1 = showSystemPermissionDialog) {
-            if (showSystemPermissionDialog) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            val permissionLauncher =
+                rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission(),
+                ) { isGranted ->
+                    viewModel.handleNotificationPermissionResponse(isGranted = isGranted)
                 }
+
+            val showSystemPermissionDialog by viewModel.showSystemPermissionDialog.collectAsState(false)
+            LaunchedEffect(key1 = showSystemPermissionDialog) {
+                if (showSystemPermissionDialog) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                }
+
+                viewModel.resetSystemPermissionDialog()
             }
 
-            viewModel.resetSystemPermissionDialog()
-        }
+            Row(
+                Modifier
+                    .padding(top = 24.dp)
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.enable_notifications_plain_text),
+                    fontFamily = QuickSand,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 18.sp,
+                )
 
-        Row(
-            Modifier
-                .padding(top = 24.dp)
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(id = R.string.enable_notifications_plain_text),
-                fontFamily = QuickSand,
-                fontWeight = FontWeight.Medium,
-                color = LocalAppColors.current.onSurface,
-                fontSize = 18.sp,
-            )
-
-            Switch(
-                checked = areNotificationsOn,
-                onCheckedChange = { turnOn ->
-                    viewModel.toggleNotificationAllowed(turnOn)
-                },
-                colors =
-                    SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = LightBlack,
-                        checkedTrackColor = LightBlue,
-                        uncheckedBorderColor = Color.Transparent,
-                    ),
-            )
+                Switch(
+                    checked = areNotificationsOn,
+                    onCheckedChange = { turnOn ->
+                        viewModel.toggleNotificationAllowed(turnOn)
+                    },
+                    colors =
+                        SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            uncheckedThumbColor = Color.White,
+                            uncheckedTrackColor = LightBlack,
+                            checkedTrackColor = LightBlue,
+                            uncheckedBorderColor = Color.Transparent,
+                        ),
+                )
+            }
         }
     }
 }

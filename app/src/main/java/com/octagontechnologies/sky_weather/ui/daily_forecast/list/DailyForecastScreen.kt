@@ -30,15 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.octagontechnologies.sky_weather.ui.compose.LocalSystemBarsColorOverrides
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
-import com.octagontechnologies.sky_weather.ui.compose.theme.Poppins
+import com.octagontechnologies.sky_weather.ui.compose.theme.OnBackgroundAsContentColor
 import com.octagontechnologies.sky_weather.ui.daily_forecast.list.components.DailyForecastCard
 import com.octagontechnologies.sky_weather.ui.daily_forecast.list.components.ShimmerDailyForecastScreen
 import com.octagontechnologies.sky_weather.ui.daily_forecast.selected_details.DailySelectedTab
@@ -85,7 +83,7 @@ fun DailyForecastScreen(
         )
     }
 
-    // Clear override when leaving this screen
+    // Restore the navigation bar color to the default when leaving this screen
     DisposableEffect(Unit) {
         onDispose {
             systemBarsOverrides?.setStatusBarColor(blueBackground)
@@ -93,90 +91,87 @@ fun DailyForecastScreen(
         }
     }
 
-    // If back button is pressed if the bottom sheet is expanded, hide it
+    // If back button is pressed while the bottom sheet is expanded, hide it
     BackHandler(enabled = sheetState.bottomSheetState.currentValue == SheetValue.Expanded) {
         coroutineScope.launch {
             sheetState.bottomSheetState.partialExpand()
         }
     }
 
-    BottomSheetScaffold(
-        modifier = modifier.navigationBarsPadding(),
-        scaffoldState = sheetState,
-        sheetPeekHeight = peekHeight,
-        sheetContent = {
-            DailySelectedTab(
-                sheetState = scrollState,
-                units = units,
-                windDirectionUnits = windDirectionUnits,
-                selectedDailyForecast = selectedDailyForecast,
-                selectedLunarForecast = selectedLunarForecast,
-            )
-        },
-        sheetDragHandle = null,
-    ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .background(LocalAppColors.current.background)
-                .padding(horizontal = 8.dp)
-                .padding(bottom = peekHeight)
-                .padding(bottom = 6.dp),
-        ) {
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-            ) {
-                Text(
-                    text = viewModel.currentMonth,
-                    modifier =
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(vertical = 8.dp),
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = LocalAppColors.current.onBackground,
-                    style = MaterialTheme.typography.bodyMedium,
+    OnBackgroundAsContentColor {
+        BottomSheetScaffold(
+            modifier = modifier.navigationBarsPadding(),
+            scaffoldState = sheetState,
+            sheetPeekHeight = peekHeight,
+            sheetContent = {
+                DailySelectedTab(
+                    sheetState = scrollState,
+                    units = units,
+                    windDirectionUnits = windDirectionUnits,
+                    selectedDailyForecast = selectedDailyForecast,
+                    selectedLunarForecast = selectedLunarForecast,
                 )
-
-                Surface(
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterEnd),
-                    color = LocalAppColors.current.backgroundVariant,
-                    shape = RoundedCornerShape(8.dp),
+            },
+            sheetDragHandle = null,
+        ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(LocalAppColors.current.background)
+                    .padding(horizontal = 8.dp)
+                    .padding(bottom = peekHeight)
+                    .padding(bottom = 6.dp),
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                 ) {
                     Text(
-                        text = units.getUnitSymbol(),
-                        fontSize = 17.sp,
-                        fontFamily = Poppins,
-                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
-                        color = LocalAppColors.current.onBackground,
+                        text = viewModel.currentMonth,
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(vertical = 8.dp),
+                        style = MaterialTheme.typography.titleMedium,
                     )
-                }
-            }
 
-            if (listOfDailyForecast.isNullOrEmpty()) {
-                ShimmerDailyForecastScreen()
-            } else {
-                LazyVerticalGrid(
-                    GridCells.Fixed(2),
-                    Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    items(listOfDailyForecast!!) { forecast ->
-                        DailyForecastCard(
-                            forecast = forecast,
-                            units = units,
-                            onForecastClick = {
-                                coroutineScope.launch {
-                                    sheetState.bottomSheetState.expand()
-                                }
-                                viewModel.selectDailyForecast(forecast)
-                            },
+                    Surface(
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterEnd),
+                        color = LocalAppColors.current.backgroundVariant,
+                        shape = RoundedCornerShape(8.dp),
+                    ) {
+                        Text(
+                            text = units.getUnitSymbol(),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                            style = MaterialTheme.typography.labelLarge,
                         )
+                    }
+                }
+
+                if (listOfDailyForecast.isNullOrEmpty()) {
+                    ShimmerDailyForecastScreen()
+                } else {
+                    LazyVerticalGrid(
+                        GridCells.Fixed(2),
+                        Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        items(listOfDailyForecast!!) { forecast ->
+                            DailyForecastCard(
+                                forecast = forecast,
+                                units = units,
+                                onForecastClick = {
+                                    coroutineScope.launch {
+                                        sheetState.bottomSheetState.expand()
+                                    }
+                                    viewModel.selectDailyForecast(forecast)
+                                },
+                            )
+                        }
                     }
                 }
             }

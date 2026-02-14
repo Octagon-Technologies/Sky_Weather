@@ -47,6 +47,7 @@ import com.octagontechnologies.sky_weather.domain.getWeatherIcon
 import com.octagontechnologies.sky_weather.domain.getWeatherTitle
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
+import com.octagontechnologies.sky_weather.ui.compose.theme.OnBackgroundAsContentColor
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.see_more_current.components.MiniWeatherDescription
 
@@ -68,85 +69,83 @@ fun SeeMoreScreen(
         }
     }
 
-    Column(
-        modifier
-            .fillMaxSize()
-            .background(LocalAppColors.current.background)
-            .verticalScroll(rememberScrollState()),
-    ) {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 12.dp),
-        ) {
-            Image(
-                modifier =
-                    Modifier
-                        .align(Alignment.CenterStart)
-                        .clip(RoundedCornerShape(6.dp))
-                        .clickable { navigateBack = true }
-                        .background(LocalAppColors.current.backgroundVariant.copy(alpha = 0.6f))
-                        .padding(6.dp),
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                contentDescription = stringResource(id = R.string.back_button),
-                colorFilter = ColorFilter.tint(LocalAppColors.current.onBackground),
-            )
-
-            Text(
-                text = stringResource(R.string.current_conditions),
-                style = MaterialTheme.typography.labelMedium,
-                fontSize = 18.sp,
-                color = LocalAppColors.current.onBackground,
-                modifier = Modifier.align(Alignment.Center),
-            )
-        }
-
+    OnBackgroundAsContentColor {
         Column(
-            Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier
+                .fillMaxSize()
+                .background(LocalAppColors.current.background)
+                .verticalScroll(rememberScrollState()),
         ) {
-            Row(
-                modifier = Modifier.padding(top = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 12.dp),
             ) {
-                currentForecast?.weatherCode?.getWeatherIcon()?.let {
-                    Image(
-                        painter = painterResource(id = it),
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                    )
-                }
+                Image(
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterStart)
+                            .clip(RoundedCornerShape(6.dp))
+                            .clickable { navigateBack = true }
+                            .background(LocalAppColors.current.backgroundVariant.copy(alpha = 0.6f))
+                            .padding(6.dp),
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                    contentDescription = stringResource(id = R.string.back_button),
+                    colorFilter = ColorFilter.tint(LocalAppColors.current.onBackground),
+                )
 
-                Box(Modifier.padding(start = 16.dp)) {
-                    Text(
-                        text = currentForecast.getFormattedTemp(units),
-                        fontFamily = QuickSand,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 58.sp,
-                        color = LocalAppColors.current.onBackground,
-                    )
-                    Text(
-                        text = units.getUnitSymbol(),
-                        modifier = Modifier.align(Alignment.BottomEnd),
-                        fontSize = 22.sp,
-                        color = LocalAppColors.current.onBackground.copy(alpha = 0.7f),
-                    )
-                }
-            }
-
-            Surface(
-                color = LocalAppColors.current.backgroundVariant,
-                modifier = Modifier.padding(top = 16.dp),
-                shape = RoundedCornerShape(24.dp),
-            ) {
                 Text(
-                    text = currentForecast?.weatherCode?.getWeatherTitle() ?: "",
-                    modifier = Modifier.padding(vertical = 2.dp, horizontal = 12.dp),
-                    color = LocalAppColors.current.onBackground,
-                    fontFamily = QuickSand,
+                    text = stringResource(R.string.current_conditions),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.align(Alignment.Center),
                 )
             }
+
+            Column(
+                Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Row(
+                    modifier = Modifier.padding(top = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    currentForecast?.weatherCode?.getWeatherIcon()?.let {
+                        Image(
+                            painter = painterResource(id = it),
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp),
+                        )
+                    }
+
+                    Box(Modifier.padding(start = 16.dp)) {
+                        Text(
+                            text = currentForecast.getFormattedTemp(units),
+                            fontFamily = QuickSand,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 58.sp,
+                        )
+                        Text(
+                            text = units.getUnitSymbol(),
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                            fontSize = 22.sp,
+                            color = LocalAppColors.current.onBackground.copy(alpha = 0.7f),
+                        )
+                    }
+                }
+
+                Surface(
+                    color = LocalAppColors.current.backgroundVariant,
+                    modifier = Modifier.padding(top = 16.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    contentColor = LocalAppColors.current.onBackground,
+                ) {
+                    Text(
+                        text = currentForecast?.weatherCode?.getWeatherTitle() ?: "",
+                        modifier = Modifier.padding(vertical = 2.dp, horizontal = 12.dp),
+                        fontFamily = QuickSand,
+                    )
+                }
 
 //            val conditions = mapOf(
 //                "Temperature" to "27",
@@ -155,28 +154,29 @@ fun SeeMoreScreen(
 //                "Wind" to "24 km/h"
 //            )
 
-            Card(
-                modifier =
-                    Modifier
-                        .padding(top = 24.dp, bottom = 24.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                shape = RoundedCornerShape(6),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = LocalAppColors.current.background,
-                        contentColor = LocalAppColors.current.onBackground,
-                    ),
-                elevation = CardDefaults.elevatedCardElevation(),
-            ) {
-                Column(Modifier.padding(vertical = 8.dp)) {
-                    conditions.forEach { (name, value) ->
-                        MiniWeatherDescription(
-                            title = name,
-                            value = value,
-                            cardColor = LocalAppColors.current.backgroundVariant,
-                            onCardColor = LocalAppColors.current.onBackground,
-                        )
+                Card(
+                    modifier =
+                        Modifier
+                            .padding(top = 24.dp, bottom = 24.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                    shape = RoundedCornerShape(6),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = LocalAppColors.current.background,
+                            contentColor = LocalAppColors.current.onBackground,
+                        ),
+                    elevation = CardDefaults.elevatedCardElevation(),
+                ) {
+                    Column(Modifier.padding(vertical = 8.dp)) {
+                        conditions.forEach { (name, value) ->
+                            MiniWeatherDescription(
+                                title = name,
+                                value = value,
+                                cardColor = LocalAppColors.current.backgroundVariant,
+                                onCardColor = LocalAppColors.current.onBackground,
+                            )
+                        }
                     }
                 }
             }

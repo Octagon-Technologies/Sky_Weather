@@ -74,6 +74,7 @@ import com.octagontechnologies.sky_weather.ui.compose.getActivity
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.DarkGreen
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
+import com.octagontechnologies.sky_weather.ui.compose.theme.OnSurfaceAsContentColor
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.find_location.FindLocationViewModel
 import com.octagontechnologies.sky_weather.ui.find_location.components.LocationSuggestion
@@ -132,214 +133,213 @@ fun FindLocationScreen(
         resetNavigateBack = { viewModel.resetNavigateHome() },
     )
 
-    Box(modifier) {
-        var showPermissionInfoBar by remember { mutableStateOf(false) }
-        var showLocationRequest by remember { mutableStateOf(false) }
+    OnSurfaceAsContentColor {
+        Box(modifier) {
+            var showPermissionInfoBar by remember { mutableStateOf(false) }
+            var showLocationRequest by remember { mutableStateOf(false) }
 
-        Column(
-            Modifier
-                .fillMaxSize()
-                .background(LocalAppColors.current.surfaceSmallerVariant)
-                .padding(bottom = 4.dp)
-                .verticalScroll(rememberScrollState())
-                .cloudy(radius = if (showPermissionInfoBar) 4 else 0),
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surfaceVariant),
-                shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .background(LocalAppColors.current.surfaceSmallerVariant)
+                    .padding(bottom = 4.dp)
+                    .verticalScroll(rememberScrollState())
+                    .cloudy(radius = if (showPermissionInfoBar) 4 else 0),
             ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = LocalAppColors.current.surfaceVariant),
+                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                 ) {
-                    Icon(
-                        modifier = Modifier.clickable { viewModel.navigateHome() },
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = stringResource(id = R.string.back_button),
-                        tint = LocalAppColors.current.onSurface,
-                    )
-
-                    Text(
-                        text = stringResource(R.string.select_location),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontSize = 18.sp,
-                        color = LocalAppColors.current.onSurface,
-                    )
-
-                    val unitSymbol =
-                        when (units) {
-                            null -> ""
-                            Units.METRIC -> stringResource(id = R.string.temp_unit_C)
-                            Units.IMPERIAL -> stringResource(id = R.string.temp_unit_F)
-                        }
-                    Text(
-                        text = unitSymbol,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 17.sp,
-                        fontFamily = QuickSand,
-                        modifier = Modifier.padding(end = 4.dp),
-                    )
-                }
-
-                TextButton(
-                    onClick = { showSearchTab = true },
-                    modifier =
+                    Row(
                         Modifier
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                            .fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors =
-                        ButtonDefaults.buttonColors(
-                            containerColor = LocalAppColors.current.surface,
-                        ),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.find_location_plain_text),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LocalAppColors.current.onSurface,
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Icon(
+                            modifier = Modifier.clickable { viewModel.navigateHome() },
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button),
+                            tint = LocalAppColors.current.onSurface,
+                        )
+
+                        Text(
+                            text = stringResource(R.string.select_location),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+
+                        val unitSymbol =
+                            when (units) {
+                                null -> ""
+                                Units.METRIC -> stringResource(id = R.string.temp_unit_C)
+                                Units.IMPERIAL -> stringResource(id = R.string.temp_unit_F)
+                            }
+                        Text(
+                            text = unitSymbol,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontSize = 17.sp,
+                            fontFamily = QuickSand,
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                    }
+
+                    TextButton(
+                        onClick = { showSearchTab = true },
                         modifier =
                             Modifier
-                                .padding(vertical = 4.dp, horizontal = 4.dp)
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
                                 .fillMaxWidth(),
-                        textAlign = TextAlign.Start,
-                    )
+                        shape = RoundedCornerShape(8.dp),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = LocalAppColors.current.surface,
+                            ),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.find_location_plain_text),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier =
+                                Modifier
+                                    .padding(vertical = 4.dp, horizontal = 4.dp)
+                                    .fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+
+                    Card(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor =
+                                    if (currentLocation != null) {
+                                        LocalAppColors.current.surface
+                                    } else {
+                                        LocalAppColors.current.surfaceVariant
+                                    },
+                            ),
+                    ) {
+                        if (currentLocation != null) {
+                            UseCurrentLocation(
+                                location = currentLocation!!,
+                                currentLocationState = currentLocationState.getTagName(),
+                                locationInUse = currentLocationState == CurrentLocationState.InUse,
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                useCurrentLocation = { viewModel.setLocationAsCurrentLocation() },
+                            )
+                        } else {
+                            EnableLocationButton(
+                                modifier = Modifier.padding(top = 12.dp),
+                                requestLocation = {
+                                    val locationPermission =
+                                        context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+                                    if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+                                        showPermissionInfoBar = true
+                                    }
+                                },
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                Card(
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor =
-                                if (currentLocation != null) {
-                                    LocalAppColors.current.surface
-                                } else {
-                                    LocalAppColors.current.surfaceVariant
-                                },
-                        ),
-                ) {
-                    if (currentLocation != null) {
-                        UseCurrentLocation(
-                            location = currentLocation!!,
-                            currentLocationState = currentLocationState.getTagName(),
-                            locationInUse = currentLocationState == CurrentLocationState.InUse,
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            useCurrentLocation = { viewModel.setLocationAsCurrentLocation() },
-                        )
-                    } else {
-                        EnableLocationButton(
-                            modifier = Modifier.padding(top = 12.dp),
-                            requestLocation = {
-                                val locationPermission =
-                                    context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                val favourites by viewModel.favouriteLocationsList.observeAsState(initial = listOf())
+                SpecialLocationTab(
+                    tabTitle = stringResource(id = R.string.favourites_plain_text),
+                    locationList = favourites.toPersistentList(),
+                    emptyPlaceholderText = stringResource(id = R.string.no_favourite_locations_selected_yet),
+                    selectLocation = { viewModel.setNewLocation(it) },
+                    removeFromSpecialList = { viewModel.removeFromFavourites(it) },
+                    clearAll = { viewModel.deleteAllFavourite() },
+                )
 
-                                if (locationPermission != PackageManager.PERMISSION_GRANTED) {
-                                    showPermissionInfoBar = true
-                                }
-                            },
+                val recents by viewModel.recentLocationsList.observeAsState(initial = listOf())
+                SpecialLocationTab(
+                    tabTitle = stringResource(id = R.string.recent_plain_text),
+                    emptyPlaceholderText = stringResource(id = R.string.no_recent_locations_selected_yet),
+                    locationList = recents.toPersistentList(),
+                    selectLocation = { viewModel.setNewLocation(it) },
+                    removeFromSpecialList = { viewModel.removeFromRecent(it) },
+                    clearAll = { viewModel.deleteAllRecent() },
+                )
+            }
+
+            val permissionLauncher =
+                rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { permissionGranted ->
+                    Timber.d("permissionGranted is $permissionGranted")
+                    if (permissionGranted) {
+                        viewModel.fetchCurrentLocation(
+                            context = context,
+                            updateUserLocation = true,
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            val favourites by viewModel.favouriteLocationsList.observeAsState(initial = listOf())
-            SpecialLocationTab(
-                tabTitle = stringResource(id = R.string.favourites_plain_text),
-                locationList = favourites.toPersistentList(),
-                emptyPlaceholderText = stringResource(id = R.string.no_favourite_locations_selected_yet),
-                selectLocation = { viewModel.setNewLocation(it) },
-                removeFromSpecialList = { viewModel.removeFromFavourites(it) },
-                clearAll = { viewModel.deleteAllFavourite() },
-            )
-
-            val recents by viewModel.recentLocationsList.observeAsState(initial = listOf())
-            SpecialLocationTab(
-                tabTitle = stringResource(id = R.string.recent_plain_text),
-                emptyPlaceholderText = stringResource(id = R.string.no_recent_locations_selected_yet),
-                locationList = recents.toPersistentList(),
-                selectLocation = { viewModel.setNewLocation(it) },
-                removeFromSpecialList = { viewModel.removeFromRecent(it) },
-                clearAll = { viewModel.deleteAllRecent() },
-            )
-        }
-
-        val permissionLauncher =
-            rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { permissionGranted ->
-                Timber.d("permissionGranted is $permissionGranted")
-                if (permissionGranted) {
-                    viewModel.fetchCurrentLocation(
-                        context = context,
-                        updateUserLocation = true,
-                    )
+            LaunchedEffect(key1 = showLocationRequest) {
+                if (showLocationRequest) {
+                    permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    showLocationRequest = false
                 }
             }
 
-        LaunchedEffect(key1 = showLocationRequest) {
-            if (showLocationRequest) {
-                permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                showLocationRequest = false
+            if (showPermissionInfoBar) {
+                EnableLocationInfo(
+                    cancelRequest = { showPermissionInfoBar = false },
+                    proceedWithRequest = {
+                        showPermissionInfoBar = false
+                        showLocationRequest = true
+                    },
+                )
             }
-        }
 
-        if (showPermissionInfoBar) {
-            EnableLocationInfo(
-                cancelRequest = { showPermissionInfoBar = false },
-                proceedWithRequest = {
-                    showPermissionInfoBar = false
-                    showLocationRequest = true
-                },
+            var searchQuery by remember { mutableStateOf("") }
+            val suggestions by viewModel.suggestions.observeAsState(
+                Resource.Error(
+                    ErrorType.Other,
+                    R.string.no_search_input,
+                ),
             )
-        }
+            val favouriteLocations by viewModel.listOfFavouriteLocation.observeAsState(listOf())
 
-        var searchQuery by remember { mutableStateOf("") }
-        val suggestions by viewModel.suggestions.observeAsState(
-            Resource.Error(
-                ErrorType.Other,
-                R.string.no_search_input,
-            ),
-        )
-        val favouriteLocations by viewModel.listOfFavouriteLocation.observeAsState(listOf())
+            AnimatedVisibility(visible = showSearchTab, enter = fadeIn(), exit = fadeOut()) {
+                SearchTab(
+                    query = searchQuery,
+                    onSearchQueryChanged = {
+                        searchQuery = it
+                        viewModel.getLocationSuggestions(searchQuery)
+                    },
+                    suggestions = suggestions,
+                    favouriteLocations = favouriteLocations.toImmutableList(),
+                    selectLocation = {
+                        viewModel.setNewLocation(it)
+                        showSearchTab = false
 
-        AnimatedVisibility(visible = showSearchTab, enter = fadeIn(), exit = fadeOut()) {
-            SearchTab(
-                query = searchQuery,
-                onSearchQueryChanged = {
-                    searchQuery = it
-                    viewModel.getLocationSuggestions(searchQuery)
-                },
-                suggestions = suggestions,
-                favouriteLocations = favouriteLocations.toImmutableList(),
-                selectLocation = {
-                    viewModel.setNewLocation(it)
-                    showSearchTab = false
+                        viewModel.navigateHome()
+                    },
+                    addOrRemoveFromFavourite = { viewModel.addOrRemoveFavourite(it) },
+                    hideSearchTab = {
+                        showSearchTab = false
+                    },
+                )
+            }
 
-                    viewModel.navigateHome()
-                },
-                addOrRemoveFromFavourite = { viewModel.addOrRemoveFavourite(it) },
-                hideSearchTab = {
-                    showSearchTab = false
-                },
-            )
-        }
+            val errorMessage by viewModel.errorMessage.collectAsState()
 
-        val errorMessage by viewModel.errorMessage.collectAsState()
-
-        LaunchedEffect(key1 = errorMessage) {
-            errorMessage?.let {
-                val snackbarResult =
-                    snackbarHostState.showSnackbar(
-                        context.getString(it),
-                        // Add the Open settings action if the error is: Location is off
-                        if (errorMessage == R.string.turn_location_on) "Open settings" else null,
-                    )
-                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                    // TODO: Turn location on
+            LaunchedEffect(key1 = errorMessage) {
+                errorMessage?.let {
+                    val snackbarResult =
+                        snackbarHostState.showSnackbar(
+                            context.getString(it),
+                            // Add the Open settings action if the error is: Location is off
+                            if (errorMessage == R.string.turn_location_on) "Open settings" else null,
+                        )
+                    if (snackbarResult == SnackbarResult.ActionPerformed) {
+                        // TODO: Turn location on
+                    }
+                    viewModel.resetErrorMessage()
                 }
-                viewModel.resetErrorMessage()
             }
         }
     }
@@ -380,7 +380,6 @@ fun SpecialLocationTab(
             Text(
                 text = tabTitle,
                 fontFamily = QuickSand,
-                color = LocalAppColors.current.onSurface,
                 fontWeight = FontWeight.Medium,
                 letterSpacing = (0.1).sp,
                 fontSize = 17.sp,
@@ -397,7 +396,6 @@ fun SpecialLocationTab(
                 Text(
                     text = stringResource(id = R.string.clear_all_plain_text),
                     fontFamily = QuickSand,
-                    color = LocalAppColors.current.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp,
                 )
