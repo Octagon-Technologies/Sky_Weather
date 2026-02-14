@@ -65,13 +65,13 @@ class DailyForecastViewModel
                     }
                 }
 
-                launch {
-                    location.collectLatest { location ->
-                        if (location != null) {
-                            dailyForecastRepo.refreshDailyForecast(location)
-                        }
-                    }
-                }
+//                launch {
+//                    location.collectLatest { location ->
+//                        if (location != null) {
+//                            dailyForecastRepo.refreshDailyForecast(location)
+//                        }
+//                    }
+//                }
             }
         }
 

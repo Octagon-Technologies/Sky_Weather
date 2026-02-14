@@ -19,15 +19,20 @@ class HourlyForecastRepo
         suspend fun refreshHourlyForecast(location: Location) =
             try {
                 val hourlyForecastResponse =
-                    weatherApi.getHourlyForecast(
-                        lat = location.lat,
-                        lon = location.lon,
-                    ).hourly.toListOfSingleForecast()
+                    weatherApi
+                        .getHourlyForecast(
+                            lat = location.lat,
+                            lon = location.lon,
+                        ).hourly
+                        .toListOfSingleForecast()
 
                 hourlyWeatherDao.insertData(
                     LocalHourlyForecast(listOfHourlyForecast = hourlyForecastResponse),
                 )
+
+                Result.success(true)
             } catch (e: Exception) {
                 Timber.e(e)
+                Result.failure(e)
             }
     }

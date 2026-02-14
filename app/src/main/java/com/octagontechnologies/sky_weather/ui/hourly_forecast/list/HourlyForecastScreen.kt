@@ -8,20 +8,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -30,21 +29,21 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.octagontechnologies.sky_weather.ui.compose.getActivity
+import com.octagontechnologies.sky_weather.ui.compose.LocalSystemBarsColorOverrides
 import com.octagontechnologies.sky_weather.ui.compose.theme.CabinSemiCondensed
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
 import com.octagontechnologies.sky_weather.ui.hourly_forecast.list.components.HourlyForecastCard
+import com.octagontechnologies.sky_weather.ui.hourly_forecast.list.components.ShimmerHourlyForecastCard
 import com.octagontechnologies.sky_weather.ui.hourly_forecast.selected_details.HourlySelectedTab
 import com.octagontechnologies.sky_weather.utils.TimeFormat
 import com.octagontechnologies.sky_weather.utils.Units
 import com.octagontechnologies.sky_weather.utils.WindDirectionUnits
 import com.octagontechnologies.sky_weather.utils.getDay
+import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -72,9 +71,7 @@ fun HourlyForecastScreen(
         val peekHeight = remember { 64.dp }
         val sheetState = rememberBottomSheetScaffoldState()
 
-        val view = LocalView.current
-        val window = (view.context.getActivity() ?: return).window
-
+        val systemBarsOverrides = LocalSystemBarsColorOverrides.current
         val blueBackground = LocalAppColors.current.background
         val bottomSheetBackground = LocalAppColors.current.surface
 
@@ -84,13 +81,20 @@ fun HourlyForecastScreen(
             val isExpanded = sheetState.bottomSheetState.currentValue == SheetValue.Expanded
             showBottomNavView(!isExpanded)
 
-            // It's being collapsed; scroll to the top bar of the dialog
             if (!isExpanded) {
                 scrollState.animateScrollTo(0)
             }
 
-            window.navigationBarColor =
-                (if (isExpanded) bottomSheetBackground else blueBackground).toArgb()
+            systemBarsOverrides?.setNavigationBarColor(
+                if (isExpanded) bottomSheetBackground else blueBackground,
+            )
+        }
+
+        // Clear override when leaving this screen
+        DisposableEffect(Unit) {
+            onDispose {
+                systemBarsOverrides?.setNavigationBarColor(blueBackground)
+            }
         }
 
         // If back button is pressed if the bottom sheet is expanded, hide it
@@ -107,18 +111,45 @@ fun HourlyForecastScreen(
                     windDirectionUnits = windDirectionUnits,
                     timeFormat = timeFormat,
                     selectedForecast = selectedHourlyForecast,
+                    sheetState = scrollState,
                 )
             },
             sheetDragHandle = null,
         ) {
             if (listOfHourlyForecast.isNullOrEmpty()) {
-                Box(Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .background(LocalAppColors.current.background),
+                ) {
+                    Text(
+                        "Hourly Forecasts",
+                        color = LocalAppColors.current.onBackground,
+                        fontWeight = FontWeight.SemiBold,
                         modifier =
                             Modifier
-                                .size(36.dp)
-                                .align(Alignment.Center),
+                                .padding(vertical = 18.dp)
+                                .align(Alignment.CenterHorizontally),
+                        fontSize = 19.sp,
                     )
+
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .background(LocalAppColors.current.background)
+                                .padding(top = 8.dp)
+                                .padding(horizontal = 8.dp)
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .shimmer(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        items(10) {
+                            ShimmerHourlyForecastCard(
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                    }
                 }
             } else {
                 Column(
@@ -167,7 +198,8 @@ fun HourlyForecastScreen(
                     val firstVisibleIndex by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex } }
 
                     LaunchedEffect(key1 = firstVisibleIndex) {
-                        val timeInEpochMillis = listOfHourlyForecast?.getOrNull(firstVisibleIndex)?.timeInEpochMillis
+                        val timeInEpochMillis =
+                            listOfHourlyForecast?.getOrNull(firstVisibleIndex)?.timeInEpochMillis
                         viewModel.updateTitleDay(timeInEpochMillis.getDay())
                     }
 

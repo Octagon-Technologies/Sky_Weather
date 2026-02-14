@@ -9,5 +9,4 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.safeArgs) apply false
     alias(libs.plugins.ktlint) apply false
-//    androidx-navigation-safe-args-gradle-plugin
 }

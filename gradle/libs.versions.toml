@@ -3,9 +3,10 @@ agp = "8.13.0"
 androidImageCropper = "4.5.0"
 appcompat = "1.7.1"
 circleimageview = "3.1.0"
-kotlin = "2.0.21"
+kotlin = "2.2.20"
+ksp = "2.2.20-2.0.4"
 
-cloudy = "0.2.0"
+cloudy = "0.2.7"
 constraintlayout = "2.2.1"
 coordinatorlayout = "1.3.0"
 coreKtxVersion = "1.7.0"
@@ -16,20 +17,22 @@ glide = "4.16.0"
 groupie = "2.10.1"
 groupieDatabinding = "2.10.1"
 hamcrest = "2.2"
-hiltAndroid = "2.50"
-hiltCompiler = "2.51.1"
-hiltCompilerVersion = "1.3.0"
-hiltNavigationCompose = "1.3.0"
-hiltWork = "1.3.0"
+
+hiltAndroid = "2.57.2"
+#hiltAndroid = "2.52"
+#hiltCompilerVersion = "1.2.0"
+hiltJetpackVersion = "1.3.0"
+
 jodaTimeVersion = "2.12.7"
-ktlintPlugin = "12.1.1"
-ktlint-compose = "0.3.5"
+ktlintPlugin = "13.1.0"
+ktlint-compose = "0.4.27"
+kotlin-serialization = "1.9.0"
 coreKtx = "1.17.0"
 
 
 junit = "6.0.0"
 mockk = "1.14.6"
-coroutinesTest = "1.8.1"
+coroutinesTest = "1.10.2"
 junitVersion = "1.3.0"
 
 espressoCore = "3.7.0"
@@ -41,9 +44,9 @@ activityCompose = "1.11.0"
 materialVersion = "1.13.0"
 navigationCompose = "2.9.5"
 
-composeBom = "2025.09.01"
-firebaseBom = "34.3.0"
-koin-bom = "3.5.0"
+composeBom = "2025.10.00"
+firebaseBom = "34.4.0"
+koin-bom = "4.1.1"
 
 googlefonts-compose = "1.9.2"
 glide-compose = "1.0.0-beta01"
@@ -60,15 +63,18 @@ sspAndroid = "1.0.6"
 swiperefreshlayout = "1.1.0"
 timber = "5.0.1"
 splashscreen = "1.1.0-rc01"
-permissionX = "1.7.1"
-jodaTime = "2.12.7"
-moshi = "1.15.1"
-retrofit = "2.11.0"
-room = "2.8.1"
+permissionX = "1.8.1"
+jodaTime = "2.13.1"
+moshi = "1.15.2"
+retrofit = "3.0.0"
+room = "2.8.2"
 
-firebasePlugin = "4.4.3"
+glance = "1.1.0"
+
+firebasePlugin = "4.4.4"
 truth = "1.4.2"
 workRuntimeKtx = "2.10.5"
+uiTooling = "1.9.4"
 
 
 [libraries]
@@ -78,9 +84,7 @@ androidx-coordinatorlayout = { module = "androidx.coordinatorlayout:coordinatorl
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
-androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompilerVersion" }
-androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+
 androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitVersion" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
@@ -101,16 +105,26 @@ google-material = { module = "com.google.android.material:material", version.ref
 groupie-databinding = { module = "com.github.lisawray.groupie:groupie-databinding", version.ref = "groupieDatabinding" }
 groupie = { module = "com.github.lisawray.groupie:groupie", version.ref = "groupie" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltCompiler" }
+
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+#hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+
+
+#androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltCompilerVersion" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltJetpackVersion" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltJetpackVersion" }
 
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
+# UI
 androidx-splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-glance-core = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
+androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glance" }
 
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -140,7 +154,7 @@ compose-countrycode = { group = "io.github.joelkanyi", name = "komposecountrycod
 compose-imageCropper = { module = "com.vanniktech:android-image-cropper", version.ref = "androidImageCropper" }
 compose-audiowaveform = { module = "com.github.lincollincol:compose-audiowaveform", version = "1.1.2" }
 compose-amplituda = { module = "com.github.lincollincol:amplituda", version = "2.2.2" }
-
+compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version = "1.3.3" }
 
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin-bom" }
 koin-core = { group = "io.insert-koin", name = "koin-core" }
@@ -155,14 +169,14 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerviewVersion" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-moshiconverter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
-retrofit-okhttp-logger = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "4.12.0" }
+retrofit-okhttp-logger = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "5.2.1" }
 
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-reflect = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 ksp-moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 
 ktlint-compose = { group = "io.nlopez.compose.rules", name="ktlint", version.ref="ktlint-compose" }
-kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.2"}
+kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization"}
 
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
@@ -185,6 +199,7 @@ testing-unit-junit-launcher = { group = "org.junit.platform", name = "junit-plat
 
 testing-mock = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 testing-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 
 [plugins]
@@ -201,8 +216,12 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintPlugin" }
 
 kapt = { id = "kotlin-kapt" }
-ksp = { id = "com.google.devtools.ksp", version = "2.0.20-1.0.24" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "kotlin-parcelize" }
 gms = { id = "com.google.gms.google-services", version.ref = "firebasePlugin" }
 
-hilt = { id = "com.google.dagger.hilt.android", version = "2.51.1" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+
+
+[bundles]
+koin = ["koin-core", "koin-android", "koin-coreCoroutines", "koin-compose"]

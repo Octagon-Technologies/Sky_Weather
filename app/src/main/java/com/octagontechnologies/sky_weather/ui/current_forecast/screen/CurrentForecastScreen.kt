@@ -26,7 +26,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,6 +63,7 @@ import com.octagontechnologies.sky_weather.ui.compose.theme.Poppins
 import com.octagontechnologies.sky_weather.ui.compose.theme.QuickSand
 import com.octagontechnologies.sky_weather.ui.current_forecast.CurrentForecastViewModel
 import com.octagontechnologies.sky_weather.ui.current_forecast.components.CurrentTopBar
+import com.octagontechnologies.sky_weather.ui.current_forecast.components.ShimmerCurrentForecastScreen
 import com.octagontechnologies.sky_weather.ui.daily_forecast.selected_details.LunarPreview
 import com.octagontechnologies.sky_weather.ui.see_more_current.components.MiniWeatherDescription
 import com.octagontechnologies.sky_weather.utils.Theme
@@ -103,11 +103,7 @@ fun CurrentForecastScreen(
 
         val scrollState = rememberScrollState()
         if (currentForecast == null) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(36.dp),
-                )
-            }
+            ShimmerCurrentForecastScreen()
         } else {
             Column(
                 Modifier

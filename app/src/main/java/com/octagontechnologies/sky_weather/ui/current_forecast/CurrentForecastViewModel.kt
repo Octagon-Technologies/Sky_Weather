@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.octagontechnologies.sky_weather.domain.Location
 import com.octagontechnologies.sky_weather.notification.CustomNotificationCompat
 import com.octagontechnologies.sky_weather.repository.repo.CurrentForecastRepo
+import com.octagontechnologies.sky_weather.repository.repo.DailyForecastRepo
 import com.octagontechnologies.sky_weather.repository.repo.HourlyForecastRepo
 import com.octagontechnologies.sky_weather.repository.repo.LocationRepo
 import com.octagontechnologies.sky_weather.repository.repo.LunarRepo
@@ -25,6 +26,7 @@ class CurrentForecastViewModel
     constructor(
         private val currentForecastRepo: CurrentForecastRepo,
         private val hourlyForecastRepo: HourlyForecastRepo,
+        private val dailyForecastRepo: DailyForecastRepo,
         private val lunarRepo: LunarRepo,
         private val settingsRepo: SettingsRepo,
         private val locationRepo: LocationRepo,
@@ -51,6 +53,18 @@ class CurrentForecastViewModel
 
         init {
             viewModelScope.launch {
+                location.collectLatest { location ->
+                    Timber.d("Location in location.collectLatest is $location")
+
+                    if (location != null) {
+                        currentForecastRepo.refreshCurrentForecast(location)
+                        lunarRepo.refreshCurrentLunarForecast(location)
+
+                        hourlyForecastRepo.refreshHourlyForecast(location)
+                        dailyForecastRepo.refreshDailyForecast(location)
+                    }
+                }
+
                 currentForecast.collectLatest { currentForecast ->
                     val location = location.value
 

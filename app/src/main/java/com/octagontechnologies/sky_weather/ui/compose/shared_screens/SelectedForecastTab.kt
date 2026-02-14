@@ -1,6 +1,7 @@
 package com.octagontechnologies.sky_weather.ui.compose.shared_screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,8 +40,10 @@ import com.octagontechnologies.sky_weather.utils.Units
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectedForecastScreen(
+    sheetState: ScrollState,
     conditions: ImmutableMap<String, String>,
     weatherCode: WeatherCode?,
     temp: Int?,
@@ -47,7 +53,8 @@ fun SelectedForecastScreen(
     Column(
         modifier
             .fillMaxWidth()
-            .padding(top = 4.dp),
+            .padding(top = 4.dp)
+            .verticalScroll(sheetState),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -140,6 +147,7 @@ fun SelectedForecastScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun PreviewSelectedForecastScreen() =
@@ -149,11 +157,14 @@ private fun PreviewSelectedForecastScreen() =
                 .fillMaxSize()
                 .background(LocalAppColors.current.surface),
         ) {
+            val scrollState = rememberScrollState()
+
             SelectedForecastScreen(
                 conditions = persistentMapOf(),
                 weatherCode = WeatherCode(3, 45),
                 temp = 24,
                 units = Units.METRIC,
+                sheetState = scrollState,
             )
         }
     }

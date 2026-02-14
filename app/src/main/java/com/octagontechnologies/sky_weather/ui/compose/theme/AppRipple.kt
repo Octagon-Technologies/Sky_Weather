@@ -25,11 +25,3 @@ fun AppRipple(content: @Composable () -> Unit) {
         content = content,
     )
 }
-
-@Composable
-fun DisabledRipple(content: @Composable () -> Unit) {
-    CompositionLocalProvider(
-        LocalRippleConfiguration provides null,
-        content = content,
-    )
-}

@@ -20,13 +20,17 @@ class DailyForecastRepo
         suspend fun refreshDailyForecast(location: Location) =
             try {
                 val dailyForecast =
-                    weatherApi.getDailyForecast(
-                        lat = location.lat,
-                        lon = location.lon,
-                    ).daily.toListOfDailyForecast()
+                    weatherApi
+                        .getDailyForecast(
+                            lat = location.lat,
+                            lon = location.lon,
+                        ).daily
+                        .toListOfDailyForecast()
 
                 dailyWeatherDao.insertData(LocalDailyForecast(listOfDailyForecast = dailyForecast))
+                Result.success(true)
             } catch (e: Exception) {
                 Timber.e(e)
+                Result.failure(e)
             }
     }

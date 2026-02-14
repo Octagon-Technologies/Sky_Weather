@@ -67,11 +67,8 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
 
+    @Suppress("UnstableApiUsage")
     composeOptions {
         kotlinCompilerExtensionVersion = ("1.5.1")
     }
@@ -80,16 +77,16 @@ android {
         compose = true
         buildConfig = true
     }
-    kotlinOptions {
-        jvmTarget = ("1.8")
-        freeCompilerArgs = listOf("-Xallow-result-return-type")
-    }
 
     testOptions {
         unitTests.all { test ->
             test.useJUnitPlatform()
         }
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 ktlint {
@@ -114,6 +111,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
+    implementation("androidx.compose.foundation:foundation")
+
+//    implementation(libs.androidx)
 
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.runtime.livedata)
@@ -126,6 +126,7 @@ dependencies {
     // Compose UI libraries
     implementation(libs.compose.glide)
     implementation(libs.compose.googleFonts)
+    implementation(libs.compose.shimmer)
     implementation(libs.compose.cloudy)
 
     // Network library
@@ -143,6 +144,7 @@ dependencies {
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    debugImplementation(libs.androidx.compose.ui.tooling)
     ksp(libs.room.compiler)
 
     // Others
@@ -161,7 +163,10 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+
+    // Koin - Dependency Injection
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
 
     // Splash Screen
     implementation(libs.androidx.splashScreen)
@@ -183,4 +188,10 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.add("-Xallow-result-return-type")
+    }
 }

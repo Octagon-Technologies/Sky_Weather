@@ -16,20 +16,25 @@ class CurrentForecastRepo
     ) {
         val currentForecast = currentForecastDao.getLocalCurrentForecast().map { it?.currentForecast }
 
-        suspend fun refreshCurrentForecast(location: Location) {
+        suspend fun refreshCurrentForecast(location: Location): Result<Boolean> {
             try {
                 Timber.d("refreshCurrentForecast: before")
 
                 val currentForecast =
-                    weatherApi.getCurrentForecast(
-                        lat = location.lat,
-                        lon = location.lon,
-                    ).current.toSingleForecast()
+                    weatherApi
+                        .getCurrentForecast(
+                            lat = location.lat,
+                            lon = location.lon,
+                        ).current
+                        .toSingleForecast()
 
                 Timber.d("refreshCurrentForecast: With currentforecast $currentForecast")
                 currentForecastDao.insertData(LocalCurrentForecast(currentForecast = currentForecast))
+
+                return Result.success(true)
             } catch (e: Exception) {
                 Timber.e(e)
+                return Result.failure(e)
             }
         }
     }

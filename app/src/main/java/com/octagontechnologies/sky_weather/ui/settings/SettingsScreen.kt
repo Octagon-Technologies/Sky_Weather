@@ -27,6 +27,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,6 +49,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.octagontechnologies.sky_weather.R
 import com.octagontechnologies.sky_weather.ui.compose.ChangeStatusBars
+import com.octagontechnologies.sky_weather.ui.compose.LocalSystemBarsColorOverrides
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppRipple
 import com.octagontechnologies.sky_weather.ui.compose.theme.AppTheme
 import com.octagontechnologies.sky_weather.ui.compose.theme.LightBlack
@@ -76,11 +78,21 @@ fun SettingsScreen(
 
     var navigateBack by remember { mutableStateOf(false) }
 
+    val systemBarsOverrides = LocalSystemBarsColorOverrides.current
+    val blueBackground = LocalAppColors.current.background
+
     ChangeStatusBars(
         navigateBack = navigateBack,
         onNavigateBack = { navController.popBackStack() },
         resetNavigateBack = { navigateBack = false },
     )
+
+    // Clear override when leaving this screen
+    DisposableEffect(Unit) {
+        onDispose {
+            systemBarsOverrides?.setNavigationBarColor(blueBackground)
+        }
+    }
 
     Column(
         modifier

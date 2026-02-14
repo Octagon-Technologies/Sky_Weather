@@ -4,12 +4,14 @@ import android.view.View
 import android.view.Window
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.octagontechnologies.sky_weather.ui.compose.theme.LocalAppColors
+import com.octagontechnologies.sky_weather.ui.compose.theme.shouldUseDarkIcons
 
 @Composable
 fun ChangeStatusBars(
@@ -21,14 +23,18 @@ fun ChangeStatusBars(
 ) {
     val view = LocalView.current
     val window = (view.context.getActivity() ?: return).window
+    val systemBarsOverrides = LocalSystemBarsColorOverrides.current
 
     val whiteBlackColor = LocalAppColors.current.surface
-    val blueBackground = LocalAppColors.current.background
+
+    val defaultAppBackgroundColor = LocalAppColors.current.background
 
     LaunchedEffect(key1 = whiteBlackColor) {
-        window.statusBarColor = whiteBlackColor.toArgb()
-        window.navigationBarColor = whiteBlackColor.toArgb()
-
+        systemBarsOverrides?.let { overrides ->
+            overrides.setStatusBarColor(whiteBlackColor)
+            overrides.setNavigationBarColor(whiteBlackColor)
+            refreshSystemIcons(window, view, whiteBlackColor)
+        }
         // If in Light mode, the status bars will be white hence icons need to be black here
         if (whiteBlackColor == Color.White) {
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
@@ -36,13 +42,26 @@ fun ChangeStatusBars(
         }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            systemBarsOverrides?.let { overrides ->
+                overrides.setStatusBarColor(defaultAppBackgroundColor)
+                overrides.setNavigationBarColor(defaultAppBackgroundColor)
+                refreshSystemIcons(window, view, defaultAppBackgroundColor)
+            }
+        }
+    }
+
     LaunchedEffect(key1 = navigateBack) {
         if (navigateBack) {
             onNavigateBack()
 
-            window.statusBarColor = blueBackground.toArgb()
-            window.navigationBarColor = blueBackground.toArgb()
-            restoreIconsToWhite(window, view)
+            systemBarsOverrides?.let { overrides ->
+                overrides.setStatusBarColor(defaultAppBackgroundColor)
+                overrides.setNavigationBarColor(defaultAppBackgroundColor)
+            }
+
+            refreshSystemIcons(window, view, defaultAppBackgroundColor)
 
             resetNavigateBack()
         }
@@ -51,17 +70,21 @@ fun ChangeStatusBars(
     BackHandler {
         onNavigateBack()
 
-        window.statusBarColor = blueBackground.toArgb()
-        window.navigationBarColor = blueBackground.toArgb()
+        systemBarsOverrides?.let { overrides ->
+            overrides.setStatusBarColor(defaultAppBackgroundColor)
+            overrides.setNavigationBarColor(defaultAppBackgroundColor)
+        }
 
-        restoreIconsToWhite(window, view)
+        refreshSystemIcons(window, view, defaultAppBackgroundColor)
     }
 }
 
-fun restoreIconsToWhite(
+fun refreshSystemIcons(
     window: Window,
     view: View,
+    containerColor: Color,
 ) {
-    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
-    WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = false
+    val shouldUseDarkIcons = shouldUseDarkIcons(containerColor.toArgb())
+    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = shouldUseDarkIcons
+    WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = shouldUseDarkIcons
 }
