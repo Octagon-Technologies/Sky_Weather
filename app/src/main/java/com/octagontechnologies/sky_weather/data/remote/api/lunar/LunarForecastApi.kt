@@ -1,0 +1,17 @@
+package com.octagontechnologies.sky_weather.data.remote.api.lunar
+
+import com.octagontechnologies.sky_weather.data.remote.api.lunar.models.LunarForecastResponse
+import retrofit2.http.GET
+import retrofit2.http.Path
+
+const val LUNAR_BASE_URL = "https://api.solunar.org/"
+
+interface LunarForecastApi {
+    @GET("solunar/{lat},{lon},{date},{timezone}")
+    suspend fun getLunarForecast(
+        @Path("lat") lat: Double,
+        @Path("lon") lon: Double,
+        @Path("date") date: String,
+        @Path("timezone") timezone: String = "0",
+    ): LunarForecastResponse
+}

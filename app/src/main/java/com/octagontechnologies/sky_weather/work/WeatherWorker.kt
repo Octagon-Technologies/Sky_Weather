@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.octagontechnologies.sky_weather.repository.weather_repo.WeatherRepo
+import com.octagontechnologies.sky_weather.domain.repository.WeatherRepo
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import timber.log.Timber

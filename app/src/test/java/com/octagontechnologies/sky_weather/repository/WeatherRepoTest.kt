@@ -1,14 +1,15 @@
 package com.octagontechnologies.sky_weather.repository
 
-import com.octagontechnologies.sky_weather.domain.Location
-import com.octagontechnologies.sky_weather.notification.CustomNotificationCompat
-import com.octagontechnologies.sky_weather.repository.repo.CurrentForecastRepo
-import com.octagontechnologies.sky_weather.repository.repo.DailyForecastRepo
-import com.octagontechnologies.sky_weather.repository.repo.HourlyForecastRepo
-import com.octagontechnologies.sky_weather.repository.repo.LocationRepo
-import com.octagontechnologies.sky_weather.repository.repo.LunarRepo
-import com.octagontechnologies.sky_weather.repository.repo.SettingsRepo
-import com.octagontechnologies.sky_weather.utils.Units
+import com.octagontechnologies.sky_weather.core.model.preferences.Units
+import com.octagontechnologies.sky_weather.core.notifications.CustomNotificationCompat
+import com.octagontechnologies.sky_weather.data.repository.AllMasterWeatherRepo
+import com.octagontechnologies.sky_weather.data.repository.CurrentForecastRepo
+import com.octagontechnologies.sky_weather.data.repository.DailyForecastRepo
+import com.octagontechnologies.sky_weather.data.repository.HourlyForecastRepo
+import com.octagontechnologies.sky_weather.data.repository.LocationRepo
+import com.octagontechnologies.sky_weather.data.repository.LunarRepo
+import com.octagontechnologies.sky_weather.data.repository.SettingsRepo
+import com.octagontechnologies.sky_weather.domain.model.Location
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -28,7 +29,7 @@ class WeatherRepoTest {
     private lateinit var customNotificationCompat: CustomNotificationCompat
 
     // 2. Declare the class under test
-    private lateinit var weatherRepo: WeatherRepo
+    private lateinit var weatherRepo: AllMasterWeatherRepo
 
     val fakeLocation =
         Location(
@@ -54,7 +55,7 @@ class WeatherRepoTest {
         customNotificationCompat = mockk(relaxed = true)
 
         weatherRepo =
-            WeatherRepo(
+            AllMasterWeatherRepo(
                 locationRepo,
                 settingsRepo,
                 currentForecastRepo,
